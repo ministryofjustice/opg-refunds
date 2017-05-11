@@ -1,4 +1,4 @@
-FROM registry.service.opg.digital/opguk/php-fpm0x644:0.0.40-dev
+FROM registry.service.opg.digital/opguk/php-fpm0x644:0.0.43-dev
 
 ADD . /app
 RUN mkdir -p /srv/opg-lpa-refund-front/application && \
