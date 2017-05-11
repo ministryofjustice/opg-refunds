@@ -8,6 +8,5 @@ RUN mkdir -p /srv/opg-lpa-refund-front/application && \
     ln -s /app /srv/opg-lpa-refund-front/application/current
 
 ADD docker/confd /etc/confd
-ADD docker/my_init/* /etc/my_init.d/
 
 ENV OPG_SERVICE front
