@@ -27,4 +27,5 @@
  */
 
 $app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/test', App\Action\TestAction::class, 'test');
 $app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
