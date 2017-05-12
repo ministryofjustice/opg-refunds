@@ -35,10 +35,13 @@ class ConfigProvider
         return [
             'invokables' => [
                 Action\PingAction::class => Action\PingAction::class,
+                Action\TestAction::class => Action\TestAction::class,
             ],
             'factories'  => [
-                Action\TestAction::class => Action\TestFactory::class,
                 Action\HomePageAction::class => Action\HomePageFactory::class,
+            ],
+            'initializers' => [
+                Action\Templating\TemplatingSupportInitializer::class
             ],
         ];
     }

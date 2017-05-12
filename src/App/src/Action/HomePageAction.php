@@ -13,16 +13,15 @@ use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 
-class HomePageAction implements ServerMiddlewareInterface
+class HomePageAction implements ServerMiddlewareInterface, Templating\TemplatingSupportInterface
 {
+    use Templating\TemplatingSupportTrait;
+
     private $router;
 
-    private $template;
-
-    public function __construct(Router\RouterInterface $router, Template\TemplateRendererInterface $template = null)
+    public function __construct(Router\RouterInterface $router)
     {
         $this->router   = $router;
-        $this->template = $template;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -58,6 +57,6 @@ class HomePageAction implements ServerMiddlewareInterface
             $data['templateDocs'] = 'https://docs.zendframework.com/zend-view/';
         }
 
-        return new HtmlResponse($this->template->render('app::home-page', $data));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', $data));
     }
 }

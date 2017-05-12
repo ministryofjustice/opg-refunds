@@ -6,20 +6,13 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Expressive\Template;
 
-class TestAction implements ServerMiddlewareInterface
+class TestAction implements ServerMiddlewareInterface, Templating\TemplatingSupportInterface
 {
-
-    private $template;
-
-    public function __construct(Template\TemplateRendererInterface $template = null)
-    {
-        $this->template = $template;
-    }
+    use Templating\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->template->render('app::test-page'));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::test-page'));
     }
 }
