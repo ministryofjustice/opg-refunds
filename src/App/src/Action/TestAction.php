@@ -13,6 +13,8 @@ class TestAction implements ServerMiddlewareInterface, Templating\TemplatingSupp
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::test-page'));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::test-page', [
+            'name' => 'Bob'
+        ]));
     }
 }

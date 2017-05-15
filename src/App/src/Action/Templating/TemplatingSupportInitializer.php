@@ -7,7 +7,7 @@ use Zend\ServiceManager\Initializer\InitializerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
 
 /**
- * Initializer Action middleware with support for rendering.
+ * Initialize Action middleware with support for rendering.
  *
  * Class TemplatingSupportInitializer
  * @package App\Action\Templating
