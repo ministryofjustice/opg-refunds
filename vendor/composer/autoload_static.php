@@ -9,6 +9,11 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -58,20 +63,25 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         array (
             'League\\Plates\\' => 14,
         ),
+        'J' => 
+        array (
+            'JmesPath\\' => 9,
+        ),
         'I' => 
         array (
             'Interop\\Http\\ServerMiddleware\\' => 30,
             'Interop\\Container\\' => 18,
         ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+        ),
         'F' => 
         array (
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
-        ),
-        'E' => 
-        array (
-            'ExpressiveInstaller\\' => 20,
-            'ExpressiveInstallerTest\\' => 24,
         ),
         'D' => 
         array (
@@ -80,6 +90,7 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         ),
         'A' => 
         array (
+            'Aws\\' => 4,
             'App\\' => 4,
             'AppTest\\' => 8,
         ),
@@ -201,6 +212,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
         ),
+        'JmesPath\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mtdowling/jmespath.php/src',
+        ),
         'Interop\\Http\\ServerMiddleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/http-interop/http-middleware/src',
@@ -208,6 +223,18 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'Interop\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
         'Fig\\Http\\Message\\' => 
         array (
@@ -217,14 +244,6 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
-        'ExpressiveInstaller\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/ExpressiveInstaller',
-        ),
-        'ExpressiveInstallerTest\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/test/ExpressiveInstallerTest',
-        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
@@ -232,6 +251,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Aws\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
         ),
         'App\\' => 
         array (
