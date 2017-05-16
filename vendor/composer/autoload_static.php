@@ -89,6 +89,7 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Dflydev\\FigCookies\\' => 19,
             'DeepCopy\\' => 9,
         ),
         'A' => 
@@ -258,6 +259,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Dflydev\\FigCookies\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/dflydev/fig-cookies/src/Dflydev/FigCookies',
         ),
         'DeepCopy\\' => 
         array (
