@@ -39,6 +39,8 @@ class ConfigProvider
             ],
             'factories'  => [
                 Action\HomePageAction::class => Action\HomePageFactory::class,
+                Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
             ],
             'initializers' => [
                 Action\Templating\TemplatingSupportInitializer::class
