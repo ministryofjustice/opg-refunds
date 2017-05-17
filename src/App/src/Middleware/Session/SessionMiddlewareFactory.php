@@ -9,10 +9,14 @@ class SessionMiddlewareFactory
     public function __invoke(ContainerInterface $container)
     {
 
-        $sessionTTL =  $container->get( 'config' )['session']['ttl'];
+        $config =  $container->get( 'config' );
+
+        if (!isset($config['session']['ttl'])){
+            throw new \UnexpectedValueException('Session TTL not configured');
+        }
 
         return new SessionMiddleware(
-            $container->get( \App\Service\Session\SessionManager::class ), $sessionTTL
+            $container->get( \App\Service\Session\SessionManager::class ), $config['session']['ttl']
         );
     }
 
