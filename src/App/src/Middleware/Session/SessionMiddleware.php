@@ -12,6 +12,7 @@ use App\Service\Session\SessionManager;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigResponseCookies;
 
+use DateTime;
 use ArrayObject;
 
 /**
@@ -81,7 +82,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withValue($sessionId)
                 //->withSecure(true) #TODO: Enable once dev moves to a secure env.
                 ->withHttpOnly(true)
-                ->withMaxAge( $this->sessionTTL )
+                ->withExpires( new DateTime("+{$this->sessionTTL} seconds") )
             );
 
         } elseif ($response instanceof ResponseInterface) {
