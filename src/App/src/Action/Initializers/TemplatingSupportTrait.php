@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Templating;
+namespace App\Action\Initializers;
 
 use UnexpectedValueException;
 use Zend\Expressive\Template\TemplateRendererInterface;
@@ -9,7 +9,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  * Getter and Setter, implementing the TemplatingSupportInterface.
  *
  * Class TemplatingSupportTrait
- * @package App\Action\Templating
+ * @package App\Action\Initializers
  */
 trait TemplatingSupportTrait
 {

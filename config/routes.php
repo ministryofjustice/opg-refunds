@@ -28,5 +28,7 @@
 
 $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
-$app->get('/contact', App\Action\ContactDetailsAction::class, 'test');
 $app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
+
+$app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
+$app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');

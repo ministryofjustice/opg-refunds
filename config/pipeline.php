@@ -40,7 +40,8 @@ $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
 
-$app->pipe(App\Middleware\Session\SessionMiddleware::class);
+// Sessions are used on paths starting with /apply
+$app->pipe('/apply', App\Middleware\Session\SessionMiddleware::class);
 
 // Add more middleware here that needs to introspect the routing results; this
 // might include:

@@ -36,6 +36,7 @@ class ConfigProvider
             'invokables' => [
                 Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
+                Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
             ],
             'factories'  => [
@@ -44,7 +45,8 @@ class ConfigProvider
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
             ],
             'initializers' => [
-                Action\Templating\TemplatingSupportInitializer::class
+                Action\Initializers\UrlHelperInitializer::class,
+                Action\Initializers\TemplatingSupportInitializer::class,
             ],
         ];
     }

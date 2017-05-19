@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Templating;
+namespace App\Action\Initializers;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Initializer\InitializerInterface;
@@ -10,7 +10,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  * Initialize Action middleware with support for rendering.
  *
  * Class TemplatingSupportInitializer
- * @package App\Action\Templating
+ * @package App\Action\Initializers
  */
 class TemplatingSupportInitializer implements InitializerInterface
 {

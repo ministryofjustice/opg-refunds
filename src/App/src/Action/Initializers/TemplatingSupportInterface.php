@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Action\Templating;
+namespace App\Action\Initializers;
 
 use Zend\Expressive\Template\TemplateRendererInterface;
 
@@ -8,7 +8,7 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  * Declares Action Middleware support template rendering.
  *
  * Interface TemplatingSupportInterface
- * @package App\Action\Templating
+ * @package App\Action\Initializers
  */
 interface TemplatingSupportInterface
 {

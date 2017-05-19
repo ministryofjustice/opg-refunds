@@ -13,9 +13,9 @@ use Zend\Expressive\Plates\PlatesRenderer;
 use Zend\Expressive\Twig\TwigRenderer;
 use Zend\Expressive\ZendView\ZendViewRenderer;
 
-class HomePageAction implements ServerMiddlewareInterface, Templating\TemplatingSupportInterface
+class HomePageAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
 {
-    use Templating\TemplatingSupportTrait;
+    use Initializers\TemplatingSupportTrait;
 
     private $router;
 

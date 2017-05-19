@@ -5,16 +5,19 @@ namespace App\Action;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response;
 
-class TestAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+class SummaryAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
 {
     use Initializers\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::test-page', [
-            'name' => 'Bob'
+
+        $session = $request->getAttribute('session');
+
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::summary-page', [
+            'details' => $session
         ]));
     }
 }
