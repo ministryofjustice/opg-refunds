@@ -25,15 +25,16 @@ class ContactDetailsAction implements
 
         $form = new Form\ContactDetails();
 
-        if( $request->getMethod() == 'POST' ){
-
+        if ($request->getMethod() == 'POST') {
             $form->setData( $request->getParsedBody() );
 
             if ($form->isValid()) {
-
                 $session = $request->getAttribute('session');
 
                 $session['contact'] = $form->getData();
+
+                var_dump($form->getInputFilter(),$form->getData());
+                die('stop');
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.summary')
@@ -41,6 +42,8 @@ class ContactDetailsAction implements
 
             } else {
                 $messages = $form->getMessages();
+                var_dump($messages);
+                var_dump($form->getInputFilter());
                 die('invalid');
             }
 

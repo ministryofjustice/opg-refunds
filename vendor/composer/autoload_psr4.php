@@ -13,6 +13,7 @@ return array(
     'Zend\\ServiceManager\\' => array($vendorDir . '/zendframework/zend-servicemanager/src'),
     'Zend\\Math\\' => array($vendorDir . '/zendframework/zend-math/src'),
     'Zend\\InputFilter\\' => array($vendorDir . '/zendframework/zend-inputfilter/src'),
+    'Zend\\I18n\\' => array($vendorDir . '/zendframework/zend-i18n/src'),
     'Zend\\Hydrator\\' => array($vendorDir . '/zendframework/zend-hydrator/src'),
     'Zend\\Form\\' => array($vendorDir . '/zendframework/zend-form/src'),
     'Zend\\Filter\\' => array($vendorDir . '/zendframework/zend-filter/src'),
