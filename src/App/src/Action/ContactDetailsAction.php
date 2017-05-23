@@ -33,9 +33,6 @@ class ContactDetailsAction implements
 
                 $session['contact'] = $form->getData();
 
-                var_dump($form->getInputFilter(),$form->getData());
-                die('stop');
-
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.summary')
                 );
