@@ -82,6 +82,19 @@
                 OPG Walking Skeleton
             </h1>
 
+            <?php if( !empty($form->getMessages()) ){ ?>
+                <div class="error-summary" role="group" aria-labelledby="error-heading" tabindex="-1">
+                    <h1 class="heading-medium error-summary-heading" id="error-heading">Error</h1>
+
+                    <ul>
+                        <?php foreach( $form->getMessages() as $message ){ ?>
+                            <li><?=$this->e(array_pop($message))?></li>
+                        <?php } ?>
+                    </ul>
+
+                </div>
+            <?php } ?>
+
             <form action="" method="post" class="form">
 
                 <!-- Date of birth -->
@@ -91,12 +104,12 @@
 
                         <div class="form-group">
                             <label class="form-label" for="contact-email">Email address</label>
-                            <input class="form-control" name="email" type="text" id="contact-email">
+                            <input class="form-control" name="email" type="text" id="contact-email" value="<?=$this->e($form->getInputFilter()->getRawValue('email'))?>">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label" for="contact-text-message">Mobile phone number</label>
-                            <input class="form-control" name="mobile" type="text" id="contact-text-message">
+                            <input class="form-control" name="mobile" type="text" id="contact-text-message" value="<?=$this->e($form->getInputFilter()->getRawValue('mobile'))?>">
                         </div>
 
                     </fieldset>

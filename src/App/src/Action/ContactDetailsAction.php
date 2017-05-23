@@ -36,15 +36,7 @@ class ContactDetailsAction implements
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.summary')
                 );
-
-            } else {
-                $messages = $form->getMessages();
-                var_dump($messages);
-                var_dump($form->getInputFilter());
-                die('invalid');
             }
-
-
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::contact-details-page', [
