@@ -9,4 +9,11 @@ RUN mkdir -p /srv/opg-lpa-refund-front/application && \
 
 ADD docker/confd /etc/confd
 
+RUN cd /tmp && \
+    curl -s https://getcomposer.org/installer | php && \
+    cd /app && \
+    gosu app php /tmp/composer.phar install --prefer-dist -o --no-suggest && \
+    rm /tmp/composer.phar && \
+    rm -rf docker README* LICENSE* composer.*
+
 ENV OPG_SERVICE front
