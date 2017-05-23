@@ -9,6 +9,14 @@ use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
+use App\Validator\AllowEmptyValidatorWrapper;
+
+/**
+ * Form for collecting the user's contact details.
+ *
+ * Class ContactDetails
+ * @package App\Form
+ */
 class ContactDetails extends ZendForm
 {
 
@@ -19,7 +27,8 @@ class ContactDetails extends ZendForm
         $inputFilter = new InputFilter();
         $this->setInputFilter($inputFilter);
 
-        //---
+        //------------------------
+        // Email address field.
 
         $field = new Element\Email('email');
         $input = new Input($field->getName());
@@ -33,16 +42,20 @@ class ContactDetails extends ZendForm
 
         $input->setContinueIfEmpty(true);
 
-        // Special case: override the validator the field returns.
-        $field->setValidator(new Validator\EmailAddress());
-        //$field->setValidator( new Validator\Callback(function () {return true;}) );
+        // Special case: override the validator the field returns to allow a empty value.
+        $field->setValidator(
+            new AllowEmptyValidatorWrapper(
+                new Validator\EmailAddress()
+            )
+        );
 
         $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);
 
-        //---
+        //------------------------
+        // Mobile number field.
 
         $field = new Element\Tel('mobile');
         $input = new Input($field->getName());
@@ -61,19 +74,17 @@ class ContactDetails extends ZendForm
         //---
     }
 
-
-    public function getInputFilterSpecification()
-    {
-        die('happened');
-    }
-
-    private function getOneRequiredValidator()
+    /**
+     * Returns a validator for checking that either email or mobile is completed.
+     *
+     * @return Validator\ValidatorInterface
+     */
+    private function getOneRequiredValidator() : Validator\ValidatorInterface
     {
         return (new Validator\Callback(function ($value, $context) {
-
             return !empty($context['email']) || !empty($context['mobile']);
-
-        }))->setMessage('one-field-required', Validator\Callback::INVALID_VALUE);
+        }
+        ))->setMessage('one-field-required', Validator\Callback::INVALID_VALUE);
     }
 
 
