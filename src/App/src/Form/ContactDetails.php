@@ -21,21 +21,6 @@ class ContactDetails extends ZendForm
 
         //---
 
-        $field = new Element\Tel('mobile');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()->attach(new \Zend\I18n\Filter\Alnum());
-
-        $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty(0) )
-            ->attach(new Validator\Digits())
-            ->attach($this->getOneRequiredValidator());
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-        //---
-
         $field = new Element\Email('email');
         $input = new Input($field->getName());
 
@@ -43,18 +28,37 @@ class ContactDetails extends ZendForm
 
         $input->getValidatorChain()
             ->attach( new Validator\NotEmpty(0) )
-            ->attach($this->getOneRequiredValidator());
+            ->attach($this->getOneRequiredValidator(), true, 100)
+            ;
 
+        $input->setContinueIfEmpty(true);
 
         // Special case: override the validator the field returns.
         $field->setValidator(new Validator\EmailAddress());
+        //$field->setValidator( new Validator\Callback(function () {return true;}) );
+
+        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);
 
         //---
 
+        $field = new Element\Tel('mobile');
+        $input = new Input($field->getName());
 
+        $input->getFilterChain()->attach(new \Zend\I18n\Filter\Alnum());
+
+        $input->getValidatorChain()
+            ->attach(new Validator\Digits());
+
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //---
     }
 
 
@@ -67,10 +71,8 @@ class ContactDetails extends ZendForm
     {
         return (new Validator\Callback(function ($value, $context) {
 
-            //var_dump($context); die('xxx');
+            return !empty($context['email']) || !empty($context['mobile']);
 
-            // some validation
-            return true;
         }))->setMessage('one-field-required', Validator\Callback::INVALID_VALUE);
     }
 
