@@ -7,8 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+namespace PHPUnit\Framework\Constraint;
 
-class PHPUnit_Framework_Constraint_SameSize extends PHPUnit_Framework_Constraint_Count
+class SameSize extends Count
 {
     /**
      * @var int

@@ -2,6 +2,12 @@
 
 return [
 
+    'notify' => [
+        'api' => [
+            'key' => getenv('OPG_LPA_REFUND_NOTIFY_API_KEY') ?: null,
+        ],
+    ],
+
     'session' => [
 
         'ttl' => 60 * 60 * 1, // 1 hour
