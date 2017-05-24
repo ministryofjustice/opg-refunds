@@ -14,13 +14,13 @@ class SessionManagerFactory
     public function __invoke(ContainerInterface $container)
     {
 
-        $config =  $container->get( 'config' );
+        $config = $container->get( 'config' );
 
         if (!isset($config['session']['ttl'])){
             throw new \UnexpectedValueException('Session TTL not configured');
         }
 
-        $config =  $container->get( 'config' )['session'];
+        $config = $config['session'];
 
         // Copy TTL value into DynamoDb session_lifetime
         $config['dynamodb']['settings']['session_lifetime'] = $config['ttl'];

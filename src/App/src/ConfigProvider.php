@@ -43,6 +43,7 @@ class ConfigProvider
                 Action\HomePageAction::class => Action\HomePageFactory::class,
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,
