@@ -36,14 +36,15 @@ class ConfigProvider
             'invokables' => [
                 Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
-                Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
             ],
             'factories'  => [
+                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
+                Action\SummaryAction::class => Action\SummaryFactory::class,
                 Action\HomePageAction::class => Action\HomePageFactory::class,
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
-                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class
+                Service\Refund\ProcessApplication::class => Service\Refund\ProcessApplicationFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,
