@@ -34,16 +34,25 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                // Actions
                 Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
+                Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
             ],
             'factories'  => [
+                // 3rd Party
                 \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
-                Action\SummaryAction::class => Action\SummaryFactory::class,
+
+                // Actions
+                Action\AccountDetailsAction::class => Action\AccountDetailsFactory::class,
                 Action\HomePageAction::class => Action\HomePageFactory::class,
-                Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
+
+                // Middleware
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+
+                // Services
+                Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Service\Refund\ProcessApplication::class => Service\Refund\ProcessApplicationFactory::class,
             ],
             'initializers' => [
