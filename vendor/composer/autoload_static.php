@@ -104,6 +104,7 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
             'Doctrine\\Instantiator\\' => 22,
             'Dflydev\\FigCookies\\' => 19,
             'DeepCopy\\' => 9,
+            'Data\\' => 5,
         ),
         'A' => 
         array (
@@ -317,6 +318,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Data\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Data/src',
         ),
         'Aws\\' => 
         array (
