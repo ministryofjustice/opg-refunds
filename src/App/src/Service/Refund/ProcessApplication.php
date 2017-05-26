@@ -13,14 +13,14 @@ class ProcessApplication
         $this->notifyClient = $notifyClient;
     }
 
-    public function process( $data )
+    public function process( array $data ) : string
     {
 
         $ref = time();
 
         $contact = $data['contact'];
 
-        if( isset($contact['email']) ){
+        if( isset($contact['email']) && !empty($contact['email']) ){
 
             // Send email...
 
@@ -31,7 +31,7 @@ class ProcessApplication
         }
 
 
-        if( isset($contact['mobile'])){
+        if( isset($contact['mobile']) && !empty($contact['mobile']) ){
 
             // Send email...
 
@@ -41,6 +41,7 @@ class ProcessApplication
 
         }
 
+        return $ref;
     }
 
 }
