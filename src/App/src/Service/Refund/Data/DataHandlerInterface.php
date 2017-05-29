@@ -1,6 +1,5 @@
 <?php
-
-namespace App\Service\Refund;
+namespace App\Service\Refund\Data;
 
 interface DataHandlerInterface
 {

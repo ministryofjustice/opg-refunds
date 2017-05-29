@@ -35,7 +35,9 @@ class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\Te
                 $details = $request->getAttribute('session')->getArrayCopy();
 
                 // Merge the details into the rest of the data.
-                $details['account'] = $form->getData();
+                $details['account'] = [
+                    'details' => $form->getData()
+                ];
 
                 $reference = $this->applicationProcessService->process( $details );
 

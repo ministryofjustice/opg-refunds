@@ -7,16 +7,18 @@ class ProcessApplication
 {
 
     private $notifyClient;
+    private $dataHandler;
 
-    public function __construct( NotifyClient $notifyClient )
+    public function __construct( NotifyClient $notifyClient, Data\DataHandlerInterface $dataHandler )
     {
         $this->notifyClient = $notifyClient;
+        $this->dataHandler = $dataHandler;
     }
 
     public function process( array $data ) : string
     {
 
-        $ref = time();
+        $reference = $this->dataHandler->store( $data );
 
         $contact = $data['contact'];
 
@@ -25,23 +27,23 @@ class ProcessApplication
             // Send email...
 
             $response = $this->notifyClient->sendEmail( $contact['email'], '4664b7ca-18b0-46e0-9a2f-e01becf45cdd', [
-                'ref' => $ref,
+                'ref' => $reference,
             ]);
 
         }
 
 
-        if( isset($contact['mobile']) && !empty($contact['mobile']) ){
+        if( false && isset($contact['mobile']) && !empty($contact['mobile']) ){
 
             // Send email...
 
             $response = $this->notifyClient->sendSms( $contact['mobile'], '8292b07c-4dcf-4240-8636-e5ed2f7c4d36', [
-                'ref' => $ref,
+                'ref' => $reference,
             ]);
 
         }
 
-        return $ref;
+        return $reference;
     }
 
 }
