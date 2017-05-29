@@ -27,6 +27,7 @@ class DataHandlerFactory
 
         $db = new PDO( $dsn, $dbconf['username'], $dbconf['password'], $dbconf['options'] );
 
+        // Set PDO to throw exceptions on error
         $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
 
 
@@ -39,15 +40,11 @@ class DataHandlerFactory
 
         $keyPath = $config['security']['rsa']['key']['public'];
 
-        if (!is_readable($keyPath)) {
-            throw new \UnexpectedValueException('RSA public key is not readable');
-        }
-
-
         $rsa = Rsa::factory([
             'public_key'    => $keyPath,
-            'binary_output' => false,
+            'binary_output' => false,   // Thus base64
         ]);
+
 
         //-------------------------------------
         // Salt Hash
