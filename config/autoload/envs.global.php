@@ -8,6 +8,37 @@ return [
         ],
     ],
 
+    'security' => [
+
+        'rsa' => [
+            'key' => [
+                'public' => getenv('OPG_LPA_REFUND_ENCRYPTION_KEY_PUBLIC') ?: null,
+            ],
+        ],
+
+        'hash' => [
+            // ! < 32 characters.
+            'salt' => getenv('OPG_LPA_REFUND_ENCRYPTION_HASH_SALT') ?: '',
+        ],
+
+    ],
+
+    'db' => [
+        'postgresql' => [
+
+            'adapter' => 'pgsql',
+            'host' => getenv('API_DATABASE_HOSTNAME') ?: null,
+            'port' => getenv('API_DATABASE_PORT') ?: null,
+            'dbname' => getenv('API_DATABASE_NAME') ?: null,
+            'username' => getenv('API_DATABASE_USERNAME') ?: null,
+            'password' => getenv('API_DATABASE_PASSWORD') ?: null,
+            'options' => [
+                PDO::ATTR_PERSISTENT => true
+            ]
+
+        ],
+    ],
+
     'session' => [
 
         'ttl' => 60 * 60 * 1, // 1 hour

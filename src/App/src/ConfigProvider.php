@@ -54,6 +54,7 @@ class ConfigProvider
                 // Services
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Service\Refund\ProcessApplication::class => Service\Refund\ProcessApplicationFactory::class,
+                Service\Refund\Data\DataHandlerInterface::class => Service\Refund\Data\DataHandlerFactory::class
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,
