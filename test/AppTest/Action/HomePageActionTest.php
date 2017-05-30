@@ -40,7 +40,9 @@ class HomePageActionTest extends TestCase
             ->render('app::home-page', Argument::type('array'))
             ->willReturn('');
 
-        $homePage = new HomePageAction($this->router->reveal(), $renderer->reveal());
+        $homePage = new HomePageAction($this->router->reveal());
+
+        $homePage->setTemplateRenderer($renderer->reveal());
 
         $response = $homePage->process(
             $this->prophesize(ServerRequestInterface::class)->reveal(),
