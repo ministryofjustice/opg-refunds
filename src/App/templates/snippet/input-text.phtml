@@ -1,23 +1,33 @@
-<!-- Without error -->
-<!-- Mandatory: formLabel -->
-<!-- Optional: formHint (default: no span.form-hint outputted) -->
-<!-- Optional: formLabelBold true|false (default: no wrapper span.form-label-bold outputted) -->
-<!-- Optional: formType (default: text) -->
+<?php
+/*
+Without error
+Mandatory: formLabel
+Optional: formHint (default: no span.form-hint outputted)
+Optional: formLabelBold true|false (default: no wrapper span.form-label-bold outputted)
+Optional: formType (default: text)
+*/
 
-<div class="form-group">
-    <label class="form-label" for="generic-id">
-        <span class="form-label-bold"><?= $this->e($formLabel) ?></span>
-        <span class="form-hint"><?= $this->e($formHint) ?></span>
-    </label>
-    <input class="form-control" name="name" type="<?= $this->e($formType) ?>" id="generic-id" value="<?=$this->e('xxx')?>">
-</div>
+$formId = spl_object_hash($formElement);
 
-<!-- With error (note form-group-error and form-control-error class names) -->
-<div class="form-group form-group-error">
-    <label class="form-label" for="generic-id">
-        <span class="form-label-bold"><?= $this->e($formLabel) ?></span>
-        <span class="form-hint"><?= $this->e($formHint) ?></span>
-        <span class="error-message">Error message about full name goes here</span>
+$hasErrors = !empty($formElement->getMessages());
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+    <label class="form-label" for="<?= $formId ?>">
+
+        <?php if (isset($formLabelBold) && $formLabelBold): ?><span class="form-label-bold"><?php endif ?>
+            <?= $this->e($formLabel) ?>
+        <?php if (isset($formLabelBold) && $formLabelBold): ?></span><?php endif ?>
+
+        <?php if (isset($formHint)): ?>
+            <span class="form-hint"><?= $this->e($formHint) ?></span>
+        <?php endif ?>
+
+        <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?= $this->e($message) ?></span>
+        <?php endforeach ?>
+
     </label>
-    <input class="form-control form-control-error" name="name" type="<?= $this->e($formType) ?>" id="generic-id" value="<?=$this->e('xxx')?>">
+    <input class="form-control<?= ($hasErrors)?' form-control-error':'' ?>" name="<?=$this->e( $formElement->getName() )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?=$this->e( $formElement->getValue() )?>">
 </div>

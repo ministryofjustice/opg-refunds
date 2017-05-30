@@ -102,15 +102,21 @@
                     <fieldset>
                         <legend class="form-label-bold">Your contact details</legend>
 
-                        <div class="form-group">
-                            <label class="form-label" for="contact-email">Email address</label>
-                            <input class="form-control" name="email" type="text" id="contact-email" value="<?=$this->e($form->getInputFilter()->getRawValue('email'))?>">
-                        </div>
+                        <?php $this->insert('snippet::input-text', [
+                            'formElement' => $form->get('email'),
+                            'formLabel' => 'Email address',
+                            'formHint' => 'Enter your email address',
+                            'formType' => 'text',
+                            'formLabelBold' => true
+                        ]) ?>
 
-                        <div class="form-group">
-                            <label class="form-label" for="contact-text-message">Mobile phone number</label>
-                            <input class="form-control" name="mobile" type="text" id="contact-text-message" value="<?=$this->e($form->getInputFilter()->getRawValue('mobile'))?>">
-                        </div>
+                        <?php $this->insert('snippet::input-text', [
+                            'formElement' => $form->get('mobile'),
+                            'formLabel' => 'Mobile number',
+                            'formHint' => 'A UK mobile number',
+                            'formType' => 'text',
+                            'formLabelBold' => true
+                        ]) ?>
 
                     </fieldset>
                 </div>
