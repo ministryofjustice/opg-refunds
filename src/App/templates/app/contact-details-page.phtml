@@ -6,18 +6,7 @@
     ])
 ?>
 
-<?php if( !empty($form->getMessages()) ){ ?>
-    <div class="error-summary" role="group" aria-labelledby="error-heading" tabindex="-1">
-        <h1 class="heading-medium error-summary-heading" id="error-heading">Error</h1>
-
-        <ul>
-            <?php foreach( $form->getMessages() as $message ){ ?>
-                <li><a href="#id-email"><?=$this->e(array_pop($message))?></a></li>
-            <?php } ?>
-        </ul>
-
-    </div>
-<?php } ?>
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <form action="" method="post" class="form">
     

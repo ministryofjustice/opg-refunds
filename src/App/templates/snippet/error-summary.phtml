@@ -1,0 +1,15 @@
+
+<?php if( !empty($form->getMessages()) ){ ?>
+    <div class="error-summary" role="group" aria-labelledby="error-heading" tabindex="-1">
+        <h1 class="heading-medium error-summary-heading" id="error-heading">Error</h1>
+
+        <ul>
+            <?php foreach( $form->getMessages() as $elementName=>$messages ){ ?>
+                <?php foreach( $messages as $message ){ ?>
+                    <li><a href="#id-<?= $this->e($elementName) ?>"><?=$this->e($message)?></a></li>
+                <?php } ?>
+            <?php } ?>
+        </ul>
+
+    </div>
+<?php } ?>

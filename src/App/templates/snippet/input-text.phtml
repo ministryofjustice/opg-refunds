@@ -7,7 +7,7 @@ Optional: formLabelBold true|false (default: no wrapper span.form-label-bold out
 Optional: formType (default: text)
 */
 
-$formId = spl_object_hash($formElement);
+$formId = "id-{$formElement->getName()}";
 
 $hasErrors = !empty($formElement->getMessages());
 
