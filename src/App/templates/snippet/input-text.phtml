@@ -1,0 +1,33 @@
+<?php
+/*
+Without error
+Mandatory: formLabel
+Optional: formHint (default: no span.form-hint outputted)
+Optional: formLabelBold true|false (default: no wrapper span.form-label-bold outputted)
+Optional: formType (default: text)
+*/
+
+$formId = spl_object_hash($formElement);
+
+$hasErrors = !empty($formElement->getMessages());
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+    <label class="form-label" for="<?= $formId ?>">
+
+        <?php if (isset($formLabelBold) && $formLabelBold): ?><span class="form-label-bold"><?php endif ?>
+            <?= $this->e($formLabel) ?>
+        <?php if (isset($formLabelBold) && $formLabelBold): ?></span><?php endif ?>
+
+        <?php if (isset($formHint)): ?>
+            <span class="form-hint"><?= $this->e($formHint) ?></span>
+        <?php endif ?>
+
+        <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?= $this->e($message) ?></span>
+        <?php endforeach ?>
+
+    </label>
+    <input class="form-control<?= ($hasErrors)?' form-control-error':'' ?>" name="<?=$this->e( $formElement->getName() )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?=$this->e( $formElement->getValue() )?>">
+</div>
