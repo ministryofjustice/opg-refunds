@@ -41,6 +41,10 @@ class SessionManagerFactory
             throw new \UnexpectedValueException('Session encryption not configured');
         }
 
+        if ( strlen($config['encryption']['key']) < 32 ){
+            throw new \UnexpectedValueException('Session encryption key is too short');
+        }
+
         $blockCipher = BlockCipher::factory('openssl', array('algo' => 'aes'));
 
         $blockCipher->setKey( $config['encryption']['key'] );

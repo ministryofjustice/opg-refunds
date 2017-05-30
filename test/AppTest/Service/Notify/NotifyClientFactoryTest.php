@@ -1,5 +1,4 @@
 <?php
-
 namespace AppTest\Service\Notify;
 
 use PHPUnit\Framework\TestCase;
