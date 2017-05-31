@@ -1,0 +1,49 @@
+<?php
+$title = 'Your account details';
+$this->layout('layout::standard',
+    [
+        'title' => $title
+    ])
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<form action="" method="post" class="form">
+
+    <div class="form-group">
+        <fieldset>
+            <legend class="visually-hidden"><?=$this->e($title)?></legend>
+
+            <?php $this->insert('snippet::input-text', [
+                'formElement' => $form->get('name'),
+                'formLabel' => 'Name',
+                'formHint' => "The account holder's name",
+                'formType' => 'text',
+                'formLabelBold' => true
+            ]) ?>
+
+            <?php $this->insert('snippet::input-text', [
+                'formElement' => $form->get('sort-code'),
+                'formLabel' => 'Sort code',
+                'formHint' => '6 digit sort code. For example: 12-20-43',
+                'formType' => 'text',
+                'formLabelBold' => true
+            ]) ?>
+
+            <?php $this->insert('snippet::input-text', [
+                'formElement' => $form->get('account-number'),
+                'formLabel' => 'Account number',
+                'formHint' => '8 digit account number. For example: 25876534',
+                'formType' => 'text',
+                'formLabelBold' => true
+            ]) ?>
+
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Continue">
+    </div>
+
+</form>
+

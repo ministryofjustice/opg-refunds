@@ -9,8 +9,6 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-use Zend\Expressive\Helper\UrlHelper;
-
 class ContactDetailsAction implements
     ServerMiddlewareInterface,
     Initializers\UrlHelperInterface,
