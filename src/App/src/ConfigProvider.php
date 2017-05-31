@@ -38,6 +38,7 @@ class ConfigProvider
                 Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
                 Action\SummaryAction::class => Action\SummaryAction::class,
+                Action\ScratchAction::class => Action\ScratchAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
             ],
             'factories'  => [
