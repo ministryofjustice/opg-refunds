@@ -1,6 +1,22 @@
 # opg-lpa-refund-front
 opg-lpa-refund-front
 
+## GOV.UK Assets
+
+Dependencies: Yarn or NPM
+
+`yarn` to install dependencies
+
+### govuk_template
+These assets have been manually copied into `public/assets/govuk_elements` for project expediency.
+
+### govuk_elements
+Version: 3.0.2
+
+`build:css:govuk_elements` will build the govuk_elements SASS and store the generated stylesheets in public/. Until there is a CI, the generated CSS will be checked in.
+
+To use a different version of `govuk_elements`, edit the tag number in dependencies section of `package.json` accordingly, re-run `yarn` followed by `build:css:govuk_elements`.
+
 License
 -------
 
