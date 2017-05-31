@@ -8,7 +8,8 @@ Dependencies: Yarn or NPM
 `yarn` to install dependencies
 
 ### govuk_template
-These assets have been manually copied into `public/assets/govuk_elements` for project expediency.
+Version: 0.22.0
+The project's default template is based on the `govuk_template` HTML. The `govuk_template`'s assets have been manually copied into `public/assets/govuk_elements` for project expediency.
 
 ### govuk_elements
 Version: 3.0.2
