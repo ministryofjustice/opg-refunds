@@ -33,7 +33,9 @@ class ContactDetails extends ZendForm
         $field = new Element\Email('email');
         $input = new Input($field->getName());
 
-        $input->getFilterChain()->attach(new Filter\StringToLower());
+        $input->getFilterChain()
+            ->attach(new Filter\StringTrim())
+            ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
             ->attach( new Validator\NotEmpty(0) )
@@ -60,7 +62,9 @@ class ContactDetails extends ZendForm
         $field = new Element\Tel('mobile');
         $input = new Input($field->getName());
 
-        $input->getFilterChain()->attach(new \Zend\I18n\Filter\Alnum());
+        $input->getFilterChain()
+            ->attach(new Filter\StringTrim())
+            ->attach(new \Zend\I18n\Filter\Alnum());
 
         $input->getValidatorChain()
             ->attach(new Validator\Digits());

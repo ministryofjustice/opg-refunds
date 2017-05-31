@@ -43,9 +43,14 @@ class AccountDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim());
+            ->attach(new Filter\StringTrim())
+            ->attach(new Filter\PregReplace([
+                'pattern'     => '/-/',
+                'replacement' => '',
+            ]));
 
         $input->getValidatorChain()
+            ->attach( (new Validator\StringLength(['min' => 6, 'max' => 6])) )
             ->attach( (new Validator\NotEmpty())->setMessage('sort-code-required', Validator\NotEmpty::IS_EMPTY) );
 
         $this->add($field);
@@ -61,6 +66,7 @@ class AccountDetails extends ZendForm
             ->attach(new Filter\StringTrim());
 
         $input->getValidatorChain()
+            ->attach( (new Validator\StringLength(['min' => 8, 'max' => 8])) )
             ->attach( (new Validator\NotEmpty())->setMessage('account-number-required', Validator\NotEmpty::IS_EMPTY) );
 
         $this->add($field);
