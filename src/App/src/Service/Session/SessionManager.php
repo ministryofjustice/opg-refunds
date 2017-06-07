@@ -45,14 +45,14 @@ class SessionManager
         // Read
         $data = $this->dynamoDbSessionConnection->read( $this->hashId( $id ) );
 
-        // Check it has not expired
-        if (!isset($data['expires']) || $data['expires'] < time()) {
-            $this->delete( $id );
+        // Check we have the expected fields.
+        if (!isset($data['data']) || !isset($data['expires'])) {
             return array();
         }
 
-        // Check we have some data
-        if (!isset($data['data'])) {
+        // Check it has not expired
+        if ($data['expires'] < time()) {
+            $this->delete( $id );
             return array();
         }
 

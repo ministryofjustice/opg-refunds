@@ -27,7 +27,6 @@ class SessionManagerTest extends TestCase
 
         $this->blockCipher = $this->prophesize(BlockCipher::class);
         $this->blockCipher->getKey()->willReturn( self::BASE_ENC_KEY );
-
     }
 
     public function testCanInstantiate()
@@ -35,7 +34,6 @@ class SessionManagerTest extends TestCase
 
         $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal() );
         $this->assertInstanceOf(SessionManager::class, $sm);
-
     }
 
     /**
@@ -52,7 +50,6 @@ class SessionManagerTest extends TestCase
         $this->assertInstanceOf(SessionManager::class, $sm);
 
         $sm->delete( self::TEST_SESSION_ID );
-
     }
 
     public function testCanWriteWithNewData()
@@ -62,7 +59,6 @@ class SessionManagerTest extends TestCase
         $testEncryptedData = '-data-';
 
         $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal() );
-        $this->assertInstanceOf(SessionManager::class, $sm);
 
         // We expect the key to be re-set to include the ID.
         $this->blockCipher->setKey( self::BASE_ENC_KEY.self::TEST_SESSION_ID )->shouldBeCalled();
@@ -77,7 +73,6 @@ class SessionManagerTest extends TestCase
         $this->dynamoDb->write( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ), base64_encode($testEncryptedData), true )->shouldBeCalled();
 
         $sm->write( self::TEST_SESSION_ID, $data );
-
     }
 
 
@@ -85,21 +80,22 @@ class SessionManagerTest extends TestCase
     {
 
         $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal() );
-        $this->assertInstanceOf(SessionManager::class, $sm);
 
         $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->shouldBeCalled();
+
+        // We expect delete() to be called when we find an expired row.
         $this->dynamoDb->delete( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->shouldBeCalled();
 
         $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->willReturn([
-            'expires' => 123
+            'expires' => 123,
+            'data' => 'data'
         ]);
 
         $result = $sm->read( self::TEST_SESSION_ID );
 
+        // We expect and empty array when the session has expired.
         $this->assertInternalType('array', $result);
         $this->assertCount(0, $result);
-
-
     }
 
 
@@ -107,7 +103,6 @@ class SessionManagerTest extends TestCase
     {
 
         $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal() );
-        $this->assertInstanceOf(SessionManager::class, $sm);
 
         // As the data is just empty, not expired, we should not see a delete.
         $this->dynamoDb->delete( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->shouldNotBeCalled();
@@ -118,9 +113,37 @@ class SessionManagerTest extends TestCase
 
         $result = $sm->read( self::TEST_SESSION_ID );
 
+        // We expect and empty array when no data is set (even when there was metadata).
         $this->assertInternalType('array', $result);
         $this->assertCount(0, $result);
-
     }
+
+
+
+    public function testCanReadExistingData()
+    {
+        $data = [ 'test' => true ];
+        $testEncryptedData = '-data-';
+
+        $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal() );
+
+        $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->shouldBeCalled();
+
+        // We expect the key to be re-set to include the ID.
+        $this->blockCipher->setKey( self::BASE_ENC_KEY.self::TEST_SESSION_ID )->shouldBeCalled();
+
+        $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->willReturn([
+            'expires' => time() + 1000,
+            'data' => $testEncryptedData
+        ]);
+
+        $this->blockCipher->decrypt( base64_decode($testEncryptedData) )->willReturn( gzencode(json_encode( $data )) );
+
+        $result = $sm->read( self::TEST_SESSION_ID );
+
+        $this->assertInternalType('array', $result);
+        $this->assertEquals($data, $result);
+    }
+
 
 }
