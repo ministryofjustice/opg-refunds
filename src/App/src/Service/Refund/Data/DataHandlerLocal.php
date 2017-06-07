@@ -17,7 +17,7 @@ class DataHandlerLocal implements DataHandlerInterface
     private $cipher;
     private $hashSalt;
 
-    public function __construct( PDO $db, RsaCipher $cipher, string $hashSalt )
+    public function __construct(PDO $db, RsaCipher $cipher, string $hashSalt)
     {
         $this->db = $db;
         $this->cipher = $cipher;
@@ -32,7 +32,6 @@ class DataHandlerLocal implements DataHandlerInterface
         //---
 
         do {
-
             //----------------------------
             // Generate ID
 
@@ -41,12 +40,11 @@ class DataHandlerLocal implements DataHandlerInterface
             //----------------------------
             // (Attempt to) save the data
 
-            $sql = 'INSERT INTO application(id, added, version, data) VALUES(:id, :added, :version, :data)';
+            $sql = 'INSERT INTO refund.application(id, added, version, data) VALUES(:id, :added, :version, :data)';
 
             $statement = $this->db->prepare($sql);
 
-            try{
-
+            try {
                 $statement->execute(array(
                     "id" => $id,
                     "added" => date('r'),
@@ -56,10 +54,9 @@ class DataHandlerLocal implements DataHandlerInterface
 
                 $failed = false;
 
-            }catch(\PDOException $e) {
-
+            } catch (\PDOException $e) {
                 // If it's not a duplicate key error, re-throw it.
-                if( $e->getCode() != 23505 ){
+                if ($e->getCode() != 23505) {
                     throw($e);
                 }
 
@@ -70,12 +67,11 @@ class DataHandlerLocal implements DataHandlerInterface
             }
 
 
-        } while($failed);
+        } while ($failed);
 
         //---
 
         return $id;
-
     }
 
     /**
@@ -84,7 +80,7 @@ class DataHandlerLocal implements DataHandlerInterface
      * @param array $data
      * @return array
      */
-    private function prepareData( array $data ) : array
+    private function prepareData(array $data) : array
     {
 
         $accountDetails = $data['account']['details'];
