@@ -40,14 +40,14 @@ class DataHandlerLocal implements DataHandlerInterface
             //----------------------------
             // (Attempt to) save the data
 
-            $sql = 'INSERT INTO refund.application(id, added, version, data) VALUES(:id, :added, :version, :data)';
+            $sql = 'INSERT INTO refund.application(id, created, version, data) VALUES(:id, :created, :version, :data)';
 
             $statement = $this->db->prepare($sql);
 
             try {
                 $statement->execute(array(
                     "id" => $id,
-                    "added" => date('r'),
+                    "created" => date('r'),
                     "version" => 1,
                     "data" => json_encode($data)
                 ));
