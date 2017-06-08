@@ -82,6 +82,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withValue($sessionId)
                 ->withSecure(true)
                 ->withHttpOnly(true)
+                ->withPath('/apply')
                 ->withExpires( new DateTime("+{$this->sessionTTL} seconds") )
             );
 

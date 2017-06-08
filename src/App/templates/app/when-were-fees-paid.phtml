@@ -1,0 +1,36 @@
+<?php
+$title = 'When were the fees paid?';
+$this->layout('layout::standard', [
+        'title' => $title,
+        'form' => $form
+    ]);
+
+$form->setAttribute('method', 'get');
+$form->setAttribute('action', $this->url('eligibility.when.answer'));
+?>
+
+<p>Refunds only apply to fees paid from 1 April 2013 to 31 March 2017.</p>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('fees-in-range'),
+        'question' => $title,
+        'options' => [
+            'yes' => [
+                'optionLabel' => 'Fees were paid between 1 April 2013 and 31 March 2017',
+            ],
+            'no' => [
+                'optionLabel' => 'Fees were paid at another time',
+            ]
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>
+
+

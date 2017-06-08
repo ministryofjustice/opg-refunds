@@ -1,0 +1,37 @@
+<?php
+
+$elementId = "id-{$formElement->getName()}";
+
+$hasErrors = !empty($formElement->getMessages());
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+
+    <fieldset>
+
+        <legend class="visually-hidden"><?= $this->e($question) ?></legend>
+
+        <?php foreach($formElement->getMessages() as $message): ?>
+            <p class="error-message"><?= $this->e($message) ?></p>
+        <?php endforeach ?>
+
+        <?php foreach($options as $name => $option): ?>
+
+            <div class="multiple-choice">
+
+                <input id="<?= "{$elementId}-{$name}" ?>" type="radio" name="<?= $this->e($formElement->getName()) ?>" value="<?= $this->e($formElement->getValueOptions()[$name]) ?>">
+
+                <label class="form-label" for="<?= "{$elementId}-{$name}" ?>">
+
+                    <?= $option['optionLabel'] ?>
+
+                </label>
+
+            </div>
+
+        <?php endforeach ?>
+
+    </fieldset>
+
+</div>

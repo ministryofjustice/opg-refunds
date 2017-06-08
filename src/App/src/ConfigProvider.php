@@ -40,6 +40,7 @@ class ConfigProvider
                 Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\ScratchAction::class => Action\ScratchAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
+                Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
             ],
             'factories'  => [
                 // 3rd Party

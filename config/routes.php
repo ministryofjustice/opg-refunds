@@ -32,6 +32,10 @@ $app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
 
 $app->get('/testing/{index}', App\Action\ScratchAction::class, 'testing');
 
+$app->route('/when-were-fees-paid', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when');
+$app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when.answer');
+
+
 $app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
 $app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
 $app->route('/apply/account', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
