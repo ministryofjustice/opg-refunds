@@ -80,7 +80,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
             // Set a cookie with the session ID.
             $response = FigResponseCookies::set($response, SetCookie::create(self::COOKIE_NAME)
                 ->withValue($sessionId)
-                //->withSecure(true) #TODO: Enable once dev moves to a secure env.
+                ->withSecure(true)
                 ->withHttpOnly(true)
                 ->withExpires( new DateTime("+{$this->sessionTTL} seconds") )
             );

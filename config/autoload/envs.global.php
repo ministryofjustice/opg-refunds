@@ -49,8 +49,8 @@ return [
 
         'dynamodb' => [
             'client' => [
-                //'endpoint' => 'http://localhost:8000',
                 'version' => '2012-08-10',
+                'endpoint' => getenv('OPG_LPA_REFUND_SESSION_DYNAMODB_ENDPOINT') ?: null,
                 'region' => getenv('OPG_LPA_REFUND_SESSION_DYNAMODB_REGION') ?: null,
                 'credentials' => ( getenv('AWS_ACCESS_KEY_ID') && getenv('AWS_SECRET_ACCESS_KEY') ) ? [
                     'key'    => getenv('AWS_ACCESS_KEY_ID'),
