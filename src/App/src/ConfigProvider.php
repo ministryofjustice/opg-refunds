@@ -41,6 +41,9 @@ class ConfigProvider
                 Action\ScratchAction::class => Action\ScratchAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
+
+                // Middleware
+                Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
             ],
             'factories'  => [
                 // 3rd Party

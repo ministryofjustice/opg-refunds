@@ -9,8 +9,12 @@ use Zend\Diactoros\Response;
 
 use App\Form\WhenFeesPaid;
 
-class WhenFeesPaidAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+class WhenFeesPaidAction implements
+    ServerMiddlewareInterface,
+    Initializers\UrlHelperInterface,
+    Initializers\TemplatingSupportInterface
 {
+    use Initializers\UrlHelperTrait;
     use Initializers\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -24,7 +28,17 @@ class WhenFeesPaidAction implements ServerMiddlewareInterface, Initializers\Temp
             $form->setData( $request->getQueryParams() );
 
             if ($form->isValid()) {
-                die('moving on');
+
+                if ($form->getData()['fees-in-range'] === 'yes') {
+
+                    return new Response\RedirectResponse(
+                        $this->getUrlHelper()->generate('apply.contact')
+                    );
+
+                }
+
+                return new Response\TextResponse('Sorry - you cannot apply for a refund.');
+
             }
         }
 

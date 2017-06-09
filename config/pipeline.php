@@ -39,6 +39,8 @@ $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
+// Apply caching headers to non-personalised responses
+$app->pipe(App\Middleware\CacheControlMiddleware::class);
 
 // Sessions are used on paths starting with /apply
 $app->pipe('/apply', App\Middleware\Session\SessionMiddleware::class);
