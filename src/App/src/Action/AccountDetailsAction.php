@@ -9,11 +9,14 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-use App\Service\Refund\IdentFormatter;
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
 
-class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+class AccountDetailsAction implements
+    ServerMiddlewareInterface,
+    Initializers\UrlHelperInterface,
+    Initializers\TemplatingSupportInterface
 {
+    use Initializers\UrlHelperTrait;
     use Initializers\TemplatingSupportTrait;
 
     private $applicationProcessService;
@@ -33,7 +36,9 @@ class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\Te
 
             if ($form->isValid()) {
 
-                $details = $request->getAttribute('session')->getArrayCopy();
+                $session = $request->getAttribute('session');
+
+                $details = $session->getArrayCopy();
 
                 // Merge the details into the rest of the data.
                 $details['account'] = [
@@ -42,9 +47,12 @@ class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\Te
 
                 $reference = $this->applicationProcessService->process( $details );
 
-                return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
-                    'reference' => IdentFormatter::format($reference)
-                ]));
+                // Clear out all the data, leaving only the reference
+                $session->exchangeArray([ 'reference' => $reference ]);
+
+                return new Response\RedirectResponse(
+                    $this->getUrlHelper()->generate('apply.done')
+                );
             }
         }
 

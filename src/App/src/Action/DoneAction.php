@@ -6,7 +6,9 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class SummaryAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+use App\Service\Refund\IdentFormatter;
+
+class DoneAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
 {
     use Initializers\TemplatingSupportTrait;
 
@@ -15,8 +17,14 @@ class SummaryAction implements ServerMiddlewareInterface, Initializers\Templatin
 
         $session = $request->getAttribute('session');
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::summary-page', [
-            'details' => $session
+        $reference = $session['reference'];
+
+        // This will end the session.
+        $session->exchangeArray([]);
+
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
+            'reference' => IdentFormatter::format( $reference )
         ]));
+
     }
 }

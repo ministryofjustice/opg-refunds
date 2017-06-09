@@ -39,3 +39,4 @@ $app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class,
 $app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
 $app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
 $app->route('/apply/account', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
+$app->route('/apply/done', App\Action\DoneAction::class, ['GET'], 'apply.done');

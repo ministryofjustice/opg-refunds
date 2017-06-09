@@ -41,6 +41,7 @@ class ConfigProvider
                 Action\ScratchAction::class => Action\ScratchAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
+                Action\DoneAction::class => Action\DoneAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
