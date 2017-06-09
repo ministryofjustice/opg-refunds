@@ -21,20 +21,25 @@ class ContactDetailsAction implements
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
 
+        $session = $request->getAttribute('session');
+
+        $isUpdate = isset($session['contact']);
+
         $form = new Form\ContactDetails();
 
         if ($request->getMethod() == 'POST') {
             $form->setData( $request->getParsedBody() );
 
             if ($form->isValid()) {
-                $session = $request->getAttribute('session');
-
                 $session['contact'] = $form->getData();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.summary')
                 );
             }
+        } elseif ($isUpdate) {
+            // We are editing previously entered details.
+            $form->setData($session['contact']);
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::contact-details-page', [
