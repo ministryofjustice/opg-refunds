@@ -46,11 +46,15 @@ class SessionMiddleware implements ServerMiddlewareInterface
     {
         $cookies = $request->getCookieParams();
 
+        $session = new ArrayObject;
+
         // Check for a session cookie and init the session if we have one.
         if (isset($cookies[self::COOKIE_NAME])) {
             $sessionId = $cookies[self::COOKIE_NAME];
-            $session = $this->sessionManager->read( $sessionId );
-            $session = new ArrayObject( $session );
+
+            $sessionArray = $this->sessionManager->read( $sessionId );
+
+            $session->exchangeArray( $sessionArray );
 
             if ($session->count() == 0) {
                 // Non-existent / empty sessions get a new ID.
@@ -60,9 +64,6 @@ class SessionMiddleware implements ServerMiddlewareInterface
         } else {
             // Else we need to start a new ID.
             $sessionId = $this->generateSessionId();
-
-            // And use a new, empty session.
-            $session = new ArrayObject;
         }
 
         //---
