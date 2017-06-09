@@ -9,6 +9,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
+use App\Service\Refund\IdentFormatter;
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
 
 class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
@@ -42,7 +43,7 @@ class AccountDetailsAction implements ServerMiddlewareInterface, Initializers\Te
                 $reference = $this->applicationProcessService->process( $details );
 
                 return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
-                    'reference' => $reference
+                    'reference' => IdentFormatter::format($reference)
                 ]));
             }
         }
