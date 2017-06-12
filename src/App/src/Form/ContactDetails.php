@@ -43,12 +43,30 @@ class ContactDetails extends ZendForm
             ->attach($this->getOneRequiredValidator(), true, 100)
             ;
 
+        //---
+
+        $emailInvalidMessage = 'email-invalid';
+        
         // Special case: override the validator the field returns to allow a empty value.
         $field->setValidator(
             new AllowEmptyValidatorWrapper(
-                new Validator\EmailAddress()
+                new Validator\EmailAddress([
+                    'setMessages' => [
+                        Validator\EmailAddress::INVALID            => $emailInvalidMessage,
+                        Validator\EmailAddress::INVALID_FORMAT     => $emailInvalidMessage,
+                        Validator\EmailAddress::INVALID_HOSTNAME   => $emailInvalidMessage,
+                        Validator\EmailAddress::INVALID_MX_RECORD  => $emailInvalidMessage,
+                        Validator\EmailAddress::INVALID_SEGMENT    => $emailInvalidMessage,
+                        Validator\EmailAddress::DOT_ATOM           => $emailInvalidMessage,
+                        Validator\EmailAddress::QUOTED_STRING      => $emailInvalidMessage,
+                        Validator\EmailAddress::INVALID_LOCAL_PART => $emailInvalidMessage,
+                        Validator\EmailAddress::LENGTH_EXCEEDED    => $emailInvalidMessage
+                    ]
+                ])
             )
         );
+
+        //---
 
         $input->setRequired(true);
         $input->setContinueIfEmpty(true);
@@ -68,7 +86,9 @@ class ContactDetails extends ZendForm
 
         $input->getValidatorChain()
             ->attach( new NotEmpty(0) )
-            ->attach( new AllowEmptyValidatorWrapper( new Validator\Digits() ));
+            ->attach( new AllowEmptyValidatorWrapper( new Validator\Digits([
+                'setMessages' => [ Validator\Digits::NOT_DIGITS => 'digits-required' ]
+            ])));
 
 
         $input->setRequired(true);
