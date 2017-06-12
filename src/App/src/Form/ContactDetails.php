@@ -9,6 +9,7 @@ use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
+use App\Validator\NotEmpty;
 use App\Validator\AllowEmptyValidatorWrapper;
 
 /**
@@ -38,11 +39,9 @@ class ContactDetails extends ZendForm
             ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty(0) )
+            ->attach( new NotEmpty(0) )
             ->attach($this->getOneRequiredValidator(), true, 100)
             ;
-
-        $input->setContinueIfEmpty(true);
 
         // Special case: override the validator the field returns to allow a empty value.
         $field->setValidator(
@@ -51,7 +50,8 @@ class ContactDetails extends ZendForm
             )
         );
 
-        $input->setRequired(false);
+        $input->setRequired(true);
+        $input->setContinueIfEmpty(true);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -67,10 +67,12 @@ class ContactDetails extends ZendForm
             ->attach(new \Zend\I18n\Filter\Alnum());
 
         $input->getValidatorChain()
-            ->attach(new Validator\Digits());
+            ->attach( new NotEmpty(0) )
+            ->attach( new AllowEmptyValidatorWrapper( new Validator\Digits() ));
 
 
-        $input->setRequired(false);
+        $input->setRequired(true);
+        $input->setContinueIfEmpty(true);
 
         $this->add($field);
         $inputFilter->add($input);
