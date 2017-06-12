@@ -2,7 +2,6 @@
 namespace AppTest\Form;
 
 use PHPUnit\Framework\TestCase;
-use Interop\Container\ContainerInterface;
 
 use App\Form\ContactDetails;
 
