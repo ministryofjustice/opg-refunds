@@ -9,6 +9,8 @@ use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
+use App\Validator\NotEmpty;
+
 class AccountDetails extends ZendForm
 {
 
@@ -30,7 +32,7 @@ class AccountDetails extends ZendForm
             ->attach(new Filter\StringTrim());
 
         $input->getValidatorChain()
-            ->attach( (new Validator\NotEmpty())->setMessage('name-required', Validator\NotEmpty::IS_EMPTY) );
+            ->attach( new NotEmpty() );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -50,8 +52,9 @@ class AccountDetails extends ZendForm
             ]));
 
         $input->getValidatorChain()
-            ->attach( (new Validator\StringLength(['min' => 6, 'max' => 6])) )
-            ->attach( (new Validator\NotEmpty())->setMessage('sort-code-required', Validator\NotEmpty::IS_EMPTY) );
+            ->attach( new NotEmpty(), true )
+            ->attach( new Validator\Digits() )
+            ->attach( (new Validator\StringLength(['min' => 6, 'max' => 6])) );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -66,8 +69,9 @@ class AccountDetails extends ZendForm
             ->attach(new Filter\StringTrim());
 
         $input->getValidatorChain()
-            ->attach( (new Validator\StringLength(['min' => 8, 'max' => 8])) )
-            ->attach( (new Validator\NotEmpty())->setMessage('account-number-required', Validator\NotEmpty::IS_EMPTY) );
+            ->attach( new NotEmpty(), true )
+            ->attach( new Validator\Digits() )
+            ->attach( (new Validator\StringLength(['min' => 8, 'max' => 8])) );
 
         $this->add($field);
         $inputFilter->add($input);

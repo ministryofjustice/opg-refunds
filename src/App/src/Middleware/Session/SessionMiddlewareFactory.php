@@ -11,7 +11,7 @@ class SessionMiddlewareFactory
 
         $config =  $container->get( 'config' );
 
-        if (!isset($config['session']['ttl'])){
+        if (!isset($config['session']['ttl'])) {
             throw new \UnexpectedValueException('Session TTL not configured');
         }
 
