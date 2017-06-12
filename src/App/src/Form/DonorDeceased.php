@@ -9,7 +9,7 @@ use Zend\InputFilter\InputFilter;
 
 use App\Validator\NotEmpty;
 
-class WhenFeesPaid extends ZendForm
+class DonorDeceased extends ZendForm
 {
 
     public function __construct($options = [])
@@ -21,7 +21,7 @@ class WhenFeesPaid extends ZendForm
 
         //------------------------
 
-        $field = new Element\Radio('fees-in-range');
+        $field = new Element\Radio('donor-deceased');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach( new NotEmpty );

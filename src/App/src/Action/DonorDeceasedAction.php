@@ -7,9 +7,9 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-use App\Form\WhenFeesPaid;
+use App\Form\DonorDeceased;
 
-class WhenFeesPaidAction implements
+class DonorDeceasedAction implements
     ServerMiddlewareInterface,
     Initializers\UrlHelperInterface,
     Initializers\TemplatingSupportInterface
@@ -20,28 +20,28 @@ class WhenFeesPaidAction implements
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
 
-        $form = new WhenFeesPaid();
+        $form = new DonorDeceased();
 
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 
-        if ($matchedRoute === 'eligibility.when.answer') {
+        if ($matchedRoute === 'eligibility.deceased.answer') {
             $form->setData( $request->getQueryParams() );
 
             if ($form->isValid()) {
-                if ($form->getData()['fees-in-range'] === 'yes') {
+                if ($form->getData()['donor-deceased'] === 'no') {
                     return new Response\RedirectResponse(
-                        $this->getUrlHelper()->generate('eligibility.deceased')
+                        $this->getUrlHelper()->generate('apply.contact')
                     );
 
                 }
 
                 return new Response\HtmlResponse(
-                    $this->getTemplateRenderer()->render('app::ineligible-timeframe-page')
+                    $this->getTemplateRenderer()->render('app::ineligible-deceased-page')
                 );
             }
         }
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::when-were-fees-paid', [
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-deceased', [
             'form' => $form
         ]));
     }

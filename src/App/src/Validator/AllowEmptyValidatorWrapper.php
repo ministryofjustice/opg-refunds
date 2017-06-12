@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Validator;
 
 use Zend\Validator\ValidatorInterface;

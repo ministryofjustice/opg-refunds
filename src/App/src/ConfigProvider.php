@@ -35,6 +35,7 @@ class ConfigProvider
         return [
             'invokables' => [
                 // Actions
+                Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
                 Action\SummaryAction::class => Action\SummaryAction::class,
@@ -42,6 +43,7 @@ class ConfigProvider
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
                 Action\DoneAction::class => Action\DoneAction::class,
+                Action\DonorDeceasedAction::class => Action\DonorDeceasedAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
@@ -52,7 +54,6 @@ class ConfigProvider
 
                 // Actions
                 Action\AccountDetailsAction::class => Action\AccountDetailsFactory::class,
-                Action\HomePageAction::class => Action\HomePageFactory::class,
 
                 // Middleware
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
