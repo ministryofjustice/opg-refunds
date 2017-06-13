@@ -41,6 +41,7 @@ class ConfigProvider
                 Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\ScratchAction::class => Action\ScratchAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
+                Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
                 Action\DoneAction::class => Action\DoneAction::class,
                 Action\DonorDeceasedAction::class => Action\DonorDeceasedAction::class,

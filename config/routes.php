@@ -39,6 +39,7 @@ $app->route('/donor-status', App\Action\DonorDeceasedAction::class, ['GET'], 'el
 $app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased.answer');
 
 
+$app->route('/apply/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
 $app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
 $app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
 $app->route('/apply/account', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
