@@ -1,16 +1,15 @@
 <?php
 namespace App\Form;
 
-use Zend\Form\FormInterface;
 use Zend\Form\Form as ZendForm;
 
 use Zend\Form\Element;
-use Zend\Validator;
 use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
-use App\Validator\NotEmpty;
+use App\Validator;
+use App\Filter\StandardInput as StandardInputFilter;
 
 class DonorDetails extends ZendForm
 {
@@ -19,7 +18,7 @@ class DonorDetails extends ZendForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter();
+        $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
         //------------------------
@@ -29,10 +28,11 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( (new Validator\StringLength(['max' => 300])) );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -45,10 +45,11 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( (new Validator\StringLength(['max' => 300])) );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -61,10 +62,11 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( (new Validator\StringLength(['max' => 300])) );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -77,10 +79,12 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( new Validator\Digits, true )
+            ->attach( new Validator\Between( ['min'=>1, 'max'=>31] ), true );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -93,10 +97,12 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( new Validator\Digits, true )
+            ->attach( new Validator\Between( ['min'=>1, 'max'=>12] ), true );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -109,31 +115,48 @@ class DonorDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
-            ->attach(new Filter\StripTags());
+            ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()->attach( new NotEmpty() );
+        $input->getValidatorChain()
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( new Validator\Digits, true )
+            ->attach( new Validator\Between( ['min'=>1800, 'max'=>date('Y')] ), true );
 
         $this->add($field);
         $inputFilter->add($input);
-
     }
 
+    //----------------------------------------------------------------
 
-    public function getData($flag = FormInterface::VALUES_NORMALIZED)
+    public function setFormattedData(array $data)
     {
-        $result = parent::getData($flag);
 
-        if( !is_array($result) ){
+        $data['title'] = $data['name']['title'] ?? null;
+        $data['first'] = $data['name']['first'] ?? null;
+        $data['last'] = $data['name']['last'] ?? null;
+
+        if (isset($data['dob'])) {
+            list($data['year'],$data['month'],$data['day']) = explode('-', $data['dob']);
+        }
+
+        return $this->setData($data);
+    }
+
+    public function getFormattedData()
+    {
+        $result = parent::getData();
+
+        if (!is_array($result)) {
             return $result;
         }
 
-        $new = array();
+        $response = array();
 
-        $new['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+        $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
-        $new['dob'] = "{$result['year']}-{$result['month']}-{$result['day']}";
+        $response['dob'] = $result['year'].'-'.sprintf('%02d', $result['month']).'-'.sprintf('%02d', $result['day']);
 
+        return $response;
     }
 
 }

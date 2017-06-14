@@ -4,12 +4,12 @@ namespace App\Form;
 use Zend\Form\Form as ZendForm;
 
 use Zend\Form\Element;
-use Zend\Validator;
 use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
-use App\Validator\NotEmpty;
+use App\Validator;
+use App\Filter\StandardInput as StandardInputFilter;
 
 class AccountDetails extends ZendForm
 {
@@ -18,7 +18,7 @@ class AccountDetails extends ZendForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter();
+        $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
 
@@ -29,10 +29,11 @@ class AccountDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim());
+            ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new NotEmpty() );
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( (new Validator\StringLength(['max' => 300])) );
 
         $this->add($field);
         $inputFilter->add($input);
@@ -45,15 +46,15 @@ class AccountDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim())
+            ->attach(new StandardInputFilter)
             ->attach(new Filter\PregReplace([
-                'pattern'     => '/-/',
+                'pattern'     => '/-|\s/',
                 'replacement' => '',
             ]));
 
         $input->getValidatorChain()
-            ->attach( new NotEmpty(), true )
-            ->attach( new Validator\Digits() )
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( new Validator\Digits, true )
             ->attach( (new Validator\StringLength(['min' => 6, 'max' => 6])) );
 
         $this->add($field);
@@ -66,16 +67,14 @@ class AccountDetails extends ZendForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new Filter\StringTrim());
+            ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new NotEmpty(), true )
-            ->attach( new Validator\Digits() )
+            ->attach( new Validator\NotEmpty, true )
+            ->attach( new Validator\Digits, true )
             ->attach( (new Validator\StringLength(['min' => 8, 'max' => 8])) );
 
         $this->add($field);
         $inputFilter->add($input);
-
     }
-
 }

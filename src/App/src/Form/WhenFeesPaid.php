@@ -7,7 +7,7 @@ use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
-use App\Validator\NotEmpty;
+use App\Validator;
 
 class WhenFeesPaid extends ZendForm
 {
@@ -16,7 +16,7 @@ class WhenFeesPaid extends ZendForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter();
+        $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
         //------------------------
@@ -24,7 +24,7 @@ class WhenFeesPaid extends ZendForm
         $field = new Element\Radio('fees-in-range');
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach( new NotEmpty );
+        $input->getValidatorChain()->attach( new Validator\NotEmpty );
 
         $field->setValueOptions([
             'no' => 'no',
