@@ -22,26 +22,26 @@ class DonorDetailsAction implements
 
         $form = new Form\DonorDetails();
 
+        $isUpdate = isset($session['donor']);
 
         if ($request->getMethod() == 'POST') {
             $form->setData( $request->getParsedBody() );
 
             if ($form->isValid()) {
-
-                var_dump($form->getData()); die;
-
-                die('all good');
+                $session['donor'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate('apply.contact')
+                    $this->getUrlHelper()->generate($isUpdate ? 'apply.summary' : 'apply.contact' )
                 );
             }
+        } elseif ($isUpdate) {
+            // We are editing previously entered details.
+            $form->setFormattedData($session['donor']);
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [
             'form' => $form
         ]));
-
     }
 
 }

@@ -87,6 +87,11 @@
             <?= (isset($details['contact']['mobile'])) ? "<p>Mobile: {$details['contact']['mobile']}</p>" : '' ?>
             <p><a href="<?= $this->url('apply.contact') ?>">Edit contact details</a></p>
 
+            <h3 class="heading-large">Donor details</h3>
+            <p>Name: <?= $details['donor']['name']['title'] ?> <?= $details['donor']['name']['first'] ?> <?= $details['donor']['name']['last'] ?></p>
+            <p>DOB: <?= $details['donor']['dob'] ?></p>
+            <p><a href="<?= $this->url('apply.donor') ?>">Edit donor details</a></p>
+
             <a class="button" href="<?= $this->url('apply.account') ?>">Continue</a>
 
         </div>

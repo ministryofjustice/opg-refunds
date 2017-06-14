@@ -20,7 +20,6 @@ class ContactDetailsAction implements
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-
         $session = $request->getAttribute('session');
 
         $isUpdate = isset($session['contact']);
