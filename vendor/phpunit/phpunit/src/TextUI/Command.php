@@ -92,6 +92,7 @@ class Command
         'log-teamcity='             => null,
         'no-configuration'          => null,
         'no-coverage'               => null,
+        'no-logging'                => null,
         'no-extensions'             => null,
         'printer='                  => null,
         'process-isolation'         => null,
@@ -239,13 +240,13 @@ class Command
     /**
      * Handles the command-line arguments.
      *
-     * A child class of PHPUnit_TextUI_Command can hook into the argument
+     * A child class of PHPUnit\TextUI\Command can hook into the argument
      * parsing by adding the switch(es) to the $longOptions array and point to a
      * callback method that handles the switch(es) in the child class like this
      *
      * <code>
      * <?php
-     * class MyCommand extends PHPUnit_TextUI_Command
+     * class MyCommand extends PHPUnit\TextUI\Command
      * {
      *     public function __construct()
      *     {
@@ -266,8 +267,8 @@ class Command
      *     }
      *
      *     // You will also need this - the static keyword in the
-     *     // PHPUnit_TextUI_Command will mean that it'll be
-     *     // PHPUnit_TextUI_Command that gets instantiated,
+     *     // PHPUnit\TextUI\Command will mean that it'll be
+     *     // PHPUnit\TextUI\Command that gets instantiated,
      *     // not MyCommand
      *     public static function main($exit = true)
      *     {
@@ -561,6 +562,10 @@ class Command
                     $this->arguments['noCoverage'] = true;
                     break;
 
+                case '--no-logging':
+                    $this->arguments['noLogging'] = true;
+                    break;
+
                 case '--globals-backup':
                     $this->arguments['backupGlobals'] = true;
                     break;
@@ -805,7 +810,7 @@ class Command
     }
 
     /**
-     * Handles the loading of the PHPUnit_Runner_TestSuiteLoader implementation.
+     * Handles the loading of the PHPUnit\Runner\TestSuiteLoader implementation.
      *
      * @param string $loaderClass
      * @param string $loaderFile
@@ -850,7 +855,7 @@ class Command
     }
 
     /**
-     * Handles the loading of the PHPUnit_Util_Printer implementation.
+     * Handles the loading of the PHPUnit\Util\Printer implementation.
      *
      * @param string $printerClass
      * @param string $printerFile
@@ -1017,6 +1022,7 @@ Configuration Options:
   -c|--configuration <file>   Read configuration from XML file.
   --no-configuration          Ignore default configuration file (phpunit.xml).
   --no-coverage               Ignore code coverage configuration.
+  --no-logging                Ignore logging configuration.
   --no-extensions             Do not load PHPUnit extensions.
   --include-path <path(s)>    Prepend PHP's include_path with given path(s).
   -d key[=value]              Sets a php.ini value.

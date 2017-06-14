@@ -14,6 +14,7 @@ use AssertionError;
 use Countable;
 use Error;
 use PHP_Invoker;
+use PHP_Invoker_TimeoutException;
 use PHP_Timer;
 use PHPUnit_Framework_MockObject_Exception;
 use PHPUnit\Util\Blacklist;
@@ -696,7 +697,7 @@ class TestResult implements Countable
         } catch (PHP_Invoker_TimeoutException $e) {
             $this->addFailure(
                 $test,
-                new PHPUnit_Framework_RiskyTestError(
+                new RiskyTestError(
                     $e->getMessage()
                 ),
                 $_timeout
