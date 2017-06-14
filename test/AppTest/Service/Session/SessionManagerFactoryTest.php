@@ -47,7 +47,6 @@ class SessionManagerFactoryTest extends TestCase
         $this->expectExceptionMessageRegExp( '/TTL/' );
 
         $factory($this->container->reveal());
-
     }
 
 
@@ -63,7 +62,6 @@ class SessionManagerFactoryTest extends TestCase
         $this->expectExceptionMessageRegExp( '/Dynamo DB/' );
 
         $factory($this->container->reveal());
-
     }
 
 
@@ -79,7 +77,6 @@ class SessionManagerFactoryTest extends TestCase
         $this->expectExceptionMessageRegExp( '/encryption/' );
 
         $factory($this->container->reveal());
-
     }
 
 
@@ -95,7 +92,6 @@ class SessionManagerFactoryTest extends TestCase
         $this->expectExceptionMessageRegExp( '/short/' );
 
         $factory($this->container->reveal());
-
     }
 
 
@@ -113,8 +109,5 @@ class SessionManagerFactoryTest extends TestCase
         $sessionManager = $factory($this->container->reveal());
 
         $this->assertInstanceOf(SessionManager::class, $sessionManager);
-
     }
-
-
 }
