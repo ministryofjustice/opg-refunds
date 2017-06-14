@@ -22,9 +22,9 @@ class NotifyClientFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get( 'config' );
+        $config = $container->get('config');
 
-        if (!isset($config['notify']['api']['key'])){
+        if (!isset($config['notify']['api']['key'])) {
             throw new \UnexpectedValueException('Notify API key not configured');
         }
 
@@ -32,7 +32,7 @@ class NotifyClientFactory
 
         return new NotifyClient([
             'apiKey' => $config['notify']['api']['key'],
-            'httpClient' => $container->get( \Http\Client\HttpClient::class )
+            'httpClient' => $container->get(\Http\Client\HttpClient::class)
         ]);
     }
 }

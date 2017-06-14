@@ -18,12 +18,8 @@ class TemplatingSupportInitializer implements InitializerInterface
     public function __invoke(ContainerInterface $container, $instance)
     {
 
-        if( $instance instanceof TemplatingSupportInterface && $container->has(TemplateRendererInterface::class) ){
-
-            $instance->setTemplateRenderer( $container->get(TemplateRendererInterface::class) );
-
+        if ($instance instanceof TemplatingSupportInterface && $container->has(TemplateRendererInterface::class)) {
+            $instance->setTemplateRenderer($container->get(TemplateRendererInterface::class));
         }
-
     }
-
 }

@@ -17,5 +17,4 @@ class EmailAddress extends ZendEmailAddress
         self::INVALID_LOCAL_PART => "email-invalid",
         self::LENGTH_EXCEEDED    => "email-invalid",
     ];
-
 }

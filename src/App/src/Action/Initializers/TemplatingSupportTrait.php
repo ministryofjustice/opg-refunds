@@ -24,11 +24,10 @@ trait TemplatingSupportTrait
     public function getTemplateRenderer() : TemplateRendererInterface
     {
 
-        if( !( $this->template instanceof TemplateRendererInterface ) ){
+        if (!( $this->template instanceof TemplateRendererInterface )) {
             throw new UnexpectedValueException('TemplateRenderer not set');
         }
 
         return $this->template;
     }
-
 }

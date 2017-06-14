@@ -24,11 +24,10 @@ trait UrlHelperTrait
     public function getUrlHelper() : UrlHelper
     {
 
-        if( !( $this->helper instanceof UrlHelper ) ){
+        if (!( $this->helper instanceof UrlHelper )) {
             throw new UnexpectedValueException('UrlHelper not set');
         }
 
         return $this->helper;
     }
-
 }

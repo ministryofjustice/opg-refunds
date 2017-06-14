@@ -16,5 +16,4 @@ interface TemplatingSupportInterface
     public function setTemplateRenderer(TemplateRendererInterface $template);
 
     public function getTemplateRenderer() : TemplateRendererInterface;
-
 }

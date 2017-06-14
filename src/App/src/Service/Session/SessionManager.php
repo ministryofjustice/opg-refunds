@@ -6,7 +6,6 @@ use Aws\DynamoDb\SessionConnectionInterface as DynamoDbSessionConnectionInterfac
 
 use Zend\Crypt\BlockCipher;
 
-
 class SessionManager
 {
 
@@ -43,17 +42,17 @@ class SessionManager
     {
 
         // Read
-        $data = $this->dynamoDbSessionConnection->read( $this->hashId( $id ) );
+        $data = $this->dynamoDbSessionConnection->read($this->hashId($id));
 
         // Check we have the expected fields.
         if (!isset($data['data']) || !isset($data['expires'])) {
-            return array();
+            return [];
         }
 
         // Check it has not expired
         if ($data['expires'] < time()) {
-            $this->delete( $id );
-            return array();
+            $this->delete($id);
+            return [];
         }
 
         $data = base64_decode($data['data']);
@@ -62,12 +61,12 @@ class SessionManager
         $data = $this->getBlockCipher($id)->decrypt($data);
 
         // Decompress
-        $data = gzdecode( $data );
+        $data = gzdecode($data);
 
         $this->lastReadHash = $this->hashLastRead($id, $data);
 
         // Decode
-        $data = json_decode( $data, true );
+        $data = json_decode($data, true);
 
         return $data;
     }
@@ -85,19 +84,19 @@ class SessionManager
         ksort($data);
 
         // Encode
-        $data = json_encode( $data );
+        $data = json_encode($data);
 
         // Flag whether the data has changed since the last read.
         $changed = $this->lastReadHash !== $this->hashLastRead($id, $data);
 
         // Compress
-        $data = gzencode( $data );
+        $data = gzencode($data);
 
         // Encrypt
         $data = $this->getBlockCipher($id)->encrypt($data);
 
         // Save
-        $this->dynamoDbSessionConnection->write( $this->hashId( $id ), base64_encode($data), $changed );
+        $this->dynamoDbSessionConnection->write($this->hashId($id), base64_encode($data), $changed);
     }
 
     /**
@@ -107,7 +106,7 @@ class SessionManager
      */
     public function delete(string $id)
     {
-        $this->dynamoDbSessionConnection->delete( $this->hashId( $id ) );
+        $this->dynamoDbSessionConnection->delete($this->hashId($id));
     }
 
     /**
@@ -118,7 +117,7 @@ class SessionManager
      */
     private function hashId(string $id) : string
     {
-        return hash( 'sha512', $id );
+        return hash('sha512', $id);
     }
 
     /**
@@ -131,7 +130,7 @@ class SessionManager
      */
     private function hashLastRead(string $id, string $data) : string
     {
-        return hash( 'sha512', $id.$data );
+        return hash('sha512', $id.$data);
     }
 
     /**
@@ -143,8 +142,7 @@ class SessionManager
     private function getBlockCipher(string $id) : BlockCipher
     {
         $cipher = clone $this->blockCipher;
-        $cipher->setKey( $cipher->getKey().$id );
+        $cipher->setKey($cipher->getKey().$id);
         return $cipher;
     }
-
 }

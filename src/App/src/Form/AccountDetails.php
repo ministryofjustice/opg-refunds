@@ -32,8 +32,8 @@ class AccountDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( (new Validator\StringLength(['max' => 300])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
 
         $this->add($field);
         $inputFilter->add($input);
@@ -53,9 +53,9 @@ class AccountDetails extends ZendForm
             ]));
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( new Validator\Digits, true )
-            ->attach( (new Validator\StringLength(['min' => 6, 'max' => 6])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach((new Validator\StringLength(['min' => 6, 'max' => 6])));
 
         $this->add($field);
         $inputFilter->add($input);
@@ -70,9 +70,9 @@ class AccountDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( new Validator\Digits, true )
-            ->attach( (new Validator\StringLength(['min' => 8, 'max' => 8])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach((new Validator\StringLength(['min' => 8, 'max' => 8])));
 
         $this->add($field);
         $inputFilter->add($input);

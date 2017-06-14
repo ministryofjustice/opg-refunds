@@ -52,15 +52,14 @@ class SessionMiddleware implements ServerMiddlewareInterface
         if (isset($cookies[self::COOKIE_NAME])) {
             $sessionId = $cookies[self::COOKIE_NAME];
 
-            $sessionArray = $this->sessionManager->read( $sessionId );
+            $sessionArray = $this->sessionManager->read($sessionId);
 
-            $session->exchangeArray( $sessionArray );
+            $session->exchangeArray($sessionArray);
 
             if ($session->count() == 0) {
                 // Non-existent / empty sessions get a new ID.
                 $sessionId = $this->generateSessionId();
             }
-
         } else {
             // Else we need to start a new ID.
             $sessionId = $this->generateSessionId();
@@ -76,7 +75,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
         // If we have data to store in the session, do it.
         if ($session->count() > 0 && $response instanceof ResponseInterface) {
-            $this->sessionManager->write( $sessionId, $session->getArrayCopy() );
+            $this->sessionManager->write($sessionId, $session->getArrayCopy());
 
             // Set a cookie with the session ID.
             $response = FigResponseCookies::set($response, SetCookie::create(self::COOKIE_NAME)
@@ -84,15 +83,13 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withSecure(true)
                 ->withHttpOnly(true)
                 ->withPath('/apply')
-                ->withExpires( new DateTime("+{$this->sessionTTL} seconds") )
-            );
-
+                ->withExpires(new DateTime("+{$this->sessionTTL} seconds")));
         } elseif ($response instanceof ResponseInterface) {
             // If there's no data to store, kill the cookie.
             $response = FigResponseCookies::expire($response, self::COOKIE_NAME);
 
             // And wipe the stored data.
-            $this->sessionManager->delete( $sessionId );
+            $this->sessionManager->delete($sessionId);
         }
 
         //---
@@ -107,7 +104,6 @@ class SessionMiddleware implements ServerMiddlewareInterface
      */
     private function generateSessionId() : string
     {
-        return bin2hex( random_bytes(64) );
+        return bin2hex(random_bytes(64));
     }
-
 }

@@ -25,14 +25,13 @@ class WhenFeesPaidAction implements
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 
         if ($matchedRoute === 'eligibility.when.answer') {
-            $form->setData( $request->getQueryParams() );
+            $form->setData($request->getQueryParams());
 
             if ($form->isValid()) {
                 if ($form->getData()['fees-in-range'] === 'yes') {
                     return new Response\RedirectResponse(
                         $this->getUrlHelper()->generate('eligibility.deceased')
                     );
-
                 }
 
                 return new Response\HtmlResponse(

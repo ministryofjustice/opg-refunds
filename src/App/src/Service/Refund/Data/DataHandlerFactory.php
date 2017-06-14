@@ -15,9 +15,9 @@ class DataHandlerFactory
         //-------------------------------------
         // Database
 
-        $config = $container->get( 'config' );
+        $config = $container->get('config');
 
-        if (!isset($config['db']['postgresql']) ){
+        if (!isset($config['db']['postgresql'])) {
             throw new \UnexpectedValueException('PostgreSQL is not configured');
         }
 
@@ -25,16 +25,16 @@ class DataHandlerFactory
 
         $dsn = "{$dbconf['adapter']}:host={$dbconf['host']};port={$dbconf['port']};dbname={$dbconf['dbname']}";
 
-        $db = new PDO( $dsn, $dbconf['username'], $dbconf['password'], $dbconf['options'] );
+        $db = new PDO($dsn, $dbconf['username'], $dbconf['password'], $dbconf['options']);
 
         // Set PDO to throw exceptions on error
-        $db->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
+        $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
         //-------------------------------------
         // Encryption
 
-        if (!isset($config['security']['rsa']['key']['public']) ){
+        if (!isset($config['security']['rsa']['key']['public'])) {
             throw new \UnexpectedValueException('RSA public key is not configured');
         }
 
@@ -49,18 +49,16 @@ class DataHandlerFactory
         //-------------------------------------
         // Salt Hash
 
-        if (!isset($config['security']['hash']['salt'])){
+        if (!isset($config['security']['hash']['salt'])) {
             throw new \UnexpectedValueException('Hash Salt is not configured');
         }
 
         $salt = $config['security']['hash']['salt'];
 
-        if ( strlen($salt) < 32 ){
+        if (strlen($salt) < 32) {
             throw new \UnexpectedValueException('Hash Salt is too short');
         }
 
-        return new DataHandlerLocal( $db, $rsa, $salt );
-
+        return new DataHandlerLocal($db, $rsa, $salt);
     }
-
 }

@@ -18,12 +18,8 @@ class UrlHelperInitializer implements InitializerInterface
     public function __invoke(ContainerInterface $container, $instance)
     {
 
-        if( $instance instanceof UrlHelperInterface && $container->has(UrlHelper::class) ){
-
-            $instance->setUrlHelper( $container->get(UrlHelper::class) );
-
+        if ($instance instanceof UrlHelperInterface && $container->has(UrlHelper::class)) {
+            $instance->setUrlHelper($container->get(UrlHelper::class));
         }
-
     }
-
 }

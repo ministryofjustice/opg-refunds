@@ -11,5 +11,4 @@ class StringLength extends ZendStringLength
         self::TOO_SHORT => "too-short:%min%",
         self::TOO_LONG  => "too-long:%max%",
     ];
-
 }

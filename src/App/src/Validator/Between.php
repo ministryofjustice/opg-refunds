@@ -10,5 +10,4 @@ class Between extends ZendBetween
         self::NOT_BETWEEN        => "between:%min%-%max%",
         self::NOT_BETWEEN_STRICT => "between:%min%-%max%",
     ];
-
 }

@@ -25,14 +25,13 @@ class DonorDeceasedAction implements
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 
         if ($matchedRoute === 'eligibility.deceased.answer') {
-            $form->setData( $request->getQueryParams() );
+            $form->setData($request->getQueryParams());
 
             if ($form->isValid()) {
                 if ($form->getData()['donor-deceased'] === 'no') {
                     return new Response\RedirectResponse(
                         $this->getUrlHelper()->generate('apply.donor')
                     );
-
                 }
 
                 return new Response\HtmlResponse(

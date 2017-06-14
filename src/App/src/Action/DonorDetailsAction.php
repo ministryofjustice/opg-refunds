@@ -25,13 +25,13 @@ class DonorDetailsAction implements
         $isUpdate = isset($session['donor']);
 
         if ($request->getMethod() == 'POST') {
-            $form->setData( $request->getParsedBody() );
+            $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
                 $session['donor'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate($isUpdate ? 'apply.summary' : 'apply.contact' )
+                    $this->getUrlHelper()->generate($isUpdate ? 'apply.summary' : 'apply.contact')
                 );
             }
         } elseif ($isUpdate) {
@@ -43,5 +43,4 @@ class DonorDetailsAction implements
             'form' => $form
         ]));
     }
-
 }

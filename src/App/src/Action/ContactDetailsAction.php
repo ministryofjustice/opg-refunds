@@ -27,7 +27,7 @@ class ContactDetailsAction implements
         $form = new Form\ContactDetails();
 
         if ($request->getMethod() == 'POST') {
-            $form->setData( $request->getParsedBody() );
+            $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getData();

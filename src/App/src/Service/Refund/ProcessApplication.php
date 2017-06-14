@@ -19,7 +19,7 @@ class ProcessApplication
     public function process(array $data) : string
     {
 
-        $reference = $this->dataHandler->store( $data );
+        $reference = $this->dataHandler->store($data);
 
         $contact = $data['contact'];
 
@@ -27,24 +27,21 @@ class ProcessApplication
         if (isset($contact['email']) && !empty($contact['email'])) {
             // Send email...
 
-            $response = $this->notifyClient->sendEmail( $contact['email'], '4664b7ca-18b0-46e0-9a2f-e01becf45cdd', [
+            $response = $this->notifyClient->sendEmail($contact['email'], '4664b7ca-18b0-46e0-9a2f-e01becf45cdd', [
                 'ref' => IdentFormatter::format($reference),
             ]);
-
         }
 
 
         if (false && isset($contact['mobile']) && !empty($contact['mobile'])) {
             // Send email...
 
-            $response = $this->notifyClient->sendSms( $contact['mobile'], '8292b07c-4dcf-4240-8636-e5ed2f7c4d36', [
+            $response = $this->notifyClient->sendSms($contact['mobile'], '8292b07c-4dcf-4240-8636-e5ed2f7c4d36', [
                 'ref' => IdentFormatter::format($reference),
             ]);
-
         }
 
 
         return $reference;
     }
-
 }

@@ -14,9 +14,9 @@ class SessionManagerFactory
     public function __invoke(ContainerInterface $container)
     {
 
-        $config = $container->get( 'config' );
+        $config = $container->get('config');
 
-        if (!isset($config['session']['ttl'])){
+        if (!isset($config['session']['ttl'])) {
             throw new \UnexpectedValueException('Session TTL not configured');
         }
 
@@ -27,31 +27,30 @@ class SessionManagerFactory
 
         //---
 
-        if (!isset($config['dynamodb']['client']) || !isset($config['dynamodb']['settings'])){
+        if (!isset($config['dynamodb']['client']) || !isset($config['dynamodb']['settings'])) {
             throw new \UnexpectedValueException('Dynamo DB for sessions not configured');
         }
 
-        $dynamoDbClient = new DynamoDbClient( $config['dynamodb']['client'] );
+        $dynamoDbClient = new DynamoDbClient($config['dynamodb']['client']);
 
-        $sessionConnection = new StandardSessionConnection( $dynamoDbClient, $config['dynamodb']['settings'] );
+        $sessionConnection = new StandardSessionConnection($dynamoDbClient, $config['dynamodb']['settings']);
 
         //---
 
-        if (!isset( $config['encryption']['key'])){
+        if (!isset($config['encryption']['key'])) {
             throw new \UnexpectedValueException('Session encryption not configured');
         }
 
-        if ( strlen($config['encryption']['key']) < 32 ){
+        if (strlen($config['encryption']['key']) < 32) {
             throw new \UnexpectedValueException('Session encryption key is too short');
         }
 
-        $blockCipher = BlockCipher::factory('openssl', array('algo' => 'aes'));
+        $blockCipher = BlockCipher::factory('openssl', ['algo' => 'aes']);
 
-        $blockCipher->setKey( $config['encryption']['key'] );
+        $blockCipher->setKey($config['encryption']['key']);
 
         //---
 
-        return new SessionManager( $sessionConnection, $blockCipher );
+        return new SessionManager($sessionConnection, $blockCipher);
     }
-
 }

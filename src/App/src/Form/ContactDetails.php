@@ -41,12 +41,12 @@ class ContactDetails extends ZendForm
             ->attach(new Filter\StringToLower);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty(0) )
+            ->attach(new Validator\NotEmpty(0))
             ->attach($this->getOneRequiredValidator(), true, 100)
             ;
 
         //---
-        
+
         // Special case: override the validator the field returns to allow a empty value.
         $field->setValidator(
             new Validator\AllowEmptyValidatorWrapper(
@@ -73,8 +73,8 @@ class ContactDetails extends ZendForm
             ->attach(new \Zend\I18n\Filter\Alnum);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty(0) )
-            ->attach( new Validator\AllowEmptyValidatorWrapper( new Validator\Digits ));
+            ->attach(new Validator\NotEmpty(0))
+            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits));
 
 
         $input->setRequired(true);
@@ -95,9 +95,6 @@ class ContactDetails extends ZendForm
     {
         return (new Callback(function ($value, $context) {
             return !empty($context['email']) || !empty($context['mobile']);
-        }
-        ))->setMessage('one-field-required', Callback::INVALID_VALUE);
+        }))->setMessage('one-field-required', Callback::INVALID_VALUE);
     }
-
-
 }

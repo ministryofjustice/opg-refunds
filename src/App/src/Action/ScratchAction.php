@@ -19,14 +19,11 @@ class ScratchAction implements ServerMiddlewareInterface, Initializers\Templatin
         $index = $request->getAttribute('index');
 
         try {
-
             $template = $this->getTemplateRenderer()->render('app::'.$index);
 
-            return new HtmlResponse( $template );
-
-        } catch (\Exception $e){
-            return new TextResponse('Template error: '.$e->getMessage(),StatusCode::STATUS_NOT_FOUND);
+            return new HtmlResponse($template);
+        } catch (\Exception $e) {
+            return new TextResponse('Template error: '.$e->getMessage(), StatusCode::STATUS_NOT_FOUND);
         }
-
     }
 }

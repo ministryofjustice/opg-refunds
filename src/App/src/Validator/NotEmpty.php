@@ -10,5 +10,4 @@ class NotEmpty extends ZendNotEmpty
         self::IS_EMPTY => "required",
         self::INVALID  => "invalid-type",
     ];
-
 }

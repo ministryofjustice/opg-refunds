@@ -5,5 +5,4 @@ interface DataHandlerInterface
 {
 
     public function store(array $data) : string;
-
 }

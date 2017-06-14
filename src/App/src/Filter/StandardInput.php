@@ -20,5 +20,4 @@ class StandardInput extends Filter\FilterChain
         $this->attach(new Filter\StripTags());
         $this->attach(new Filter\StripNewlines());
     }
-
 }

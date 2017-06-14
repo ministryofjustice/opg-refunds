@@ -16,5 +16,4 @@ interface UrlHelperInterface
     public function setUrlHelper(UrlHelper $template);
 
     public function getUrlHelper() : UrlHelper;
-
 }

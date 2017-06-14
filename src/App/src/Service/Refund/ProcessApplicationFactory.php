@@ -12,10 +12,8 @@ class ProcessApplicationFactory
     {
 
         return new ProcessApplication(
-            $container->get( \Alphagov\Notifications\Client::class ),
-            $container->get( Data\DataHandlerInterface::class )
+            $container->get(\Alphagov\Notifications\Client::class),
+            $container->get(Data\DataHandlerInterface::class)
         );
-
     }
-
 }

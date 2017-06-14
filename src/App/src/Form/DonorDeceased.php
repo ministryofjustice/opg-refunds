@@ -24,7 +24,7 @@ class DonorDeceased extends ZendForm
         $field = new Element\Radio('donor-deceased');
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach( new Validator\NotEmpty );
+        $input->getValidatorChain()->attach(new Validator\NotEmpty);
 
         $field->setValueOptions([
             'no' => 'no',

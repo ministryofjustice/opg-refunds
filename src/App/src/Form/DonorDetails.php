@@ -31,8 +31,8 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( (new Validator\StringLength(['max' => 300])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
 
         $this->add($field);
         $inputFilter->add($input);
@@ -48,8 +48,8 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( (new Validator\StringLength(['max' => 300])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
 
         $this->add($field);
         $inputFilter->add($input);
@@ -65,8 +65,8 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( (new Validator\StringLength(['max' => 300])) );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
 
         $this->add($field);
         $inputFilter->add($input);
@@ -82,9 +82,9 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( new Validator\Digits, true )
-            ->attach( new Validator\Between( ['min'=>1, 'max'=>31] ), true );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach(new Validator\Between(['min'=>1, 'max'=>31]), true);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -100,9 +100,9 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( new Validator\Digits, true )
-            ->attach( new Validator\Between( ['min'=>1, 'max'=>12] ), true );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach(new Validator\Between(['min'=>1, 'max'=>12]), true);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -118,9 +118,9 @@ class DonorDetails extends ZendForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach( new Validator\NotEmpty, true )
-            ->attach( new Validator\Digits, true )
-            ->attach( new Validator\Between( ['min'=>1800, 'max'=>date('Y')] ), true );
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach(new Validator\Between(['min'=>1800, 'max'=>date('Y')]), true);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -150,7 +150,7 @@ class DonorDetails extends ZendForm
             return $result;
         }
 
-        $response = array();
+        $response = [];
 
         $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
@@ -158,5 +158,4 @@ class DonorDetails extends ZendForm
 
         return $response;
     }
-
 }

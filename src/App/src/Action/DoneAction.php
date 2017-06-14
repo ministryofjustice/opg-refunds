@@ -23,8 +23,7 @@ class DoneAction implements ServerMiddlewareInterface, Initializers\TemplatingSu
         $session->exchangeArray([]);
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
-            'reference' => IdentFormatter::format( $reference )
+            'reference' => IdentFormatter::format($reference)
         ]));
-
     }
 }

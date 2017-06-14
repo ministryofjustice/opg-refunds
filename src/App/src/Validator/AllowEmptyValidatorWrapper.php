@@ -33,5 +33,4 @@ class AllowEmptyValidatorWrapper implements ValidatorInterface
     {
         return $this->validator->getMessages();
     }
-
 }

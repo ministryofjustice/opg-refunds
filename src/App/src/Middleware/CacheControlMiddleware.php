@@ -26,8 +26,8 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
         // If it's an eligibility route
         if ($response instanceof ResponseInterface && substr($matchedRoute, 0, 12) === 'eligibility.') {
             // Add caching headers
-            $response = $response->withHeader( 'Cache-Control', 'max-age='.self::MAX_AGE )
-                                 ->withHeader( 'Expires', gmdate('D, d M Y H:i:s T', time() + self::MAX_AGE ));
+            $response = $response->withHeader('Cache-Control', 'max-age='.self::MAX_AGE)
+                                 ->withHeader('Expires', gmdate('D, d M Y H:i:s T', time() + self::MAX_AGE));
         }
 
         return $response;

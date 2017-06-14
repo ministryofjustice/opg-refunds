@@ -35,7 +35,7 @@ class DataHandlerLocal implements DataHandlerInterface
             //----------------------------
             // Generate ID
 
-            $id = random_int( 1000000000, 99999999999 );
+            $id = random_int(1000000000, 99999999999);
 
             //----------------------------
             // (Attempt to) save the data
@@ -45,15 +45,14 @@ class DataHandlerLocal implements DataHandlerInterface
             $statement = $this->db->prepare($sql);
 
             try {
-                $statement->execute(array(
+                $statement->execute([
                     "id" => $id,
                     "created" => date('r'),
                     "version" => 1,
                     "data" => json_encode($data)
-                ));
+                ]);
 
                 $failed = false;
-
             } catch (\PDOException $e) {
                 // If it's not a duplicate key error, re-throw it.
                 if ($e->getCode() != 23505) {
@@ -63,10 +62,7 @@ class DataHandlerLocal implements DataHandlerInterface
                 // Else we can just try using a different ID.
 
                 $failed = true;
-
             }
-
-
         } while ($failed);
 
         //---
@@ -90,7 +86,7 @@ class DataHandlerLocal implements DataHandlerInterface
 
         $detailsToHash = "{$accountDetails['sort-code']}/{$accountDetails['account-number']}";
 
-        $hashedDetails = hash( 'sha512', $this->hashSalt.$detailsToHash );
+        $hashedDetails = hash('sha512', $this->hashSalt.$detailsToHash);
 
         $data['account']['hash'] = $hashedDetails;
 
@@ -107,5 +103,4 @@ class DataHandlerLocal implements DataHandlerInterface
 
         return $data;
     }
-
 }

@@ -22,5 +22,4 @@ class IdentFormatter
     {
         return trim(chunk_split('R' . sprintf("%011d", $value), 4, ' '));
     }
-
 }

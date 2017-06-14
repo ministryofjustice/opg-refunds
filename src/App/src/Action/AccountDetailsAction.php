@@ -32,10 +32,9 @@ class AccountDetailsAction implements
         $form = new Form\AccountDetails();
 
         if ($request->getMethod() == 'POST') {
-            $form->setData( $request->getParsedBody() );
+            $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-
                 $session = $request->getAttribute('session');
 
                 $details = $session->getArrayCopy();
@@ -45,7 +44,7 @@ class AccountDetailsAction implements
                     'details' => $form->getData()
                 ];
 
-                $reference = $this->applicationProcessService->process( $details );
+                $reference = $this->applicationProcessService->process($details);
 
                 // Clear out all the data, leaving only the reference
                 $session->exchangeArray([ 'reference' => $reference ]);
@@ -60,5 +59,4 @@ class AccountDetailsAction implements
             'form' => $form
         ]));
     }
-
 }
