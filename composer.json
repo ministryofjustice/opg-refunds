@@ -12,6 +12,7 @@
         "alphagov/notifications-php-client": "^1.1",
         "aws/aws-sdk-php": "^3.27",
         "dflydev/fig-cookies": "^1.0",
+        "guzzlehttp/guzzle": "^6.2",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-component-installer": "^1.0",
