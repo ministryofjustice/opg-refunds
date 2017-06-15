@@ -107,7 +107,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
     private function generateSessionId() : string
     {
         return BigInteger::factory('bcmath')->baseConvert(
-            bin2hex(random_bytes(64)
-        ), 16, 62);
+            bin2hex(random_bytes(64)), 16, 62
+        );
     }
 }

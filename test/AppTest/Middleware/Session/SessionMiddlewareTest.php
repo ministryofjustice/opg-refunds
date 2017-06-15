@@ -10,7 +10,6 @@ use Psr\Http\Message\ResponseInterface;
 
 use Zend\Expressive\Router\RouteResult;
 use Zend\Diactoros\Response as RealResponse;
-use Zend\Diactoros\ServerRequest as RealRequest;
 
 use App\Service\Session\SessionManager;
 use App\Middleware\Session\SessionMiddleware;
@@ -43,6 +42,7 @@ class SessionMiddlewareTest extends TestCase
         $this->sessionManager = $this->prophesize(SessionManager::class);
     }
 
+
     public function testCanInstantiate()
     {
         $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
@@ -59,6 +59,8 @@ class SessionMiddlewareTest extends TestCase
      */
     public function testWithoutCookieSetAndNoDataSet()
     {
+        $this->sessionManager->delete( Argument::type('string') )->shouldBeCalled();
+
         $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
 
         $this->request->getCookieParams()->willReturn(array());
@@ -107,9 +109,122 @@ class SessionMiddlewareTest extends TestCase
     public function testWithoutCookieSetAndNewDataSet()
     {
 
+        $this->sessionManager->write( Argument::type('string'), Argument::type('array') )->shouldBeCalled();
+
         $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
 
+        $this->request->getCookieParams()->willReturn(array());
 
+        // We use this to amend the data stored in session; as a delegate process would do.
+        $this->request->withAttribute( 'session', Argument::that(function ($arg) {
+            $arg['test'] = true;
+            return true;
+        }))->shouldBeCalled()->willReturn(
+            $this->prophesize(ServerRequestInterface::class)->reveal()
+        );
+
+        $response = $middleware->process(
+            $this->request->reveal(),
+            $this->delegateInterface->reveal()
+        );
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+
+        $headers = $response->getHeaders();
+
+        $this->assertArrayHasKey('Set-Cookie', $headers);
+
+        $cookies = $headers['Set-Cookie'];
+
+        $this->assertInternalType('array', $cookies);
+        $this->assertCount(1, $cookies);
+
+
+        $cookie = GuzzleSetCookie::fromString(array_pop($cookies));
+
+        /*
+         * We are setting the cookie here, so we expect a correctly named cookie, with a value, that has not expired.
+         */
+        $this->assertEquals( SessionMiddleware::COOKIE_NAME, $cookie->getName() );
+        $this->assertFalse( $cookie->isExpired() );
+        $this->assertTrue( $cookie->getSecure() );
+        $this->assertTrue( $cookie->getHttpOnly() );
+        $this->assertInternalType( 'string', $cookie->getValue() );
+
+        // We're expecting the session ID to be over 75 characters.
+        $this->assertGreaterThan( 75, strlen($cookie->getValue()) );
     }
 
+
+    /**
+     * Test for:
+     *  - An initial cookie is set.
+     *  - Some data is returned from the Session Manager.
+     *  - No new data is added.
+     *
+     *  Thus we expect a valid session cookie to be returned with the same value.
+     */
+    public function testWithCookieThatReturnsData()
+    {
+        $cookieValue = 'cookie-value';
+
+        $testData = [
+            'test'=>true
+        ];
+
+        //---
+
+        $this->sessionManager->read( $cookieValue )->willReturn($testData);
+        $this->sessionManager->write( $cookieValue, $testData )->shouldBeCalled();
+
+        $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
+
+        $this->request->getCookieParams()->willReturn([
+            SessionMiddleware::COOKIE_NAME => $cookieValue
+        ]);
+
+        $response = $middleware->process(
+            $this->request->reveal(),
+            $this->delegateInterface->reveal()
+        );
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+
+        $headers = $response->getHeaders();
+
+        $this->assertArrayHasKey('Set-Cookie', $headers);
+
+        $cookies = $headers['Set-Cookie'];
+
+        $this->assertInternalType('array', $cookies);
+        $this->assertCount(1, $cookies);
+
+
+        $cookie = GuzzleSetCookie::fromString(array_pop($cookies));
+
+        /*
+         * We are setting the cookie here, so we expect a correctly named
+         * cookie, with the above value, that has not expired.
+         */
+        $this->assertEquals( SessionMiddleware::COOKIE_NAME, $cookie->getName() );
+        $this->assertFalse( $cookie->isExpired() );
+        $this->assertTrue( $cookie->getSecure() );
+        $this->assertTrue( $cookie->getHttpOnly() );
+        $this->assertInternalType( 'string', $cookie->getValue() );
+        $this->assertEquals( $cookieValue, $cookie->getValue() );
+    }
+
+
+    /**
+     * Test for:
+     *  - An initial cookie is set.
+     *  - No data is returned from the Session Manager.
+     *  - Some new data is added.
+     *
+     *  Thus we expect a valid session cookie to be returned with a different cookie value.
+     */
+    public function testWithCookieThatNewDataIsStoredFor()
+    {
+
+    }
 }
