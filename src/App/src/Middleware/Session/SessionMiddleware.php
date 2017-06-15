@@ -12,6 +12,8 @@ use App\Service\Session\SessionManager;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigResponseCookies;
 
+use Zend\Math\BigInteger\BigInteger;
+
 use DateTime;
 use ArrayObject;
 
@@ -104,6 +106,8 @@ class SessionMiddleware implements ServerMiddlewareInterface
      */
     private function generateSessionId() : string
     {
-        return bin2hex(random_bytes(64));
+        return BigInteger::factory('bcmath')->baseConvert(
+            bin2hex(random_bytes(64)
+        ), 16, 62);
     }
 }

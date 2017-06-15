@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "44f7168a84d47e82cc1250c5bc6675c0",
+    "content-hash": "87472d4adc393f4d3ff19b8b37f58100",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
