@@ -40,7 +40,7 @@ class WhenFeesPaidAction implements
             }
         }
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::when-were-fees-paid', [
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::when-were-fees-paid-page', [
             'form' => $form
         ]));
     }
