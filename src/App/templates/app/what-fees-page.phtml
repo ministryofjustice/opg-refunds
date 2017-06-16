@@ -1,0 +1,37 @@
+<?php
+$title = 'What fees were paid?';
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<p>Select all that apply.</p>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::input-checkbox', [
+        'formElement' => $form->get('what-fees'),
+        'question' => $title,
+        'options' => [
+            'hw' => [
+                'optionLabel' => 'Property and finance lasting power of attorney (LPA)',
+            ],
+            'pf' => [
+                'optionLabel' => 'Health and welfare lasting power of attorney (LPA)',
+            ],
+            'epa' => [
+                'optionLabel' => 'Enduring power of attorney (EPA)',
+            ]
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>
+
+

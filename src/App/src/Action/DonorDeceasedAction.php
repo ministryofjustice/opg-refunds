@@ -30,7 +30,7 @@ class DonorDeceasedAction implements
             if ($form->isValid()) {
                 if ($form->getData()['donor-deceased'] === 'no') {
                     return new Response\RedirectResponse(
-                        $this->getUrlHelper()->generate('apply.donor')
+                        $this->getUrlHelper()->generate('apply.what')
                     );
                 }
 
