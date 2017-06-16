@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 use App\Form;
+use App\Service\Refund\FlowController;
 
 class WhatFeesAction implements
     ServerMiddlewareInterface,
@@ -24,18 +25,16 @@ class WhatFeesAction implements
 
         $isUpdate = isset($session['types']);
 
-        //var_dump([ 'what-fees' =>  $session['types'] ]); die;
-
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
                 $session['types'] = $form->getData()['what-fees'];
 
-                //var_dump($request->getParsedBody()); die;
-
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate('apply.donor')
+                    $this->getUrlHelper()->generate(
+                        FlowController::getNextRouteName($session)
+                    )
                 );
             }
         } elseif ($isUpdate) {
