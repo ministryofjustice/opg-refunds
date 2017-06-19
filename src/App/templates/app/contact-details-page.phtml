@@ -9,6 +9,8 @@
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <form action="" method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     
     <div class="form-group">
         <fieldset>

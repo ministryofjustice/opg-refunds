@@ -1,15 +1,13 @@
 <?php
 namespace App\Form;
 
-use Zend\Form\Form as ZendForm;
-
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 use App\Validator;
 
-class DonorDeceased extends ZendForm
+class DonorDeceased extends AbstractForm
 {
 
     public function __construct($options = [])

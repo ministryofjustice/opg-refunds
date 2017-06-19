@@ -29,14 +29,16 @@ class AccountDetailsAction implements
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
 
-        $form = new Form\AccountDetails();
+        $session = $request->getAttribute('session');
+
+        $form = new Form\AccountDetails([
+            'csrf' => $session['meta']['csrf']
+        ]);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-                $session = $request->getAttribute('session');
-
                 $details = $session->getArrayCopy();
 
                 // Merge the details into the rest of the data.

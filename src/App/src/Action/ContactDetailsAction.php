@@ -25,7 +25,9 @@ class ContactDetailsAction implements
 
         $isUpdate = isset($session['contact']);
 
-        $form = new Form\ContactDetails();
+        $form = new Form\ContactDetails([
+            'csrf' => $session['meta']['csrf']
+        ]);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());

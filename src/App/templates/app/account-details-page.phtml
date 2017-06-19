@@ -10,6 +10,8 @@ $this->layout('layout::standard',
 
 <form action="" method="post" class="form">
 
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
     <div class="form-group">
         <fieldset>
             <legend class="visually-hidden"><?=$this->e($title)?></legend>

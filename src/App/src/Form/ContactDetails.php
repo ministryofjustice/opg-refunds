@@ -20,7 +20,7 @@ use App\Filter\StandardInput as StandardInputFilter;
  * Class ContactDetails
  * @package App\Form
  */
-class ContactDetails extends ZendForm
+class ContactDetails extends AbstractForm
 {
 
     public function __construct($options = [])
@@ -84,6 +84,8 @@ class ContactDetails extends ZendForm
         $inputFilter->add($input);
 
         //---
+
+        $this->addCsrfElement($inputFilter);
     }
 
     /**

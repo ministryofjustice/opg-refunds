@@ -12,6 +12,8 @@ $this->layout('layout::standard', [
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
     <div class="form-group">
         <fieldset>
             <legend class="visually-hidden">Donor's Name</legend>

@@ -1,15 +1,13 @@
 <?php
 namespace App\Form;
 
-use Zend\Form\Form as ZendForm;
-
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 use App\Validator;
 
-class WhatFees extends ZendForm
+class WhatFees extends AbstractForm
 {
 
     public function __construct($options = [])
@@ -34,5 +32,9 @@ class WhatFees extends ZendForm
 
         $this->add($field);
         $inputFilter->add($input);
+
+        //---
+
+        $this->addCsrfElement($inputFilter);
     }
 }

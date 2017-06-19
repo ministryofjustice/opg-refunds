@@ -21,7 +21,9 @@ class WhatFeesAction implements
     {
         $session = $request->getAttribute('session');
 
-        $form = new Form\WhatFees();
+        $form = new Form\WhatFees([
+            'csrf' => $session['meta']['csrf']
+        ]);
 
         $isUpdate = isset($session['types']);
 

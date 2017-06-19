@@ -43,7 +43,10 @@ $app->pipe(UrlHelperMiddleware::class);
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
 
 // Sessions are used on paths starting with /apply
-$app->pipe('/apply', App\Middleware\Session\SessionMiddleware::class);
+$app->pipe('/apply', [
+    App\Middleware\Session\SessionMiddleware::class,
+    App\Middleware\Session\CsrfMiddleware::class
+]);
 
 // Add more middleware here that needs to introspect the routing results; this
 // might include:

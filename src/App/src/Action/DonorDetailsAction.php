@@ -24,7 +24,9 @@ class DonorDetailsAction implements
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
         $type = explode('.', $matchedRoute)[2];
 
-        $form = new Form\DonorDetails();
+        $form = new Form\DonorDetails([
+            'csrf' => $session['meta']['csrf']
+        ]);
 
         $isUpdate = isset($session[$type]['donor']);
 

@@ -3,6 +3,7 @@ $title = 'What fees were paid?';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
+
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
@@ -10,6 +11,8 @@ $this->layout('layout::standard', [
 <p>Select all that apply.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <?php $this->insert('snippet::input-checkbox', [
         'formElement' => $form->get('what-fees'),
