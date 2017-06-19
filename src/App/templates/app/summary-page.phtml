@@ -7,18 +7,24 @@
             Summary of Application
         </h1>
 
-        <h3 class="heading-large">Contact details</h3>
-        <?= (isset($details['contact']['email'])) ? "<p>Email: {$details['contact']['email']}</p>" : '' ?>
-        <?= (isset($details['contact']['mobile'])) ? "<p>Mobile: {$details['contact']['mobile']}</p>" : '' ?>
-        <p><a href="<?= $this->url('apply.contact') ?>">Edit contact details</a></p>
-
         <?php foreach($details['types'] as $type): ?>
             <h3 class="heading-large">Donor details: <?= $this->e($type) ?></h3>
             <p>Name: <?= $details[$type]['donor']['name']['title'] ?> <?= $details[$type]['donor']['name']['first'] ?> <?= $details[$type]['donor']['name']['last'] ?></p>
             <p>DOB: <?= $details[$type]['donor']['dob'] ?></p>
 
             <p><a href="<?= $this->url('apply.donor.'.$type) ?>">Edit donor details</a></p>
+
+            <hr>
         <?php endforeach ?>
+
+        <p><a class="button" href="<?= $this->url('apply.what') ?>">Add or remove a POA type</a></p>
+
+        <hr>
+
+        <h3 class="heading-large">Contact details</h3>
+        <?= (isset($details['contact']['email'])) ? "<p>Email: {$details['contact']['email']}</p>" : '' ?>
+        <?= (isset($details['contact']['mobile'])) ? "<p>Mobile: {$details['contact']['mobile']}</p>" : '' ?>
+        <p><a href="<?= $this->url('apply.contact') ?>">Edit contact details</a></p>
 
         <a class="button" href="<?= $this->url('apply.account') ?>">Continue</a>
 
