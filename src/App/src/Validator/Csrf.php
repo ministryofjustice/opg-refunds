@@ -1,7 +1,6 @@
 <?php
 namespace App\Validator;
 
-use function GuzzleHttp\Promise\is_settled;
 use Zend\Validator\Csrf as ZendCsrf;
 
 class Csrf extends ZendCsrf
