@@ -40,7 +40,11 @@ $app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET
 
 
 $app->route('/apply/what-fees', App\Action\WhatFeesAction::class, ['GET', 'POST'], 'apply.what');
-$app->route('/apply/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
+
+$app->route('/apply/health-and-welfare/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.hw');
+$app->route('/apply/property-and-financial/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.pf');
+$app->route('/apply/enduring-power/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.epa');
+
 $app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
 $app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
 $app->route('/apply/account', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');

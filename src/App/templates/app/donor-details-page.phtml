@@ -7,6 +7,8 @@ $this->layout('layout::standard', [
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
+<p>For: <?= $this->e($type) ?></p>
+
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 

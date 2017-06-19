@@ -3,6 +3,7 @@
 namespace App\Action;
 
 use App\Form;
+use App\Service\Refund\FlowController;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -33,7 +34,9 @@ class ContactDetailsAction implements
                 $session['contact'] = $form->getData();
 
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate('apply.summary')
+                    $this->getUrlHelper()->generate(
+                        FlowController::getNextRouteName($session)
+                    )
                 );
             }
         } elseif ($isUpdate) {
