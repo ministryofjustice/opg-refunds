@@ -19,6 +19,9 @@ class ProcessApplication
     public function process(array $data) : string
     {
 
+        // Remove metadata
+        unset($data['meta']);
+
         $reference = $this->dataHandler->store($data);
 
         $contact = $data['contact'];

@@ -3,6 +3,13 @@ namespace App\Validator;
 
 use Zend\Validator\Csrf as ZendCsrf;
 
+/**
+ * Simplified CSRF validator that relies on a passed secret.
+ * Where the secret comes from is beyond the scope of this class.
+ *
+ * Class Csrf
+ * @package App\Validator
+ */
 class Csrf extends ZendCsrf
 {
 

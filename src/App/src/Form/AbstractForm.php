@@ -29,5 +29,4 @@ class AbstractForm extends ZendForm
         $this->add($field);
         $inputFilter->add($input);
     }
-
 }

@@ -48,5 +48,4 @@ class CsrfMiddleware implements ServerMiddlewareInterface
             62
         );
     }
-
 }
