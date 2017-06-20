@@ -46,6 +46,7 @@ class ConfigProvider
                 Action\DoneAction::class => Action\DoneAction::class,
                 Action\DonorDeceasedAction::class => Action\DonorDeceasedAction::class,
                 Action\WhatFeesAction::class => Action\WhatFeesAction::class,
+                Action\VerificationDetailsAction::class => Action\VerificationDetailsAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,

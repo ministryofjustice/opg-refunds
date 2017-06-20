@@ -14,6 +14,14 @@
 
             <p><a href="<?= $this->url('apply.donor.'.$type) ?>">Edit donor details</a></p>
 
+            <h3 class="heading-large">Verification details: <?= $this->e($type) ?></h3>
+            <p>Case number: <?= $details[$type]['verification']['case-number'] ?? '-Not supplied-' ?></p>
+            <p>Donor postcode: <?= $details[$type]['verification']['donor-postcode'] ?? '-Not supplied-' ?></p>
+            <p>Attorney name: <?= $details[$type]['verification']['attorney-name'] ?? '-Not supplied-' ?></p>
+            <p>Attorney postcode: <?= $details[$type]['verification']['attorney-postcode'] ?? '-Not supplied-' ?></p>
+
+            <p><a href="<?= $this->url('apply.verification.'.$type) ?>">Edit verification details</a></p>
+
             <hr>
         <?php endforeach ?>
 

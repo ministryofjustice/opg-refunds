@@ -58,6 +58,9 @@ class FlowController
             if (!isset($d[$type]) || !isset($d[$type]['donor'])) {
                 return "apply.donor.{$type}";
             }
+            if(!isset($d[$type]['verification'])){
+                return "apply.verification.{$type}";
+            }
         }
 
         return null;

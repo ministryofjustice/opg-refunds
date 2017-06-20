@@ -2,6 +2,7 @@
 namespace App\Form;
 
 use Zend\Form\Form as ZendForm;
+use Zend\Form\FormInterface;
 
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
@@ -29,4 +30,20 @@ class AbstractForm extends ZendForm
         $this->add($field);
         $inputFilter->add($input);
     }
+
+    /**
+     * Function strips out the 'secret' value, if set.
+     *
+     * @param int $flag
+     * @return array|object
+     */
+    public function getData($flag = FormInterface::VALUES_NORMALIZED)
+    {
+        $data = parent::getData($flag);
+        if (is_array($data)) {
+            unset($data['secret']);
+        }
+        return $data;
+    }
+
 }
