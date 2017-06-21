@@ -11,7 +11,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Zend\Math\BigInteger\BigInteger;
 
 /**
- * Injects a Csrf secret into the session.
+ * Injects a CSRF secret into the session.
  *
  * Class CsrfMiddleware
  * @package App\Middleware\Session
