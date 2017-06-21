@@ -225,6 +225,58 @@ class SessionMiddlewareTest extends TestCase
      */
     public function testWithCookieThatNewDataIsStoredFor()
     {
+        $cookieValue = 'cookie-value';
 
+        // Return an empty array.
+        $this->sessionManager->read( $cookieValue )->willReturn([]);
+
+        // We expect the new session to be written
+        $this->sessionManager->write( Argument::type('string'), ['test' => true] )->shouldBeCalled();
+
+        $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
+
+        $this->request->getCookieParams()->willReturn([
+            SessionMiddleware::COOKIE_NAME => $cookieValue
+        ]);
+
+        // We use this to set data in session; as a delegate process would do.
+        $this->request->withAttribute( 'session', Argument::that(function ($arg) {
+            $arg['test'] = true;
+            return true;
+        }))->shouldBeCalled()->willReturn(
+            $this->prophesize(ServerRequestInterface::class)->reveal()
+        );
+
+        $response = $middleware->process(
+            $this->request->reveal(),
+            $this->delegateInterface->reveal()
+        );
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+
+        $headers = $response->getHeaders();
+
+        $this->assertArrayHasKey('Set-Cookie', $headers);
+
+        $cookies = $headers['Set-Cookie'];
+
+        $this->assertInternalType('array', $cookies);
+        $this->assertCount(1, $cookies);
+
+        $cookie = GuzzleSetCookie::fromString(array_pop($cookies));
+
+        /*
+         * We are setting an invalid cookie name here, so we expect a correctly named
+         * cookie, with a *different* value, that has not expired.
+         */
+        $this->assertEquals( SessionMiddleware::COOKIE_NAME, $cookie->getName() );
+        $this->assertFalse( $cookie->isExpired() );
+        $this->assertTrue( $cookie->getSecure() );
+        $this->assertTrue( $cookie->getHttpOnly() );
+        $this->assertInternalType( 'string', $cookie->getValue() );
+        $this->assertNotEquals( $cookieValue, $cookie->getValue() );
+
+        // We're expecting the session ID to be over 75 characters.
+        $this->assertGreaterThan( 75, strlen($cookie->getValue()) );
     }
 }
