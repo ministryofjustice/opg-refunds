@@ -13,6 +13,13 @@ use Zend\Validator\Csrf as ZendCsrf;
 class Csrf extends ZendCsrf
 {
 
+    /**
+     * Set to null in order to force the user to manually set it.
+     *
+     * @var null|string
+     */
+    protected $name = null;
+
     protected $messageTemplates = [
         self::NOT_SAME => "csrf",
     ];
@@ -30,7 +37,7 @@ class Csrf extends ZendCsrf
 
     public function isValid($value, $context = null)
     {
-        if ($value !== $this->getHash(true)) {
+        if ($value !== $this->getHash()) {
             $this->error(self::NOT_SAME);
             return false;
         }

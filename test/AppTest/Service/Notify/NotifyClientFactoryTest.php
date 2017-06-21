@@ -18,7 +18,6 @@ class NotifyClientFactoryTest extends TestCase
     protected function setUp()
     {
         $this->container = $this->prophesize(ContainerInterface::class);
-
     }
 
     public function testFactoryWithoutApiKeyConfigured()
@@ -31,7 +30,6 @@ class NotifyClientFactoryTest extends TestCase
         $this->expectException(\UnexpectedValueException::class);
 
         $factory($this->container->reveal());
-
     }
 
     public function testFactoryWithoutHttpClientConfigured()
@@ -50,7 +48,6 @@ class NotifyClientFactoryTest extends TestCase
         $this->expectException(\Alphagov\Notifications\Exception\InvalidArgumentException::class);
 
         $factory($this->container->reveal());
-
     }
 
     public function testFactoryWithFullConfiguration()
@@ -71,7 +68,6 @@ class NotifyClientFactoryTest extends TestCase
         $client = $factory($this->container->reveal());
 
         $this->assertInstanceOf(NotifyClient::class, $client);
-
     }
 
 }
