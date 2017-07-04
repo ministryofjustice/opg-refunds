@@ -8,7 +8,7 @@
         "sort-packages": true
     },
     "require": {
-        "php": "^5.6 || ^7.0",
+        "php": "^7.0",
         "alphagov/notifications-php-client": "^1.1",
         "aws/aws-sdk-php": "^3.27",
         "dflydev/fig-cookies": "^1.0",
