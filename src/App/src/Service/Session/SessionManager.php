@@ -61,7 +61,7 @@ class SessionManager
         $data = $this->getBlockCipher($id)->decrypt($data);
 
         // Decompress
-        $data = gzdecode($data);
+        $data = gzinflate($data);
 
         $this->lastReadHash = $this->hashLastRead($id, $data);
 
@@ -90,7 +90,7 @@ class SessionManager
         $changed = $this->lastReadHash !== $this->hashLastRead($id, $data);
 
         // Compress
-        $data = gzencode($data);
+        $data = gzdeflate($data);
 
         // Encrypt
         $data = $this->getBlockCipher($id)->encrypt($data);
