@@ -64,10 +64,10 @@ class SessionManagerTest extends TestCase
         $this->blockCipher->setKey( self::BASE_ENC_KEY.self::TEST_SESSION_ID )->shouldBeCalled();
 
         // We expect the compressed data to be passed to the Cipher.
-        $this->blockCipher->encrypt( gzencode(json_encode( $data )) )->shouldBeCalled();
+        $this->blockCipher->encrypt( gzdeflate(json_encode( $data )) )->shouldBeCalled();
 
         // Setup some test encrypted data.
-        $this->blockCipher->encrypt( gzencode(json_encode( $data )) )->willReturn( $testEncryptedData );
+        $this->blockCipher->encrypt( gzdeflate(json_encode( $data )) )->willReturn( $testEncryptedData );
 
         // We expect a base64 version of that data to be saved to DynamoDD
         $this->dynamoDb->write( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ), base64_encode($testEncryptedData), true )->shouldBeCalled();
@@ -137,7 +137,7 @@ class SessionManagerTest extends TestCase
             'data' => $testEncryptedData
         ]);
 
-        $this->blockCipher->decrypt( base64_decode($testEncryptedData) )->willReturn( gzencode(json_encode( $data )) );
+        $this->blockCipher->decrypt( base64_decode($testEncryptedData) )->willReturn( gzdeflate(json_encode( $data )) );
 
         $result = $sm->read( self::TEST_SESSION_ID );
 
