@@ -43,7 +43,8 @@ class AccountDetailsAction implements
 
                 // Merge the details into the rest of the data.
                 $details['account'] = [
-                    'details' => $form->getData()
+                    'name' => $form->getData()['name'],
+                    'details' => array_intersect_key($form->getData(), array_flip(['sort-code', 'account-number']))
                 ];
 
                 $reference = $this->applicationProcessService->process($details);
