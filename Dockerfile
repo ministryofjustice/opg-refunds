@@ -16,4 +16,4 @@ RUN cd /tmp && \
     rm /tmp/composer.phar && \
     rm -rf docker README* LICENSE* composer.*
 
-ENV OPG_SERVICE front
+ENV OPG_SERVICE public-front
