@@ -1,11 +1,11 @@
 FROM registry.service.opg.digital/opg-php-fpm-1604
 
 ADD . /app
-RUN mkdir -p /srv/opg-lpa-refund-front/application && \
-    mkdir /srv/opg-lpa-refund-front/application/releases && \
-    chown -R app:app /srv/opg-lpa-refund-front/application && \
-    chmod -R 755 /srv/opg-lpa-refund-front/application && \
-    ln -s /app /srv/opg-lpa-refund-front/application/current
+RUN mkdir -p /srv/opg-refunds-public-front/application && \
+    mkdir /srv/opg-refunds-public-front/application/releases && \
+    chown -R app:app /srv/opg-refunds-public-front/application && \
+    chmod -R 755 /srv/opg-refunds-public-front/application && \
+    ln -s /app /srv/opg-refunds-public-front/application/current
 
 ADD docker/confd /etc/confd
 
@@ -16,4 +16,4 @@ RUN cd /tmp && \
     rm /tmp/composer.phar && \
     rm -rf docker README* LICENSE* composer.*
 
-ENV OPG_SERVICE front
+ENV OPG_SERVICE public-front

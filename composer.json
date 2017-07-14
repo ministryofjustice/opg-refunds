@@ -1,8 +1,8 @@
 {
-    "name": "ministryofjustice/opg-lpa-refund-front",
+    "name": "ministryofjustice/opg-refunds-public-front",
     "description": "POA Refund front end",
     "type": "project",
-    "homepage": "https://github.com/ministryofjustice/opg-lpa-refund-front",
+    "homepage": "https://github.com/ministryofjustice/opg-refunds-public-front",
     "license": "MIT",
     "config": {
         "sort-packages": true

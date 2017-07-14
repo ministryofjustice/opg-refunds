@@ -1,8 +1,8 @@
 {
-  "name": "opg-lpa-refund-front",
+  "name": "opg-refunds-public-front",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "git@github.com:ministryofjustice/opg-lpa-refund-front.git",
+  "repository": "git@github.com:ministryofjustice/opg-refunds-public-front.git",
   "author": "Nick Rowlands <nick.rowlands@digital.justice.gov.uk>",
   "license": "MIT",
   "devDependencies": {

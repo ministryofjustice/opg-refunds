@@ -1,5 +1,5 @@
-# opg-lpa-refund-front
-opg-lpa-refund-front
+# opg-refunds-public-front
+opg-refunds-public-front
 
 ## GOV.UK Assets
 
