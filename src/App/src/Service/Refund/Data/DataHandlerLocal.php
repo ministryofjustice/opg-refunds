@@ -29,6 +29,8 @@ class DataHandlerLocal implements DataHandlerInterface
 
         $data = $this->prepareData($data);
 
+        $data = json_encode($data);
+
         //---
 
         do {
