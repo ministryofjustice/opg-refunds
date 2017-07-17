@@ -27,7 +27,7 @@ class ProcessApplication
         $contact = $data['contact'];
 
 
-        if (isset($contact['email']) && !empty($contact['email'])) {
+        if (false && isset($contact['email']) && !empty($contact['email'])) {
             // Send email...
 
             $response = $this->notifyClient->sendEmail($contact['email'], '4664b7ca-18b0-46e0-9a2f-e01becf45cdd', [
