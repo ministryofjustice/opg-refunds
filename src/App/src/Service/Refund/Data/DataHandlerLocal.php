@@ -40,19 +40,21 @@ class DataHandlerLocal implements DataHandlerInterface
             //----------------------------
             // (Attempt to) save the data
 
-            $sql = 'INSERT INTO refund.application(id, created, version, data) VALUES(:id, :created, :version, :data)';
+            $sql  = 'INSERT INTO refund.application(id, created, processed, data) ';
+            $sql .= 'VALUES(:id, :created, :processed, :data)';
 
             $statement = $this->db->prepare($sql);
 
+            $statement->bindValue(':id', $id, PDO::PARAM_INT );
+            $statement->bindValue(':created', date('r'), PDO::PARAM_STR );
+            $statement->bindValue(':processed', false, PDO::PARAM_BOOL );
+            $statement->bindValue(':data', $data, PDO::PARAM_LOB );
+
             try {
-                $statement->execute([
-                    "id" => $id,
-                    "created" => date('r'),
-                    "version" => 1,
-                    "data" => json_encode($data)
-                ]);
+                $statement->execute();
 
                 $failed = false;
+
             } catch (\PDOException $e) {
                 // If it's not a duplicate key error, re-throw it.
                 if ($e->getCode() != 23505) {
