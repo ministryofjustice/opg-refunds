@@ -1,5 +1,5 @@
 <?php
-$title = 'Attorney details';
+$title = 'Your details (attorney)';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -7,64 +7,71 @@ $this->layout('layout::standard', [
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden">Attorney's Name</legend>
+    <fieldset>
+        <legend class="form-label-bold">Your name</legend>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('title'),
-                'formLabel' => 'Title',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('title'),
+            'formLabel' => 'Title',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('first'),
-                'formLabel' => 'First names',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('first'),
+            'formLabel' => 'First names',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('last'),
-                'formLabel' => 'Last name',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('last'),
+            'formLabel' => 'Last name',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
 
-        </fieldset>
-    </div>
+    </fieldset>
 
     <div class="form-group">
         <fieldset>
-            <legend class="visually-hidden">Attorney's data of birth</legend>
+            <legend class="form-label-bold">
+                Your date of birth
+                <span class="form-hint">For example, 31 3 1980</span>
+            </legend>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('day'),
-                'formLabel' => 'Day',
-                'formType' => 'number',
-                'formLabelBold' => false
-            ]) ?>
+            <div class="form-date">
+                <div class="form-group form-group-day">
+                    <?php $this->insert('snippet::input-text', [
+                        'formElement' => $form->get('day'),
+                        'formLabel' => 'Day',
+                        'formType' => 'number',
+                        'formLabelBold' => false
+                    ]) ?>
+                </div>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('month'),
-                'formLabel' => 'Month',
-                'formType' => 'number',
-                'formLabelBold' => false
-            ]) ?>
+                <div class="form-group form-group-month">
+                    <?php $this->insert('snippet::input-text', [
+                        'formElement' => $form->get('month'),
+                        'formLabel' => 'Month',
+                        'formType' => 'number',
+                        'formLabelBold' => false
+                    ]) ?>
+                </div>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('year'),
-                'formLabel' => 'Year',
-                'formType' => 'number',
-                'formLabelBold' => false
-            ]) ?>
-
+                <div class="form-group form-group-year">
+                    <?php $this->insert('snippet::input-text', [
+                        'formElement' => $form->get('year'),
+                        'formLabel' => 'Year',
+                        'formType' => 'number',
+                        'formLabelBold' => false
+                    ]) ?>
+                </div>
+            </div>
         </fieldset>
     </div>
 

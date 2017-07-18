@@ -1,5 +1,5 @@
 <?php 
-    $title = 'Your contact details';
+    $title = 'Get updates';
     $this->layout('layout::standard',
     [
         'title' => $title
@@ -8,42 +8,34 @@
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
+<p>We will update you on the progress of the refund.</p>
+<p>We might also contact you if we need more information.</p>
+
 <form action="" method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden"><?=$this->e($title)?></legend>
+    <fieldset>
+        <legend class="form-label-bold">Give one or both</legend>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('email'),
-                'formLabel' => 'Email address',
-                'formHint' => 'Enter your email address',
-                'formType' => 'text',
-                'formLabelBold' => true
-            ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('email'),
+            'formLabel' => 'Email address',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('mobile'),
-                'formLabel' => 'Mobile number',
-                'formHint' => 'A UK mobile number',
-                'formType' => 'text',
-                'formLabelBold' => true
-            ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('mobile'),
+            'formLabel' => 'Mobile number',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
 
-        </fieldset>
-    </div>
+    </fieldset>
 
     <div class="form-group">
         <input type="submit" class="button" value="Continue">
     </div>
 
 </form>
-
-<?php $this->insert('snippet::help-text', [
-        'title' => 'Help with these questions',
-        'markup' => '
-            <p>This is where contextual help goes. This is example.</p>
-        '
-]);

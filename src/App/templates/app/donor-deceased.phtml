@@ -11,7 +11,8 @@ $form->setAttribute('action', $this->url('eligibility.deceased.answer'));
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>We need to know if the donor has died. This is because the refund is for the donor, even if you're making the claim on their behalf.</p>
+<p>We need to know if the donor is still alive.</p>
+<p>This is because a refund can only be paid to the donor or to their estate.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 

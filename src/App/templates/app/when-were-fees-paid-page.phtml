@@ -35,4 +35,10 @@ $form->setAttribute('action', $this->url('eligibility.when.answer'));
 
 </form>
 
-
+<?php $this->insert('snippet::help-text', [
+        'title' => 'If you\'re not sure when a fee was paid',
+        'markup' => '
+            <p>You can make a claim even if you\'re not sure exactly when the fees were paid.</p>
+            <p>We will check the information you give against our records and confirm if you are entitled to a refund.</p>
+        '
+]);

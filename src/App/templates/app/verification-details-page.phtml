@@ -1,5 +1,5 @@
 <?php
-$title = 'Verification details';
+$title = 'Power of attorney details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -7,65 +7,40 @@ $this->layout('layout::standard', [
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
+<p>We will check these details against our records to confirm a refund.</p>
+<p>If the donor made more than one power of attorney (LPA or EPA) you can enter details from any of them here.</p>
+
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden">Case number</legend>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('case-number'),
+        'formLabel' => 'Case number',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
 
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('case-number'),
-                'formLabel' => 'Case number',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('donor-postcode'),
+        'formLabel' => 'Donor\'s postcode (on LPA or EPA)',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
 
-        </fieldset>
-    </div>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('attorney-name'),
+        'formLabel' => 'Attorney\'s name',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
 
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden">Donor postcode</legend>
-
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('donor-postcode'),
-                'formLabel' => 'Donor postcode',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
-
-        </fieldset>
-    </div>
-
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden">Attorney name</legend>
-
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('attorney-name'),
-                'formLabel' => 'Attorney name',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
-
-        </fieldset>
-    </div>
-
-    <div class="form-group">
-        <fieldset>
-            <legend class="visually-hidden">Attorney postcode</legend>
-
-            <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('attorney-postcode'),
-                'formLabel' => 'Attorney postcode',
-                'formType' => 'text',
-                'formLabelBold' => false
-            ]) ?>
-
-        </fieldset>
-    </div>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('attorney-postcode'),
+        'formLabel' => 'Attorney\'s postcode (on LPA or EPA)',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">
