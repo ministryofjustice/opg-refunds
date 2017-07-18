@@ -2,14 +2,13 @@
 namespace App\Form;
 
 use Zend\Form\Element;
-use Zend\Filter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 
-class DonorDetails extends AbstractForm
+class ActorDetails extends AbstractForm
 {
 
     public function __construct($options = [])

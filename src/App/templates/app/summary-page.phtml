@@ -7,34 +7,45 @@
             Summary of Application
         </h1>
 
-        <?php foreach($details['types'] as $type): ?>
-            <h3 class="heading-large">Donor details: <?= $this->e($type) ?></h3>
-            <p>Name: <?= $details[$type]['donor']['name']['title'] ?> <?= $details[$type]['donor']['name']['first'] ?> <?= $details[$type]['donor']['name']['last'] ?></p>
-            <p>DOB: <?= $details[$type]['donor']['dob'] ?></p>
+        <h3 class="heading-large">Donor details</h3>
+        <p>Name: <?= $details['donor']['name']['title'] ?> <?= $details['donor']['name']['first'] ?> <?= $details['donor']['name']['last'] ?></p>
+        <p>DOB: <?= $details['donor']['dob'] ?></p>
 
-            <p><a href="<?= $this->url('apply.donor.'.$type) ?>">Edit donor details</a></p>
+        <p><a href="<?= $this->url('apply.donor', ['who'=>$who]) ?>">Edit donor details</a></p>
 
-            <h3 class="heading-large">Verification details: <?= $this->e($type) ?></h3>
-            <p>Case number: <?= $details[$type]['verification']['case-number'] ?? '-Not supplied-' ?></p>
-            <p>Donor postcode: <?= $details[$type]['verification']['donor-postcode'] ?? '-Not supplied-' ?></p>
-            <p>Attorney name: <?= $details[$type]['verification']['attorney-name'] ?? '-Not supplied-' ?></p>
-            <p>Attorney postcode: <?= $details[$type]['verification']['attorney-postcode'] ?? '-Not supplied-' ?></p>
+        <hr>
 
-            <p><a href="<?= $this->url('apply.verification.'.$type) ?>">Edit verification details</a></p>
+        <?php if ($who === 'attorney'): ?>
+
+            <h3 class="heading-large">Attorney details</h3>
+            <p>Name: <?= $details['attorney']['name']['title'] ?> <?= $details['attorney']['name']['first'] ?> <?= $details['attorney']['name']['last'] ?></p>
+            <p>DOB: <?= $details['attorney']['dob'] ?></p>
+
+            <p><a href="<?= $this->url('apply.attorney', ['who'=>$who]) ?>">Edit attorney details</a></p>
 
             <hr>
-        <?php endforeach ?>
 
-        <p><a class="button" href="<?= $this->url('apply.what') ?>">Add or remove a POA type</a></p>
+        <?php endif ?>
+
+        <h3 class="heading-large">Verification details</h3>
+        <p>Case number: <?= $details['verification']['case-number'] ?? '-Not supplied-' ?></p>
+        <p>Donor postcode: <?= $details['verification']['donor-postcode'] ?? '-Not supplied-' ?></p>
+        <p>Attorney name: <?= $details['verification']['attorney-name'] ?? '-Not supplied-' ?></p>
+        <p>Attorney postcode: <?= $details['verification']['attorney-postcode'] ?? '-Not supplied-' ?></p>
+
+        <p><a href="<?= $this->url('apply.verification', ['who'=>$who]) ?>">Edit verification details</a></p>
 
         <hr>
 
         <h3 class="heading-large">Contact details</h3>
         <?= (isset($details['contact']['email'])) ? "<p>Email: {$details['contact']['email']}</p>" : '' ?>
         <?= (isset($details['contact']['mobile'])) ? "<p>Mobile: {$details['contact']['mobile']}</p>" : '' ?>
-        <p><a href="<?= $this->url('apply.contact') ?>">Edit contact details</a></p>
 
-        <a class="button" href="<?= $this->url('apply.account') ?>">Continue</a>
+        <p><a href="<?= $this->url('apply.contact', ['who'=>$who]) ?>">Edit contact details</a></p>
+
+        <hr>
+
+        <a class="button" href="<?= $this->url('apply.account', ['who'=>$who]) ?>">Continue</a>
 
     </div>
 </div>

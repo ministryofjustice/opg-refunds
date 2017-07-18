@@ -16,7 +16,8 @@ class SummaryAction implements ServerMiddlewareInterface, Initializers\Templatin
         $session = $request->getAttribute('session');
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::summary-page', [
-            'details' => $session
+            'details' => $session,
+            'who' => $request->getAttribute('who')
         ]));
     }
 }

@@ -19,6 +19,9 @@ class WhatFeesAction implements
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+
+        die('this is going');
+        
         $session = $request->getAttribute('session');
 
         $form = new Form\WhatFees([

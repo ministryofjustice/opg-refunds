@@ -21,35 +21,32 @@ class VerificationDetailsAction implements
     {
         $session = $request->getAttribute('session');
 
-        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
-        $type = explode('.', $matchedRoute)[2];
-
         $form = new Form\VerificationDetails([
             'csrf' => $session['meta']['csrf']
         ]);
 
-        $isUpdate = isset($session[$type]['verification']);
+        $isUpdate = isset($session['verification']);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-                $session[$type]['verification'] = $form->getFormattedData();
+                $session['verification'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session)
+                        FlowController::getNextRouteName($session, $request->getAttribute('who')),
+                        ['who'=>$request->getAttribute('who')]
                     )
                 );
             }
         } elseif ($isUpdate) {
             // We are editing previously entered details.
-            $form->setData($session[$type]['verification']);
+            $form->setData($session['verification']);
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::verification-details-page', [
             'form' => $form,
-            'type' => $type,
         ]));
     }
 }

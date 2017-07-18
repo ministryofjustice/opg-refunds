@@ -7,9 +7,9 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-use App\Form\DonorDeceased;
+use App\Form\AboutYou;
 
-class DonorDeceasedAction implements
+class WhoAction implements
     ServerMiddlewareInterface,
     Initializers\UrlHelperInterface,
     Initializers\TemplatingSupportInterface
@@ -20,27 +20,27 @@ class DonorDeceasedAction implements
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
 
-        $form = new DonorDeceased();
+        $form = new AboutYou();
 
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 
-        if ($matchedRoute === 'eligibility.deceased.answer') {
+        if ($matchedRoute === 'eligibility.who.answer') {
             $form->setData($request->getQueryParams());
 
             if ($form->isValid()) {
-                if ($form->getData()['donor-deceased'] === 'no') {
+                if ($form->getData()['who'] === 'donor') {
                     return new Response\RedirectResponse(
-                        $this->getUrlHelper()->generate('apply.donor', ['who' =>'attorney'])
+                        $this->getUrlHelper()->generate('apply.donor', ['who' =>'donor'])
                     );
                 }
 
-                return new Response\HtmlResponse(
-                    $this->getTemplateRenderer()->render('app::ineligible-deceased-page')
+                return new Response\RedirectResponse(
+                    $this->getUrlHelper()->generate('eligibility.deceased')
                 );
             }
         }
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-deceased', [
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::who-page', [
             'form' => $form
         ]));
     }

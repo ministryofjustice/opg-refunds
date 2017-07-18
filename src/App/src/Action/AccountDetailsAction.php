@@ -53,7 +53,8 @@ class AccountDetailsAction implements
                 $session->exchangeArray([ 'reference' => $reference ]);
 
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate('apply.done')
+                    $this->getUrlHelper()->generate('apply.done', ['who' => $request->getAttribute('who')])
+
                 );
             }
         }

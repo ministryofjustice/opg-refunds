@@ -12,57 +12,25 @@ use ArrayObject;
 class FlowController
 {
 
-    public static function getNextRouteName(ArrayObject $d)
+    public static function getNextRouteName(ArrayObject $session, string $whoIsApplying)
     {
 
-        if (!isset($d['types'])) {
-            return 'apply.what';
+        if (!isset($session['donor']) || !is_array($session['donor'])) {
+            return 'apply.donor';
         }
 
-        //---
-
-        $route = self::poaCheck('hw', $d);
-
-        if (!is_null($route)) {
-            return $route;
+        if ($whoIsApplying === 'attorney' && (!isset($session['attorney']) || !is_array($session['attorney']))) {
+            return 'apply.attorney';
         }
 
-        //---
-
-        $route = self::poaCheck('pf', $d);
-
-        if (!is_null($route)) {
-            return $route;
+        if (!isset($session['verification']) || !is_array($session['verification'])) {
+            return 'apply.verification';
         }
 
-        //---
-
-        $route = self::poaCheck('epa', $d);
-
-        if (!is_null($route)) {
-            return $route;
-        }
-
-        //---
-
-        if (!isset($d['contact'])) {
+        if (!isset($session['contact']) || !is_array($session['contact'])) {
             return 'apply.contact';
         }
 
         return 'apply.summary';
-    }
-
-    private static function poaCheck(string $type, ArrayObject $d)
-    {
-        if (in_array($type, $d['types'])) {
-            if (!isset($d[$type]) || !isset($d[$type]['donor'])) {
-                return "apply.donor.{$type}";
-            }
-            if(!isset($d[$type]['verification'])){
-                return "apply.verification.{$type}";
-            }
-        }
-
-        return null;
     }
 }

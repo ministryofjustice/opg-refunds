@@ -1,29 +1,29 @@
 <?php
-$title = 'Did you pay fees between April 2013 and March 2017?';
+$title = 'About you';
 $this->layout('layout::standard', [
         'title' => $title,
         'form' => $form
     ]);
 
 $form->setAttribute('method', 'get');
-$form->setAttribute('action', $this->url('eligibility.when.answer'));
+$form->setAttribute('action', $this->url('eligibility.who.answer'));
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>Refunds only apply to fees paid from 1 April 2013 to 31 March 2017.</p>
+<p>A refund can only be claimed by the donor or by one of their attorneys.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::input-radio', [
-        'formElement' => $form->get('fees-in-range'),
+        'formElement' => $form->get('who'),
         'question' => $title,
         'options' => [
-            'yes' => [
-                'optionLabel' => 'Yes, I think so',
+            'donor' => [
+                'optionLabel' => "I am the 'donor'",
             ],
-            'no' => [
-                'optionLabel' => 'No',
+            'attorney' => [
+                'optionLabel' => "I am an 'attorney'",
             ]
         ],
     ])

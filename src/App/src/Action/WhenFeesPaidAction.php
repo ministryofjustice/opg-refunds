@@ -30,7 +30,7 @@ class WhenFeesPaidAction implements
             if ($form->isValid()) {
                 if ($form->getData()['fees-in-range'] === 'yes') {
                     return new Response\RedirectResponse(
-                        $this->getUrlHelper()->generate('eligibility.deceased')
+                        $this->getUrlHelper()->generate('eligibility.who')
                     );
                 }
 

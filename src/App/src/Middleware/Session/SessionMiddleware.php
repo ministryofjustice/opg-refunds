@@ -84,7 +84,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withValue($sessionId)
                 ->withSecure(true)
                 ->withHttpOnly(true)
-                ->withPath('/apply')
+                //->withPath('/apply')
                 ->withExpires(new DateTime("+{$this->sessionTTL} seconds")));
         } elseif ($response instanceof ResponseInterface) {
             // If there's no data to store, kill the cookie.

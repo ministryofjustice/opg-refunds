@@ -9,7 +9,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class DonorDetailsAction implements
+class AttorneyDetailsAction implements
     ServerMiddlewareInterface,
     Initializers\UrlHelperInterface,
     Initializers\TemplatingSupportInterface
@@ -25,13 +25,13 @@ class DonorDetailsAction implements
             'csrf' => $session['meta']['csrf']
         ]);
 
-        $isUpdate = isset($session['donor']);
+        $isUpdate = isset($session['attorney']);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-                $session['donor'] = $form->getFormattedData();
+                $session['attorney'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -42,10 +42,10 @@ class DonorDetailsAction implements
             }
         } elseif ($isUpdate) {
             // We are editing previously entered details.
-            $form->setFormattedData($session['donor']);
+            $form->setFormattedData($session['attorney']);
         }
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::attorney-details-page', [
             'form' => $form,
         ]));
     }

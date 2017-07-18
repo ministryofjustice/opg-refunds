@@ -37,7 +37,8 @@ class ContactDetailsAction implements
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session)
+                        FlowController::getNextRouteName($session, $request->getAttribute('who')),
+                        ['who'=>$request->getAttribute('who')]
                     )
                 );
             }

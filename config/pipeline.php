@@ -42,11 +42,14 @@ $app->pipe(UrlHelperMiddleware::class);
 // Apply caching headers to non-personalised responses
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
 
-// Sessions are used on paths starting with /apply
-$app->pipe('/apply', [
-    App\Middleware\Session\SessionMiddleware::class,
-    App\Middleware\Session\CsrfMiddleware::class
-]);
+// Add session support to required path prefixes
+foreach(['/donor-applying', '/attorney-applying'] as $path)
+{
+    $app->pipe($path, [
+        App\Middleware\Session\SessionMiddleware::class,
+        App\Middleware\Session\CsrfMiddleware::class
+    ]);
+}
 
 // Add more middleware here that needs to introspect the routing results; this
 // might include:

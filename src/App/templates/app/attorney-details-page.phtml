@@ -1,5 +1,5 @@
 <?php
-$title = 'Donor details';
+$title = 'Attorney details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -14,7 +14,7 @@ $this->layout('layout::standard', [
 
     <div class="form-group">
         <fieldset>
-            <legend class="visually-hidden">Donor's Name</legend>
+            <legend class="visually-hidden">Attorney's Name</legend>
 
             <?php $this->insert('snippet::input-text', [
                 'formElement' => $form->get('title'),
@@ -42,7 +42,7 @@ $this->layout('layout::standard', [
 
     <div class="form-group">
         <fieldset>
-            <legend class="visually-hidden">Donor's data of birth</legend>
+            <legend class="visually-hidden">Attorney's data of birth</legend>
 
             <?php $this->insert('snippet::input-text', [
                 'formElement' => $form->get('day'),

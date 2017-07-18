@@ -30,26 +30,22 @@ $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
 $app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
 
-$app->get('/testing/{index}', App\Action\ScratchAction::class, 'testing');
 
 $app->route('/when-were-fees-paid', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when');
 $app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when.answer');
+
+$app->route('/who-is-applying', App\Action\WhoAction::class, ['GET'], 'eligibility.who');
+$app->route('/who-is-applying/answer', App\Action\WhoAction::class, ['GET'], 'eligibility.who.answer');
 
 $app->route('/donor-status', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased');
 $app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased.answer');
 
 
-$app->route('/apply/what-fees', App\Action\WhatFeesAction::class, ['GET', 'POST'], 'apply.what');
+$app->route('/{who:donor|attorney}-applying/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
+$app->route('/{who:donor|attorney}-applying/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
+$app->route('/{who:donor|attorney}-applying/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification');
 
-$app->route('/apply/health-and-welfare/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.hw');
-$app->route('/apply/property-and-financial/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.pf');
-$app->route('/apply/enduring-power/donor', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor.epa');
-
-$app->route('/apply/health-and-welfare/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification.hw');
-$app->route('/apply/property-and-financial/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification.pf');
-$app->route('/apply/enduring-power/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification.epa');
-
-$app->route('/apply/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
-$app->route('/apply/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
-$app->route('/apply/account', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
-$app->route('/apply/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
+$app->route('/{who:donor|attorney}-applying/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
+$app->route('/{who:donor|attorney}-applying/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
+$app->route('/{who:donor|attorney}-applying/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
+$app->route('/{who:donor|attorney}-applying/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
