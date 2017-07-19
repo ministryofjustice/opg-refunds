@@ -6,21 +6,20 @@ use App\Form;
 use App\Service\Refund\FlowController;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class ContactDetailsAction implements
-    ServerMiddlewareInterface,
-    Initializers\UrlHelperInterface,
-    Initializers\TemplatingSupportInterface
+class ContactDetailsAction extends AbstractAction
 {
-    use Initializers\UrlHelperTrait;
-    use Initializers\TemplatingSupportTrait;
-
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->isActionAccessible($request)) {
+            die('cannot access action');
+        }
+
+        //---
+
         $session = $request->getAttribute('session');
 
         $isUpdate = isset($session['contact']);
