@@ -47,6 +47,9 @@ class AccountDetailsAction implements
                     'details' => array_intersect_key($form->getData(), array_flip(['sort-code', 'account-number']))
                 ];
 
+                // Include who is applying
+                $details['applicant'] = $request->getAttribute('who');
+
                 $reference = $this->applicationProcessService->process($details);
 
                 // Clear out all the data, leaving only the reference

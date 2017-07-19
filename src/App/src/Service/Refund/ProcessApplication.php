@@ -22,6 +22,9 @@ class ProcessApplication
         // Remove metadata
         unset($data['meta']);
 
+        // Include the date submitted
+        $data['submitted'] = gmdate(\DateTime::ISO8601);
+
         $reference = $this->dataHandler->store($data);
 
         $contact = $data['contact'];
