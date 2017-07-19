@@ -27,6 +27,30 @@ class FlowController
         'apply.done',
     ];
 
+    private static $routes = [
+        [
+            'name' => 'apply.donor',
+        ],
+        [
+            'name' => 'apply.attorney',
+        ],
+        [
+            'name' => 'apply.verification',
+        ],
+        [
+            'name' => 'apply.contact',
+        ],
+        [
+            'name' => 'apply.summary',
+        ],
+        [
+            'name' => 'apply.account',
+            'requires' => 'apply.summary'
+        ],
+        [
+            'name' => 'apply.done',
+        ],
+    ];
 
     /**
      * Determines if the passed $route is accessible, based on the current session data.
@@ -55,6 +79,10 @@ class FlowController
      */
     public static function getNextRouteName(ArrayObject $session, string $whoIsApplying) : string
     {
+
+        if (isset($session['reference'])) {
+            return 'apply.done';
+        }
 
         if (!isset($session['donor']) || !is_array($session['donor'])) {
             return 'apply.donor';
