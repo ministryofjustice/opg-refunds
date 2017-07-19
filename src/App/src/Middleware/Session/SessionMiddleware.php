@@ -84,8 +84,14 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withValue($sessionId)
                 ->withSecure(true)
                 ->withHttpOnly(true)
-                //->withPath('/apply')
+                ->withPath('/'.$request->getAttribute('who').'-applying')
                 ->withExpires(new DateTime("+{$this->sessionTTL} seconds")));
+
+            // Add a strict SameSite value to the cookie
+            $response = $response->withHeader(
+                'Set-Cookie', $response->getHeader('Set-Cookie')[0].'; SameSite=strict'
+            );
+
         } elseif ($response instanceof ResponseInterface) {
             // If there's no data to store, kill the cookie.
             $response = FigResponseCookies::expire($response, self::COOKIE_NAME);
