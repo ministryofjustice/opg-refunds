@@ -1,5 +1,5 @@
 <?php
-$title = 'Donor details';
+$title = ($who == 'donor') ? 'Your details (donor)' : 'Donor details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);

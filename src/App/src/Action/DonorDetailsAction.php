@@ -47,6 +47,7 @@ class DonorDetailsAction implements
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [
             'form' => $form,
+            'who' => $request->getAttribute('who')
         ]));
     }
 }
