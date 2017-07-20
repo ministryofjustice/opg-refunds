@@ -13,45 +13,43 @@ class FlowController
 {
 
     /**
-     * The order in which pages are accessible
+     * The order in which pages can be accessed.
+     * And the page they 'require' before they can be accessed.
      *
      * @var array
      */
-    private static $order = [
-        'apply.donor',
-        'apply.attorney',
-        'apply.verification',
-        'apply.contact',
-        'apply.summary',
-        'apply.account',
-        'apply.done',
-    ];
-
     private static $routes = [
         [
-            'name' => 'apply.donor',
+            'name'      => 'apply.donor',
+            'requires'  => 'apply.donor',
         ],
         [
-            'name' => 'apply.attorney',
+            'name'      => 'apply.attorney',
+            'requires'  => 'apply.attorney',
         ],
         [
-            'name' => 'apply.verification',
+            'name'      => 'apply.verification',
+            'requires'  => 'apply.verification',
         ],
         [
-            'name' => 'apply.contact',
+            'name'      => 'apply.contact',
+            'requires'  => 'apply.contact',
         ],
         [
-            'name' => 'apply.summary',
+            'name'      => 'apply.summary',
+            'requires'  => 'apply.summary',
         ],
         [
-            'name' => 'apply.account',
-            'requires' => 'apply.summary'
+            'name'      => 'apply.account',
+            'requires'  => 'apply.summary'
         ],
         [
-            'name' => 'apply.done',
+            'name'      => 'apply.done',
+            'requires'  => 'apply.done',
         ],
     ];
 
+    
     /**
      * Determines if the passed $route is accessible, based on the current session data.
      *
@@ -62,8 +60,23 @@ class FlowController
      */
     public static function routeAccessible(string $route, ArrayObject $session, string $whoIsApplying) : bool
     {
-        $requiredIndex = array_search($route, self::$order);
-        $allowedIndex = array_search(self::getNextRouteName($session, $whoIsApplying), self::$order);
+
+        // Find what route this route is dependent on.
+        $requiredIndex = array_search(
+            $route, array_column(self::$routes, 'name')
+        );
+
+        $requiredRoute = self::$routes[$requiredIndex]['requires'];
+
+        //---
+
+        $requiredIndex = array_search(
+            $requiredRoute, array_column(self::$routes, 'name')
+        );
+
+        $allowedIndex = array_search(
+            self::getNextRouteName($session, $whoIsApplying), array_column(self::$routes, 'name')
+        );
 
         // Route is accessible if it's index is >= the current route's index.
         return ($requiredIndex <= $allowedIndex);

@@ -2,18 +2,21 @@
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 use App\Service\Refund\IdentFormatter;
 
-class DoneAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+class DoneAction extends AbstractAction
 {
-    use Initializers\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->isActionAccessible($request)) {
+            die('cannot access action');
+        }
+
+        //---
 
         $session = $request->getAttribute('session');
 
