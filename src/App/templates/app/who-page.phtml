@@ -21,17 +21,23 @@ $form->setAttribute('action', $this->url('eligibility.who.answer'));
         'options' => [
             'donor' => [
                 'optionLabel' => "I am the 'donor'",
+                'optionLabelSuffix' => "The person who made the power of attorney.",
             ],
             'attorney' => [
                 'optionLabel' => "I am an 'attorney'",
+                'optionLabelSuffix' => "Trusted and chosen by the donor to make decisions on their behalf.",
+                'dataTarget' => 'attorney-info',
+                'dataTargetMarkup' => "
+                    <p>You should check that any other attorneys haven’t already claimed the refund.</p>
+                "
             ]
         ],
     ])
     ?>
 
-    <div class="panel panel-border-narrow js-hidden" id="attorney-info">
+    <!-- <div class="panel panel-border-narrow js-hidden" id="attorney-info">
         <p>You should check that any other attorneys haven’t already claimed the refund.</p>
-    </div>
+    </div> -->
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">

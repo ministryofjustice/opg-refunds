@@ -1,0 +1,1 @@
+$(document).ready(function(){jQuery.fx.off=!0,(new GOVUK.ShowHideContent).init()});

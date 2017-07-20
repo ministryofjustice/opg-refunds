@@ -6,10 +6,17 @@
   "author": "Nick Rowlands <nick.rowlands@digital.justice.gov.uk>",
   "license": "MIT",
   "devDependencies": {
-    "govuk_elements": "https://github.com/alphagov/govuk_elements/archive/v3.0.2.tar.gz",
-    "node-sass": "^4.5.3"
+    "govuk-elements-sass": "^3.1.1",
+    "govuk_frontend_toolkit": "^7.0.1",
+    "govuk_template_jinja": "^0.22.3",
+    "jquery": "~1.12.4",
+    "node-sass": "^4.5.3",
+    "uglify-js": "2.8.11"
   },
   "scripts": {
-    "build:css:govuk_elements": "node-sass -o public/assets/govuk_elements/stylesheets --include-path node_modules/govuk_frontend_toolkit/stylesheets --output-style compressed node_modules/govuk_elements/public/sass"
+    "build": "yarn run build:js && yarn run build:styles:govuk_elements yarn run copy:govuk_template",
+    "build:js": "node src/js/uglify",
+    "build:styles:govuk_elements": "node-sass -o public/assets/govuk_elements/stylesheets --include-path node_modules --output-style compressed src/scss/govuk_elements",
+    "copy:govuk_template": "cp -r node_modules/govuk_template_jinja/assets public/assets/govuk_template"
   }
 }

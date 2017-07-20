@@ -3,21 +3,25 @@ opg-refunds-public-front
 
 ## GOV.UK Assets
 
-Dependencies: Yarn or NPM
+Dependencies: Yarn
 
 `yarn` to install dependencies
 
-### govuk_template
-Version: 0.22.0
+The project uses the following npm packages to generate the styles and necessary JavaScript.
 
-The project's default template is based on the `govuk_template` HTML. The `govuk_template`'s assets have been manually copied into `public/assets/govuk_elements` for project expediency.
+- govuk_template
+- govuk_elements
+- govuk_frontend_toolkit
 
-### govuk_elements
-Version: 3.0.2
+`yarn run build` will:
 
-`build:css:govuk_elements` will build the govuk_elements SASS and store the generated stylesheets in public/. Until there is a CI, the generated CSS will be checked in.
+- concatenate and compress the JavaScript into:
+  - main.js (all thirdparty scripts)
+  - application.js
+- generate the CSS files
+- copy the assets from govuk_template to the public folder
 
-To use a different version of `govuk_elements`, edit the tag number in dependencies section of `package.json` accordingly, re-run `yarn` followed by `build:css:govuk_elements`.
+Until there is a CI, the built files will be checked in.
 
 License
 -------
