@@ -49,7 +49,7 @@ class FlowController
         ],
     ];
 
-    
+
     /**
      * Determines if the passed $route is accessible, based on the current session data.
      *
