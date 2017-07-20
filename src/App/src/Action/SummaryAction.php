@@ -11,7 +11,7 @@ class SummaryAction extends AbstractAction
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$this->isActionAccessible($request)) {
-            die('cannot access action');
+            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
         }
 
         //---

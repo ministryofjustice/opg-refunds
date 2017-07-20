@@ -30,6 +30,9 @@ $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
 $app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
 
+$app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session');
+
+//---
 
 $app->route('/when-were-fees-paid', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when');
 $app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when.answer');
