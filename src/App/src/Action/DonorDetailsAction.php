@@ -5,17 +5,11 @@ use App\Form;
 use App\Service\Refund\FlowController;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class DonorDetailsAction implements
-    ServerMiddlewareInterface,
-    Initializers\UrlHelperInterface,
-    Initializers\TemplatingSupportInterface
+class DonorDetailsAction extends AbstractAction
 {
-    use Initializers\UrlHelperTrait;
-    use Initializers\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {

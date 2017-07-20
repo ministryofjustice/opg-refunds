@@ -5,20 +5,20 @@ use App\Form;
 use App\Service\Refund\FlowController;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class VerificationDetailsAction implements
-    ServerMiddlewareInterface,
-    Initializers\UrlHelperInterface,
-    Initializers\TemplatingSupportInterface
+class VerificationDetailsAction extends AbstractAction
 {
-    use Initializers\UrlHelperTrait;
-    use Initializers\TemplatingSupportTrait;
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->isActionAccessible($request)) {
+            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
+        }
+
+        //---
+
         $session = $request->getAttribute('session');
 
         $form = new Form\VerificationDetails([

@@ -1,23 +1,16 @@
 <?php
-
 namespace App\Action;
 
 use App\Form;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
 
-class AccountDetailsAction implements
-    ServerMiddlewareInterface,
-    Initializers\UrlHelperInterface,
-    Initializers\TemplatingSupportInterface
+class AccountDetailsAction extends AbstractAction
 {
-    use Initializers\UrlHelperTrait;
-    use Initializers\TemplatingSupportTrait;
 
     private $applicationProcessService;
 
@@ -28,6 +21,11 @@ class AccountDetailsAction implements
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->isActionAccessible($request)) {
+            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
+        }
+
+        //---
 
         $session = $request->getAttribute('session');
 
@@ -57,7 +55,6 @@ class AccountDetailsAction implements
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.done', ['who' => $request->getAttribute('who')])
-
                 );
             }
         }
