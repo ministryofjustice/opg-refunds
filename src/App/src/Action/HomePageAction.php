@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
