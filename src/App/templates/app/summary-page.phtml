@@ -7,67 +7,105 @@
             Check your refund claim
         </h1>
 
-        <table class="check-your-answers form-group">
-            <tbody>
-                <tr>
-                    <td>
-                        Donor details
-                    </td>
-                    <td>
-                        <p>Name: <?= $details['donor']['name']['title'] ?> <?= $details['donor']['name']['first'] ?> <?= $details['donor']['name']['last'] ?></p>
-                        <p>DOB: <?= $details['donor']['dob'] ?></p>
-                    </td>
-                    <td class="change-answer">
-                        <a href="<?= $this->url('apply.donor', ['who'=>$who]) ?>">
-                            Change <span class="visuallyhidden">donor details</span>
-                        </a>
-                    </td>
-                </tr>
-                <?php if ($who === 'attorney'): ?>
-                <tr>
-                    <td>Attorney details</td>
-                    <td>
-                        <p>Name: <?= $details['attorney']['name']['title'] ?> <?= $details['attorney']['name']['first'] ?> <?= $details['attorney']['name']['last'] ?></p>
-                        <p>DOB: <?= $details['attorney']['dob'] ?></p>
-                    </td>
-                    <td class="change-answer">
-                        <a href="<?= $this->url('apply.attorney', ['who'=>$who]) ?>">
-                            Change <span class="visuallyhidden">attorney details</span>
-                        </a>
-                    </td>
-                </tr>
-                <?php endif ?>
-                <tr>
-                    <td>Power of attorney details</td>
-                    <td>
-                        <p>Case number: <?= $details['verification']['case-number'] ?? '-Not supplied-' ?></p>
-                        <p>Donor postcode: <?= $details['verification']['donor-postcode'] ?? '-Not supplied-' ?></p>
-                        <p>Attorney name: <?= $details['verification']['attorney-name'] ?? '-Not supplied-' ?></p>
-                        <p>Attorney postcode: <?= $details['verification']['attorney-postcode'] ?? '-Not supplied-' ?></p>
-                    </td>
-                    <td class="change-answer">
-                        <a href="<?= $this->url('apply.verification', ['who'=>$who]) ?>">
-                            Change <span class="visuallyhidden">power of attorney details</span>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Contact details</td>
-                    <td>
-                        <?= (isset($details['contact']['email'])) ? "<p>Email: {$details['contact']['email']}</p>" : '' ?>
-                        <?= (isset($details['contact']['mobile'])) ? "<p>Mobile: {$details['contact']['mobile']}</p>" : '' ?>
-                    </td>
-                    <td class="change-answer">
-                        <a href="<?= $this->url('apply.contact', ['who'=>$who]) ?>">
-                            Change <span class="visuallyhidden">contact details</span>
-                        </a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <h2 class="heading-medium">Donor details</h2>
 
-        <div class="form-group">
-            <a class="button" href="<?= $this->url('apply.account', ['who'=>$who]) ?>">Continue</a>
-        </div>
+        <dl class="govuk-check-your-answers cya-questions-short">
+            
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Date of birth',
+                'answer' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}",
+                'changeURL' => $this->url('apply.donor', ['who'=>$who])
+            ]) ?>
+            
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Name',
+                'answer' => $details['donor']['dob'],
+                'changeURL' => $this->url('apply.donor', ['who'=>$who])
+            ]) ?>
+
+        </dl>
+
+        <?php if ($who === 'attorney'): ?>
+            <h2 class="heading-medium">Attorney details</h2>
+
+            <dl class="govuk-check-your-answers cya-questions-short">
+                
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Name',
+                    'answer' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}",
+                    'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+                ]) ?>
+                
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Date of birth',
+                    'answer' => $details['attorney']['dob'],
+                    'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+                ]) ?>
+        
+            </dl>
+        <?php endif ?>
+
+        <h2 class="heading-medium">Power of attorney details</h2>
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+            
+            <?php if (isset($details['verification']['case-number']) && $details['verification']['case-number']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Case number',
+                    'answer' => $details['verification']['case-number'],
+                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+
+            <?php if (isset($details['verification']['donor-postcode']) && $details['verification']['donor-postcode']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Donor postcode',
+                    'answer' => $details['verification']['donor-postcode'],
+                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+
+            <?php if (isset($details['verification']['attorney-name']) && $details['verification']['attorney-name']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Attorney name',
+                    'answer' => $details['verification']['attorney-name'],
+                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+
+            <?php if (isset($details['verification']['attorney-postcode']) && $details['verification']['attorney-postcode']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Attorney postcode',
+                    'answer' => $details['verification']['attorney-postcode'],
+                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+
+        </dl>
+
+        <h2 class="heading-medium">Get updates</h2>
+
+        <dl class="govuk-check-your-answers cya-questions-short">
+            
+            <?php if (isset($details['contact']['email']) && $details['contact']['email']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Email',
+                    'answer' => $details['contact']['email'],
+                    'changeURL' => $this->url('apply.contact', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+            
+            <?php if (isset($details['contact']['mobile']) && $details['contact']['mobile']): ?>
+                <?php $this->insert('snippet::check-your-details-item', [
+                    'question' => 'Mobile phone number',
+                    'answer' => $details['contact']['mobile'],
+                    'changeURL' => $this->url('apply.contact', ['who'=>$who])
+                ]) ?>
+            <?php endif ?>
+
+        </dl>
+
+        <a class="button" href="<?= $this->url('apply.account', ['who'=>$who]) ?>">Continue</a>
+        
     </div>
 </div>

@@ -14,9 +14,9 @@
     "uglify-js": "2.8.11"
   },
   "scripts": {
-    "build": "yarn run build:js && yarn run build:styles:govuk_elements yarn run copy:govuk_template",
+    "build": "yarn run build:js && yarn run build:styles yarn run copy:govuk_template",
     "build:js": "node src/js/uglify",
-    "build:styles:govuk_elements": "node-sass -o public/assets/govuk_elements/stylesheets --include-path node_modules --output-style compressed src/scss/govuk_elements",
+    "build:css": "node-sass -o public/assets/ --include-path node_modules --output-style compressed src/scss/",
     "copy:govuk_template": "cp -r node_modules/govuk_template_jinja/assets public/assets/govuk_template"
   }
 }
