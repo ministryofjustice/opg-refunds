@@ -12,6 +12,7 @@ ADD docker/confd /etc/confd
 RUN cd /tmp && \
     curl -s https://getcomposer.org/installer | php && \
     cd /app && \
+    mkdir -p /app/vendor && \
     chown -R app:app /app/vendor && \
     gosu app php /tmp/composer.phar install --prefer-dist -o --no-suggest && \
     rm /tmp/composer.phar && \
