@@ -3,13 +3,34 @@
 <div class="grid-row">
     <div class="column-two-thirds">
 
-        <h1 class="heading-xlarge">
-            Done
-        </h1>
+        <div class="govuk-box-highlight">
+            <h1 class="bold-large">Claim submitted</h1>
+            <p>
+                Your reference <br>
+                <strong class="heading-medium"><?= $this->e($reference) ?></strong>
+            </p>
+            <p>Email confirmation sent to <span class="bold">youremail@gmail.com</span></p>
+        </div>
 
-        <p>All done. Reference <?= $this->e($reference) ?></p>
+        <h2 class="heading-medium">What happens next</h2>
+        
+        <p>We will let you know when your claim is approved or if we need more information.</p>
+        
+        <div class="panel panel-border-wide">
+            <p>
+            Current processing time: 12 weeks. 
+            </p>
+        </div>
 
-        <a class="button" href="<?= $this->url('eligibility.when') ?>">Start a new claim</a>
+        <p>Your refund will be paid by 10 October, if your claim is approved.</p> 
+        
+        <h2 class="heading-medium">Tell the attorneys</h2>
+
+        <p>Please tell all attorneys you've applied for a refund. It can slow things down if we get more than one claim.</p>
+
+        <p>
+            <a href="<?= $this->url('eligibility.when') ?>" class="button">Start a new claim</a>
+        </p>
 
     </div>
 </div>
