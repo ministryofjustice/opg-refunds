@@ -27,6 +27,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
 {
 
     const COOKIE_NAME = 'rs';
+    const COOKIE_PATH = '/application';
 
     /**
      * @var int Time in seconds before the session cookie should expire.
@@ -84,7 +85,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
                 ->withValue($sessionId)
                 ->withSecure(true)
                 ->withHttpOnly(true)
-                ->withPath('/'.$request->getAttribute('who').'-applying')
+                ->withPath(self::COOKIE_PATH)
                 ->withExpires(new DateTime("+{$this->sessionTTL} seconds")));
 
             // Add a strict SameSite value to the cookie
@@ -94,7 +95,8 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
         } elseif ($response instanceof ResponseInterface) {
             // If there's no data to store, kill the cookie.
-            $response = FigResponseCookies::expire($response, self::COOKIE_NAME);
+            $response = FigResponseCookies::set($response, SetCookie::createExpired(self::COOKIE_NAME)
+                ->withPath(self::COOKIE_PATH));
 
             // And wipe the stored data.
             $this->sessionManager->delete($sessionId);

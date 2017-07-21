@@ -43,7 +43,7 @@ $app->pipe(UrlHelperMiddleware::class);
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
 
 // Add session support to required path prefixes
-foreach (['/donor-applying', '/attorney-applying', '/session-finished'] as $path) {
+foreach (['/session-finished', '/application'] as $path) {
     $app->pipe($path, [
         App\Middleware\Session\SessionMiddleware::class,
         App\Middleware\Session\CsrfMiddleware::class

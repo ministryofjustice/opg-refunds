@@ -43,12 +43,14 @@ $app->route('/who-is-applying/answer', App\Action\WhoAction::class, ['GET'], 'el
 $app->route('/donor-status', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased');
 $app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased.answer');
 
+//---
 
-$app->route('/{who:donor|attorney}-applying/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
-$app->route('/{who:donor|attorney}-applying/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
-$app->route('/{who:donor|attorney}-applying/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification');
+$prefix = '/application/by-{who:donor|attorney}';
 
-$app->route('/{who:donor|attorney}-applying/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
-$app->route('/{who:donor|attorney}-applying/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
-$app->route('/{who:donor|attorney}-applying/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
-$app->route('/{who:donor|attorney}-applying/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
+$app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
+$app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
+$app->route($prefix.'/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification');
+$app->route($prefix.'/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
+$app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
+$app->route($prefix.'/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
+$app->route($prefix.'/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
