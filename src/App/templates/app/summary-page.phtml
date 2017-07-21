@@ -48,60 +48,48 @@
         <h2 class="heading-medium">Power of attorney details</h2>
 
         <dl class="govuk-check-your-answers cya-questions-short">
-            
-            <?php if (isset($details['verification']['case-number']) && $details['verification']['case-number']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Case number',
-                    'answer' => $details['verification']['case-number'],
-                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
 
-            <?php if (isset($details['verification']['donor-postcode']) && $details['verification']['donor-postcode']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Donor postcode',
-                    'answer' => $details['verification']['donor-postcode'],
-                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Case number',
+                'answer' => ($details['verification']['case-number']) ?? null,
+                'changeURL' => $this->url('apply.verification', ['who'=>$who])
+            ]) ?>
 
-            <?php if (isset($details['verification']['attorney-name']) && $details['verification']['attorney-name']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Attorney name',
-                    'answer' => $details['verification']['attorney-name'],
-                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Donor postcode',
+                'answer' => ($details['verification']['donor-postcode']) ?? null,
+                'changeURL' => $this->url('apply.verification', ['who'=>$who])
+            ]) ?>
 
-            <?php if (isset($details['verification']['attorney-postcode']) && $details['verification']['attorney-postcode']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Attorney postcode',
-                    'answer' => $details['verification']['attorney-postcode'],
-                    'changeURL' => $this->url('apply.verification', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Attorney name',
+                'answer' => ($details['verification']['attorney-name']) ?? null,
+                'changeURL' => $this->url('apply.verification', ['who'=>$who])
+            ]) ?>
+
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Attorney postcode',
+                'answer' => ($details['verification']['attorney-postcode']) ?? null,
+                'changeURL' => $this->url('apply.verification', ['who'=>$who])
+            ]) ?>
 
         </dl>
 
         <h2 class="heading-medium">Get updates</h2>
 
         <dl class="govuk-check-your-answers cya-questions-short">
-            
-            <?php if (isset($details['contact']['email']) && $details['contact']['email']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Email',
-                    'answer' => $details['contact']['email'],
-                    'changeURL' => $this->url('apply.contact', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
-            
-            <?php if (isset($details['contact']['mobile']) && $details['contact']['mobile']): ?>
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Mobile phone number',
-                    'answer' => $details['contact']['mobile'],
-                    'changeURL' => $this->url('apply.contact', ['who'=>$who])
-                ]) ?>
-            <?php endif ?>
+
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Email',
+                'answer' => ($details['contact']['email']) ?? null,
+                'changeURL' => $this->url('apply.contact', ['who'=>$who])
+            ]) ?>
+
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Mobile phone number',
+                'answer' => ($details['contact']['mobile']) ?? null,
+                'changeURL' => $this->url('apply.contact', ['who'=>$who])
+            ]) ?>
 
         </dl>
 
