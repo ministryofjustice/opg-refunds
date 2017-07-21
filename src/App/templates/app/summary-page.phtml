@@ -12,13 +12,13 @@
         <dl class="govuk-check-your-answers cya-questions-short">
             
             <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Date of birth',
+                'question' => 'Name',
                 'answer' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}",
                 'changeURL' => $this->url('apply.donor', ['who'=>$who])
             ]) ?>
             
             <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Name',
+                'question' => 'Date of birth',
                 'answer' => (new \DateTime($details['donor']['dob']))->format('j F Y'),
                 'changeURL' => $this->url('apply.donor', ['who'=>$who])
             ]) ?>
