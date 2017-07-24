@@ -1,13 +1,136 @@
-<?php $this->layout('layout::default') ?>
+<?php
+$title = 'Claim a power of attorney refund';
+$this->layout('layout::standard', [
+        'title' => $title
+    ]);
+?>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+<p>Refunds are available for application fees paid from April 2013 to March 2017.</p>
 
-        <h1 class="heading-xlarge">
-            POA Refund Project
-        </h1>
+<p>You'll get a partial refund of £16 to £53 for each fee paid for a:</p>
 
-        <a class="button" href="<?= $this->url('eligibility.when') ?>">Start</a>
+<ul class="list list-bullet">
+    <li>property and financial affairs lasting power of attorney (LPA)</li>
+    <li>health and welfare lasting power of attorney (LPA)</li>
+    <li>enduring power of attorney (EPA)</li>
+</ul>
 
-    </div>
+<p>
+    <a href="#how-much">How much you will get.</a>
+</p>
+
+<h2 class="heading-medium">Who can claim</h2>
+
+<p>You must be either:</p>
+
+<ul class="list list-bullet">
+    <li>the 'donor' - the person who made the LPA or EPA</li>
+    <li>an 'attorney' - trusted by the donor and claiming on their behalf</li>
+</ul>
+
+<p>You can claim for all of a donor's fees in one go. For example, if they made 2 LPAs or paid twice because of a mistake.</p>
+
+ <div class="panel panel-border-wide">
+    <p>
+    If the donor has died a refund can only be claimed if their estate is in probate. Contact the <a href="#helpline">Refunds Helpline</a>.
+    </p>
 </div>
+
+<h2 class="heading-medium">What you'll need</h2>
+
+<ul class="list list-bullet">
+    <li>donor's name, date of birth and postcode</li>
+    <li>donor's bank account details - refunds can only be paid to the donor</li>
+    <li>10 minutes to complete your claim</li>
+</ul>
+
+<p>It can take up to 12 weeks for a refund to be processed.</p>
+
+<p>
+    <a class="button button-start" href="<?= $this->url('eligibility.when') ?>" role="button">Start now</a>
+</p>
+
+<h2 class="heading-medium" id="how-much">How much you will get</h2>
+        
+<p>
+    Don't worry if you don't know exact dates - we'll check this when you claim.
+</p>
+
+<p>
+    You'll get half the refund amount if the donor got a reduced fee ('remission').  
+</p>
+
+<table>
+<thead>
+    <tr>
+        <th scope="col">When fee was paid</th>
+        <th class="numeric" scope="col">Refund per LPA or EPA <br>(if full fee paid)</th>
+    </tr>
+</thead>
+<tbody>
+    <tr>
+        <td>Apr to Sept 2013</td>
+        <td class="numeric">£53.83</td>
+    </tr>
+    <tr>
+        <td>Oct 2013 to Mar 2014</td>
+        <td class="numeric">£33.83</td>
+    </tr>
+    <tr>
+        <td>Apr 2014 to Mar 2015</td>
+        <td class="numeric">£36.84</td>
+    </tr>
+    <tr>
+        <td>Apr 2015 to Mar 2016</td>
+        <td class="numeric">£37.66</td>
+    </tr>
+    <tr>
+        <td>Apr 2016 to Mar 2017</td>
+        <td class="numeric">£44.52</td>
+    </tr>
+</tbody>
+</table>
+
+<p>
+    <br>
+    <a href="#">Why there are different amounts.</a>
+</p>
+
+<h2 class="heading-medium" id="helpline">Refunds Helpline</h2>
+
+<address>
+    <p>
+        Email: <a href="mailto:refunds@opg.gov.uk">refunds@opg.gov.uk</a><br>
+        Telephone: 0300 123 1122<br>
+        Textphone: 0300 123 1123<br>
+        Monday to Friday, 9am to 5pm<br>
+        <a href="https://www.gov.uk/call-charges">Find out about call charges</a>
+    </p>
+</address>
+
+<div class="panel panel-border-wide">
+    <p>
+    The claim deadline is 31 July 2020.
+    </p>
+</div>
+
+<p>
+    Fee refunds <a href="#">terms and conditions</a>.
+</p>
+
+<?php $this->start('sidebar') ?>
+    <aside class="govuk-related-items" role="complementary">
+        <h2 class="heading-medium" id="subsection-title">Lasting power of attorney, being 
+        in care and your financial affairs</h2>
+        <nav role="navigation" aria-labelledby="subsection-title">
+            <ul class="font-xsmall">
+                <li>
+                    <a href="#">Why refunds are available</a>
+                </li>
+                <li>
+                    <a href="#">How to claim as a deputy</a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+<?php $this->stop() ?>
