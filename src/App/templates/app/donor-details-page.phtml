@@ -3,6 +3,8 @@ $title = ($who == 'donor') ? 'Your details (donor)' : 'Donor details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
+
+$dob = $form->get('dob');
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
@@ -38,44 +40,9 @@ $this->layout('layout::standard', [
 
     </fieldset>
 
-    <div class="form-group">
-        <fieldset>
-            <legend class="form-label-bold">
-                Donor date of birth
-                <span class="form-hint">For example, 31 3 1980</span>
-            </legend>
-
-            <div class="form-date">
-                <div class="form-group form-group-day">
-                    <?php $this->insert('snippet::input-text', [
-                        'formElement' => $form->get('day'),
-                        'formLabel' => 'Day',
-                        'formType' => 'number',
-                        'formLabelBold' => false
-                    ]) ?>
-                </div>
-                
-                <div class="form-group form-group-month">
-                    <?php $this->insert('snippet::input-text', [
-                        'formElement' => $form->get('month'),
-                        'formLabel' => 'Month',
-                        'formType' => 'number',
-                        'formLabelBold' => false
-                    ]) ?>
-                </div>
-
-                <div class="form-group form-group-year">
-                    <?php $this->insert('snippet::input-text', [
-                        'formElement' => $form->get('year'),
-                        'formLabel' => 'Year',
-                        'formType' => 'number',
-                        'formLabelBold' => false
-                    ]) ?>
-                </div>
-            </div>
-
-        </fieldset>
-    </div>
+    <?php $this->insert('snippet::input-dob', [
+        'formElement' => $form->get('dob'),
+    ]) ?>
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">

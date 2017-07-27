@@ -1,0 +1,56 @@
+<?php
+
+$hasErrors = !empty($formElement->getMessages());
+
+?>
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+    <fieldset>
+        <legend class="form-label-bold">
+            Donor date of birth
+            <span class="form-hint">For example, 31 3 1980</span>
+        </legend>
+
+        <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?= $this->e($message) ?></span>
+        <?php endforeach ?>
+
+        <div id="id-<?=  $this->e($formElement->getName()) ?>" class="form-date">
+            <div class="form-group form-group-day">
+                <?php $this->insert('snippet::input-text', [
+                    'formSet' => $formElement->getName(),
+                    'formElement' => $formElement->get('day'),
+                    'formLabel' => 'Day',
+                    'formType' => 'number',
+                    'formLabelBold' => false,
+                    'hasParentErrors' => $hasErrors,
+                    'additionalFormGroupClasses' => 'form-group-day',
+                ]) ?>
+            </div>
+
+            <div class="form-group form-group-month">
+                <?php $this->insert('snippet::input-text', [
+                    'formSet' => $formElement->getName(),
+                    'formElement' => $formElement->get('month'),
+                    'formLabel' => 'Month',
+                    'formType' => 'number',
+                    'formLabelBold' => false,
+                    'hasParentErrors' => $hasErrors,
+                    'additionalFormGroupClasses' => 'form-group-month',
+                ]) ?>
+            </div>
+
+            <div class="form-group form-group-year">
+                <?php $this->insert('snippet::input-text', [
+                    'formSet' => $formElement->getName(),
+                    'formElement' => $formElement->get('year'),
+                    'formLabel' => 'Year',
+                    'formType' => 'number',
+                    'formLabelBold' => false,
+                    'hasParentErrors' => $hasErrors,
+                    'additionalFormGroupClasses' => 'form-group-year',
+                ]) ?>
+            </div>
+        </div>
+
+    </fieldset>
+</div>
