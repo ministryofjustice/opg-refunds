@@ -5,6 +5,7 @@ Mandatory: formLabel
 Optional: formHint (default: no span.form-hint outputted)
 Optional: formLabelBold true|false (default: no wrapper span.form-label-bold outputted)
 Optional: formType (default: text)
+Optional: formSizeClass
 */
 
 $formId = "id-{$formElement->getName()}";
@@ -21,6 +22,10 @@ $hasParentErrors = isset($hasParentErrors) && $hasParentErrors;
 $formGroup = 'form-group';
 $formGroup .= ($hasErrors && !$hasParentErrors) ? ' form-group-error' : '';
 $formGroup .= (isset($additionalFormGroupClasses)) ? " {$additionalFormGroupClasses}" : '';
+
+$formControlClasses = 'form-control'; 
+$formControlClasses .= ($hasErrors) ? " form-control-error" : '';
+$formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormControlClass}" : '';
 
 ?>
 
@@ -42,5 +47,5 @@ $formGroup .= (isset($additionalFormGroupClasses)) ? " {$additionalFormGroupClas
         <?php endif ?>
 
     </label>
-    <input class="form-control<?= ($hasErrors)?' form-control-error':'' ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?=$this->e( $formElement->getValue() )?>">
+    <input class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?=$this->e( $formElement->getValue() )?>">
 </div>

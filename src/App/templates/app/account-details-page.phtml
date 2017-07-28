@@ -29,7 +29,8 @@ $this->layout('layout::standard',
         'formLabel' => 'Account number',
         'formHint' => '8-digit number shown on bank cards and statements',
         'formType' => 'text',
-        'formLabelBold' => true
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-1-4'
     ]) ?>
 
     <?php $this->insert('snippet::input-text', [
@@ -37,7 +38,8 @@ $this->layout('layout::standard',
         'formLabel' => 'Sort code',
         'formHint' => '6-digit number shown on bank cards and statements',
         'formType' => 'text',
-        'formLabelBold' => true
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-1-4'
     ]) ?>
 
     <h2 class="heading-medium">Statement of truth</h2>
