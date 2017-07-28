@@ -8,11 +8,10 @@ $hasErrors = !empty($formElement->getMessages());
         <legend class="form-label-bold">
             Donor date of birth
             <span class="form-hint">For example, 31 3 1980</span>
+            <?php foreach($formElement->getMessages() as $message): ?>
+                <span class="error-message"><?= $this->e($message) ?></span>
+            <?php endforeach ?>
         </legend>
-
-        <?php foreach($formElement->getMessages() as $message): ?>
-            <span class="error-message"><?= $this->e($message) ?></span>
-        <?php endforeach ?>
 
         <div id="id-<?=  $this->e($formElement->getName()) ?>" class="form-date">
             <div class="form-group form-group-day">
