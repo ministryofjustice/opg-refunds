@@ -45,6 +45,9 @@ return [
 
         'encryption' => [
             'key' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEY') ?: null,
+
+            // Keys must be in the format: <ident: int> => <key: 256 bit hex value>
+            'keys' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEYS') ?: null,
         ],
 
         'dynamodb' => [
