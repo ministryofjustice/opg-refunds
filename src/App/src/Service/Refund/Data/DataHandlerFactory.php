@@ -32,15 +32,30 @@ class DataHandlerFactory
 
 
         //-------------------------------------
-        // Encryption
+        // Encryption - Account Details
 
-        if (!isset($config['security']['rsa']['key']['public'])) {
-            throw new \UnexpectedValueException('RSA public key is not configured');
+        if (!isset($config['security']['rsa']['keys']['public']['bank'])) {
+            throw new \UnexpectedValueException('Bank RSA public key is not configured');
         }
 
-        $keyPath = $config['security']['rsa']['key']['public'];
+        $keyPath = $config['security']['rsa']['keys']['public']['bank'];
 
-        $rsa = Rsa::factory([
+        $rsaAccount = Rsa::factory([
+            'public_key'    => $keyPath,
+            'binary_output' => false,   // Thus base64
+        ]);
+
+
+        //-------------------------------------
+        // Encryption - Everything
+
+        if (!isset($config['security']['rsa']['keys']['public']['full'])) {
+            throw new \UnexpectedValueException('Bank RSA public key is not configured');
+        }
+
+        $keyPath = $config['security']['rsa']['keys']['public']['full'];
+
+        $rsaEverything = Rsa::factory([
             'public_key'    => $keyPath,
             'binary_output' => false,   // Thus base64
         ]);
@@ -59,6 +74,6 @@ class DataHandlerFactory
             throw new \UnexpectedValueException('Hash Salt is too short');
         }
 
-        return new DataHandlerLocal($db, $rsa, $salt);
+        return new DataHandlerLocal($db, $rsaAccount, $salt);
     }
 }
