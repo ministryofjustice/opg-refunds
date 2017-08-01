@@ -27,26 +27,31 @@ class ProcessApplication
 
         $reference = $this->dataHandler->store($data);
 
+        $name = implode(' ', $data['donor']['name']);
         $contact = $data['contact'];
 
+        try {
+            if (isset($contact['email']) && !empty($contact['email'])) {
+                // Send email...
+                $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
+                    'ref' => IdentFormatter::format($reference),
+                    'donor-name' => $name,
+                ]);
+            }
+        } catch (ApiException $e){}
 
-        if (false && isset($contact['email']) && !empty($contact['email'])) {
-            // Send email...
+        //---
 
-            $response = $this->notifyClient->sendEmail($contact['email'], '4664b7ca-18b0-46e0-9a2f-e01becf45cdd', [
-                'ref' => IdentFormatter::format($reference),
-            ]);
-        }
+        try {
+            if (isset($contact['mobile']) && !empty($contact['mobile'])) {
+                // Send SMS...
+                $this->notifyClient->sendSms($contact['mobile'], 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                    'ref' => IdentFormatter::format($reference),
+                ]);
+            }
+        } catch (ApiException $e){}
 
-
-        if (false && isset($contact['mobile']) && !empty($contact['mobile'])) {
-            // Send email...
-
-            $response = $this->notifyClient->sendSms($contact['mobile'], '8292b07c-4dcf-4240-8636-e5ed2f7c4d36', [
-                'ref' => IdentFormatter::format($reference),
-            ]);
-        }
-
+        //---
 
         return $reference;
     }
