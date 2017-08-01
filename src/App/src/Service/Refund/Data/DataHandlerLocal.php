@@ -2,7 +2,7 @@
 namespace App\Service\Refund\Data;
 
 use PDO;
-use Zend\Crypt\PublicKey\Rsa as RsaCipher;
+use App\Service\Crypt\Hybrid as HybridCipher;
 
 /**
  * Data Handler for when the DB is directly accessible from the front service.
@@ -14,16 +14,20 @@ class DataHandlerLocal implements DataHandlerInterface
 {
 
     private $db;
+    private $cipher;
 
-    public function __construct(PDO $db)
+    public function __construct(PDO $db, HybridCipher $cipher)
     {
         $this->db = $db;
+        $this->cipher = $cipher;
     }
 
     public function store(array $data) : string
     {
 
         $data = json_encode($data);
+
+        $data = $this->cipher->encrypt($data);
 
         //---
 

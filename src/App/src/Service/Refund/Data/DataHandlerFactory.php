@@ -4,9 +4,8 @@ namespace App\Service\Refund\Data;
 use Interop\Container\ContainerInterface;
 
 use PDO;
-use Zend\Crypt\BlockCipher;
-use Zend\Crypt\Hybrid as HybridCipher;
 use Zend\Crypt\PublicKey\Rsa;
+use App\Service\Crypt\Hybrid as HybridCipher;
 
 class DataHandlerFactory
 {
@@ -42,12 +41,11 @@ class DataHandlerFactory
         $keyPath = $config['security']['rsa']['keys']['public']['full'];
 
         $cipher = new HybridCipher(
-            BlockCipher::factory('openssl', ['algo' => 'aes']),
             Rsa::factory(['public_key'=> $keyPath])
         );
 
         //---
 
-        return new DataHandlerLocal($db);
+        return new DataHandlerLocal($db, $cipher);
     }
 }
