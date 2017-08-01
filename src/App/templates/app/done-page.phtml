@@ -4,12 +4,17 @@
     <div class="column-two-thirds">
 
         <div class="govuk-box-highlight">
-            <h1 class="bold-large">Claim submitted</h1>
+            <h1 class="bold-large">Claim submitted for <?= $this->e($name) ?></h1>
             <p>
                 Your reference <br>
                 <strong class="heading-medium"><?= $this->e($reference) ?></strong>
             </p>
-            <p>Email confirmation sent to <span class="bold">youremail@gmail.com</span></p>
+            <?php if (isset($contact['email'])): ?>
+                <p>Email confirmation sent to <span class="bold"><?= $this->e($contact['email']) ?></span></p>
+            <?php endif ?>
+            <?php if (isset($contact['mobile'])): ?>
+                <p>Text message confirmation sent to <span class="bold"><?= $this->e($contact['mobile']) ?></span></p>
+            <?php endif ?>
         </div>
 
         <h2 class="heading-medium">What happens next</h2>
@@ -22,7 +27,7 @@
             </p>
         </div>
 
-        <p>Your refund will be paid by 10 October, if your claim is approved.</p> 
+        <p>Your refund will be paid by <?= $this->e(date('j F Y', strtotime('+12 weeks'))) ?>, if your claim is approved.</p>
         
         <h2 class="heading-medium">Tell the attorneys</h2>
 

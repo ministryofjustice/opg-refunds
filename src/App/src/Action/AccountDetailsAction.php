@@ -48,10 +48,11 @@ class AccountDetailsAction extends AbstractAction
                 // Include who is applying
                 $details['applicant'] = $request->getAttribute('who');
 
-                $reference = $this->applicationProcessService->process($details);
+                // Process the application
+                $session['reference'] = $this->applicationProcessService->process($details);
 
-                // Clear out all the data, leaving only the reference
-                $session->exchangeArray([ 'reference' => $reference ]);
+                // Remove metadata
+                unset($session['meta']);
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate('apply.done', ['who' => $request->getAttribute('who')])

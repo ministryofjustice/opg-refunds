@@ -20,13 +20,17 @@ class DoneAction extends AbstractAction
 
         $session = $request->getAttribute('session');
 
+        $contact = $session['contact'];
         $reference = $session['reference'];
+        $name = implode(' ', $session['donor']['name']);
 
         // This will end the session.
         $session->exchangeArray([]);
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
-            'reference' => IdentFormatter::format($reference)
+            'name' => $name,
+            'contact' => $contact,
+            'reference' => IdentFormatter::format($reference),
         ]));
     }
 }
