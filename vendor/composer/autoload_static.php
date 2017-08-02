@@ -62,14 +62,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
         ),
-        'E' => 
-        array (
-            'ExpressiveInstaller\\' => 20,
-            'ExpressiveInstallerTest\\' => 24,
-        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Dev\\' => 4,
             'DeepCopy\\' => 9,
         ),
         'A' => 
@@ -199,17 +195,13 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
-        'ExpressiveInstaller\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/ExpressiveInstaller',
-        ),
-        'ExpressiveInstallerTest\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/test/ExpressiveInstallerTest',
-        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Dev\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Dev/src',
         ),
         'DeepCopy\\' => 
         array (

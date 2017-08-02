@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace Dev;
 
 /**
  * The configuration provider for the App module
@@ -33,10 +33,10 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\PingAction::class => Action\PingAction::class,
+
             ],
             'factories'  => [
-                Action\HomePageAction::class => Action\HomePageFactory::class,
+                Action\ViewCaseQueueAction::class => Action\ViewCaseQueueFactory::class,
             ],
         ];
     }
