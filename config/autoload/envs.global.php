@@ -12,7 +12,7 @@ return [
 
         'rsa' => [
             'key' => [
-                'public' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC') ?: null,
+                'private' => getenv('OPG_REFUNDS_CASEWORKER_API_BANK_KEY_PRIVATE') ?: null,
             ],
         ],
 
