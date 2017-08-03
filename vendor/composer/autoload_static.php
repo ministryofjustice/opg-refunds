@@ -9,6 +9,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
     public static $files = array (
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -21,6 +22,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
             'Zend\\Stratigility\\' => 18,
             'Zend\\Stdlib\\' => 12,
             'Zend\\ServiceManager\\' => 20,
+            'Zend\\Math\\' => 10,
             'Zend\\Expressive\\Tooling\\' => 24,
             'Zend\\Expressive\\Template\\' => 25,
             'Zend\\Expressive\\Router\\' => 23,
@@ -29,6 +31,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
             'Zend\\EventManager\\' => 18,
             'Zend\\Escaper\\' => 13,
             'Zend\\Diactoros\\' => 15,
+            'Zend\\Crypt\\' => 11,
             'Zend\\ConfigAggregator\\' => 22,
             'Zend\\ComponentInstaller\\' => 24,
             'Zend\\Code\\' => 10,
@@ -62,14 +65,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
         ),
-        'E' => 
-        array (
-            'ExpressiveInstaller\\' => 20,
-            'ExpressiveInstallerTest\\' => 24,
-        ),
         'D' => 
         array (
             'Doctrine\\Instantiator\\' => 22,
+            'Dev\\' => 4,
             'DeepCopy\\' => 9,
         ),
         'A' => 
@@ -97,6 +96,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'Zend\\ServiceManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-servicemanager/src',
+        ),
+        'Zend\\Math\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-math/src',
         ),
         'Zend\\Expressive\\Tooling\\' => 
         array (
@@ -130,6 +133,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'Zend\\Diactoros\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-diactoros/src',
+        ),
+        'Zend\\Crypt\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-crypt/src',
         ),
         'Zend\\ConfigAggregator\\' => 
         array (
@@ -199,17 +206,13 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
-        'ExpressiveInstaller\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/ExpressiveInstaller',
-        ),
-        'ExpressiveInstallerTest\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/test/ExpressiveInstallerTest',
-        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
+        ),
+        'Dev\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Dev/src',
         ),
         'DeepCopy\\' => 
         array (
