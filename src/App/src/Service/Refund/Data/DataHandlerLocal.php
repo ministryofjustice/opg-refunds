@@ -27,6 +27,8 @@ class DataHandlerLocal implements DataHandlerInterface
 
         $data = json_encode($data);
 
+        $data = gzdeflate($data);
+
         $data = $this->cipher->encrypt($data);
 
         //---
