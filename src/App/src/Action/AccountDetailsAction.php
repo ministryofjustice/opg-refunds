@@ -7,15 +7,18 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
+use App\Service\Refund\Data\BankDetailsHandler;
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
 
 class AccountDetailsAction extends AbstractAction
 {
 
+    private $bankDetailsHandler;
     private $applicationProcessService;
 
-    public function __construct(ProcessApplicationService $applicationProcessService)
+    public function __construct(BankDetailsHandler $bankDetailsHandler, ProcessApplicationService $applicationProcessService)
     {
+        $this->bankDetailsHandler = $bankDetailsHandler;
         $this->applicationProcessService = $applicationProcessService;
     }
 
@@ -39,11 +42,8 @@ class AccountDetailsAction extends AbstractAction
             if ($form->isValid()) {
                 $details = $session->getArrayCopy();
 
-                // Merge the details into the rest of the data.
-                $details['account'] = [
-                    'name' => $form->getData()['name'],
-                    'details' => array_intersect_key($form->getData(), array_flip(['sort-code', 'account-number']))
-                ];
+                // Prep the account details for storage.
+                $details['account'] = $this->bankDetailsHandler->process($form->getData());
 
                 // Include who is applying
                 $details['applicant'] = $request->getAttribute('who');
