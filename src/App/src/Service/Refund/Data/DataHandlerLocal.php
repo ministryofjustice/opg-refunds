@@ -2,7 +2,7 @@
 namespace App\Service\Refund\Data;
 
 use PDO;
-use App\Service\Crypt\Hybrid as HybridCipher;
+use App\Crypt\Hybrid as HybridCipher;
 
 /**
  * Data Handler for when the DB is directly accessible from the front service.
