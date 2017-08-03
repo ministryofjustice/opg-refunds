@@ -2,7 +2,9 @@
 namespace Dev\Action;
 
 use PDO;
+use App\Crypt\Hybrid as HybridCipher;
 use Zend\Crypt\PublicKey\Rsa;
+use Zend\Crypt\BlockCipher;
 use Interop\Container\ContainerInterface;
 
 class ViewCaseQueueFactory
@@ -29,20 +31,35 @@ class ViewCaseQueueFactory
 
 
         //-------------------------------------
-        // Encryption
+        // Encryption - Bank
 
-        if (!isset($config['security']['rsa']['key']['private'])) {
+        if (!isset($config['security']['rsa']['keys']['private']['bank'])) {
             throw new \UnexpectedValueException('RSA public key is not configured');
         }
 
-        $keyPath = $config['security']['rsa']['key']['private'];
+        $keyPath = $config['security']['rsa']['keys']['private']['bank'];
 
         $rsa = Rsa::factory([
-            'private_key'    => $keyPath,
+            'private_key' => $keyPath,
         ]);
+
+
+        //-------------------------------------
+        // Encryption - Everything
+
+        if (!isset($config['security']['rsa']['keys']['private']['full'])) {
+            throw new \UnexpectedValueException('RSA public key is not configured');
+        }
+
+        $keyPath = $config['security']['rsa']['keys']['private']['full'];
+
+        $hybrid = new HybridCipher(
+            BlockCipher::factory('openssl', ['algo' => 'aes']),
+            Rsa::factory(['private_key'=> $keyPath])
+        );
 
         //---
 
-        return new ViewCaseQueueAction($db, $rsa);
+        return new ViewCaseQueueAction($db, $rsa, $hybrid);
     }
 }
