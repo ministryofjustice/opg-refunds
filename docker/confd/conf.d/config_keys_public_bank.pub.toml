@@ -1,0 +1,6 @@
+[template]
+src = "config_keys_public_bank.pub.tmpl"
+dest = "/app/config/keys/public/bank.pub"
+keys = [
+    "/opg/refunds/public/front/bank/key/public/data",
+]
