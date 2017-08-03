@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Service\Notify;
 
 use Interop\Container\ContainerInterface;

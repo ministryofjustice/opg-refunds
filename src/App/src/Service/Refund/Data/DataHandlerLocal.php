@@ -2,7 +2,7 @@
 namespace App\Service\Refund\Data;
 
 use PDO;
-use Zend\Crypt\PublicKey\Rsa as RsaCipher;
+use App\Crypt\Hybrid as HybridCipher;
 
 /**
  * Data Handler for when the DB is directly accessible from the front service.
@@ -15,21 +15,21 @@ class DataHandlerLocal implements DataHandlerInterface
 
     private $db;
     private $cipher;
-    private $hashSalt;
 
-    public function __construct(PDO $db, RsaCipher $cipher, string $hashSalt)
+    public function __construct(PDO $db, HybridCipher $cipher)
     {
         $this->db = $db;
         $this->cipher = $cipher;
-        $this->hashSalt = $hashSalt;
     }
 
     public function store(array $data) : string
     {
 
-        $data = $this->prepareData($data);
-
         $data = json_encode($data);
+
+        $data = gzdeflate($data);
+
+        $data = $this->cipher->encrypt($data);
 
         //---
 
@@ -74,37 +74,4 @@ class DataHandlerLocal implements DataHandlerInterface
         return $id;
     }
 
-    /**
-     * Prepare the data, ready to be sent to the DB.
-     *
-     * @param array $data
-     * @return array
-     */
-    private function prepareData(array $data) : array
-    {
-
-        $accountDetails = $data['account']['details'];
-
-        //------------------------------------------------------
-        // Hash sort code and account number
-
-        $detailsToHash = "{$accountDetails['sort-code']}/{$accountDetails['account-number']}";
-
-        $hashedDetails = hash('sha512', $this->hashSalt.$detailsToHash);
-
-        $data['account']['hash'] = $hashedDetails;
-
-        //------------------------------------------------------
-        // Replace clear-text details with an encrypted version
-
-        $accountDetails = json_encode($accountDetails);
-
-        $encryptedAccount = $this->cipher->encrypt($accountDetails);
-
-        $data['account']['details'] = $encryptedAccount;
-
-        //---
-
-        return $data;
-    }
 }

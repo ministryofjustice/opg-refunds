@@ -11,8 +11,11 @@ return [
     'security' => [
 
         'rsa' => [
-            'key' => [
-                'public' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC') ?: null,
+            'keys' => [
+                'public' => [
+                    'full' => getenv('OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC') ?: null,
+                    'bank' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC') ?: null,
+                ],
             ],
         ],
 
