@@ -30,7 +30,7 @@ class ViewCaseQueueAction implements ServerMiddlewareInterface
         $stmt = $this->db->query($sql);
         $row = $stmt->fetchObject();
 
-        $payload = json_decode($this->fullCipher->decrypt(stream_get_contents($row->data)), true);
+        $payload = json_decode(gzinflate($this->fullCipher->decrypt(stream_get_contents($row->data))), true);
 
         $payload['account']['details'] = json_decode($this->bankCipher->decrypt($payload['account']['details']), true);
 
