@@ -9,10 +9,10 @@
                 Your reference <br>
                 <strong class="heading-medium"><?= $this->e($reference) ?></strong>
             </p>
-            <?php if (isset($contact['email'])): ?>
+            <?php if (!empty($contact['email'])): ?>
                 <p>Email confirmation sent to <span class="bold"><?= $this->e($contact['email']) ?></span></p>
             <?php endif ?>
-            <?php if (isset($contact['mobile'])): ?>
+            <?php if (!empty($contact['mobile'])): ?>
                 <p>Text message confirmation sent to <span class="bold"><?= $this->e($contact['mobile']) ?></span></p>
             <?php endif ?>
         </div>
