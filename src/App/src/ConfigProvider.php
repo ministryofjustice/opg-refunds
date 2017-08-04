@@ -36,7 +36,6 @@ class ConfigProvider
             'invokables' => [
                 // Actions
                 Action\HomePageAction::class => Action\HomePageAction::class,
-                Action\PingAction::class => Action\PingAction::class,
                 Action\TestAction::class => Action\TestAction::class,
                 Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\WhoAction::class => Action\WhoAction::class,
@@ -58,6 +57,7 @@ class ConfigProvider
 
                 // Actions
                 Action\AccountDetailsAction::class => Action\AccountDetailsFactory::class,
+                Action\HealthCheckAction::class => Action\HealthCheckFactory::class,
 
                 // Middleware
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,

@@ -28,7 +28,7 @@
 
 $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
-$app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
+$app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck.json');
 
 $app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session');
 
