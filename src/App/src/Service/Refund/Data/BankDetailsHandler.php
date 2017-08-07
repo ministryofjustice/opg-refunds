@@ -3,7 +3,6 @@ namespace App\Service\Refund\Data;
 
 use Zend\Crypt\PublicKey\Rsa as RsaCipher;
 
-
 class BankDetailsHandler
 {
 
@@ -33,7 +32,7 @@ class BankDetailsHandler
 
         return [
             'name' => $data['name'],
-            'hash' => hash('sha512', "{$this->hashSalt}{$accountDetails}"),
+            'hash' => hash('sha512', $this->hashSalt.$accountDetails),
             'details' => $this->cipher->encrypt($accountDetails)
         ];
     }

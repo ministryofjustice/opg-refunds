@@ -36,12 +36,12 @@ class FlowController
             'requires'  => 'apply.contact',
         ],
         [
-            'name'      => 'apply.summary',
-            'requires'  => 'apply.summary',
+            'name'      => 'apply.account',
+            'requires'  => 'apply.account'
         ],
         [
-            'name'      => 'apply.account',
-            'requires'  => 'apply.summary'
+            'name'      => 'apply.summary',
+            'requires'  => 'apply.summary',
         ],
         [
             'name'      => 'apply.done',
@@ -55,12 +55,10 @@ class FlowController
      *
      * @param string $route
      * @param ArrayObject $session
-     * @param string $whoIsApplying
      * @return bool
      */
-    public static function routeAccessible(string $route, ArrayObject $session, string $whoIsApplying) : bool
+    public static function routeAccessible(string $route, ArrayObject $session) : bool
     {
-
         // Find what route this route is dependent on.
         $requiredIndex = array_search(
             $route, array_column(self::$routes, 'name')
@@ -75,7 +73,7 @@ class FlowController
         );
 
         $allowedIndex = array_search(
-            self::getNextRouteName($session, $whoIsApplying), array_column(self::$routes, 'name')
+            self::getNextRouteName($session), array_column(self::$routes, 'name')
         );
 
         // Route is accessible if it's index is >= the current route's index.
@@ -87,21 +85,26 @@ class FlowController
      * Determines the next accessible route, ased on the current session data.
      *
      * @param ArrayObject $session
-     * @param string $whoIsApplying
      * @return string
      */
-    public static function getNextRouteName(ArrayObject $session, string $whoIsApplying) : string
+    public static function getNextRouteName(ArrayObject $session) : string
     {
 
         if (isset($session['reference'])) {
             return 'apply.done';
         }
 
+        //---
+
+        if (!isset($session['applicant'])) {
+            return 'apply.donor';
+        }
+
         if (!isset($session['donor']) || !is_array($session['donor'])) {
             return 'apply.donor';
         }
 
-        if ($whoIsApplying === 'attorney' && (!isset($session['attorney']) || !is_array($session['attorney']))) {
+        if ($session['applicant'] === 'attorney' && (!isset($session['attorney']) || !is_array($session['attorney']))) {
             return 'apply.attorney';
         }
 
@@ -111,6 +114,10 @@ class FlowController
 
         if (!isset($session['contact']) || !is_array($session['contact'])) {
             return 'apply.contact';
+        }
+
+        if (!isset($session['account']) || !is_array($session['account'])) {
+            return 'apply.account';
         }
 
         return 'apply.summary';

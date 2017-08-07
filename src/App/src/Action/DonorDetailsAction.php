@@ -27,6 +27,9 @@ class DonorDetailsAction extends AbstractAction
             if ($form->isValid()) {
                 $session['donor'] = $form->getFormattedData();
 
+                // Include who is applying
+                $session['applicant'] = $request->getAttribute('who');
+
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
                         FlowController::getNextRouteName($session, $request->getAttribute('who')),

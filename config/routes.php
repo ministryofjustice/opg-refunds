@@ -51,6 +51,6 @@ $app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GE
 $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
 $app->route($prefix.'/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification');
 $app->route($prefix.'/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
-$app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET'], 'apply.summary');
 $app->route($prefix.'/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
+$app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET', 'POST'], 'apply.summary');
 $app->route($prefix.'/done', App\Action\DoneAction::class, ['GET'], 'apply.done');

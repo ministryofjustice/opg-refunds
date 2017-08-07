@@ -7,19 +7,17 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
+use App\Service\Refund\FlowController;
 use App\Service\Refund\Data\BankDetailsHandler;
-use App\Service\Refund\ProcessApplication as ProcessApplicationService;
 
 class AccountDetailsAction extends AbstractAction
 {
 
-    private $bankDetailsHandler;
-    private $applicationProcessService;
+    private $bankDetailsHandlerService;
 
-    public function __construct(BankDetailsHandler $bankDetailsHandler, ProcessApplicationService $applicationProcessService)
+    public function __construct(BankDetailsHandler $bankDetailsHandlerService)
     {
-        $this->bankDetailsHandler = $bankDetailsHandler;
-        $this->applicationProcessService = $applicationProcessService;
+        $this->bankDetailsHandlerService = $bankDetailsHandlerService;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -40,22 +38,14 @@ class AccountDetailsAction extends AbstractAction
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-                $details = $session->getArrayCopy();
-
-                // Prep the account details for storage.
-                $details['account'] = $this->bankDetailsHandler->process($form->getData());
-
-                // Include who is applying
-                $details['applicant'] = $request->getAttribute('who');
-
-                // Process the application
-                $session['reference'] = $this->applicationProcessService->process($details);
-
-                // Remove metadata
-                unset($session['meta']);
+                // Prep the account before storage.
+                $session['account'] = $this->bankDetailsHandlerService->process($form->getData());
 
                 return new Response\RedirectResponse(
-                    $this->getUrlHelper()->generate('apply.done', ['who' => $request->getAttribute('who')])
+                    $this->getUrlHelper()->generate(
+                        FlowController::getNextRouteName($session, $request->getAttribute('who')),
+                        ['who'=>$request->getAttribute('who')]
+                    )
                 );
             }
         }

@@ -1,14 +1,15 @@
 <?php
-namespace App\Action;
+namespace App\Action\Factory;
 
 use Interop\Container\ContainerInterface;
 
-class AccountDetailsFactory
+use App\Action;
+
+class SummaryFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new AccountDetailsAction(
-            $container->get(\App\Service\Refund\Data\BankDetailsHandler::class),
+        return new Action\SummaryAction(
             $container->get(\App\Service\Refund\ProcessApplication::class)
         );
     }

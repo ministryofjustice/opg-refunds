@@ -37,7 +37,6 @@ class ConfigProvider
                 // Actions
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\TestAction::class => Action\TestAction::class,
-                Action\SummaryAction::class => Action\SummaryAction::class,
                 Action\WhoAction::class => Action\WhoAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,
@@ -56,8 +55,9 @@ class ConfigProvider
                 \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
 
                 // Actions
-                Action\AccountDetailsAction::class => Action\AccountDetailsFactory::class,
-                Action\HealthCheckAction::class => Action\HealthCheckFactory::class,
+                Action\AccountDetailsAction::class => Action\Factory\AccountDetailsFactory::class,
+                Action\HealthCheckAction::class => Action\Factory\HealthCheckFactory::class,
+                Action\SummaryAction::class => Action\Factory\SummaryFactory::class,
 
                 // Middleware
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,

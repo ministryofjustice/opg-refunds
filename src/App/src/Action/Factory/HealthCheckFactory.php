@@ -1,12 +1,14 @@
 <?php
-namespace App\Action;
+namespace App\Action\Factory;
 
 use Interop\Container\ContainerInterface;
+
+use App\Action;
 
 class HealthCheckFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new HealthCheckAction($container);
+        return new Action\HealthCheckAction($container);
     }
 }
