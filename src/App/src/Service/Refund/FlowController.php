@@ -104,7 +104,7 @@ class FlowController
             return 'apply.donor';
         }
 
-        if ($session['applicant'] === 'attorney' && (!isset($session['attorney']) || !is_array($session['attorney']))) {
+        if (!isset($session['attorney']) || !is_array($session['attorney'])) {
             return 'apply.attorney';
         }
 

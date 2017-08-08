@@ -1,5 +1,5 @@
 <?php
-$title = 'Your details (attorney)';
+$title = ($who == 'attorney') ? 'Your details (attorney)' : 'Attorney details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);

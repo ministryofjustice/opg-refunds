@@ -47,6 +47,7 @@ class AttorneyDetailsAction extends AbstractAction
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::attorney-details-page', [
             'form' => $form,
+            'who' => $request->getAttribute('who')
         ]));
     }
 }
