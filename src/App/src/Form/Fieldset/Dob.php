@@ -13,6 +13,10 @@ use App\Filter\StandardInput as StandardInputFilter;
 
 class Dob extends Fieldset
 {
+    /**
+     * int The maximum age, in years, that's valid.
+     */
+    const MAX_AGE = 150;
 
     private $inputFilter;
 
@@ -93,7 +97,7 @@ class Dob extends Fieldset
         $input->getValidatorChain()
             ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(
-                new Validator\Between(['min'=>($year-150), 'max'=>$year])
+                new Validator\Between(['min'=>($year-self::MAX_AGE), 'max'=>$year])
             ), true);
 
         if ($canBeEmpty) {
