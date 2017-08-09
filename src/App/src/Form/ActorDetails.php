@@ -71,7 +71,9 @@ class ActorDetails extends AbstractForm
         //------------------------
         // DOB
 
-        $dob = new Fieldset\Dob;
+        $dob = new Fieldset\Dob(
+            ($options['dob-optional']) ?? false
+        );
 
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');
@@ -111,7 +113,17 @@ class ActorDetails extends AbstractForm
 
         $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
-        $response['dob'] = $result['dob']['year'].'-'.sprintf('%02d', $result['dob']['month']).'-'.sprintf('%02d', $result['dob']['day']);
+        //---
+
+        $result['dob'] = array_filter( $result['dob'] );
+
+        if (!empty($result['dob'])) {
+            $response['dob'] = $result['dob']['year'].'-'
+                .sprintf('%02d', $result['dob']['month']).'-'
+                .sprintf('%02d', $result['dob']['day']);
+        }
+
+        //---
 
         return $response;
     }

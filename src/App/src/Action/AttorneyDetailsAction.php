@@ -22,7 +22,8 @@ class AttorneyDetailsAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\ActorDetails([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'dob-optional' => ($request->getAttribute('who') === 'donor')
         ]);
 
         $isUpdate = isset($session['attorney']);

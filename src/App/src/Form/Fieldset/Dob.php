@@ -5,6 +5,8 @@ use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilter;
+use Zend\Validator\Callback;
+use Zend\Validator\ValidatorInterface;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
@@ -14,7 +16,7 @@ class Dob extends Fieldset
 
     private $inputFilter;
 
-    public function __construct()
+    public function __construct(bool $canBeEmpty = false)
     {
         parent::__construct('dob');
 
@@ -30,9 +32,18 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach(new Validator\Digits, true)
-            ->attach(new Validator\Between(['min'=>1, 'max'=>31]), true);
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
+            ->attach(new Validator\AllowEmptyValidatorWrapper(
+                new Validator\Between(['min'=>1, 'max'=>31])
+            ), true);
+
+        if ($canBeEmpty) {
+            $input->getValidatorChain()
+                ->attach($this->getAllOrNoneValidator(), true);
+        }
 
         $this->add($field);
         $inputFilter->add($input);
@@ -48,9 +59,18 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach(new Validator\Digits, true)
-            ->attach(new Validator\Between(['min'=>1, 'max'=>12]), true);
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
+            ->attach(new Validator\AllowEmptyValidatorWrapper(
+                new Validator\Between(['min'=>1, 'max'=>12])
+            ), true);
+
+        if ($canBeEmpty) {
+            $input->getValidatorChain()
+                ->attach($this->getAllOrNoneValidator(), true);
+        }
 
         $this->add($field);
         $inputFilter->add($input);
@@ -66,9 +86,20 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach(new Validator\Digits, true)
-            ->attach(new Validator\Between(['min'=>1800, 'max'=>date('Y')]), true);
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
+
+        $year = (int)date('Y');
+
+        $input->getValidatorChain()
+            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
+            ->attach(new Validator\AllowEmptyValidatorWrapper(
+                new Validator\Between(['min'=>($year-150), 'max'=>$year])
+            ), true);
+
+        if ($canBeEmpty) {
+            $input->getValidatorChain()
+                ->attach($this->getAllOrNoneValidator(), true);
+        }
 
         $this->add($field);
         $inputFilter->add($input);
@@ -96,6 +127,19 @@ class Dob extends Fieldset
         }
 
         return $combined;
+    }
+
+    /**
+     * Validator is true if all DOB fields are supplied, or is none are.
+     *
+     * @return ValidatorInterface
+     */
+    public function getAllOrNoneValidator() : ValidatorInterface
+    {
+        return (new Callback(function ($value, $context) {
+            $context = array_filter($context);
+            return in_array(count($context), [0, 3]);
+        }))->setMessage('all-or-none-fields-required', Callback::INVALID_VALUE);
     }
 
 }

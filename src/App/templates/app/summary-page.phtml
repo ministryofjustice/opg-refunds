@@ -39,7 +39,7 @@
 
             <?php $this->insert('snippet::check-your-details-item', [
                 'question' => 'Date of birth',
-                'answer' => (new \DateTime($details['attorney']['dob']))->format('j F Y'),
+                'answer' => isset($details['attorney']['dob']) ? (new \DateTime($details['attorney']['dob']))->format('j F Y') : 'Not set',
                 'changeURL' => $this->url('apply.attorney', ['who'=>$who])
             ]) ?>
 
