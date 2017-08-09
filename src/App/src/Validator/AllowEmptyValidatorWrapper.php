@@ -22,7 +22,7 @@ class AllowEmptyValidatorWrapper implements ValidatorInterface
 
     public function isValid($value)
     {
-        if (empty($value)) {
+        if (strlen($value) === 0) {
             return true;
         }
 
