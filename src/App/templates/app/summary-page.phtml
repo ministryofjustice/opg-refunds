@@ -27,25 +27,23 @@
 
         </dl>
 
-        <?php if ($who === 'attorney'): ?>
-            <h2 class="heading-medium">Attorney details</h2>
+        <h2 class="heading-medium">Attorney details</h2>
 
-            <dl class="govuk-check-your-answers cya-questions-short">
-                
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Name',
-                    'answer' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}",
-                    'changeURL' => $this->url('apply.attorney', ['who'=>$who])
-                ]) ?>
-                
-                <?php $this->insert('snippet::check-your-details-item', [
-                    'question' => 'Date of birth',
-                    'answer' => (new \DateTime($details['attorney']['dob']))->format('j F Y'),
-                    'changeURL' => $this->url('apply.attorney', ['who'=>$who])
-                ]) ?>
-        
-            </dl>
-        <?php endif ?>
+        <dl class="govuk-check-your-answers cya-questions-short">
+
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Name',
+                'answer' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}",
+                'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+            ]) ?>
+
+            <?php $this->insert('snippet::check-your-details-item', [
+                'question' => 'Date of birth',
+                'answer' => (new \DateTime($details['attorney']['dob']))->format('j F Y'),
+                'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+            ]) ?>
+
+        </dl>
 
         <h2 class="heading-medium">Power of attorney details</h2>
 
