@@ -36,13 +36,12 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
-
-        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(
                 new Validator\Between(['min'=>1, 'max'=>31])
-            ), true);
+            ), true)
+            ->attach($this->getValidDateValidator(), true);
 
         if ($canBeEmpty) {
             $input->getValidatorChain()
@@ -63,9 +62,7 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
-
-        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(
                 new Validator\Between(['min'=>1, 'max'=>12])
@@ -89,12 +86,10 @@ class Dob extends Fieldset
         $input->getFilterChain()
             ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true);
-
         $year = (int)date('Y');
 
         $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty( ($canBeEmpty) ? 0 : null ), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits), true)
             ->attach(new Validator\AllowEmptyValidatorWrapper(
                 new Validator\Between(['min'=>($year-self::MAX_AGE), 'max'=>$year])
@@ -108,6 +103,8 @@ class Dob extends Fieldset
         $this->add($field);
         $inputFilter->add($input);
     }
+
+    //---------------------------------------
 
     public function getInputFilter() : InputFilter
     {
@@ -144,6 +141,14 @@ class Dob extends Fieldset
             $context = array_filter($context);
             return in_array(count($context), [0, 3]);
         }))->setMessage('all-or-none-fields-required', Callback::INVALID_VALUE);
+    }
+
+    public function getValidDateValidator() : ValidatorInterface
+    {
+        return (new Callback(function ($value, $context) {
+            $context = array_filter($context);
+            return (count($context) != 3) || checkdate($context['month'], $context['day'], $context['year']);
+        }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }
 
 }

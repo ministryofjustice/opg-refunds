@@ -25,7 +25,7 @@ class ActorDetailsTest extends TestCase
             'last' => 'Jones',
             'dob' => [
                 'day' => '1',
-                'month' => '2',
+                'month' => '1',
                 'year' => date('Y'),
             ]
         ];
@@ -274,6 +274,24 @@ class ActorDetailsTest extends TestCase
                 $this->assertFalse( $form->isValid() );
             }
         }
+    }
+
+    public function testWellFormattedButInvalidDate()
+    {
+        $form = $this->getForm( true );
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '30',
+            'month' => '2',
+            'year' => '1987',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
     }
 
 }
