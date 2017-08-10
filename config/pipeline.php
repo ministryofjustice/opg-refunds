@@ -41,6 +41,7 @@ $app->pipe(UrlHelperMiddleware::class);
 
 // Apply caching headers to non-personalised responses
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
+$app->pipe(App\Middleware\ProcessingTime\ProcessingTimeMiddleware::class);
 
 // Add session support to required path prefixes
 foreach (['/session-finished', '/application'] as $path) {

@@ -61,6 +61,7 @@ class ConfigProvider
 
                 // Middleware
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+                Middleware\ProcessingTime\ProcessingTimeMiddleware::class => Middleware\ProcessingTime\ProcessingTimeMiddlewareFactory::class,
 
                 // Services
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,

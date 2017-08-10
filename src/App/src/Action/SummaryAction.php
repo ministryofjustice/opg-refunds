@@ -38,6 +38,9 @@ class SummaryAction extends AbstractAction
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
+                // Add the date a respond will be expected.
+                $session['expected'] = date('Y-m-d', strtotime($request->getAttribute('processingTime')));
+
                 // Process the application
                 $session['reference'] = $this->applicationProcessService->process($session->getArrayCopy());
 

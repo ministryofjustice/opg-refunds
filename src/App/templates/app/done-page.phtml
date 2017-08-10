@@ -23,11 +23,11 @@
         
         <div class="panel panel-border-wide">
             <p>
-            Current processing time: 12 weeks. 
+            Current processing time: <?= $this->e($processingTime) ?>.
             </p>
         </div>
 
-        <p>Your refund will be paid by <?= $this->e(date('j F Y', strtotime('+12 weeks'))) ?>, if your claim is approved.</p>
+        <p>Your refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p>
         
         <h2 class="heading-medium">Tell the attorneys</h2>
 

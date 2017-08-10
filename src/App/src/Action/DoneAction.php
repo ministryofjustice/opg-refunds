@@ -31,6 +31,7 @@ class DoneAction extends AbstractAction
             'name' => $name,
             'contact' => $contact,
             'reference' => IdentFormatter::format($reference),
+            'processingTime' => $request->getAttribute('processingTime'),
         ]));
     }
 }

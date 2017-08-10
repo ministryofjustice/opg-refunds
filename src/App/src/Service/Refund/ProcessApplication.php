@@ -35,6 +35,7 @@ class ProcessApplication
                 // Send email...
                 $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
                     'ref' => IdentFormatter::format($reference),
+                    'processed-by' => date('j F Y', strtotime($data['expected'])),
                     'donor-name' => $name,
                 ]);
             }

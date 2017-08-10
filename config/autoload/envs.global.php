@@ -2,6 +2,10 @@
 
 return [
 
+    'refunds' => [
+        'processing-time' => '12 weeks'
+    ],
+
     'notify' => [
         'api' => [
             'key' => getenv('OPG_REFUNDS_NOTIFY_API_KEY') ?: null,
