@@ -1,5 +1,5 @@
 <?php
-$title = ($who == 'donor') ? 'Your details (donor)' : 'Donor details';
+$title = ($applicant == 'donor') ? 'Your details (donor)' : 'Donor details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -9,13 +9,12 @@ $dob = $form->get('dob');
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <fieldset>
-        <legend class="form-label-bold">Donor name</legend>
+        <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Name" : "Donor name" ?></legend>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('title'),

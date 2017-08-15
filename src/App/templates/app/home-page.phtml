@@ -5,97 +5,90 @@ $this->layout('layout::standard', [
     ]);
 ?>
 
-<p>Refunds are available for application fees paid from April 2013 to March 2017.</p>
-
-<p>You'll get a partial refund of £16 to £53 for each fee paid for a:</p>
+<p>You're entitled to a partial refund if you paid any application fees from April 2013 to March 2017 for your: 
 
 <ul class="list list-bullet">
-    <li>property and financial affairs lasting power of attorney (LPA)</li>
-    <li>health and welfare lasting power of attorney (LPA)</li>
-    <li>enduring power of attorney (EPA)</li>
+    <li>lasting power of attorney (LPA) for property and financial affairs, or LPA for health and welfare</li>
+    <li>enduring power of attorney (EPA) - an earlier type of power of attorney</li> 
 </ul>
 
-<p>
-    <a href="#how-much">How much you will get.</a>
-</p>
-
-<h2 class="heading-medium">Who can claim</h2>
-
-<p>You must be either:</p>
-
-<ul class="list list-bullet">
-    <li>the 'donor' - the person who made the LPA or EPA</li>
-    <li>an 'attorney' - trusted by the donor and claiming on their behalf</li>
-</ul>
-
-<p>You can claim for all of a donor's fees in one go. For example, if they made 2 LPAs or paid twice because of a mistake.</p>
-
- <div class="panel panel-border-wide">
-    <p>
-    If the donor has died a refund can only be claimed if their estate is in probate. Contact the <a href="#helpline">Refunds Helpline</a>.
-    </p>
+<div class="panel panel-border-wide">
+    <p>You only need to submit one claim, even if you made 2 LPAs or paid twice because of a mistake. Records 
+    will be checked for all the fees you paid.</p>
 </div>
+
+<h2 class="heading-medium">Who can claim a refund</h2>
+
+<ul class="list list-bullet">
+    <li>The 'donor' - the person who made the LPA or EPA</li>
+    <li>An 'attorney' - trusted by the donor and claiming on their behalf</li>
+</ul>
+
+<p>The refund is for the donor, even if someone else paid the fees for them.</P> 
+
+<h2 class="heading-medium">How much you'll get</h2>
+
+<p>This table shows what refund you could get, but you don't need to know exact dates to claim.</p> 
+
+<table>
+    <thead>
+        <tr>
+            <th scope="col">When you paid a fee</th>
+            <th class="numeric" scope="col">Refund for each LPA or EPA</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Apr to Sept 2013</td>
+            <td class="numeric">£54</td>
+
+        </tr>
+        <tr>
+            <td>Oct 2013 to Mar 2014</td>
+            <td class="numeric">£34</td>
+        </tr>
+        <tr>
+            <td>Apr 2014 to Mar 2015</td>
+            <td class="numeric">£37</td>
+        </tr>
+        <tr>
+            <td>Apr 2015 to Mar 2016</td>
+            <td class="numeric">£38</td>
+        </tr>
+        <tr>
+            <td>Apr 2016 to Mar 2017</td>
+            <td class="numeric">£45</td>
+        </tr>
+    </tbody>
+</table>
+
+<p class="text-after-table">You'll get half the refund amount if you paid a reduced fee ('remission').</p>
 
 <h2 class="heading-medium">What you'll need</h2>
 
 <ul class="list list-bullet">
-    <li>donor's name, date of birth and postcode</li>
-    <li>donor's bank account details - refunds can only be paid to the donor</li>
-    <li>10 minutes to complete your claim</li>
+    <li>About 10 minutes to complete the claim</li>
+    <li>Name and date of birth of the donor</li>
+    <li>Name of one attorney</li>
+    <li>Donor's bank details - <a href="#">how bank details are protected</a></li>
 </ul>
 
-<p>It can take up to 12 weeks for a refund to be processed.</p>
+<p>You don't need power of attorney documents with you but it might be helpful.</p>
+
+<div class="panel panel-border-wide">
+    <p>It takes up to 12 weeks for a refund to be processed.</p>
+</div>
 
 <p>
     <a class="button button-start" href="<?= $this->url('eligibility.when') ?>" role="button">Start now</a>
 </p>
 
-<h2 class="heading-medium" id="how-much">How much you will get</h2>
-        
-<p>
-    Don't worry if you don't know exact dates - we'll check this when you claim.
-</p>
-
-<p>
-    You'll get half the refund amount if the donor got a reduced fee ('remission').  
-</p>
-
-<table>
-<thead>
-    <tr>
-        <th scope="col">When fee was paid</th>
-        <th class="numeric" scope="col">Refund per LPA or EPA <br>(if full fee paid)</th>
-    </tr>
-</thead>
-<tbody>
-    <tr>
-        <td>Apr to Sept 2013</td>
-        <td class="numeric">£53.83</td>
-    </tr>
-    <tr>
-        <td>Oct 2013 to Mar 2014</td>
-        <td class="numeric">£33.83</td>
-    </tr>
-    <tr>
-        <td>Apr 2014 to Mar 2015</td>
-        <td class="numeric">£36.84</td>
-    </tr>
-    <tr>
-        <td>Apr 2015 to Mar 2016</td>
-        <td class="numeric">£37.66</td>
-    </tr>
-    <tr>
-        <td>Apr 2016 to Mar 2017</td>
-        <td class="numeric">£44.52</td>
-    </tr>
-</tbody>
-</table>
-
-<p>
-    <br>
-    <a href="#">Why there are different amounts.</a>
-</p>
-
+<h2 class="heading-medium">If the donor doesn't have a bank account</h2>
+<p>Contact the Helpline to find out how to get a refund if the donor doesn't have an account.</p>
+   
+<h2 class="heading-medium">If the donor has died</h2>
+<p>You might be able to claim a refund if the donor's estate is still in probate. Contact the Helpline to find out.</p>
+   
 <h2 class="heading-medium" id="helpline">Refunds Helpline</h2>
 
 <address>
@@ -117,6 +110,8 @@ $this->layout('layout::standard', [
 <p>
     Fee refunds <a href="#">terms and conditions</a>.
 </p>
+
+<p><a href="#">Print this page</a>.</p>
 
 <?php $this->start('sidebar') ?>
     <aside class="govuk-related-items" role="complementary">

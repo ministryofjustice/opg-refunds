@@ -1,5 +1,6 @@
 <?php
 $title = 'Your bank details';
+$title = ($applicant == 'donor') ? 'Your bank details' : 'Donor\'s bank details';
 $this->layout('layout::standard',
     [
         'title' => $title
@@ -8,9 +9,12 @@ $this->layout('layout::standard',
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>This must be a UK personal account.</p>
+<p>
+    If a refund is approved it will be paid to this account. Our terms and 
+    conditions explain <a href="#">how we keep bank details safe</a>.
+</p>
 
-<p>If a refund is approved it will be paid to this account.</p>
+<p>We can only pay refunds to UK personal bank accounts.</p>
 
 <form action="" method="post" class="form">
 
@@ -19,7 +23,6 @@ $this->layout('layout::standard',
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('name'),
         'formLabel' => 'Account holder name',
-        'formHint' => "As it appears on cards and statements",
         'formType' => 'text',
         'formLabelBold' => true
     ]) ?>
@@ -27,7 +30,7 @@ $this->layout('layout::standard',
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('account-number'),
         'formLabel' => 'Account number',
-        'formHint' => '8-digit number shown on bank cards and statements',
+        'formHint' => '8-digit number on card',
         'formType' => 'text',
         'formLabelBold' => true,
         'additionFormControlClass' => 'form-control-1-4'
@@ -36,7 +39,7 @@ $this->layout('layout::standard',
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('sort-code'),
         'formLabel' => 'Sort code',
-        'formHint' => '6-digit number shown on bank cards and statements',
+        'formHint' => '6-digit number on card',
         'formType' => 'text',
         'formLabelBold' => true,
         'additionFormControlClass' => 'form-control-1-4'

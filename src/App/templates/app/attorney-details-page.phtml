@@ -7,12 +7,14 @@ $this->layout('layout::standard', [
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
+<p>Please give the details of one of your attorneys.</p>
+
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <fieldset>
-        <legend class="form-label-bold">Your name</legend>
+        <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Attorney name" : "Name" ?></legend>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('title'),

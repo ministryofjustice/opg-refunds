@@ -1,5 +1,5 @@
 <?php 
-    $title = 'Get updates';
+    $title = 'Your contact details';
     $this->layout('layout::standard',
     [
         'title' => $title
@@ -8,8 +8,12 @@
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>We will update you on the progress of the refund.</p>
-<p>We might also contact you if we need more information.</p>
+<p>We will use these details to:</p>
+
+<ul class="list list-bullet">
+    <li>send email or text message updates - if a refund is approved, for example</li>
+    <li>contact you if we need more information</li> 
+</ul>
 
 <form action="" method="post" class="form">
 
@@ -27,7 +31,7 @@
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('mobile'),
-            'formLabel' => 'Mobile number',
+            'formLabel' => 'Phone number (mobile or landline)',
             'formType' => 'text',
             'formLabelBold' => false
         ]) ?>

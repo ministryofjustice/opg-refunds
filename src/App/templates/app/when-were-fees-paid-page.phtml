@@ -11,8 +11,6 @@ $form->setAttribute('action', $this->url('eligibility.when.answer'));
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>Refunds only apply to fees paid from 1 April 2013 to 31 March 2017.</p>
-
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::input-radio', [
