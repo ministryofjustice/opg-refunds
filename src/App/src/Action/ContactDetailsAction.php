@@ -47,7 +47,8 @@ class ContactDetailsAction extends AbstractAction
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::contact-details-page', [
-            'form' => $form
+            'form' => $form,
+            'applicant' => $session['applicant']
         ]));
     }
 }

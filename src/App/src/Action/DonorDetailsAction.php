@@ -15,6 +15,11 @@ class DonorDetailsAction extends AbstractAction
     {
         $session = $request->getAttribute('session');
 
+        // Include who is applying
+        $session['applicant'] = $request->getAttribute('who');
+
+        //---
+
         $form = new Form\ActorDetails([
             'csrf' => $session['meta']['csrf']
         ]);
@@ -26,9 +31,6 @@ class DonorDetailsAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['donor'] = $form->getFormattedData();
-
-                // Include who is applying
-                $session['applicant'] = $request->getAttribute('who');
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -44,7 +46,8 @@ class DonorDetailsAction extends AbstractAction
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [
             'form' => $form,
-            'who' => $request->getAttribute('who')
+            'who' => $request->getAttribute('who'),
+            'applicant' => $session['applicant']
         ]));
     }
 }

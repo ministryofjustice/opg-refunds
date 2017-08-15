@@ -22,6 +22,7 @@ class DoneAction extends AbstractAction
 
         $contact = $session['contact'];
         $reference = $session['reference'];
+        $applicant = $session['applicant'];
         $name = implode(' ', $session['donor']['name']);
 
         // This will end the session.
@@ -30,6 +31,7 @@ class DoneAction extends AbstractAction
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
             'name' => $name,
             'contact' => $contact,
+            'applicant' => $applicant,
             'reference' => IdentFormatter::format($reference),
             'processingTime' => $request->getAttribute('processingTime'),
         ]));

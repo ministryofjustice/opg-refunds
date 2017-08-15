@@ -58,7 +58,8 @@ class SummaryAction extends AbstractAction
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::summary-page', [
             'details' => $session,
             'form' => $form,
-            'who' => $request->getAttribute('who')
+            'who' => $request->getAttribute('who'),
+            'applicant' => $session['applicant']
         ]));
     }
 }

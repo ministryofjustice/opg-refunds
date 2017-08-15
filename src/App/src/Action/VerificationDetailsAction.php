@@ -47,6 +47,7 @@ class VerificationDetailsAction extends AbstractAction
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::verification-details-page', [
             'form' => $form,
+            'applicant' => $session['applicant']
         ]));
     }
 }

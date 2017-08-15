@@ -51,7 +51,8 @@ class AccountDetailsAction extends AbstractAction
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::account-details-page', [
-            'form' => $form
+            'form' => $form,
+            'applicant' => $session['applicant']
         ]));
     }
 }
