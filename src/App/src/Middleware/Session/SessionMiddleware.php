@@ -7,6 +7,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+use App\Service\Session\Session;
 use App\Service\Session\SessionManager;
 
 use Dflydev\FigCookies\SetCookie;
@@ -15,7 +16,6 @@ use Dflydev\FigCookies\FigResponseCookies;
 use Zend\Math\BigInteger\BigInteger;
 
 use DateTime;
-use ArrayObject;
 
 /**
  * Adds support for sessions via the injected SessionManager.
@@ -49,7 +49,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
     {
         $cookies = $request->getCookieParams();
 
-        $session = new ArrayObject;
+        $session = new Session;
 
         // Check for a session cookie and init the session if we have one.
         if (isset($cookies[self::COOKIE_NAME])) {

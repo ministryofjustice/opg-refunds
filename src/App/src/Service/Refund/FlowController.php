@@ -1,7 +1,7 @@
 <?php
 namespace App\Service\Refund;
 
-use ArrayObject;
+use App\Service\Session\Session;
 
 /**
  * Determine and return the route name of the next page the user must complete in the application flow.
@@ -54,10 +54,10 @@ class FlowController
      * Determines if the passed $route is accessible, based on the current session data.
      *
      * @param string $route
-     * @param ArrayObject $session
+     * @param Session $session
      * @return bool
      */
-    public static function routeAccessible(string $route, ArrayObject $session) : bool
+    public static function routeAccessible(string $route, Session $session) : bool
     {
         // Find what route this route is dependent on.
         $requiredIndex = array_search(
@@ -84,10 +84,10 @@ class FlowController
     /**
      * Determines the next accessible route, ased on the current session data.
      *
-     * @param ArrayObject $session
+     * @param Session $session
      * @return string
      */
-    public static function getNextRouteName(ArrayObject $session) : string
+    public static function getNextRouteName(Session $session) : string
     {
 
         if (isset($session['reference'])) {

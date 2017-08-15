@@ -1,7 +1,7 @@
 <?php
 namespace App\Action;
 
-use ArrayObject;
+use App\Service\Session\Session;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +15,7 @@ class SessionFinishedAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         // If there's a session, end it.
-        if ($session instanceof ArrayObject) {
+        if ($session instanceof Session) {
             $session->exchangeArray([]);
         }
 

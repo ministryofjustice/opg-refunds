@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Service\Session;
 
 use Aws\DynamoDb\SessionConnectionInterface as DynamoDbSessionConnectionInterface;
