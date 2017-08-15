@@ -47,7 +47,7 @@ class SummaryAction extends AbstractAction
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
                         FlowController::getNextRouteName($session),
-                        ['who'=>$request->getAttribute('who')]
+                        ['who'=>$session['applicant']]
                     )
                 );
             }

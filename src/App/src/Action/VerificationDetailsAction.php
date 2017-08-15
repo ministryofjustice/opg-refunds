@@ -35,8 +35,8 @@ class VerificationDetailsAction extends AbstractAction
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session, $request->getAttribute('who')),
-                        ['who'=>$request->getAttribute('who')]
+                        FlowController::getNextRouteName($session),
+                        ['who'=>$session['applicant']]
                     )
                 );
             }
