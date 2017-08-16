@@ -6,7 +6,7 @@ $hasErrors = !empty($formElement->getMessages());
 <div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
     <fieldset>
         <legend class="form-label-bold">
-            Donor date of birth
+            <?= $this->e($formLabel) ?>
             <span class="form-hint">For example, 31 3 1980</span>
             <?php foreach($formElement->getMessages() as $message): ?>
                 <span class="error-message"><?= $this->e($message) ?></span>

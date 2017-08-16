@@ -41,6 +41,7 @@ $dob = $form->get('dob');
     </fieldset>
 
     <?php $this->insert('snippet::input-dob', [
+        'formLabel' => ($applicant == 'donor') ? "Date of birth" : "Donor date of birth",
         'formElement' => $form->get('dob'),
     ]) ?>
 

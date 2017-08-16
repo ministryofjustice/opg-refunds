@@ -1,5 +1,5 @@
 <?php
-$title = ($who == 'attorney') ? 'Your details (attorney)' : 'Attorney details';
+$title = ($applicant == 'attorney') ? 'Your details (attorney)' : 'Attorney details';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -41,6 +41,7 @@ $this->layout('layout::standard', [
     </fieldset>
 
     <?php $this->insert('snippet::input-dob', [
+        'formLabel' => ($applicant == 'donor') ? "Attorney date of birth (optional)" : "Date of birth",
         'formElement' => $form->get('dob'),
     ]) ?>
 

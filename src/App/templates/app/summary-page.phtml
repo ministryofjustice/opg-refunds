@@ -17,6 +17,14 @@
     ]) ?>
 
     <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'About you',
+        'fields' => [
+            [ 'value' => ($applicant == 'donor') ? 'I am the donor' : 'I am an attorney' ]
+        ],
+        'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
+    ]) ?>
+
+    <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
             [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
