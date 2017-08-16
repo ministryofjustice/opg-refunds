@@ -41,7 +41,7 @@ $this->layout('layout::standard', [
     </fieldset>
 
     <?php $this->insert('snippet::input-dob', [
-        'formLabel' => ($applicant == 'donor') ? "Attorney date of birth (optional)" : "Date of birth",
+        'formLabel' => ($applicant == 'donor') ? 'Attorney date of birth (optional)' : 'Date of birth',
         'formElement' => $form->get('dob'),
     ]) ?>
 
