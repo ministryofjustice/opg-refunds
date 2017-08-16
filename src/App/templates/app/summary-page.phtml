@@ -1,137 +1,129 @@
 <?php $this->layout('layout::default') ?>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+<h1 class="heading-xlarge">
+    Check your refund claim
+</h1>
 
-        <h1 class="heading-xlarge">
-            Check your refund claim
-        </h1>
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<dl class="govuk-check-your-answers cya-questions-short">
+    
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Fees',
+        'answer' => 'I think fees were paid between April 2013 and March 2017',
+        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+    ]) ?>
 
-        <h2 class="heading-medium">Donor details</h2>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'About you',
+        'answer' => ($applicant == 'donor') ? "I am the donor" : "I am an attorney",
+        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+    ]) ?>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
-            
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Name',
-                'answer' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}",
-                'changeURL' => $this->url('apply.donor', ['who'=>$who])
-            ]) ?>
-            
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Date of birth',
-                'answer' => (new \DateTime($details['donor']['dob']))->format('j F Y'),
-                'changeURL' => $this->url('apply.donor', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Donor details',
+        'answer' =>
+            $this->e("{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}").
+            "<br>".(new \DateTime($details['donor']['dob']))->format('j F Y'),
+        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+    ]) ?>
 
-        </dl>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Attorney details',
+        'answer' =>
+            $this->e("{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}").
+            "<br>".(isset($details['attorney']['dob']) ? (new \DateTime($details['attorney']['dob']))->format('j F Y') : 'Not set'),
+        'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+    ]) ?>
 
-        <h2 class="heading-medium">Attorney details</h2>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Power of attorney details',
+        'answer' => '',
+        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    ]) ?>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Your contact details',
+        'answer' => '',
+        'changeURL' => $this->url('apply.contact', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Name',
-                'answer' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}",
-                'changeURL' => $this->url('apply.attorney', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Donor bank details',
+        'answer' => 'Bank details hidden for your security',
+        'changeURL' => $this->url('apply.account', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Date of birth',
-                'answer' => isset($details['attorney']['dob']) ? (new \DateTime($details['attorney']['dob']))->format('j F Y') : 'Not set',
-                'changeURL' => $this->url('apply.attorney', ['who'=>$who])
-            ]) ?>
+</dl>
 
-        </dl>
 
-        <h2 class="heading-medium">Power of attorney details</h2>
+<h2 class="heading-medium">Power of attorney details</h2>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
+<dl class="govuk-check-your-answers cya-questions-short">
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Case number',
-                'answer' => ($details['verification']['case-number']) ?? null,
-                'changeURL' => $this->url('apply.verification', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Case number',
+        'answer' => ($details['verification']['case-number']) ?? null,
+        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Donor postcode',
-                'answer' => ($details['verification']['donor-postcode']) ?? null,
-                'changeURL' => $this->url('apply.verification', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Donor postcode',
+        'answer' => ($details['verification']['donor-postcode']) ?? null,
+        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Attorney name',
-                'answer' => ($details['verification']['attorney-name']) ?? null,
-                'changeURL' => $this->url('apply.verification', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Attorney name',
+        'answer' => ($details['verification']['attorney-name']) ?? null,
+        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Attorney postcode',
-                'answer' => ($details['verification']['attorney-postcode']) ?? null,
-                'changeURL' => $this->url('apply.verification', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Attorney postcode',
+        'answer' => ($details['verification']['attorney-postcode']) ?? null,
+        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    ]) ?>
 
-        </dl>
+</dl>
 
-        <h2 class="heading-medium">Get updates</h2>
+<h2 class="heading-medium">Get updates</h2>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
+<dl class="govuk-check-your-answers cya-questions-short">
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Email',
-                'answer' => ($details['contact']['email']) ?? null,
-                'changeURL' => $this->url('apply.contact', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Email',
+        'answer' => ($details['contact']['email']) ?? null,
+        'changeURL' => $this->url('apply.contact', ['who'=>$who])
+    ]) ?>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Mobile phone number',
-                'answer' => ($details['contact']['mobile']) ?? null,
-                'changeURL' => $this->url('apply.contact', ['who'=>$who])
-            ]) ?>
+    <?php $this->insert('snippet::check-your-details-item', [
+        'question' => 'Mobile phone number',
+        'answer' => ($details['contact']['mobile']) ?? null,
+        'changeURL' => $this->url('apply.contact', ['who'=>$who])
+    ]) ?>
 
-        </dl>
+</dl>
 
-        <h2 class="heading-medium">Account details</h2>
+<h2 class="heading-medium">Statement of truth</h2>
 
-        <dl class="govuk-check-your-answers cya-questions-short">
+<p>By submitting this claim you confirm that, to the best of your knowledge:</p>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Name on account',
-                // Replaces all non-white space with an asterisk
-                'answer' => preg_replace("|[^\s]|",'*',trim($details['account']['name'])),
-                'changeURL' => $this->url('apply.account', ['who'=>$who])
-            ]) ?>
+<ul class="list list-bullet">
+    <li>you are entitled to claim a refund</li>
+    <li>the details you have given are correct </li>
+</ul>
 
-            <?php $this->insert('snippet::check-your-details-item', [
-                'question' => 'Account details',
-                'answer' => 'xx-xx-xx xxxxxxxx',
-                'changeURL' => $this->url('apply.account', ['who'=>$who])
-            ]) ?>
+<p class="text">
+    You also accept that the details you've given will be used to process
+    a refund, as explained in our <a href="#">terms and conditions</a>. 
+</p>
 
-        </dl>
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
-        <h2 class="heading-medium">Statement of truth</h2>
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
-        <p>
-            By submitting this claim you confirm that, to the best of your knowledge:
-        </p>
-
-        <ul class="list list-bullet">
-            <li>you are entitled to claim a refund</li>
-            <li>the details you have given are correct </li>
-        </ul>
-
-        <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
-
-            <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
-
-            <div class="form-group">
-                <input type="submit" class="button" value="Confirm and submit claim">
-            </div>
-
-        </form>
+    <input type="submit" class="button" value="Confirm and submit claim">
+    
+</form>
         
-    </div>
-</div>

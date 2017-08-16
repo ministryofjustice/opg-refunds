@@ -11,7 +11,7 @@ $form->setAttribute('action', $this->url('eligibility.who.answer'));
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>A refund can only be claimed by the donor or by one of their attorneys.</p>
+<p>You can only claim a refund if you are the donor or one of their attorneys.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
