@@ -12,6 +12,14 @@ return [
         ],
     ],
 
+    'beta' => [
+        'link' => [
+            'signature' => [
+                'key' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY') ?: null,
+            ]
+        ],
+    ],
+
     'security' => [
 
         'rsa' => [
