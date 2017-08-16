@@ -7,100 +7,76 @@
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <dl class="govuk-check-your-answers cya-questions-short">
-    
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Fees',
-        'answer' => 'I think fees were paid between April 2013 and March 2017',
-        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Fees',
+        'fields' => [
+            [ 'value' => 'I think fees were paid between April 2013 and March 2017' ]
+        ],
+        'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>
 
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'About you',
-        'answer' => ($applicant == 'donor') ? "I am the donor" : "I am an attorney",
-        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Donor details',
+        'fields' => [
+            [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
+            [ 'value' => date('j F Y', strtotime($details['donor']['dob'])) ],
+        ],
+        'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>
 
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Donor details',
-        'answer' =>
-            $this->e("{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}").
-            "<br>".(new \DateTime($details['donor']['dob']))->format('j F Y'),
-        'changeURL' => $this->url('apply.donor', ['who'=>$who])
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Attorney details',
+        'fields' => [
+            [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
+            [
+                'label' => !isset($details['attorney']['dob']) ? 'Date of birth' : null,
+                'value' => isset($details['attorney']['dob']) ? date('j F Y', strtotime($details['donor']['dob'])) : null,
+            ],
+        ],
+        'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
     ]) ?>
 
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Attorney details',
-        'answer' =>
-            $this->e("{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}").
-            "<br>".(isset($details['attorney']['dob']) ? (new \DateTime($details['attorney']['dob']))->format('j F Y') : 'Not set'),
-        'changeURL' => $this->url('apply.attorney', ['who'=>$who])
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Power of attorney details',
+        'fields' => [
+            [
+                'label' => 'Reference',
+                'value' => ($details['verification']['case-number']) ?? null
+            ],
+            [
+                'label' => 'Donor postcode',
+                'value' => ($details['verification']['donor-postcode']) ?? null
+            ],
+            [
+                'label' => 'Attorney postcode',
+                'value' => ($details['verification']['attorney-postcode']) ?? null
+            ]
+        ],
+        'changeURL' => $this->url('apply.verification', ['who'=>$applicant])
     ]) ?>
 
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Power of attorney details',
-        'answer' => '',
-        'changeURL' => $this->url('apply.verification', ['who'=>$who])
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Your contact details',
+        'fields' => [
+            [
+                'label' => 'Email address',
+                'value' => ($details['contact']['email']) ?? null
+            ],
+            [
+                'label' => 'Phone number',
+                'value' => ($details['contact']['mobile']) ?? null
+            ]
+        ],
+        'changeURL' => $this->url('apply.contact', ['who'=>$applicant])
     ]) ?>
 
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Your contact details',
-        'answer' => '',
-        'changeURL' => $this->url('apply.contact', ['who'=>$who])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Donor bank details',
-        'answer' => 'Bank details hidden for your security',
-        'changeURL' => $this->url('apply.account', ['who'=>$who])
-    ]) ?>
-
-</dl>
-
-
-<h2 class="heading-medium">Power of attorney details</h2>
-
-<dl class="govuk-check-your-answers cya-questions-short">
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Case number',
-        'answer' => ($details['verification']['case-number']) ?? null,
-        'changeURL' => $this->url('apply.verification', ['who'=>$who])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Donor postcode',
-        'answer' => ($details['verification']['donor-postcode']) ?? null,
-        'changeURL' => $this->url('apply.verification', ['who'=>$who])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Attorney name',
-        'answer' => ($details['verification']['attorney-name']) ?? null,
-        'changeURL' => $this->url('apply.verification', ['who'=>$who])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Attorney postcode',
-        'answer' => ($details['verification']['attorney-postcode']) ?? null,
-        'changeURL' => $this->url('apply.verification', ['who'=>$who])
-    ]) ?>
-
-</dl>
-
-<h2 class="heading-medium">Get updates</h2>
-
-<dl class="govuk-check-your-answers cya-questions-short">
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Email',
-        'answer' => ($details['contact']['email']) ?? null,
-        'changeURL' => $this->url('apply.contact', ['who'=>$who])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-item', [
-        'question' => 'Mobile phone number',
-        'answer' => ($details['contact']['mobile']) ?? null,
-        'changeURL' => $this->url('apply.contact', ['who'=>$who])
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Donor bank details',
+        'fields' => [
+            [ 'value' => 'Bank details hidden for your security' ]
+        ],
+        'changeURL' => $this->url('apply.account', ['who'=>$applicant])
     ]) ?>
 
 </dl>
