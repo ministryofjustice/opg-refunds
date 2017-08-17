@@ -49,7 +49,7 @@
             [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
             [
                 'label' => !isset($details['attorney']['dob']) ? 'Date of birth' : null,
-                'value' => isset($details['attorney']['dob']) ? date('j F Y', strtotime($details['donor']['dob'])) : null,
+                'value' => isset($details['attorney']['dob']) ? date('j F Y', strtotime($details['attorney']['dob'])) : null,
             ],
         ],
         'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
