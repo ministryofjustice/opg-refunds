@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.0",
         "aws/aws-sdk-php": "^3.33",
+        "dflydev/fig-cookies": "^1.0",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",

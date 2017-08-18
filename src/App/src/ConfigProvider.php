@@ -40,7 +40,11 @@ class ConfigProvider
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
             ],
             'factories'  => [
+                // Middleware
+                Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
+                // Services
+                Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,
