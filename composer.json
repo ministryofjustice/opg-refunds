@@ -9,15 +9,22 @@
     },
     "require": {
         "php": "^7.0",
+        "aws/aws-sdk-php": "^3.33",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
+        "zendframework/zend-crypt": "^3.2",
         "zendframework/zend-expressive": "^2.0.2",
-        "zendframework/zend-expressive-helpers": "^4.0",
-        "zendframework/zend-stdlib": "^3.1",
-        "zendframework/zend-servicemanager": "^3.3",
         "zendframework/zend-expressive-fastroute": "^2.0",
-        "zendframework/zend-expressive-platesrenderer": "^1.3.1"
+        "zendframework/zend-expressive-helpers": "^4.0",
+        "zendframework/zend-expressive-platesrenderer": "^1.3.1",
+        "zendframework/zend-filter": "^2.7",
+        "zendframework/zend-form": "^2.10",
+        "zendframework/zend-inputfilter": "^2.7",
+        "zendframework/zend-math": "^3.0",
+        "zendframework/zend-servicemanager": "^3.3",
+        "zendframework/zend-stdlib": "^3.1",
+        "zendframework/zend-validator": "^2.10"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0.8 || ^5.7.15",
