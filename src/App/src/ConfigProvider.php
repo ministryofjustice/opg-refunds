@@ -34,10 +34,17 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\PingAction::class => Action\PingAction::class,
+                Action\LoginAction::class => Action\LoginAction::class,
+                Action\SignoutAction::class => Action\SignoutAction::class,
+                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
+                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
             ],
             'factories'  => [
-                Action\HomePageAction::class => Action\HomePageFactory::class,
+
+            ],
+            'initializers' => [
+                Action\Initializers\UrlHelperInitializer::class,
+                Action\Initializers\TemplatingSupportInitializer::class,
             ],
         ];
     }

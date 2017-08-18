@@ -26,5 +26,8 @@
  * );
  */
 
-$app->get('/', App\Action\HomePageAction::class, 'home');
-$app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
+$app->get('/', App\Action\LoginAction::class, 'login');
+$app->get('/signout', App\Action\SignoutAction::class, 'signout');
+
+$app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+$app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
