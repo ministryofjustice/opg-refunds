@@ -7,6 +7,10 @@ use Zend\Crypt\BlockCipher;
 
 class SessionManager
 {
+    /**
+     * @var KeyChain Available keys
+     */
+    private $keys;
 
     /**
      * @var DynamoDbSessionConnectionInterface
@@ -19,14 +23,16 @@ class SessionManager
     private $blockCipher;
 
     /**
-     * A hash of the data as it was last read.
+     * A hash of the data from the last read()
      *
      * @var null|string
      */
     private $lastReadHash = null;
 
-    public function __construct(DynamoDbSessionConnectionInterface $connection, BlockCipher $blockCipher)
+
+    public function __construct(DynamoDbSessionConnectionInterface $connection, BlockCipher $blockCipher, KeyChain $keys)
     {
+        $this->keys = $keys;
         $this->blockCipher = $blockCipher;
         $this->dynamoDbSessionConnection = $connection;
     }
@@ -35,33 +41,38 @@ class SessionManager
      * Returns session data for the passed ID.
      *
      * @param string $id
-     * @return array
+     * @return array|false
      */
-    public function read(string $id) : array
+    public function read(string $id)
     {
-
         // Read
         $data = $this->dynamoDbSessionConnection->read($this->hashId($id));
 
         // Check we have the expected fields.
         if (!isset($data['data']) || !isset($data['expires'])) {
-            return [];
+            return false;
         }
 
         // Check it has not expired
         if ($data['expires'] < time()) {
             $this->delete($id);
-            return [];
+            return false;
         }
 
-        $data = base64_decode($data['data']);
+        /*
+         * Determine what key the session was encrypted with.
+         * If the key is not found the decrypt will fail and a new session started.
+         */
+        $data = explode('.', $data['data'], 2);
+        $key = $this->keys->offsetGet($data[0]);
 
         // Decrypt
-        $data = $this->getBlockCipher($id)->decrypt($data);
+        $data = $this->blockCipher->setKey($key.$id)->decrypt($data[1]);
 
         // Decompress
         $data = gzinflate($data);
 
+        // Record a hash of the data
         $this->lastReadHash = $this->hashLastRead($id, $data);
 
         // Decode
@@ -78,7 +89,6 @@ class SessionManager
      */
     public function write(string $id, array $data)
     {
-
         // Sort the data to aid with checking if it has changed.
         ksort($data);
 
@@ -91,11 +101,16 @@ class SessionManager
         // Compress
         $data = gzdeflate($data);
 
+        // Find the latest key and its ID.
+        $key = end($this->keys);
+        $keyId = key($this->keys);
+
         // Encrypt
-        $data = $this->getBlockCipher($id)->encrypt($data);
+        $data = $keyId.'.'.$this->blockCipher->setKey($key.$id)->encrypt($data);
 
         // Save
-        $this->dynamoDbSessionConnection->write($this->hashId($id), base64_encode($data), $changed);
+        $this->dynamoDbSessionConnection->write($this->hashId($id), $data, $changed);
+
     }
 
     /**
@@ -132,16 +147,4 @@ class SessionManager
         return hash('sha512', $id.$data);
     }
 
-    /**
-     * Returns a clone of the Block Cipher, with the correct key set.
-     *
-     * @param string $id
-     * @return BlockCipher
-     */
-    private function getBlockCipher(string $id) : BlockCipher
-    {
-        $cipher = clone $this->blockCipher;
-        $cipher->setKey($cipher->getKey().$id);
-        return $cipher;
-    }
 }

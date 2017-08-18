@@ -37,20 +37,33 @@ class SessionManagerFactory
 
         //---
 
-        if (!isset($config['encryption']['key'])) {
-            throw new \UnexpectedValueException('Session encryption not configured');
+        if (!isset($config['encryption']['keys'])) {
+            throw new \UnexpectedValueException('Session encryption keys not configured');
         }
 
-        if (strlen($config['encryption']['key']) < 32) {
-            throw new \UnexpectedValueException('Session encryption key is too short');
+        $keys = explode(',', $config['encryption']['keys']);
+
+        $keyChain = new KeyChain;
+
+        foreach ($keys as $key) {
+            $items = explode(':', $key);
+
+            $value = hex2bin($items[1]);
+            if (count($items) != 2 || mb_strlen($value, '8bit') < 32) {
+                throw new \UnexpectedValueException('Session encryption key is too short');
+            }
+
+            $keyChain->offsetSet($items[0], $value);
         }
 
-        $blockCipher = BlockCipher::factory('openssl', ['algo' => 'aes']);
-
-        $blockCipher->setKey($config['encryption']['key']);
+        $keyChain->ksort();
 
         //---
 
-        return new SessionManager($sessionConnection, $blockCipher);
+        $blockCipher = BlockCipher::factory('openssl', ['algo' => 'aes']);
+
+        //---
+
+        return new SessionManager($sessionConnection, $blockCipher, $keyChain);
     }
 }

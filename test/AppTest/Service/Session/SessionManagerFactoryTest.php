@@ -30,7 +30,7 @@ class SessionManagerFactoryTest extends TestCase
                 'settings' => array(),
             ],
             'encryption' => [
-                'key' => 'xxx',
+                'keys' => ''
             ],
         ], array_flip($fields));
 
@@ -79,14 +79,16 @@ class SessionManagerFactoryTest extends TestCase
         $factory($this->container->reveal());
     }
 
-
     public function testFactoryWithoutEncryptionKeyTooShortConfigured()
     {
 
         $factory = new SessionManagerFactory();
         $this->assertInstanceOf(SessionManagerFactory::class, $factory);
 
-        $this->container->get( 'config' )->willReturn( $this->getConfigArray(['ttl', 'dynamodb', 'encryption']) );
+        $config = $this->getConfigArray(['ttl', 'dynamodb', 'encryption']);
+        $config['session']['encryption']['keys'] = '1:1234';
+
+        $this->container->get( 'config' )->willReturn( $config );
 
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessageRegExp( '/short/' );
@@ -102,7 +104,7 @@ class SessionManagerFactoryTest extends TestCase
         $this->assertInstanceOf(SessionManagerFactory::class, $factory);
 
         $config = $this->getConfigArray(['ttl', 'dynamodb', 'encryption']);
-        $config['session']['encryption']['key'] = 'this-key-is-more-than-32-characters';
+        $config['session']['encryption']['keys'] = '1:'.bin2hex(random_bytes(32));
 
         $this->container->get( 'config' )->willReturn( $config );
 

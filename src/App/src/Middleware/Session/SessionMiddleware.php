@@ -57,15 +57,13 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
             $sessionArray = $this->sessionManager->read($sessionId);
 
-            $session->exchangeArray($sessionArray);
-
-            if ($session->count() == 0) {
-                // Non-existent / empty sessions get a new ID.
-                $sessionId = $this->generateSessionId();
+            if (is_array($sessionArray) && count($sessionArray) > 0) {
+                $session->exchangeArray($sessionArray);
+            } else {
+                // Else remove the ID
+                // A new ID will be generated later if needed.
+                unset($sessionId);
             }
-        } else {
-            // Else we need to start a new ID.
-            $sessionId = $this->generateSessionId();
         }
 
         //---
@@ -78,6 +76,11 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
         // If we have data to store in the session, do it.
         if ($session->count() > 0 && $response instanceof ResponseInterface) {
+            // Test if we need a new session ID.
+            if (!isset($sessionId)) {
+                $sessionId = $this->generateSessionId();
+            }
+
             $this->sessionManager->write($sessionId, $session->getArrayCopy());
 
             // Set a cookie with the session ID.
@@ -98,8 +101,10 @@ class SessionMiddleware implements ServerMiddlewareInterface
             $response = FigResponseCookies::set($response, SetCookie::createExpired(self::COOKIE_NAME)
                 ->withPath(self::COOKIE_PATH));
 
-            // And wipe the stored data.
-            $this->sessionManager->delete($sessionId);
+            if(isset($sessionId)){
+                // Wipe the stored data.
+                $this->sessionManager->delete($sessionId);
+            }
         }
 
         //---

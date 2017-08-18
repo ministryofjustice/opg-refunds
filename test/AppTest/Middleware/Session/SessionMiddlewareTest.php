@@ -59,8 +59,6 @@ class SessionMiddlewareTest extends TestCase
      */
     public function testWithoutCookieSetAndNoDataSet()
     {
-        $this->sessionManager->delete( Argument::type('string') )->shouldBeCalled();
-
         $middleware = new SessionMiddleware( $this->sessionManager->reveal(), 300 );
 
         $this->request->getCookieParams()->willReturn(array());
