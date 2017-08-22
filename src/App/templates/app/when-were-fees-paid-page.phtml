@@ -7,6 +7,10 @@ $this->layout('layout::standard', [
 
 $form->setAttribute('method', 'get');
 $form->setAttribute('action', $this->url('eligibility.when.answer'));
+
+$this->addLocalErrorMap([
+    'required' => 'field is required'
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
