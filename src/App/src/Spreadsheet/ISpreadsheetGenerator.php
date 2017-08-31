@@ -8,13 +8,19 @@ interface ISpreadsheetGenerator
 
     const FILE_FORMAT_CSV = 'CSV';
     const FILE_FORMAT_XLS = 'XLS';
-    const FILE_FORMAT_XLSX = 'XLS';
+    const FILE_FORMAT_XLSX = 'XLSX';
 
     /**
      * @param string $schema The schema the produced spreadsheet should follow e.g. SSCL
      * @param string $fileFormat The file format of the resulting stream e.g. XLS
-     * @param array $data the data to be written to the spreadsheet. Should be a multidimensional array
-     * @return mixed
+     * @param string $fileName The desired name of the generated spreadsheet file
+     * @param SpreadsheetWorksheet $spreadsheetWorksheet the data to be written to the spreadsheet
+     * @return string full path of the generated spreadsheet file
      */
-    public function generate($schema, $fileFormat, $data);
+    public function generateFile(
+        string $schema,
+        string $fileFormat,
+        string $fileName,
+        SpreadsheetWorksheet $spreadsheetWorksheet
+    ): string;
 }
