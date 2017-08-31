@@ -30,3 +30,4 @@ $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 $app->get('/dev/view-case-queue', Dev\Action\ViewCaseQueueAction::class, 'dev.view-case-queue');
+$app->get('/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
