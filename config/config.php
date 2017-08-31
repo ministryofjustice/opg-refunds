@@ -7,7 +7,7 @@ use Zend\ConfigAggregator\PhpFileProvider;
 // To enable or disable caching, set the `ConfigAggregator::ENABLE_CACHE` boolean in
 // `config/autoload/local.php`.
 $cacheConfig = [
-    'config_cache_path' => 'data/config-cache.php',
+    'config_cache_path' => '/tmp/config-cache-opg-refunds-caseworker-front.php',
 ];
 
 $aggregator = new ConfigAggregator([
