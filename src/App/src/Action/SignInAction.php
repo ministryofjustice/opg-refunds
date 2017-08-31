@@ -6,10 +6,10 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
-class LoginAction extends AbstractAction implements ServerMiddlewareInterface
+class SignInAction extends AbstractAction implements ServerMiddlewareInterface
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::login-page'));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::sign-in-page'));
     }
 }

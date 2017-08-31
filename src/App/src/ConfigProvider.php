@@ -34,8 +34,8 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\LoginAction::class => Action\LoginAction::class,
-                Action\SignoutAction::class => Action\SignoutAction::class,
+                Action\SignInAction::class => Action\SignInAction::class,
+                Action\SignOutAction::class => Action\SignOutAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
             ],

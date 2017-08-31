@@ -6,12 +6,14 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class SignoutAction extends AbstractAction implements ServerMiddlewareInterface
+class SignOutAction extends AbstractAction implements ServerMiddlewareInterface
 {
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        //  TODO - Destory the session here
+
         return new Response\RedirectResponse(
-            $this->getUrlHelper()->generate('login')
+            $this->getUrlHelper()->generate('sign-in')
         );
     }
 }
