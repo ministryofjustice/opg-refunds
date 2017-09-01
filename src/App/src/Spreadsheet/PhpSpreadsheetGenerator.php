@@ -8,41 +8,30 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
 
 class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 {
-    const SPREADSHEET_OUTPUT_FOLDER = __DIR__ . '/../../../../content/';
+    /**
+     * @var string
+     */
+    private $sourceFolder;
+    /**
+     * @var string
+     */
+    private $tempFolder;
 
-    const SSCL_SPREADSHEET_SOURCE_FILENAME = __DIR__ . '/../../../../content/OPG Multi-SOP1 Refund Requests.xls';
-
-    public function generate($schema, $fileFormat, $data)
+    public function __construct(string $sourceFolder, string $tempFolder)
     {
-        if ($schema !== ISpreadsheetGenerator::SCHEMA_SSCL || $fileFormat !== ISpreadsheetGenerator::FILE_FORMAT_XLS) {
-            throw new InvalidArgumentException('Supplied schema and file format is not supported');
+        $this->sourceFolder = $sourceFolder;
+        $this->tempFolder = $tempFolder;
+
+        if (substr($this->sourceFolder, -1) !== '/') {
+            $this->sourceFolder .= '/';
+        }
+        if (substr($this->tempFolder, -1) !== '/') {
+            $this->tempFolder .= '/';
         }
 
-        $reader = new XlsReader();
-        $ssclSourceSpreadsheetFilename = self::SSCL_SPREADSHEET_SOURCE_FILENAME;
-        $ssclSourceSpreadsheet = $reader->load($ssclSourceSpreadsheetFilename);
-
-        $dataSheet = $ssclSourceSpreadsheet->getSheetByName('Data');
-
-        foreach ($data as $idx => $row) {
-            $dataSheet->setCellValueByColumnAndRow(4, $idx + 3, $row['reference']);
-            $dataSheet->setCellValueByColumnAndRow(5, $idx + 3, $row['payeeName']);
-            $dataSheet->setCellValueByColumnAndRow(11, $idx + 3, $row['sortCode']);
-            $dataSheet->setCellValueByColumnAndRow(12, $idx + 3, $row['accountNumber']);
-            $dataSheet->setCellValueByColumnAndRow(26, $idx + 3, $row['amount']);
-            $dataSheet->setCellValueByColumnAndRow(28, $idx + 3, $row['amount']);
+        if (!file_exists($tempFolder)) {
+            mkdir($tempFolder, 0777, true);
         }
-
-        //$cell = $dataSheet->getCell('C2');
-
-        $writer = new XlsWriter($ssclSourceSpreadsheet);
-        $writer->save(self::SPREADSHEET_OUTPUT_FOLDER . 'test.xls');
-
-        //$writer->save('/some/path/to/file.xlsx'); // standard, save to disk
-        //$writer->save('php://output');            // to download the file in the browser
-        //$handle = $writer->save('php://memory');  // to get a file descriptor to the stream in memory
-
-        throw new InvalidArgumentException('Supplied schema and file format is not supported');
     }
 
     /**
@@ -58,11 +47,14 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         string $fileName,
         SpreadsheetWorksheet $spreadsheetWorksheet
     ): string {
-        if ($schema === ISpreadsheetGenerator::SCHEMA_SSCL && $fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLS) {
-            $outputFilePath = self::SPREADSHEET_OUTPUT_FOLDER . $fileName;
+        $outputFilePath = $this->tempFolder . $fileName;
+        if (file_exists($outputFilePath)) {
+            throw new InvalidArgumentException('Supplied filename already exists in temp folder');
+        }
 
+        if ($schema === ISpreadsheetGenerator::SCHEMA_SSCL && $fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLS) {
             $reader = new XlsReader();
-            $ssclSourceSpreadsheetFilename = self::SSCL_SPREADSHEET_SOURCE_FILENAME;
+            $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'OPG Multi-SOP1 Refund Requests.xls';
             $ssclSourceSpreadsheet = $reader->load($ssclSourceSpreadsheetFilename);
 
             $dataSheet = $ssclSourceSpreadsheet->getSheetByName($spreadsheetWorksheet->getName());
@@ -75,10 +67,41 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 
             $writer = new XlsWriter($ssclSourceSpreadsheet);
             $writer->save($outputFilePath);
+            //$writer->save('php://output');            // to download the file in the browser
 
             return $outputFilePath;
         }
 
         throw new InvalidArgumentException('Supplied schema and file format is not supported');
+    }
+
+    /**
+     * @param string $schema The schema the produced spreadsheet should follow e.g. SSCL
+     * @param string $fileFormat The file format of the resulting stream e.g. XLS
+     * @param SpreadsheetWorksheet $spreadsheetWorksheet the data to be written to the spreadsheet
+     * @return bool|resource a file pointer resource on success, or false on error.
+     */
+    public function generateStream(
+        string $schema,
+        string $fileFormat,
+        SpreadsheetWorksheet $spreadsheetWorksheet
+    ) {
+        $tempFileName = SpreadsheetFileNameFormatter::getTempFileName($schema, $fileFormat);
+
+        $outputFilePath = $this->generateFile($schema, $fileFormat, $tempFileName, $spreadsheetWorksheet);
+
+        $handle = fopen($outputFilePath, 'r');
+
+        return $handle;
+    }
+
+    public function deleteTempFiles()
+    {
+        $files = scandir($this->tempFolder);
+        foreach ($files as $file) {
+            if (is_file($this->tempFolder . $file)) {
+                unlink($this->tempFolder . $file);
+            }
+        }
     }
 }

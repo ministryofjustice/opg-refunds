@@ -27,4 +27,28 @@ class SpreadsheetFileNameFormatterTest extends TestCase
 
         $this->assertEquals('OPG Multi-SOP1 Refund Requests.xls', $result);
     }
+
+    public function testGetTempFileNameSsclXls()
+    {
+        $result = SpreadsheetFileNameFormatter::getTempFileName(
+            ISpreadsheetGenerator::SCHEMA_SSCL,
+            ISpreadsheetGenerator::FILE_FORMAT_XLS
+        );
+
+        $this->assertStringStartsWith('Temp_Spreadsheet_SSCL_', $result);
+        $this->assertStringEndsWith('.xls', $result);
+        $this->assertEquals(41, strlen($result));
+    }
+
+    public function testGetTempFileNameSsclXlsx()
+    {
+        $result = SpreadsheetFileNameFormatter::getTempFileName(
+            ISpreadsheetGenerator::SCHEMA_SSCL,
+            ISpreadsheetGenerator::FILE_FORMAT_XLSX
+        );
+
+        $this->assertStringStartsWith('Temp_Spreadsheet_SSCL_', $result);
+        $this->assertStringEndsWith('.xlsx', $result);
+        $this->assertEquals(42, strlen($result));
+    }
 }

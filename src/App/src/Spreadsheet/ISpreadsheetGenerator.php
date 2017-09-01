@@ -23,4 +23,18 @@ interface ISpreadsheetGenerator
         string $fileName,
         SpreadsheetWorksheet $spreadsheetWorksheet
     ): string;
+
+    /**
+     * @param string $schema The schema the produced spreadsheet should follow e.g. SSCL
+     * @param string $fileFormat The file format of the resulting stream e.g. XLS
+     * @param SpreadsheetWorksheet $spreadsheetWorksheet the data to be written to the spreadsheet
+     * @return bool|resource a file pointer resource on success, or false on error.
+     */
+    public function generateStream(
+        string $schema,
+        string $fileFormat,
+        SpreadsheetWorksheet $spreadsheetWorksheet
+    );
+
+    public function deleteTempFiles();
 }

@@ -3,7 +3,6 @@
 namespace AppTest\Spreadsheet;
 
 use App\Spreadsheet\ISpreadsheetGenerator;
-use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetWorksheet;
 use App\Spreadsheet\SsclWorksheetGenerator;
@@ -12,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 
 class PhpSpreadsheetGeneratorTest extends TestCase
 {
+    private $sourceFolder = __DIR__ . '/../../../assets';
+    private $tempFolder = __DIR__ . '/../output';
     /**
      * @var ISpreadsheetGenerator
      */
@@ -25,9 +26,17 @@ class PhpSpreadsheetGeneratorTest extends TestCase
      */
     private $filesToDelete = [];
 
+    public static function setUpBeforeClass()
+    {
+        $filename = __DIR__ . '/../output/UnitTest.xls';
+        if (file_exists($filename)) {
+            unlink($filename);
+        }
+    }
+
     public function setUp()
     {
-        $this->spreadsheetGenerator = new PhpSpreadsheetGenerator();
+        $this->spreadsheetGenerator = new PhpSpreadsheetGenerator($this->sourceFolder, $this->tempFolder);
 
         $data = [
             [
@@ -65,11 +74,37 @@ class PhpSpreadsheetGeneratorTest extends TestCase
             'UnitTest.xls',
             $this->worksheet
         );
-        $this->filesToDelete[] = $result;
 
         $this->assertNotNull($result);
-        $this->assertEquals(PhpSpreadsheetGenerator::SPREADSHEET_OUTPUT_FOLDER . 'UnitTest.xls', $result);
+        $this->assertEquals($this->tempFolder . '/UnitTest.xls', $result);
         $this->assertTrue(file_exists($result));
+    }
+
+    /**
+     * @depends testSchemaSsclFileFormatXlsOneRow
+     * @expectedException        InvalidArgumentException
+     * @expectedExceptionMessage Supplied filename already exists in temp folder
+     */
+    public function testFileAlreadyExists()
+    {
+        $this->spreadsheetGenerator->generateFile(
+            ISpreadsheetGenerator::SCHEMA_SSCL,
+            ISpreadsheetGenerator::FILE_FORMAT_XLS,
+            'UnitTest.xls',
+            $this->worksheet
+        );
+    }
+
+    /**
+     * @depends testFileAlreadyExists
+     */
+    public function testDeleteTempFiles()
+    {
+        $this->assertTrue(file_exists($this->tempFolder . '/UnitTest.xls'));
+
+        $this->spreadsheetGenerator->deleteTempFiles();
+
+        $this->assertFalse(file_exists($this->tempFolder . '/UnitTest.xls'));
     }
 
     public function tearDown()
