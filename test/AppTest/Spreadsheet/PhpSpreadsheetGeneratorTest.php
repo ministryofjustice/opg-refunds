@@ -7,6 +7,7 @@ use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetWorksheet;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use InvalidArgumentException;
+use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
 
 class PhpSpreadsheetGeneratorTest extends TestCase
@@ -78,6 +79,24 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $this->assertNotNull($result);
         $this->assertEquals($this->tempFolder . '/UnitTest.xls', $result);
         $this->assertTrue(file_exists($result));
+
+        //Load and check spreadsheet data
+        $reader = new XlsReader();
+        $ssclSourceSpreadsheet = $reader->load($result);
+
+        $dataSheet = $ssclSourceSpreadsheet->getSheetByName($this->worksheet->getName());
+
+        foreach ($this->worksheet->getRows() as $row) {
+            foreach ($row->getCells() as $cell) {
+                $this->assertEquals(
+                    $cell->getData(),
+                    $dataSheet->getCellByColumnAndRow(
+                        $cell->getColumn(),
+                        $cell->getRow()
+                    )->getValue()
+                );
+            }
+        }
     }
 
     /**
@@ -105,6 +124,47 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $this->spreadsheetGenerator->deleteTempFiles();
 
         $this->assertFalse(file_exists($this->tempFolder . '/UnitTest.xls'));
+    }
+
+    /**
+     * @depends testDeleteTempFiles
+     */
+    public function testGenerateStream()
+    {
+        $result = $this->spreadsheetGenerator->generateStream(
+            ISpreadsheetGenerator::SCHEMA_SSCL,
+            ISpreadsheetGenerator::FILE_FORMAT_XLS,
+            $this->worksheet
+        );
+
+        $this->assertNotNull($result);
+        $this->assertNotFalse($result);
+
+        //Save stream to file for testing
+        $fileName = $this->tempFolder . '/StreamUnitTest.xls';
+        file_put_contents($fileName, $result);
+
+        $this->assertTrue(file_exists($fileName));
+
+        //Load and check spreadsheet data
+        $reader = new XlsReader();
+        $ssclSourceSpreadsheet = $reader->load($fileName);
+
+        $dataSheet = $ssclSourceSpreadsheet->getSheetByName($this->worksheet->getName());
+
+        foreach ($this->worksheet->getRows() as $row) {
+            foreach ($row->getCells() as $cell) {
+                $this->assertEquals(
+                    $cell->getData(),
+                    $dataSheet->getCellByColumnAndRow(
+                        $cell->getColumn(),
+                        $cell->getRow()
+                    )->getValue()
+                );
+            }
+        }
+
+        $this->spreadsheetGenerator->deleteTempFiles();
     }
 
     public function tearDown()
