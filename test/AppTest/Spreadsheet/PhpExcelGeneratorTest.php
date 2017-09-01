@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use PHPExcel_Reader_Excel5 as XlsReader;
 use PHPUnit\Framework\TestCase;
 
-class PhpExcelGeneratorTest extends TestCase
+class PhpExcelGeneratorTest //extends TestCase
 {
     private $sourceFolder = __DIR__ . '/../../../assets';
     private $tempFolder = __DIR__ . '/../output';
