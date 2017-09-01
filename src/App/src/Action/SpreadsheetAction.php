@@ -25,8 +25,7 @@ class SpreadsheetAction implements ServerMiddlewareInterface
     public function __construct(
         ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator,
         ISpreadsheetGenerator $spreadsheetGenerator
-    )
-    {
+    ) {
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
     }

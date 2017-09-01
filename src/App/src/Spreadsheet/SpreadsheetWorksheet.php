@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: david
- * Date: 31/08/17
- * Time: 17:53
- */
 
 namespace App\Spreadsheet;
-
 
 class SpreadsheetWorksheet
 {
