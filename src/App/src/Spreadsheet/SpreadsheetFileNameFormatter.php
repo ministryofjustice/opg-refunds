@@ -12,8 +12,7 @@ class SpreadsheetFileNameFormatter
 
     public static function getTempFileName($schema, $fileFormat)
     {
-        $timestamp = '' . microtime(true);
-        $timestamp = str_pad($timestamp, 15, '0');
+        $timestamp = microtime(true);
 
         $fileName = "Temp_Spreadsheet_{$schema}_{$timestamp}";
         $fileName = str_replace('.', '-', $fileName);
