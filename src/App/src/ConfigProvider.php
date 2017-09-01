@@ -34,10 +34,11 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                Action\HomePageAction::class => Action\HomePageAction::class,
+                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
+                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
                 Action\SignInAction::class => Action\SignInAction::class,
                 Action\SignOutAction::class => Action\SignOutAction::class,
-                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
-                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
             ],
             'factories'  => [
                 // Middleware
@@ -65,6 +66,7 @@ class ConfigProvider
                 'app'    => [__DIR__ . '/../templates/app'],
                 'error'  => [__DIR__ . '/../templates/error'],
                 'layout' => [__DIR__ . '/../templates/layout'],
+                'snippet' => [__DIR__ . '/../templates/snippet'],
             ],
         ];
     }

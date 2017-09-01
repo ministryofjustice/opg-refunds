@@ -26,8 +26,10 @@
  * );
  */
 
-$app->get('/', App\Action\SignInAction::class, 'sign-in');
-$app->get('/sign-out', App\Action\SignOutAction::class, 'sign-out');
+$app->get('/', App\Action\HomePageAction::class, 'home');
+
+$app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
+$app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
