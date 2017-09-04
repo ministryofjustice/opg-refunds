@@ -29,6 +29,7 @@ return array(
     'Zend\\ConfigAggregator\\' => array($vendorDir . '/zendframework/zend-config-aggregator/src'),
     'Zend\\ComponentInstaller\\' => array($vendorDir . '/zendframework/zend-component-installer/src'),
     'Zend\\Code\\' => array($vendorDir . '/zendframework/zend-code/src'),
+    'Zend\\Authentication\\' => array($vendorDir . '/zendframework/zend-authentication/src'),
     'ZF\\DevelopmentMode\\' => array($vendorDir . '/zfcampus/zf-development-mode/src'),
     'ZF\\ComposerAutoloading\\' => array($vendorDir . '/zfcampus/zf-composer-autoloading/src'),
     'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),

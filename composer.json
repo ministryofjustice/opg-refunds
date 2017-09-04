@@ -12,6 +12,7 @@
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "roave/security-advisories": "dev-master",
+        "zendframework/zend-authentication": "^2.5",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
         "zendframework/zend-crypt": "^3.2",
