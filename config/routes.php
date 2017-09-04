@@ -26,6 +26,10 @@
  * );
  */
 
+$app->get('/beta/{betaId:\d+}/{betaExpires:\d+}/{betaSignature:[A-Za-z0-9]+}', App\Action\BetaAction::class, 'beta');
+
+//---
+
 $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
 $app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck.json');

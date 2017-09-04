@@ -8,13 +8,17 @@ use Zend\Diactoros\Response;
 use App\Form;
 use App\Service\Refund\FlowController;
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
+use App\Service\Refund\Beta\BetaLinkChecker;
 
 class SummaryAction extends AbstractAction
 {
 
+    private $betaChecker;
     private $applicationProcessService;
-    public function __construct(ProcessApplicationService $applicationProcessService)
+
+    public function __construct(ProcessApplicationService $applicationProcessService, BetaLinkChecker $betaChecker)
     {
+        $this->betaChecker = $betaChecker;
         $this->applicationProcessService = $applicationProcessService;
     }
 
@@ -43,6 +47,9 @@ class SummaryAction extends AbstractAction
 
                 // Process the application
                 $session['reference'] = $this->applicationProcessService->process($session->getArrayCopy());
+
+                // For use in beta; flag the beta ID as used.
+                $this->betaChecker->flagLinkAsUsed($request->getAttribute('betaId'), $session['reference']);
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(

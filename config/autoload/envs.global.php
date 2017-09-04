@@ -13,11 +13,32 @@ return [
     ],
 
     'beta' => [
+
+        // Set to false when we move out of beta
+        'enabled' => true,
+
+        'cookie' => [
+            'name' => 'beta'
+        ],
+
         'link' => [
             'signature' => [
                 'key' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY') ?: null,
             ]
         ],
+
+        'dynamodb' => [
+            'client' => [
+                'version' => '2012-08-10',
+                'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_ENDPOINT') ?: null,
+                'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_REGION') ?: null,
+            ],
+            'settings' => [
+                'table_name' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_TABLE') ?: null,
+            ],
+
+        ],
+
     ],
 
     'security' => [
@@ -68,10 +89,6 @@ return [
                 'version' => '2012-08-10',
                 'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_ENDPOINT') ?: null,
                 'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION') ?: null,
-                'credentials' => ( getenv('AWS_ACCESS_KEY_ID') && getenv('AWS_SECRET_ACCESS_KEY') ) ? [
-                    'key'    => getenv('AWS_ACCESS_KEY_ID'),
-                    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
-                ] : null,
             ],
             'settings' => [
                 'table_name' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE') ?: null,
