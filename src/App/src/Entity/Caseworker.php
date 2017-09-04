@@ -35,6 +35,11 @@ class Caseworker
     private $roles;
 
     /**
+     * @var string
+     */
+    private $token;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -120,5 +125,21 @@ class Caseworker
     public function setRoles(string $roles)
     {
         $this->roles = $roles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken(string $token)
+    {
+        $this->token = $token;
     }
 }
