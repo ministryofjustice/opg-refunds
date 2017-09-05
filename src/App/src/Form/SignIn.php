@@ -17,6 +17,11 @@ use Zend\InputFilter\InputFilter;
  */
 class SignIn extends AbstractForm
 {
+    /**
+     * SignIn constructor
+     *
+     * @param array $options
+     */
     public function __construct($options = [])
     {
         parent::__construct(self::class, $options);

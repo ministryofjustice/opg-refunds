@@ -12,8 +12,14 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  */
 interface TemplatingSupportInterface
 {
-
+    /**
+     * @param TemplateRendererInterface $template
+     * @return mixed
+     */
     public function setTemplateRenderer(TemplateRendererInterface $template);
 
+    /**
+     * @return TemplateRendererInterface
+     */
     public function getTemplateRenderer() : TemplateRendererInterface;
 }

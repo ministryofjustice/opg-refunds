@@ -12,7 +12,11 @@ use Zend\Filter;
  */
 class StandardInput extends Filter\FilterChain
 {
-
+    /**
+     * StandardInput constructor
+     *
+     * @param null $options
+     */
     public function __construct($options = null)
     {
         parent::__construct($options);

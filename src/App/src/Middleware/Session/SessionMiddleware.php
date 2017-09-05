@@ -1,20 +1,16 @@
 <?php
+
 namespace App\Middleware\Session;
-
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
-
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 
 use App\Service\Session\Session;
 use App\Service\Session\SessionManager;
-
-use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigResponseCookies;
-
+use Dflydev\FigCookies\SetCookie;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Math\BigInteger\BigInteger;
-
 use DateTime;
 
 /**
@@ -25,7 +21,6 @@ use DateTime;
  */
 class SessionMiddleware implements ServerMiddlewareInterface
 {
-
     const COOKIE_PATH = '/';
     const COOKIE_NAME = 'rs';
 
@@ -39,12 +34,23 @@ class SessionMiddleware implements ServerMiddlewareInterface
      */
     private $sessionManager;
 
+    /**
+     * SessionMiddleware constructor
+     *
+     * @param SessionManager $sessionManager
+     * @param int $sessionTTL
+     */
     public function __construct(SessionManager $sessionManager, int $sessionTTL)
     {
         $this->sessionTTL = $sessionTTL;
         $this->sessionManager = $sessionManager;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface|static
+     */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $cookies = $request->getCookieParams();
@@ -101,7 +107,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
             $response = FigResponseCookies::set($response, SetCookie::createExpired(self::COOKIE_NAME)
                 ->withPath(self::COOKIE_PATH));
 
-            if(isset($sessionId)){
+            if (isset($sessionId)) {
                 // Wipe the stored data.
                 $this->sessionManager->delete($sessionId);
             }

@@ -1,19 +1,24 @@
 <?php
-namespace App\Service\Session;
 
-use Interop\Container\ContainerInterface;
+namespace App\Service\Session;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\StandardSessionConnection;
-
+use Interop\Container\ContainerInterface;
 use Zend\Crypt\BlockCipher;
 
+/**
+ * Class SessionManagerFactory
+ * @package App\Service\Session
+ */
 class SessionManagerFactory
 {
-
+    /**
+     * @param ContainerInterface $container
+     * @return SessionManager
+     */
     public function __invoke(ContainerInterface $container)
     {
-
         $config = $container->get('config');
 
         if (!isset($config['session']['ttl'])) {

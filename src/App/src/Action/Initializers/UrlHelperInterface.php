@@ -12,8 +12,14 @@ use Zend\Expressive\Helper\UrlHelper;
  */
 interface UrlHelperInterface
 {
-
+    /**
+     * @param UrlHelper $template
+     * @return mixed
+     */
     public function setUrlHelper(UrlHelper $template);
 
+    /**
+     * @return UrlHelper
+     */
     public function getUrlHelper() : UrlHelper;
 }

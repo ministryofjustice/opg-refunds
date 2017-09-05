@@ -7,6 +7,10 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
+/**
+ * Class AbstractAction
+ * @package App\Action
+ */
 abstract class AbstractAction implements
     ServerMiddlewareInterface,
     Initializers\UrlHelperInterface,

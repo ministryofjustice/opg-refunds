@@ -4,6 +4,10 @@ namespace App\Service\Session;
 
 use ArrayObject;
 
+/**
+ * Class Session
+ * @package App\Service\Session
+ */
 class Session extends ArrayObject
 {
     const SESSION_IDENTITY_KEY = 'identity';
@@ -21,6 +25,7 @@ class Session extends ArrayObject
     /**
      * Convenient way to get the user identity if they are logged in
      *
+     * @return mixed|null
      */
     public function getIdentity()
     {
@@ -29,6 +34,8 @@ class Session extends ArrayObject
 
     /**
      * Easy check for active session
+     *
+     * @return bool
      */
     public function loggedIn()
     {

@@ -15,6 +15,9 @@ use Zend\InputFilter\InputFilter;
  */
 abstract class AbstractForm extends ZendForm
 {
+    /**
+     * @param InputFilter $inputFilter
+     */
     protected function addCsrfElement(InputFilter $inputFilter)
     {
         $options = $this->getOptions();

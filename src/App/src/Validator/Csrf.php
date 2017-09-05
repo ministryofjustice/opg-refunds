@@ -21,10 +21,18 @@ class Csrf extends ZendCsrf
      */
     protected $name = null;
 
+    /**
+     * @var array
+     */
     protected $messageTemplates = [
         self::NOT_SAME => 'csrf',
     ];
 
+    /**
+     * Csrf constructor
+     *
+     * @param array $options
+     */
     public function __construct($options = [])
     {
         parent::__construct($options);
@@ -36,6 +44,11 @@ class Csrf extends ZendCsrf
         $this->hash = $options['secret'];
     }
 
+    /**
+     * @param string $value
+     * @param null $context
+     * @return bool
+     */
     public function isValid($value, $context = null)
     {
         if ($value !== $this->getHash()) {
@@ -46,6 +59,10 @@ class Csrf extends ZendCsrf
         return true;
     }
 
+    /**
+     * @param bool $regenerate
+     * @return string
+     */
     public function getHash($regenerate = false)
     {
         $name = $this->getName();

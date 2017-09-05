@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Zend\Authentication\AuthenticationService;
+
 /**
  * The configuration provider for the App module
  *
@@ -37,14 +39,19 @@ class ConfigProvider
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
-                Action\SignInAction::class => Action\SignInAction::class,
                 Action\SignOutAction::class => Action\SignOutAction::class,
             ],
             'factories'  => [
+                //  Actions
+                Action\SignInAction::class => Action\SignInActionFactory::class,
+
                 // Middleware
+                Middleware\Auth\AuthMiddleware::class => Middleware\Auth\AuthMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
+                Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
+                AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
             ],
             'initializers' => [
