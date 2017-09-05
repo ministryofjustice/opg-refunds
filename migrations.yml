@@ -1,4 +1,0 @@
-name: Doctrine Development Migrations
-migrations_namespace: DoctrineMigrations
-table_name: doctrine_migration_versions
-migrations_directory: DoctrineMigrations

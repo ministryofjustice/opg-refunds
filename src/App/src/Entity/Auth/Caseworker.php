@@ -1,11 +1,17 @@
 <?php
 
-namespace App\Entity;
+namespace App\Entity\Auth;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity @ORM\Table(name="caseworker")
+ **/
 class Caseworker
 {
     /**
      * @var int
+     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
      */
     private $id;
 
@@ -38,6 +44,11 @@ class Caseworker
      * @var string
      */
     private $token;
+
+    /**
+     * @var int
+     */
+    private $tokenExpires;
 
     /**
      * @return int
@@ -141,5 +152,21 @@ class Caseworker
     public function setToken(string $token)
     {
         $this->token = $token;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTokenExpires(): int
+    {
+        return $this->tokenExpires;
+    }
+
+    /**
+     * @param int $tokenExpires
+     */
+    public function setTokenExpires(int $tokenExpires)
+    {
+        $this->tokenExpires = $tokenExpires;
     }
 }

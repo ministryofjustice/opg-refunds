@@ -1,0 +1,4 @@
+name: Cases DB Doctrine Migrations
+migrations_namespace: DoctrineMigrations\Cases
+table_name: doctrine_migration_versions
+migrations_directory: DoctrineMigrations/Cases
