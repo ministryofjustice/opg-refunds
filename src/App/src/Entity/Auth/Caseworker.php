@@ -17,36 +17,43 @@ class Caseworker
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $name;
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $email;
 
     /**
      * @var string
+     * @ORM\Column(name="password_hash", type="string")
      */
     private $passwordHash;
 
     /**
      * @var int
+     * @ORM\Column(type="integer")
      */
     private $status;
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $roles;
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $token;
 
     /**
      * @var int
+     * @ORM\Column(name="token_expires", type="integer")
      */
     private $tokenExpires;
 

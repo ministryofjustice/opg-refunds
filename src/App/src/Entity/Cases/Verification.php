@@ -2,30 +2,40 @@
 
 namespace App\Entity\Cases;
 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity @ORM\Table(name="verification")
+ **/
 class Verification
 {
     /**
      * @var int
+     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
      */
     private $id;
 
     /**
      * @var int
+     * @ORM\Column(name="refund_case_id", type="integer")
      */
     private $refundCaseId;
 
     /**
      * @var int
+     * @ORM\Column(name="poa_id", type="integer")
      */
     private $poaId;
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $type;
 
     /**
      * @var bool
+     * @ORM\Column(type="boolean")
      */
     private $passes;
 

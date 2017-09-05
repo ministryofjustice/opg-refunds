@@ -3,36 +3,46 @@
 namespace App\Entity\Cases;
 
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity @ORM\Table(name="poa")
+ **/
 class Poa
 {
     /**
      * @var int
+     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
      */
     private $id;
 
     /**
      * @var int
+     * @ORM\Column(name="refund_case_id", type="integer")
      */
     private $refundCaseId;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="received_datetime", type="datetime")
      */
     private $receivedDateTime;
 
     /**
      * @var float
+     * @ORM\Column(name="net_amount_paid", type="decimal")
      */
     private $netAmountPaid;
 
     /**
      * @var int
+     * @ORM\Column(type="integer")
      */
     private $status;
 
     /**
      * @var float
+     * @ORM\Column(name="amount_to_refund", type="decimal")
      */
     private $amountToRefund;
 

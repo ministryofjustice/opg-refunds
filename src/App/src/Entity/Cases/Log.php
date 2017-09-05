@@ -3,33 +3,56 @@
 namespace App\Entity\Cases;
 
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity @ORM\Table(name="log")
+ **/
 class Log
 {
     /**
      * @var int
+     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     */
+    private $id;
+
+    /**
+     * @var int
+     * @ORM\Column(name="refund_case_id", type="integer")
      */
     private $refundCaseId;
 
     /**
      * @var int
+     * @ORM\Column(name="caseworker_id", type="integer")
      */
     private $caseworkerId;
 
     /**
      * @var int
+     * @ORM\Column(name="poa_id", type="integer")
      */
     private $poaId;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="created_datetime", type="datetime")
      */
     private $createdDateTime;
 
     /**
      * @var string
+     * @ORM\Column(type="string")
      */
     private $message;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
 
     /**
      * @return int

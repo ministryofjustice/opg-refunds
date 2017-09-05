@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Entity\Auth\Caseworker;
 use App\Entity\Cases\RefundCase;
 use Doctrine\ORM\EntityManager;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -23,8 +24,15 @@ class PingAction implements ServerMiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $foundCase = false;
+        $foundCaseworker = false;
+        $productRepository = $this->entityManager->getRepository(Caseworker::class);
+        $caseWorkers = $productRepository->findBy([], null, 1);
+        foreach ($caseWorkers as $caseWorker) {
+            /** @var Caseworker $caseWorker */
+            $foundCaseworker = $caseWorker->getId() > 0;
+        }
 
+        $foundCase = false;
         $productRepository = $this->entityManager->getRepository(RefundCase::class);
         $cases = $productRepository->findBy([], null, 1);
         foreach ($cases as $case) {
@@ -34,6 +42,7 @@ class PingAction implements ServerMiddlewareInterface
 
         return new JsonResponse([
             'ack' => time(),
+            'foundCaseworker' => $foundCaseworker,
             'foundCase' => $foundCase
         ]);
     }

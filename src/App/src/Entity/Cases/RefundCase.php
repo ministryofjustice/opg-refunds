@@ -18,46 +18,55 @@ class RefundCase //Case is a reserved word in PHP 7
 
     /**
      * @var DateTime
+     * @ORM\Column(name="created_datetime", type="datetime")
      */
     private $createdDateTime;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="updated_datetime", type="datetime")
      */
     private $updatedDateTime;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="received_datetime", type="datetime")
      */
     private $receivedDateTime;
 
     /**
      * @var string
+     * @ORM\Column(name="json_data", type="string")
      */
     private $jsonData;
 
     /**
      * @var int
+     * @ORM\Column(type="integer")
      */
     private $status;
 
     /**
      * @var int
+     * @ORM\Column(name="assigned_to_id", type="integer")
      */
     private $assignedToId;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="assigned_datetime", type="datetime")
      */
     private $assignedDateTime;
 
     /**
      * @var DateTime
+     * @ORM\Column(name="finished_datetime", type="datetime")
      */
     private $finishedDateTime;
 
     /**
      * @var string
+     * @ORM\Column(name="donor_name", type="string")
      */
     private $donorName;
 
