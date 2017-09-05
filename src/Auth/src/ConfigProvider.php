@@ -1,9 +1,9 @@
 <?php
 
-namespace App;
+namespace Auth;
 
 /**
- * The configuration provider for the App module
+ * The configuration provider for the Auth module
  *
  * @see https://docs.zendframework.com/zend-component-installer/
  */
@@ -35,10 +35,15 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
-                Action\PingAction::class => Action\PingFactory::class,
-                Action\SpreadsheetAction::class => Action\SpreadsheetFactory::class,
+                //  Actions
+                Action\AuthAction::class => Action\AuthActionFactory::class,
+
+                // Middleware
+                Middleware\AuthMiddleware::class => Middleware\AuthMiddlewareFactory::class,
+
+                //  Services
+                Service\AuthenticationService::class => Service\AuthenticationServiceFactory::class,
             ],
         ];
     }
-
 }

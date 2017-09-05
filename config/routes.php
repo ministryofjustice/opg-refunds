@@ -26,8 +26,14 @@
  * );
  */
 
-$app->get('/', App\Action\HomePageAction::class, 'home');
+//  Unauthenticated routes
+$app->post('/v1/auth', Auth\Action\AuthAction::class, 'auth');
 $app->get('/ping', App\Action\PingAction::class, 'ping');
 
+//  Authenticated routes
+$prefix = '/v1/cases';
+//$app->post($prefix . '/example', App\Action\ExampleAction::class, 'example');
+
+//  Developer routes
 $app->get('/dev/view-case-queue', Dev\Action\ViewCaseQueueAction::class, 'dev.view-case-queue');
 $app->get('/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');

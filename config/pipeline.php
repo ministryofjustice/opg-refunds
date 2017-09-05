@@ -1,7 +1,8 @@
 <?php
 
+use Auth\Middleware;
+use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Helper\UrlHelperMiddleware;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Middleware\NotFoundHandler;
@@ -37,14 +38,14 @@ $app->pipe(ServerUrlMiddleware::class);
 $app->pipeRoutingMiddleware();
 $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
-$app->pipe(UrlHelperMiddleware::class);
+$app->pipe(BodyParamsMiddleware::class);
 
-// Add more middleware here that needs to introspect the routing results; this
-// might include:
-//
-// - route-based authentication
-// - route-based validation
-// - etc.
+//  Add middleware to verify on the cases path
+foreach (['/v1/cases'] as $path) {
+    $app->pipe($path, [
+        Middleware\AuthMiddleware::class,
+    ]);
+}
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();
