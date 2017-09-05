@@ -16,18 +16,6 @@ class Verification
     private $id;
 
     /**
-     * @var int
-     * @ORM\Column(name="refund_case_id", type="integer")
-     */
-    private $refundCaseId;
-
-    /**
-     * @var int
-     * @ORM\Column(name="poa_id", type="integer")
-     */
-    private $poaId;
-
-    /**
      * @var string
      * @ORM\Column(type="string")
      */
@@ -40,35 +28,25 @@ class Verification
     private $passes;
 
     /**
+     * @var RefundCase
+     * @ORM\OneToOne(targetEntity="RefundCase", inversedBy="verification")
+     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     */
+    private $case;
+
+    /**
+     * @var Poa
+     * @ORM\OneToOne(targetEntity="Poa")
+     * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
+     */
+    private $poa;
+
+    /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRefundCaseId(): int
-    {
-        return $this->refundCaseId;
-    }
-
-    /**
-     * @param int $refundCaseId
-     */
-    public function setRefundCaseId(int $refundCaseId)
-    {
-        $this->refundCaseId = $refundCaseId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPoaId(): int
-    {
-        return $this->poaId;
     }
 
     /**
@@ -109,5 +87,37 @@ class Verification
     public function setPasses(bool $passes)
     {
         $this->passes = $passes;
+    }
+
+    /**
+     * @return RefundCase
+     */
+    public function getCase(): RefundCase
+    {
+        return $this->case;
+    }
+
+    /**
+     * @param RefundCase $case
+     */
+    public function setCase(RefundCase $case)
+    {
+        $this->case = $case;
+    }
+
+    /**
+     * @return Poa
+     */
+    public function getPoa(): Poa
+    {
+        return $this->poa;
+    }
+
+    /**
+     * @param Poa $poa
+     */
+    public function setPoa(Poa $poa)
+    {
+        $this->poa = $poa;
     }
 }

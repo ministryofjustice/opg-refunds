@@ -47,10 +47,11 @@ class RefundCase //Case is a reserved word in PHP 7
     private $status;
 
     /**
-     * @var int
-     * @ORM\Column(name="assigned_to_id", type="integer")
+     * @var Caseworker
+     * @ORM\ManyToOne(targetEntity="Caseworker", inversedBy="assignedCases")
+     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id")
      */
-    private $assignedToId;
+    private $assignedTo;
 
     /**
      * @var DateTime
@@ -69,6 +70,24 @@ class RefundCase //Case is a reserved word in PHP 7
      * @ORM\Column(name="donor_name", type="string")
      */
     private $donorName;
+
+    /**
+     * @var Poa[]
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="case")
+     */
+    private $poas;
+
+    /**
+     * @var Verification
+     * @ORM\OneToOne(targetEntity="Verification", mappedBy="case")
+     */
+    private $verification;
+
+    /**
+     * @var Payment
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
+     */
+    private $payment;
 
     /**
      * @return int
@@ -159,19 +178,19 @@ class RefundCase //Case is a reserved word in PHP 7
     }
 
     /**
-     * @return int
+     * @return Caseworker
      */
-    public function getAssignedToId(): int
+    public function getAssignedTo(): Caseworker
     {
-        return $this->assignedToId;
+        return $this->assignedTo;
     }
 
     /**
-     * @param int $assignedToId
+     * @param Caseworker $assignedTo
      */
-    public function setAssignedToId(int $assignedToId)
+    public function setAssignedTo(Caseworker $assignedTo)
     {
-        $this->assignedToId = $assignedToId;
+        $this->assignedTo = $assignedTo;
     }
 
     /**
@@ -220,5 +239,53 @@ class RefundCase //Case is a reserved word in PHP 7
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+    }
+
+    /**
+     * @return Poa[]
+     */
+    public function getPoas(): array
+    {
+        return $this->poas;
+    }
+
+    /**
+     * @param Poa[] $poas
+     */
+    public function setPoas(array $poas)
+    {
+        $this->poas = $poas;
+    }
+
+    /**
+     * @return Verification
+     */
+    public function getVerification(): Verification
+    {
+        return $this->verification;
+    }
+
+    /**
+     * @param Verification $verification
+     */
+    public function setVerification(Verification $verification)
+    {
+        $this->verification = $verification;
+    }
+
+    /**
+     * @return Payment
+     */
+    public function getPayment(): Payment
+    {
+        return $this->payment;
+    }
+
+    /**
+     * @param Payment $payment
+     */
+    public function setPayment(Payment $payment)
+    {
+        $this->payment = $payment;
     }
 }

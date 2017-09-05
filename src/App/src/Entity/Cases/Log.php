@@ -17,24 +17,6 @@ class Log
     private $id;
 
     /**
-     * @var int
-     * @ORM\Column(name="refund_case_id", type="integer")
-     */
-    private $refundCaseId;
-
-    /**
-     * @var int
-     * @ORM\Column(name="caseworker_id", type="integer")
-     */
-    private $caseworkerId;
-
-    /**
-     * @var int
-     * @ORM\Column(name="poa_id", type="integer")
-     */
-    private $poaId;
-
-    /**
      * @var DateTime
      * @ORM\Column(name="created_datetime", type="datetime")
      */
@@ -47,59 +29,32 @@ class Log
     private $message;
 
     /**
+     * @var RefundCase
+     * @ORM\ManyToOne(targetEntity="RefundCase")
+     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     */
+    private $case;
+
+    /**
+     * @var Caseworker
+     * @ORM\ManyToOne(targetEntity="Caseworker")
+     * @ORM\JoinColumn(name="caseworker_id", referencedColumnName="id")
+     */
+    private $caseworker;
+
+    /**
+     * @var Poa
+     * @ORM\ManyToOne(targetEntity="Poa")
+     * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
+     */
+    private $poa;
+
+    /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRefundCaseId(): int
-    {
-        return $this->refundCaseId;
-    }
-
-    /**
-     * @param int $refundCaseId
-     */
-    public function setRefundCaseId(int $refundCaseId)
-    {
-        $this->refundCaseId = $refundCaseId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getCaseworkerId(): int
-    {
-        return $this->caseworkerId;
-    }
-
-    /**
-     * @param int $caseworkerId
-     */
-    public function setCaseworkerId(int $caseworkerId)
-    {
-        $this->caseworkerId = $caseworkerId;
-    }
-
-    /**
-     * @return int
-     */
-    public function getPoaId(): int
-    {
-        return $this->poaId;
-    }
-
-    /**
-     * @param int $poaId
-     */
-    public function setPoaId(int $poaId)
-    {
-        $this->poaId = $poaId;
     }
 
     /**
@@ -132,5 +87,53 @@ class Log
     public function setMessage(string $message)
     {
         $this->message = $message;
+    }
+
+    /**
+     * @return RefundCase
+     */
+    public function getCase(): RefundCase
+    {
+        return $this->case;
+    }
+
+    /**
+     * @param RefundCase $case
+     */
+    public function setCase(RefundCase $case)
+    {
+        $this->case = $case;
+    }
+
+    /**
+     * @return Caseworker
+     */
+    public function getCaseworker(): Caseworker
+    {
+        return $this->caseworker;
+    }
+
+    /**
+     * @param Caseworker $caseworker
+     */
+    public function setCaseworker(Caseworker $caseworker)
+    {
+        $this->caseworker = $caseworker;
+    }
+
+    /**
+     * @return Poa
+     */
+    public function getPoa(): Poa
+    {
+        return $this->poa;
+    }
+
+    /**
+     * @param Poa $poa
+     */
+    public function setPoa(Poa $poa)
+    {
+        $this->poa = $poa;
     }
 }

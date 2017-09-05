@@ -17,12 +17,6 @@ class Poa
     private $id;
 
     /**
-     * @var int
-     * @ORM\Column(name="refund_case_id", type="integer")
-     */
-    private $refundCaseId;
-
-    /**
      * @var DateTime
      * @ORM\Column(name="received_datetime", type="datetime")
      */
@@ -47,27 +41,18 @@ class Poa
     private $amountToRefund;
 
     /**
+     * @var RefundCase
+     * @ORM\ManyToOne(targetEntity="RefundCase", inversedBy="poas")
+     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     */
+    private $case;
+
+    /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRefundCaseId(): int
-    {
-        return $this->refundCaseId;
-    }
-
-    /**
-     * @param int $refundCaseId
-     */
-    public function setRefundCaseId(int $refundCaseId)
-    {
-        $this->refundCaseId = $refundCaseId;
     }
 
     /**
@@ -132,5 +117,21 @@ class Poa
     public function setAmountToRefund(float $amountToRefund)
     {
         $this->amountToRefund = $amountToRefund;
+    }
+
+    /**
+     * @return RefundCase
+     */
+    public function getCase(): RefundCase
+    {
+        return $this->case;
+    }
+
+    /**
+     * @param RefundCase $case
+     */
+    public function setCase(RefundCase $case)
+    {
+        $this->case = $case;
     }
 }
