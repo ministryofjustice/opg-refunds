@@ -8,8 +8,9 @@ class PingFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $entityManager = $container->get('doctrine.entity_manager.orm_cases');
+        $authEntityManager = $container->get('doctrine.entity_manager.orm_auth');
+        $casesEntityManager = $container->get('doctrine.entity_manager.orm_cases');
 
-        return new PingAction($entityManager);
+        return new PingAction($authEntityManager, $casesEntityManager);
     }
 }
