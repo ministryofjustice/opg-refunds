@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Entity\RefundCase;
 use Doctrine\ORM\EntityManager;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -22,6 +23,18 @@ class PingAction implements ServerMiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new JsonResponse(['ack' => time()]);
+        $foundCase = false;
+
+        $productRepository = $this->entityManager->getRepository(RefundCase::class);
+        $cases = $productRepository->findBy([], null, 1);
+        foreach ($cases as $case) {
+            /** @var RefundCase $case */
+            $foundCase = $case->getId() > 0;
+        }
+
+        return new JsonResponse([
+            'ack' => time(),
+            'foundCase' => $foundCase
+        ]);
     }
 }

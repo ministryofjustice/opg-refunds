@@ -3,11 +3,16 @@
 namespace App\Entity;
 
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity @ORM\Table(name="cases")
+ **/
 class RefundCase //Case is a reserved word in PHP 7
 {
     /**
      * @var int
+     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
      */
     private $id;
 

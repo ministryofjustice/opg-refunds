@@ -15,6 +15,7 @@ return [
         // key is the alias name, the value is the service to which it points.
         'aliases' => [
             'Zend\Expressive\Delegate\DefaultDelegate' => Delegate\NotFoundDelegate::class,
+            //'configuration' => 'config'
         ],
         // Use 'invokables' for constructor-less services, or services that do
         // not require arguments to the constructor. Map a service name to the
@@ -35,7 +36,8 @@ return [
             Middleware\ErrorResponseGenerator::class         => Container\ErrorResponseGeneratorFactory::class,
             Middleware\NotFoundHandler::class                => Container\NotFoundHandlerFactory::class,
 
-            'doctrine.entity_manager.orm_default' => \ContainerInteropDoctrine\EntityManagerFactory::class
+            'doctrine.entity_manager.orm_default' => \ContainerInteropDoctrine\EntityManagerFactory::class,
+            'doctrine.entity_manager.orm_migrations' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_migrations'],
         ],
     ],
 ];
