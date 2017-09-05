@@ -1,4 +1,6 @@
 <?php
+$this->layout('layout::default')
+
 /*
  * Possible reasons:
  * - no-cookie
@@ -8,5 +10,14 @@
  * - invalid-signature
  */
 ?>
-<h1>Beta error</h1>
-<p>This service is currently in beta thus cannot be accessed. <?= $reason ?: null ?></p>
+<div class="grid-row">
+    <div class="column-two-thirds">
+
+        <h1 class="heading-xlarge">
+            We are in beta
+        </h1>
+
+        <p>You cannot access this page because: <?= $this->e($reason) ?></p>
+
+    </div>
+</div>

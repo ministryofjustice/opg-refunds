@@ -1,17 +1,26 @@
 <?php
 namespace App\Service\Refund\Beta;
 
+use Zend\Crypt\Key\Derivation\Pbkdf2;
+use Zend\Math\BigInteger\BigInteger;
+
 use Aws\DynamoDb\DynamoDbClient;
 
 class BetaLinkChecker
 {
 
+    private $key;
     private $betaEnabled;
     private $dynamoClient;
     private $dynamoSettings;
 
-    public function __construct(DynamoDbClient $dynamoClient, array $dynamoSettings, bool $betaEnabled)
-    {
+    public function __construct(
+        DynamoDbClient $dynamoClient,
+        array $dynamoSettings,
+        string $key,
+        bool $betaEnabled
+    ){
+        $this->key = $key;
         $this->dynamoClient = $dynamoClient;
         $this->dynamoSettings = $dynamoSettings;
         $this->betaEnabled = $betaEnabled;
@@ -44,9 +53,26 @@ class BetaLinkChecker
             return 'expired';
         }
 
+        //---
+
         // Validate signature
-        if (false) {
-            // @todo ... this
+
+        $signature = BigInteger::factory('bcmath')->baseConvert( $signature, 62, 16 );
+        $iv = hex2bin(mb_substr($signature, 0, 64, '8bit'));
+        $hmac = mb_substr($signature, 64, null, '8bit');
+
+        $hash = Pbkdf2::calc(
+            'sha256',
+            $this->key,
+            $iv,
+            5000,
+            256 * 2
+        );
+
+        $details = "{$id}/{$expires}";
+        $generatedHmac = hash_hmac('sha256', $details, $hash);
+
+        if (!hash_equals($generatedHmac, $hmac)) {
             return 'invalid-signature';
         }
 

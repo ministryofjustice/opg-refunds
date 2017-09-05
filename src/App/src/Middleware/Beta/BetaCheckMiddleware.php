@@ -1,6 +1,7 @@
 <?php
 namespace App\Middleware\Beta;
 
+use Prophecy\Argument;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Zend\Diactoros\Response;

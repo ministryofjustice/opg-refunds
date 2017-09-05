@@ -11,12 +11,25 @@ class BetaLinkCheckerFactory
     {
         $config = $container->get('config');
 
+        if (!isset($config['beta'])) {
+            throw new \UnexpectedValueException('Beta not configured');
+        }
+
         $config = $config['beta'];
 
         //---
 
         if (!isset($config['enabled'])) {
             throw new \UnexpectedValueException('Beta enabled not configured');
+        }
+
+        //---
+
+        if (
+            !isset($config['link']['signature']['key']) ||
+            mb_strlen(hex2bin($config['link']['signature']['key']), '8bit') != 32
+        ){
+            throw new \UnexpectedValueException('Signature key not configured');
         }
 
         //---
@@ -30,6 +43,7 @@ class BetaLinkCheckerFactory
         return new BetaLinkChecker(
             $dynamoDbClient,
             $config['dynamodb']['settings'],
+            $config['link']['signature']['key'],
             $config['enabled']
         );
     }
