@@ -182,4 +182,20 @@ class Caseworker
     {
         $this->tokenExpires = $tokenExpires;
     }
+
+    /**
+     * @return RefundCase[]
+     */
+    public function getAssignedCases(): array
+    {
+        return $this->assignedCases;
+    }
+
+    /**
+     * @param RefundCase[] $assignedCases
+     */
+    public function setAssignedCases(array $assignedCases)
+    {
+        $this->assignedCases = $assignedCases;
+    }
 }

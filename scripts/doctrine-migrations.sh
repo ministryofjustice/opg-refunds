@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "First parameter is database name e.g. Auth, Cases, second parameter is doctrine-migrations command e.g. migrations:diff or 'migrations:migrate --no-interaction -vvv'"
+echo "First parameter is database name e.g. Cases, Sirius, second parameter is doctrine-migrations command e.g. migrations:diff or 'migrations:migrate --no-interaction -vvv'"
 
 DATABASE=${1:-Cases}
 

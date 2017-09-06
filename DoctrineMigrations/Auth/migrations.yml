@@ -1,4 +1,0 @@
-name: Auth DB Doctrine Migrations
-migrations_namespace: DoctrineMigrations\Auth
-table_name: doctrine_migration_versions
-migrations_directory: DoctrineMigrations/Auth

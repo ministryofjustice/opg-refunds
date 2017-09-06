@@ -36,10 +36,10 @@ return [
             Middleware\ErrorResponseGenerator::class         => Container\ErrorResponseGeneratorFactory::class,
             Middleware\NotFoundHandler::class                => Container\NotFoundHandlerFactory::class,
 
-            'doctrine.entity_manager.orm_auth' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_auth'],
-            'doctrine.entity_manager.orm_auth_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_auth_migration'],
             'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
             'doctrine.entity_manager.orm_cases_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases_migration'],
+            'doctrine.entity_manager.orm_sirius' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius'],
+            'doctrine.entity_manager.orm_sirius_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius_migration'],
         ],
     ],
 ];

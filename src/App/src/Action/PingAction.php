@@ -2,8 +2,9 @@
 
 namespace App\Action;
 
-use App\Entity\Auth\Caseworker;
+use App\Entity\Cases\Caseworker;
 use App\Entity\Cases\RefundCase;
+use App\Entity\Sirius\Poa as SiriusPoa;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -16,35 +17,21 @@ class PingAction implements ServerMiddlewareInterface
     /**
      * @var EntityManager
      */
-    private $authEntityManager;
+    private $casesEntityManager;
 
     /**
      * @var EntityManager
      */
-    private $casesEntityManager;
+    private $siriusEntityManager;
 
-    public function __construct(EntityManager $authEntityManager, EntityManager $casesEntityManager)
+    public function __construct(EntityManager $casesEntityManager, EntityManager $siriusEntityManager)
     {
-        $this->authEntityManager = $authEntityManager;
         $this->casesEntityManager = $casesEntityManager;
+        $this->siriusEntityManager = $siriusEntityManager;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $authDbConnectionSuccessful = false;
-        $foundCaseworker = false;
-        try {
-            $productRepository = $this->authEntityManager->getRepository(Caseworker::class);
-            $caseWorkers = $productRepository->findBy([], null, 1);
-            $authDbConnectionSuccessful = true;
-            foreach ($caseWorkers as $caseWorker) {
-                /** @var Caseworker $caseWorker */
-                $foundCaseworker = $caseWorker->getId() > 0;
-            }
-        } catch (Exception $ex) {
-            $authDbConnectionSuccessful = $ex->getMessage();
-        }
-
         $caseDbConnectionSuccessful = false;
         $foundCase = false;
         try {
@@ -59,13 +46,26 @@ class PingAction implements ServerMiddlewareInterface
             $caseDbConnectionSuccessful = $ex->getMessage();
         }
 
+        $siriusDbConnectionSuccessful = false;
+        $foundSiriusPoa = false;
+        try {
+            $productRepository = $this->siriusEntityManager->getRepository(SiriusPoa::class);
+            $poas = $productRepository->findBy([], null, 1);
+            $siriusDbConnectionSuccessful = true;
+            foreach ($poas as $poa) {
+                /** @var SiriusPoa $poa */
+                $foundSiriusPoa = $poa->getId() > 0;
+            }
+        } catch (Exception $ex) {
+            $siriusDbConnectionSuccessful = $ex->getMessage();
+        }
 
         return new JsonResponse([
             'ack' => time(),
-            'authDbConnectionSuccessful' => $authDbConnectionSuccessful,
-            'foundCaseworker' => $foundCaseworker,
             'caseDbConnectionSuccessful' => $caseDbConnectionSuccessful,
-            'foundCase' => $foundCase
+            'foundCase' => $foundCase,
+            'siriusDbConnectionSuccessful' => $siriusDbConnectionSuccessful,
+            'foundSiriusPoa' => $foundSiriusPoa
         ]);
     }
 }
