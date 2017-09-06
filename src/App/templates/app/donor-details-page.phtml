@@ -42,7 +42,14 @@ $dob = $form->get('dob');
 
     <div class="form-group">
         <div class="multiple-choice" data-target="name-on-poa">
-            <input id="name-on-poa-checkbox" name="name-on-poa" type="checkbox" value="Donor has different name on POA">
+            <?php $element = $form->get('poa-name-different'); ?>
+            <input
+                id="name-on-poa-checkbox"
+                name="<?= $element->getName(); ?>"
+                type="checkbox"
+                value="yes"
+                <?= ($element->getValue()=='yes') ? ' checked="checked"' : '' ?>
+            >
             <label for="name-on-poa-checkbox">
                 <?= ($applicant == 'donor') ? "My" : "Their" ?> name is different on the power of attorney documents
             </label>

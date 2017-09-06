@@ -68,6 +68,22 @@ class ActorDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+
+        //------------------------
+        // POA Name - Checkbox
+
+        $field = new Element\Checkbox('poa-name-different', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
         //------------------------
         // POA Name - Title
 
@@ -137,10 +153,17 @@ class ActorDetails extends AbstractForm
 
     public function setFormattedData(array $data)
     {
-
         $data['title'] = $data['name']['title'] ?? null;
         $data['first'] = $data['name']['first'] ?? null;
         $data['last'] = $data['name']['last'] ?? null;
+
+        $data['poa-title'] = $data['poa-name']['poa-title'] ?? null;
+        $data['poa-first'] = $data['poa-name']['poa-first'] ?? null;
+        $data['poa-last'] = $data['poa-name']['poa-last'] ?? null;
+
+        if (isset($data['poa-first'])) {
+            $data['poa-name-different'] = 'yes';
+        }
 
         if (isset($data['dob'])) {
             $dob = $data['dob'];
@@ -162,6 +185,8 @@ class ActorDetails extends AbstractForm
         $response = [];
 
         $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+
+        $response['poa-name'] = array_intersect_key($result, array_flip(['poa-title','poa-first','poa-last']));
 
         //---
 
