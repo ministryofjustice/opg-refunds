@@ -28,6 +28,7 @@ $aggregator = new ConfigAggregator([
     new PhpFileProvider('config/autoload/{{,*.}global,{,*.}local}.php'),
 
     // Load development config if it exists
+    new PhpFileProvider('config/debug.config.php'),
     new PhpFileProvider('config/development.config.php'),
 ], $cacheConfig['config_cache_path']);
 
