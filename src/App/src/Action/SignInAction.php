@@ -47,6 +47,8 @@ class SignInAction extends AbstractAction
             'csrf' => $session['meta']['csrf']
         ]);
 
+        $authenticationError = null;
+
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
@@ -61,14 +63,15 @@ class SignInAction extends AbstractAction
                 if ($result->isValid()) {
                     return $this->redirectToRoute('home');
                 } else {
-                    //  TODO - Extract the error message from the result
-                    var_dump($result->getMessages());die();
+                    //  There should be only one error
+                    $authenticationError = $result->getMessages()[0];
                 }
             }
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::sign-in-page', [
-            'form' => $form,
+            'form'  => $form,
+            'error' => $authenticationError,
         ]));
     }
 }

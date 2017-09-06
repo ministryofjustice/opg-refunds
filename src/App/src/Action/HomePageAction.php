@@ -23,7 +23,7 @@ class HomePageAction extends AbstractAction
         $identity = $request->getAttribute('identity');
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'name' => $identity->name,
+            'caseworker' => $identity,
         ]));
     }
 }

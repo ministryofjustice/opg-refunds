@@ -2,6 +2,8 @@
 
 return [
 
+    'api_base_uri' => 'https://' . (getenv('API_HOSTNAME') ?: 'api'),
+
     'session' => [
 
         // ini session.* settings...

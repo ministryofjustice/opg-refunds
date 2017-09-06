@@ -4,6 +4,10 @@
 
 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
+<?php if (isset($error)) { ?>
+    <h2><?= $error ?></h2>
+<?php } ?>
+
 <form action="/sign-in" method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>

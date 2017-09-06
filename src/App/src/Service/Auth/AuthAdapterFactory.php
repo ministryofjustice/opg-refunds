@@ -2,6 +2,7 @@
 
 namespace App\Service\Auth;
 
+use Api\Service\Client as ApiClient;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -16,7 +17,8 @@ class AuthAdapterFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        // Retrieve any dependencies from the container when creating the instance
-        return new AuthAdapter(/* any dependencies */);
+        return new AuthAdapter(
+            $container->get(ApiClient::class)
+        );
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Service\Auth;
 
+use Api\Exception\ApiException;
+use Api\Service\Client as ApiClient;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 
@@ -12,9 +14,14 @@ use Zend\Authentication\Result;
 class AuthAdapter implements AdapterInterface
 {
     /**
+     * @var ApiClient
+     */
+    private $client;
+
+    /**
      * @var string
      */
-    private $username;
+    private $email;
 
     /**
      * @var string
@@ -23,10 +30,12 @@ class AuthAdapter implements AdapterInterface
 
     /**
      * AuthAdapter constructor
+     *
+     * @param ApiClient $client
      */
-    public function __construct(/* any dependencies */)
+    public function __construct(ApiClient $client)
     {
-        // Likely assign dependencies to properties
+        $this->client = $client;
     }
 
     /**
@@ -35,7 +44,7 @@ class AuthAdapter implements AdapterInterface
      */
     public function setEmail(string $email)
     {
-        $this->username = $email;
+        $this->email = $email;
 
         return $this;
     }
@@ -52,27 +61,26 @@ class AuthAdapter implements AdapterInterface
     }
 
     /**
-     * Performs an authentication attempt
+     * Authenticate the credentials via the API
      *
      * @return Result
      */
     public function authenticate()
     {
-        // Retrieve the user's information (e.g. from a database)
-        // and store the result in $row (e.g. associative array).
-        // If you do something like this, always store the passwords using the
-        // PHP password_hash() function!
+        try {
+            $response = $this->client->authenticate($this->email, $this->password);
 
-        //  TODO - For now just return a success
-        $identity = new \stdClass();
-        $identity->name = $this->username;
+            //  If no exception has been thrown then this is OK - transfer the details to the success result
+            //TODO - Use the returned data to create an appropriate data model for the caseworker
+            $caseworker = new \ArrayObject($response);
 
-        return new Result(Result::SUCCESS, $identity);
+            return new Result(Result::SUCCESS, $caseworker);
+        } catch (ApiException $apiEx) {
+            $response = $apiEx->getResponse();
 
-//        if (password_verify($this->password, $row['password'])) {
-//            return new Result(Result::SUCCESS, $row);
-//        }
-//
-//        return new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->username);
+            return new Result(Result::FAILURE, null, [
+                $response->getReasonPhrase()
+            ]);
+       }
     }
 }

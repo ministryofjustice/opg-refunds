@@ -11,6 +11,8 @@
         "php": "^7.0",
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-authentication": "^2.5",
         "zendframework/zend-component-installer": "^1.0",
@@ -38,6 +40,7 @@
     },
     "autoload": {
         "psr-4": {
+            "Api\\": "src/Api/src/",
             "App\\": "src/App/src/"
         }
     },
