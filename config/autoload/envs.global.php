@@ -41,4 +41,9 @@ return [
         ],
     ],
 
+    'spreadsheet' => [
+        'source_folder' => __DIR__.'/../../assets',
+        'temp_folder' => '/tmp'
+    ]
+
 ];

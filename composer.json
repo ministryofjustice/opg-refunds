@@ -4,11 +4,14 @@
     "type": "project",
     "homepage": "https://github.com/ministryofjustice/opg-refunds-caseworker-api",
     "license": "MIT",
+    "minimum-stability": "beta",
+    "prefer-stable": true,
     "config": {
         "sort-packages": true
     },
     "require": {
         "php": "^7.0",
+        "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",

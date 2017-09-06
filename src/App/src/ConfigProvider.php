@@ -37,6 +37,7 @@ class ConfigProvider
             ],
             'factories'  => [
                 Action\HomePageAction::class => Action\HomePageFactory::class,
+                Action\SpreadsheetAction::class => Action\SpreadsheetFactory::class,
             ],
         ];
     }
