@@ -40,6 +40,44 @@ $this->layout('layout::standard', [
 
     </fieldset>
 
+    <div class="form-group">
+        <div class="multiple-choice" data-target="name-on-poa">
+            <input id="name-on-poa-checkbox" name="name-on-poa" type="checkbox" value="Attorney has different name on POA">
+            <label for="name-on-poa-checkbox">
+                <?= ($applicant == 'donor') ? "Their" : "My" ?> name is different on the power of attorney documents
+            </label>
+        </div>
+    
+        <div class="panel panel-border-narrow js-hidden" id="name-on-poa">
+            <fieldset>
+                <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Attorney name" : "Name" ?> on power of attorney documents</legend>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-title'),
+                    'formLabel' => 'Title',
+                    'formType' => 'text',
+                    'formLabelBold' => false,
+                    'additionFormControlClass' => 'form-control-1-8'
+                ]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-first'),
+                    'formLabel' => 'First names',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-last'),
+                    'formLabel' => 'Last name',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+            </fieldset>
+        </div>
+    </div>
+
     <?php $this->insert('snippet::input-dob', [
         'formLabel' => ($applicant == 'donor') ? 'Attorney date of birth (optional)' : 'Date of birth',
         'formElement' => $form->get('dob'),

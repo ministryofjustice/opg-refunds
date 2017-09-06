@@ -69,6 +69,56 @@ class ActorDetails extends AbstractForm
         $inputFilter->add($input);
 
         //------------------------
+        // POA Name - Title
+
+        $field = new Element\Text('poa-title');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - First
+
+        $field = new Element\Text('poa-first');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - Last
+
+        $field = new Element\Text('poa-last');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //------------------------
         // DOB
 
         $dob = new Fieldset\Dob(
