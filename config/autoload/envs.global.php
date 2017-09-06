@@ -30,11 +30,11 @@ return [
         'dynamodb' => [
             'client' => [
                 'version' => '2012-08-10',
-                'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_ENDPOINT') ?: null,
-                'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_REGION') ?: null,
+                'endpoint' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_ENDPOINT') ?: null,
+                'region' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION') ?: null,
             ],
             'settings' => [
-                'table_name' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_DYNAMODB_TABLE') ?: null,
+                'table_name' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE') ?: null,
             ],
 
         ],
