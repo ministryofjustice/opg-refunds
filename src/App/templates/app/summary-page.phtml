@@ -8,16 +8,6 @@
 
 <dl class="govuk-check-your-answers cya-questions-short">
     
-    <?php if ($applicant == 'attorney'): ?>
-        <?php $this->insert('snippet::check-your-details-section', [
-            'title' => 'About the donor',
-            'fields' => [
-                [ 'value' => 'The donor is alive' ]
-            ],
-            'changeURL' => $this->url('eligibility.deceased', ['who'=>$applicant])
-        ]) ?>
-    <?php endif ?>
-
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
