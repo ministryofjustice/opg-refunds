@@ -101,7 +101,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
             $response = FigResponseCookies::set($response, SetCookie::createExpired(self::COOKIE_NAME)
                 ->withPath(self::COOKIE_PATH));
 
-            if(isset($sessionId)){
+            if (isset($sessionId)) {
                 // Wipe the stored data.
                 $this->sessionManager->delete($sessionId);
             }

@@ -3,8 +3,6 @@ namespace App\Service\Refund;
 
 use Interop\Container\ContainerInterface;
 
-use PDO;
-
 class ProcessApplicationFactory
 {
 
