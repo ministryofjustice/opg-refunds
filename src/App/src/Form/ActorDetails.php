@@ -157,9 +157,9 @@ class ActorDetails extends AbstractForm
         $data['first'] = $data['name']['first'] ?? null;
         $data['last'] = $data['name']['last'] ?? null;
 
-        $data['poa-title'] = $data['poa-name']['poa-title'] ?? null;
-        $data['poa-first'] = $data['poa-name']['poa-first'] ?? null;
-        $data['poa-last'] = $data['poa-name']['poa-last'] ?? null;
+        $data['poa-title'] = $data['poa-name']['title'] ?? null;
+        $data['poa-first'] = $data['poa-name']['first'] ?? null;
+        $data['poa-last'] = $data['poa-name']['last'] ?? null;
 
         if (isset($data['poa-first'])) {
             $data['poa-name-different'] = 'yes';
@@ -186,7 +186,13 @@ class ActorDetails extends AbstractForm
 
         $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
-        $response['poa-name'] = array_intersect_key($result, array_flip(['poa-title','poa-first','poa-last']));
+        if (isset($result['poa-first'])) {
+            $response['poa-name'] = [
+                'title' => $result['poa-title'],
+                'first' => $result['poa-first'],
+                'last' => $result['poa-last'],
+            ];
+        }
 
         //---
 
