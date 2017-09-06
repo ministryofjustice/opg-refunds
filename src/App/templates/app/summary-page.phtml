@@ -7,23 +7,7 @@
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <dl class="govuk-check-your-answers cya-questions-short">
-
-    <?php $this->insert('snippet::check-your-details-section', [
-        'title' => 'Fees',
-        'fields' => [
-            [ 'value' => 'I think fees were paid between April 2013 and March 2017' ]
-        ],
-        'changeURL' => $this->url('eligibility.when', ['who'=>$applicant])
-    ]) ?>
-
-    <?php $this->insert('snippet::check-your-details-section', [
-        'title' => 'About you',
-        'fields' => [
-            [ 'value' => ($applicant == 'donor') ? 'I am the donor' : 'I am an attorney' ]
-        ],
-        'changeURL' => $this->url('eligibility.who', ['who'=>$applicant])
-    ]) ?>
-
+    
     <?php if ($applicant == 'attorney'): ?>
         <?php $this->insert('snippet::check-your-details-section', [
             'title' => 'About the donor',
