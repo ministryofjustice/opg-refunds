@@ -28,6 +28,7 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
             'Zend\\Validator\\' => 15,
             'Zend\\Stratigility\\' => 18,
             'Zend\\Stdlib\\' => 12,
+            'Zend\\Session\\' => 13,
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Math\\' => 10,
             'Zend\\InputFilter\\' => 17,
@@ -124,6 +125,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Zend\\Stdlib\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-stdlib/src',
+        ),
+        'Zend\\Session\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-session/src',
         ),
         'Zend\\ServiceManager\\' => 
         array (

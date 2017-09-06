@@ -3,7 +3,6 @@
 namespace App\Action;
 
 use App\Form\SignIn;
-use App\Service\Session\Session;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
@@ -18,16 +17,16 @@ class SignInAction extends AbstractAction
     /**
      * @var AuthenticationService
      */
-    private $auth;
+    private $authService;
 
     /**
      * SignInAction constructor
      *
-     * @param AuthenticationService $auth
+     * @param AuthenticationService $authService
      */
-    public function __construct(AuthenticationService $auth)
+    public function __construct(AuthenticationService $authService)
     {
-        $this->auth = $auth;
+        $this->authService = $authService;
     }
 
     /**
@@ -37,12 +36,11 @@ class SignInAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //  Check the session to see if there is already an authenticated session
-        $session = $request->getAttribute('session');
-
-        if ($session instanceof Session && $session->loggedIn()) {
+        if ($this->authService->hasIdentity()) {
             return $this->redirectToRoute('home');
         }
+
+        $session = $request->getAttribute('session');
 
         //  There is no active session so continue
         $form = new SignIn([
@@ -54,21 +52,18 @@ class SignInAction extends AbstractAction
 
             if ($form->isValid()) {
                 //  Set the session as the authentication storage and the credentials
-//                $this->auth->setStorage($session)
-//                    ->getAdapter()
-//                    ->setEmail($form->get('email')->getValue())
-//                    ->setPassword($form->get('password')->getValue());
-//
-//                $result = $this->auth->authenticate();
+                $this->authService->getAdapter()
+                    ->setEmail($form->get('email')->getValue())
+                    ->setPassword($form->get('password')->getValue());
 
-//                if ($result->isValid()) {
-                    $session->setIdentity(new \stdClass());//$result->getIdentity());
+                $result = $this->authService->authenticate();
 
+                if ($result->isValid()) {
                     return $this->redirectToRoute('home');
-//                } else {
-//                    //  TODO - Extract the error message from the result
-//                    var_dump($result->getMessages());die();
-//                }
+                } else {
+                    //  TODO - Extract the error message from the result
+                    var_dump($result->getMessages());die();
+                }
             }
         }
 

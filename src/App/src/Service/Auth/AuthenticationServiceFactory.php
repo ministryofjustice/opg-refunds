@@ -10,7 +10,7 @@ class AuthenticationServiceFactory
     public function __invoke(ContainerInterface $container)
     {
         return new AuthenticationService(
-            null,   //  The session will be added in the action
+            null,   //  Use default storage
             $container->get(AuthAdapter::class)
         );
     }

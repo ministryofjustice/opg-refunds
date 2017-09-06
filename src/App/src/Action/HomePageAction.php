@@ -19,6 +19,11 @@ class HomePageAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page'));
+        //  Get the name from the identity for display
+        $identity = $request->getAttribute('identity');
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
+            'name' => $identity->name,
+        ]));
     }
 }

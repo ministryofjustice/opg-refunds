@@ -64,7 +64,10 @@ class AuthAdapter implements AdapterInterface
         // PHP password_hash() function!
 
         //  TODO - For now just return a success
-        return new Result(Result::SUCCESS, new \stdClass());
+        $identity = new \stdClass();
+        $identity->name = $this->username;
+
+        return new Result(Result::SUCCESS, $identity);
 
 //        if (password_verify($this->password, $row['password'])) {
 //            return new Result(Result::SUCCESS, $row);

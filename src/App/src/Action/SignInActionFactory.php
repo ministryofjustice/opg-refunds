@@ -17,6 +17,8 @@ class SignInActionFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new SignInAction($container->get(AuthenticationService::class));
+        return new SignInAction(
+            $container->get(AuthenticationService::class)
+        );
     }
 }

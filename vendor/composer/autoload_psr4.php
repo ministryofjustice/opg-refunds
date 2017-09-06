@@ -10,6 +10,7 @@ return array(
     'Zend\\Validator\\' => array($vendorDir . '/zendframework/zend-validator/src'),
     'Zend\\Stratigility\\' => array($vendorDir . '/zendframework/zend-stratigility/src'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
+    'Zend\\Session\\' => array($vendorDir . '/zendframework/zend-session/src'),
     'Zend\\ServiceManager\\' => array($vendorDir . '/zendframework/zend-servicemanager/src'),
     'Zend\\Math\\' => array($vendorDir . '/zendframework/zend-math/src'),
     'Zend\\InputFilter\\' => array($vendorDir . '/zendframework/zend-inputfilter/src'),
