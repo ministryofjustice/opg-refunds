@@ -6,18 +6,18 @@ use App\Service\Caseworker as CaseworkerService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class UserActionFactory
+ * Class CaseworkerActionFactory
  * @package App\Action
  */
-class UserActionFactory
+class CaseworkerActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return UserAction
+     * @return CaseworkerAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new UserAction(
+        return new CaseworkerAction(
             $container->get(CaseworkerService::class)
         );
     }

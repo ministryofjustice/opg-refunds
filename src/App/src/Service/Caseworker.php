@@ -24,7 +24,7 @@ class Caseworker
     private $entityManager;
 
     /**
-     * User constructor
+     * Caseworker constructor
      *
      * @param EntityManager $entityManager
      */

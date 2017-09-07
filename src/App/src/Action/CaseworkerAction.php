@@ -10,10 +10,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class UserAction
+ * Class CaseworkerAction
  * @package App\Action
  */
-class UserAction implements ServerMiddlewareInterface
+class CaseworkerAction implements ServerMiddlewareInterface
 {
     /**
      * @var CaseworkerService
@@ -21,7 +21,7 @@ class UserAction implements ServerMiddlewareInterface
     private $caseworkerService;
 
     /**
-     * UserAction constructor
+     * CaseworkerAction constructor
      *
      * @param CaseworkerService $caseworkerService
      */
@@ -53,6 +53,6 @@ class UserAction implements ServerMiddlewareInterface
             ]);
         }
 
-        throw new InvalidInputException('User not found');
+        throw new InvalidInputException('Caseworker not found');
     }
 }

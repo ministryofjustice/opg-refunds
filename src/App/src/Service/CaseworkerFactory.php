@@ -5,7 +5,7 @@ namespace App\Service;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class UserFactory
+ * Class CaseworkerFactory
  * @package App\Service
  */
 class CaseworkerFactory

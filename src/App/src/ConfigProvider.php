@@ -36,9 +36,9 @@ class ConfigProvider
             ],
             'factories'  => [
                 //  Actions
+                Action\CaseworkerAction::class => Action\CaseworkerActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetFactory::class,
-                Action\UserAction::class => Action\UserActionFactory::class,
 
                 // Middleware
 

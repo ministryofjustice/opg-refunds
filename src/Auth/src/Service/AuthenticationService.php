@@ -53,12 +53,12 @@ class AuthenticationService
         /** @var Caseworker $caseworker */
         $caseworker = $this->caseworkerService->findByCredentials($email, $password);
 
-        //  Confirm that the user is active
+        //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== 1) {
             throw new UnauthorizedException('User is inactive');
         }
 
-        //  Attempt to generate a token for the user
+        //  Attempt to generate a token for the caseworker
         do {
             $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
 
@@ -87,7 +87,7 @@ class AuthenticationService
         /** @var Caseworker $caseworker */
         $caseworker = $this->caseworkerService->findByToken($token);
 
-        //  Confirm that the user is active
+        //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== 1) {
             throw new UnauthorizedException('User is inactive');
         }
