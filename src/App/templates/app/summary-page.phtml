@@ -12,6 +12,7 @@
         'title' => 'Donor details',
         'fields' => [
             [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
+            [ 'value' => (isset($details['donor']['poa-name']['first'])) ? "{$details['donor']['poa-name']['title']} {$details['donor']['poa-name']['first']} {$details['donor']['poa-name']['last']}" : null ],
             [ 'value' => date('j F Y', strtotime($details['donor']['dob'])) ],
         ],
         'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
@@ -21,10 +22,8 @@
         'title' => 'Attorney details',
         'fields' => [
             [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
-            [
-                'label' => !isset($details['attorney']['dob']) ? 'Date of birth' : null,
-                'value' => isset($details['attorney']['dob']) ? date('j F Y', strtotime($details['attorney']['dob'])) : null,
-            ],
+            [ 'value' => (isset($details['attorney']['poa-name']['first'])) ? "{$details['attorney']['poa-name']['title']} {$details['attorney']['poa-name']['first']} {$details['attorney']['poa-name']['last']}" : null ],
+            [ 'value' => date('j F Y', strtotime($details['attorney']['dob'])) ],
         ],
         'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
     ]) ?>

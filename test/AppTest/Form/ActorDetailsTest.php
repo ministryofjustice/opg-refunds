@@ -23,6 +23,9 @@ class ActorDetailsTest extends TestCase
             'title' => 'Ms',
             'first' => 'Betty',
             'last' => 'Jones',
+            'poa-title' => 'Sir',
+            'poa-first' => 'Fred',
+            'poa-last' => 'Jones',
             'dob' => [
                 'day' => '1',
                 'month' => '1',
@@ -45,10 +48,13 @@ class ActorDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(4, $elements);
+        $this->assertCount(8, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);
+        $this->assertArrayHasKey( 'poa-title', $elements);
+        $this->assertArrayHasKey( 'poa-first', $elements);
+        $this->assertArrayHasKey( 'poa-last', $elements);
         $this->assertArrayHasKey( 'secret', $elements);
 
         //---
