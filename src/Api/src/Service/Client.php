@@ -58,6 +58,17 @@ class Client
     }
 
     /**
+     * Get user details
+     *
+     * @param int $userId
+     * @return array
+     */
+    public function getUser(int $userId)
+    {
+        return $this->httpGet('/v1/cases/user/' . $userId);
+    }
+
+    /**
      * Performs a GET against the API
      *
      * @param string $path

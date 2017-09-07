@@ -10,7 +10,7 @@ use Zend\Diactoros\Response\HtmlResponse;
  * Class HomePageAction
  * @package App\Action
  */
-class HomePageAction extends AbstractAction
+class HomePageAction extends AbstractApiClientAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -19,11 +19,13 @@ class HomePageAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //  Get the name from the identity for display
         $identity = $request->getAttribute('identity');
 
+        //  Even though the details are in the session get them again with a GET call to the API
+        $user = $this->getApiClient()->getUser($identity['id']);
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'caseworker' => $identity,
+            'caseworker' => $user,
         ]));
     }
 }
