@@ -1,0 +1,4 @@
+name: Sirius DB Doctrine Migrations
+migrations_namespace: DoctrineMigrations\Sirius
+table_name: doctrine_migration_versions
+migrations_directory: DoctrineMigrations/Sirius

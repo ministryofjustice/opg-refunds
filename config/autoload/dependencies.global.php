@@ -15,6 +15,7 @@ return [
         // key is the alias name, the value is the service to which it points.
         'aliases' => [
             'Zend\Expressive\Delegate\DefaultDelegate' => Delegate\NotFoundDelegate::class,
+            //'configuration' => 'config'
         ],
         // Use 'invokables' for constructor-less services, or services that do
         // not require arguments to the constructor. Map a service name to the
@@ -34,6 +35,11 @@ return [
             Zend\Stratigility\Middleware\ErrorHandler::class => Container\ErrorHandlerFactory::class,
             Middleware\ErrorResponseGenerator::class         => Container\ErrorResponseGeneratorFactory::class,
             Middleware\NotFoundHandler::class                => Container\NotFoundHandlerFactory::class,
+
+            'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
+            'doctrine.entity_manager.orm_cases_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases_migration'],
+            'doctrine.entity_manager.orm_sirius' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius'],
+            'doctrine.entity_manager.orm_sirius_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius_migration'],
         ],
     ],
 ];

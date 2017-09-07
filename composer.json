@@ -11,8 +11,12 @@
     },
     "require": {
         "php": "^7.0",
+        "dasprid/container-interop-doctrine": "^1.0",
+        "doctrine/migrations": "^1.5",
+        "doctrine/orm": "^2.5",
         "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
+        "symfony/yaml": "^3.3",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
         "zendframework/zend-crypt": "^3.2",

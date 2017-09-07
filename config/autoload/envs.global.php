@@ -27,11 +27,11 @@ return [
             'postgresql' => [
 
                 'adapter' => 'pgsql',
-                'host' => getenv('API_DATABASE_HOSTNAME') ?: null,
-                'port' => getenv('API_DATABASE_PORT') ?: null,
-                'dbname' => getenv('API_DATABASE_NAME') ?: null,
-                'username' => getenv('API_DATABASE_NAME') ?: null,
-                'password' => getenv('POSTGRES_PASSWORD') ?: null,
+                'host' => getenv('OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME') ?: null,
+                'port' => getenv('OPG_REFUNDS_DB_APPLICATIONS_PORT') ?: null,
+                'dbname' => getenv('OPG_REFUNDS_DB_APPLICATIONS_NAME') ?: null,
+                'username' => getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME') ?: null,
+                'password' => getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD') ?: null,
                 'options' => [
                     PDO::ATTR_PERSISTENT => true
                 ]

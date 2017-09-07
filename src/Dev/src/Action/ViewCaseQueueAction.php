@@ -25,7 +25,7 @@ class ViewCaseQueueAction implements ServerMiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $sql = 'SELECT * FROM refund.application ORDER BY created DESC LIMIT 1';
+        $sql = 'SELECT * FROM application ORDER BY created DESC LIMIT 1';
 
         $stmt = $this->db->query($sql);
         $row = $stmt->fetchObject();
