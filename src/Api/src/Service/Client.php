@@ -34,6 +34,7 @@ class Client
      *
      * @param HttpClient $httpClient
      * @param string $apiBaseUri
+     * @param string|null $authToken
      */
     public function __construct(HttpClient $httpClient, string $apiBaseUri, string $authToken = null)
     {
@@ -58,14 +59,14 @@ class Client
     }
 
     /**
-     * Get user details
+     * Get caseworker details
      *
-     * @param int $userId
+     * @param int $caseworkerId
      * @return array
      */
-    public function getUser(int $userId)
+    public function getCaseworker(int $caseworkerId)
     {
-        return $this->httpGet('/v1/cases/user/' . $userId);
+        return $this->httpGet('/v1/cases/caseworker/' . $caseworkerId);
     }
 
     /**
@@ -140,7 +141,7 @@ class Client
             'Content-type'  => 'application/json',
         ];
 
-        //  If the user has an auth token already then set that in the header
+        //  If the logged in user has an auth token already then set that in the header
         if (isset($this->authToken)) {
             $headerLines['token'] = $this->authToken;
         }

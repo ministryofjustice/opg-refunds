@@ -47,5 +47,5 @@ $formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormCont
         <?php endif ?>
 
     </label>
-    <input class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?=$this->e( $formElement->getValue() )?>">
+    <input class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?= (strtolower($formType) == 'password' ? '' : $this->e( $formElement->getValue() )) ?>">
 </div>

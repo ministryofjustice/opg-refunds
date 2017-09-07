@@ -21,11 +21,11 @@ class HomePageAction extends AbstractApiClientAction
     {
         $identity = $request->getAttribute('identity');
 
-        //  Even though the details are in the session get them again with a GET call to the API
-        $user = $this->getApiClient()->getUser($identity['id']);
+        //  Even though the caseworker details are in the session get them again with a GET call to the API
+        $caseworker = $this->getApiClient()->getCaseworker($identity['id']);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'caseworker' => $user,
+            'caseworker' => $caseworker,
         ]));
     }
 }
