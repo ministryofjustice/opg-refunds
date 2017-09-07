@@ -3,7 +3,6 @@
 namespace App\Action;
 
 use App\Entity\Cases\Caseworker;
-use App\Entity\Cases\RefundCase;
 use App\Entity\Sirius\Poa as SiriusPoa;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -33,14 +32,14 @@ class PingAction implements ServerMiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $caseDbConnectionSuccessful = false;
-        $foundCase = false;
+        $foundCaseworker = false;
         try {
-            $productRepository = $this->casesEntityManager->getRepository(RefundCase::class);
+            $productRepository = $this->casesEntityManager->getRepository(Caseworker::class);
             $cases = $productRepository->findBy([], null, 1);
             $caseDbConnectionSuccessful = true;
             foreach ($cases as $case) {
-                /** @var RefundCase $case */
-                $foundCase = $case->getId() > 0;
+                /** @var Caseworker $case */
+                $foundCaseworker = $case->getId() > 0;
             }
         } catch (Exception $ex) {
             $caseDbConnectionSuccessful = $ex->getMessage();
@@ -63,7 +62,7 @@ class PingAction implements ServerMiddlewareInterface
         return new JsonResponse([
             'ack' => time(),
             'caseDbConnectionSuccessful' => $caseDbConnectionSuccessful,
-            'foundCase' => $foundCase,
+            'foundCaseworker' => $foundCaseworker,
             'siriusDbConnectionSuccessful' => $siriusDbConnectionSuccessful,
             'foundSiriusPoa' => $foundSiriusPoa
         ]);
