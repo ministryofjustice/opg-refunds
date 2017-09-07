@@ -43,10 +43,10 @@ class Version20170907163036 extends AbstractMigration
         $this->addSql('ALTER TABLE poa ADD CONSTRAINT FK_736097E4CF10D4F5 FOREIGN KEY (case_id) REFERENCES cases (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
 
         //Test Caseworkers
-        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Case Worker\', \'caseworker@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'CaseWorker\')');
-        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Reporting\', \'reporting@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'Reporting\')');
-        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Refund Manager\', \'refundmanager@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'RefundManager\')');
-        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Admin\', \'admin@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'Admin\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Case Worker\', \'caseworker@test.com\', \'bd94dcda26fccb4e68d6a31f9b5aac0b571ae266d822620e901ef7ebe3a11d4f\', 1, \'CaseWorker\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Reporting\', \'reporting@test.com\', \'bd94dcda26fccb4e68d6a31f9b5aac0b571ae266d822620e901ef7ebe3a11d4f\', 1, \'Reporting\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Refund Manager\', \'refundmanager@test.com\', \'bd94dcda26fccb4e68d6a31f9b5aac0b571ae266d822620e901ef7ebe3a11d4f\', 1, \'RefundManager\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Admin\', \'admin@test.com\', \'bd94dcda26fccb4e68d6a31f9b5aac0b571ae266d822620e901ef7ebe3a11d4f\', 1, \'Admin\')');
     }
 
     /**
