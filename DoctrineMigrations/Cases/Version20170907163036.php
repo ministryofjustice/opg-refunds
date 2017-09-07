@@ -41,6 +41,12 @@ class Version20170907163036 extends AbstractMigration
         $this->addSql('ALTER TABLE cases ADD CONSTRAINT FK_1C1B038BF4BD7827 FOREIGN KEY (assigned_to_id) REFERENCES caseworker (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE payment ADD CONSTRAINT FK_6D28840DCF10D4F5 FOREIGN KEY (case_id) REFERENCES cases (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE poa ADD CONSTRAINT FK_736097E4CF10D4F5 FOREIGN KEY (case_id) REFERENCES cases (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+
+        //Test Caseworkers
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Case Worker\', \'caseworker@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'CaseWorker\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Reporting\', \'reporting@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'Reporting\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Refund Manager\', \'refundmanager@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'RefundManager\')');
+        $this->addSql('INSERT INTO caseworker (name, email, password_hash, status, roles) VALUES (\'Admin\', \'admin@test.com\', \'$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq\', 1, \'Admin\')');
     }
 
     /**
