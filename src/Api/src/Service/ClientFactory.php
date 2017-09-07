@@ -4,6 +4,8 @@ namespace Api\Service;
 
 use Http\Client\HttpClient;
 use Interop\Container\ContainerInterface;
+use Zend\Authentication\Storage\Session;
+use Zend\Session\Container;
 
 /**
  * Class ClientFactory
@@ -25,11 +27,12 @@ class ClientFactory
         //  Get the end point targets from the config
         $config = $container->get('config');
 
-        //  TODO - Fix this - how to get the token out of the session the "proper" way
+        //  Get the token value out of the session
         $token = null;
+        $session = new Container(Session::NAMESPACE_DEFAULT);
 
-        if (isset($_SESSION['Zend_Auth']['storage']['token'])) {
-            $token = $_SESSION['Zend_Auth']['storage']['token'];
+        if (isset($session['storage']['token'])) {
+            $token = $session['storage']['token'];
         }
 
         return new Client(
