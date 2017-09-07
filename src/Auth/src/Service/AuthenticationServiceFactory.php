@@ -2,6 +2,7 @@
 
 namespace Auth\Service;
 
+use App\Service\Caseworker as CaseworkerService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -20,8 +21,9 @@ class AuthenticationServiceFactory
     {
         $config = $container->get('config');
 
-        //  TODO - Inject DB access here also
-
-        return new AuthenticationService($config['token_ttl']);
+        return new AuthenticationService(
+            $container->get(CaseworkerService::class),
+            $config['token_ttl']
+        );
     }
 }

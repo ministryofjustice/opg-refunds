@@ -33,11 +33,17 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\UserAction::class => Action\UserAction::class,
             ],
             'factories'  => [
-                Action\PingAction::class => Action\PingFactory::class,
+                //  Actions
+                Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetFactory::class,
+                Action\UserAction::class => Action\UserActionFactory::class,
+
+                // Middleware
+
+                //  Services
+                Service\Caseworker::class => Service\CaseworkerFactory::class,
             ],
         ];
     }

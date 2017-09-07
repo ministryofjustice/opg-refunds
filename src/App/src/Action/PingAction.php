@@ -35,11 +35,11 @@ class PingAction implements ServerMiddlewareInterface
         $foundCaseworker = false;
         try {
             $productRepository = $this->casesEntityManager->getRepository(Caseworker::class);
-            $cases = $productRepository->findBy([], null, 1);
+            $caseworkers = $productRepository->findBy([], null, 1);
             $caseDbConnectionSuccessful = true;
-            foreach ($cases as $case) {
-                /** @var Caseworker $case */
-                $foundCaseworker = $case->getId() > 0;
+            foreach ($caseworkers as $caseworker) {
+                /** @var Caseworker $caseworker */
+                $foundCaseworker = $caseworker->getId() > 0;
             }
         } catch (Exception $ex) {
             $caseDbConnectionSuccessful = $ex->getMessage();

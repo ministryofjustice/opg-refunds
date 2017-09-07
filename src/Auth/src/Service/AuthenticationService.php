@@ -2,6 +2,9 @@
 
 namespace Auth\Service;
 
+use App\Entity\Cases\Caseworker;
+use App\Service\Caseworker as CaseworkerService;
+use Auth\Exception\UnauthorizedException;
 use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
@@ -12,21 +15,14 @@ use Exception;
 class AuthenticationService
 {
     /**
-     * TODO - TO BE REMOVED WHEN DB INTEGRATION IS SET UP
+     * Caseworker service
+     *
+     * @var CaseworkerService
      */
-    CONST TEMP_VALID_USER_CREDENTIALS = [
-        'caseworker_id' => 1,
-        'name'          => 'Testy McTest',
-        'email'         => 'test@test.com',
-        'password'      => '$2y$10$h1.MaEsuzAg6uEqjfJsv9OiIPmlQO1TJKt74cbRveGwZhFLXMHmkq',   //  Hash value of pass1234
-        'token'         => 'abcdefghijklmnopqrstuvwxyz',
-        'token_expires' => 1536142838,  //  September 5th 2018 - approximately 11:20am
-        'status'        => 'active',
-        'roles'         => 'caseworker',
-    ];
+    private $caseworkerService;
 
     /**
-     * The number of seconds before an auth token expires.
+     * The number of seconds before an auth token expires
      *
      * @var int
      */
@@ -35,100 +31,75 @@ class AuthenticationService
     /**
      * AuthenticationService constructor
      *
+     * @param CaseworkerService $caseworkerService
      * @param int $tokenTtl
      */
-    public function __construct(int $tokenTtl)
+    public function __construct(CaseworkerService $caseworkerService, int $tokenTtl)
     {
-        //  TODO - Inject DB access here also
-
+        $this->caseworkerService = $caseworkerService;
         $this->tokenTtl = $tokenTtl;
     }
 
     /**
-     * Validate a token value
+     * Validate a caseworker password
      *
-     * @param string $token
-     * @return bool
-     */
-    public function validateToken(string $token)
-    {
-        //  TODO - At this point use the token to get the user from the DB
-        $result = ($token == self::TEMP_VALID_USER_CREDENTIALS['token'] ? self::TEMP_VALID_USER_CREDENTIALS : false);
-
-        //  Check that the token has not expired
-        if (is_array($result) && isset($result['token_expires'])) {
-            if ($result['token_expires'] > time()) {
-                //  Set the token again to update the expiry time
-                $this->setToken($result, $token);
-
-                return true;
-            } else {
-                //  The token has expired so clear it
-                //  TODO - Update the DB here to remove the token and token expiry...
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Validate a user password
-     *
-     * @param $email
-     * @param $password
-     * @return array|bool
-     * @throws Exception
+     * @param string $email
+     * @param string $password
+     * @return Caseworker
+     * @throws UnauthorizedException|Exception
      */
     public function validatePassword(string $email, string $password)
     {
-        //  TODO - At this point use the email address to get the user from the DB
-        $result = ($email == self::TEMP_VALID_USER_CREDENTIALS['email'] ? self::TEMP_VALID_USER_CREDENTIALS : false);
+        /** @var Caseworker $caseworker */
+        $caseworker = $this->caseworkerService->findByCredentials($email, $password);
 
-        //  Verify the password against this user and return the user details
-        if (is_array($result)
-            && isset($result['status']) && $result['status'] == 'active'
-            && isset($result['password']) && password_verify($password, $result['password'])) {
-
-            //  Generate a new token value
-            do {
-                $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
-
-                // Use base62 for shorter tokens
-                $token = BigInteger::factory('bcmath')->baseConvert($token, 16, 62);
-
-                if ($isStrong !== true) {
-                    throw new Exception('Unable to generate a strong token');
-                }
-
-                //  TODO - For the moment keep the token the same value until we are actually updating it in the DB
-                $token = self::TEMP_VALID_USER_CREDENTIALS['token'];
-
-                //  Set the authentication token to be used in subsequent calls to API
-                $created = $this->setToken($result, $token);
-
-            } while (!$created);
-
-            //  Return the user details
-            return $result;
+        //  Confirm that the user is active
+        if ($caseworker->getStatus() !== 1) {
+            throw new UnauthorizedException('User is inactive');
         }
 
-        return false;
+        //  Attempt to generate a token for the user
+        do {
+            $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
+
+            // Use base62 for shorter tokens
+            $token = BigInteger::factory('bcmath')->baseConvert($token, 16, 62);
+
+            if ($isStrong !== true) {
+                throw new Exception('Unable to generate a strong token');
+            }
+
+            $created = $this->caseworkerService->setToken($caseworker->getId(), $token, time() + $this->tokenTtl);
+        } while (!$created);
+
+        return $caseworker;
     }
 
     /**
+     * Validate a request token
      *
-     * @param array $userData
      * @param string $token
-     * @return bool
+     * @return Caseworker
+     * @throws UnauthorizedException
      */
-    private function setToken(array &$userData, string $token)
+    public function validateToken(string $token)
     {
-        $userData['token'] = $token;
-        $userData['token_expires'] = time() + $this->tokenTtl;
+        /** @var Caseworker $caseworker */
+        $caseworker = $this->caseworkerService->findByToken($token);
 
-        //  TODO - Update the DB here to set/re-set the token with the new expiry time
+        //  Confirm that the user is active
+        if ($caseworker->getStatus() !== 1) {
+            throw new UnauthorizedException('User is inactive');
+        }
 
-        //  TODO - Ensure that a boolean is returned indicating that the token was set successfully in the DB
-        return true;
+        //  Check to see if the token has expired
+        if (time() > $caseworker->getTokenExpires()) {
+            throw new UnauthorizedException('Token expired');
+        }
+
+        //  Increase the token expires value
+        $this->caseworkerService->setToken($caseworker->getId(), $caseworker->getToken(),  time() + $this->tokenTtl);
+
+        return $caseworker;
     }
 }

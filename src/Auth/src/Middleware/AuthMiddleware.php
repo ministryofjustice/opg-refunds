@@ -2,6 +2,8 @@
 
 namespace Auth\Middleware;
 
+use App\Entity\Cases\Caseworker;
+use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -33,16 +35,19 @@ class AuthMiddleware implements ServerMiddlewareInterface
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return \Psr\Http\Message\ResponseInterface
-     * @throws Exception
+     * @throws UnauthorizedException
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $token = $request->getHeaderLine('token');
 
-        if (is_string($token) && $this->authService->validateToken($token)) {
-            return $delegate->process($request);
+        try {
+            $caseworker = $this->authService->validateToken($token);
+        } catch (InvalidInputException $ignore) {
+            //  If the token validation failed then throw as not authorised
+            throw new UnauthorizedException('Not authorized');
         }
 
-        throw new UnauthorizedException('Unauthorized access');
+        return $delegate->process($request);
     }
 }

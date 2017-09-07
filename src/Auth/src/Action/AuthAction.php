@@ -2,6 +2,7 @@
 
 namespace Auth\Action;
 
+use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -40,17 +41,21 @@ class AuthAction implements ServerMiddlewareInterface
     {
         $requestBody = $request->getParsedBody();
 
-        $email = (isset($requestBody['email']) ? $requestBody['email'] : false);
-        $password = (isset($requestBody['password']) ? $requestBody['password'] : false);
+        if (isset($requestBody['email']) && isset($requestBody['password'])) {
+            try {
+                $caseworker = $this->authService->validatePassword($requestBody['email'], $requestBody['password']);
 
-        if ($email && $password) {
-            $result = $this->authService->validatePassword($email, $password);
-
-            if (is_array($result)) {
-                //  Remove the password value before returning the user details
-                unset($result['password']);
-
-                return new JsonResponse($result);
+                //  TODO - Implement a more elegant way of translating entity data into an JSON response
+                return new JsonResponse([
+                    'id'     => $caseworker->getId(),
+                    'name'   => $caseworker->getName(),
+                    'email'  => $caseworker->getEmail(),
+                    'status' => $caseworker->getStatus(),
+                    'roles'  => $caseworker->getRoles(),
+                    'token'  => $caseworker->getToken(),
+                ]);
+            } catch (InvalidInputException $ignore) {
+                //  Authentication failed - exception thrown below
             }
         }
 
