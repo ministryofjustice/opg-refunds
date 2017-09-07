@@ -8,7 +8,7 @@ RUN mkdir -p /srv/opg-refunds-public-front/application && \
     ln -s /app /srv/opg-refunds-public-front/application/current
 
 ADD docker/confd /etc/confd
-
+COPY docker/nginx/cache.conf /etc/nginx/app.conf.d/cache.conf
 RUN cd /tmp && \
     curl -s https://getcomposer.org/installer | php && \
     cd /app && \
