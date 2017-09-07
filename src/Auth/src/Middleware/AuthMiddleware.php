@@ -2,11 +2,11 @@
 
 namespace Auth\Middleware;
 
+use Auth\Exception\UnauthorizedException;
 use Auth\Service\AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Exception;
 
 /**
  * Class AuthMiddleware
@@ -43,6 +43,6 @@ class AuthMiddleware implements ServerMiddlewareInterface
             return $delegate->process($request);
         }
 
-        throw new Exception('Unauthorised access');
+        throw new UnauthorizedException('Unauthorized access');
     }
 }

@@ -2,12 +2,12 @@
 
 namespace Auth\Action;
 
+use Auth\Exception\UnauthorizedException;
 use Auth\Service\AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
-use Exception;
 
 /**
  * Class AuthAction
@@ -34,7 +34,7 @@ class AuthAction implements ServerMiddlewareInterface
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return JsonResponse
-     * @throws Exception
+     * @throws UnauthorizedException
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -54,6 +54,6 @@ class AuthAction implements ServerMiddlewareInterface
             }
         }
 
-        throw new Exception('Not authorised', 401);
+        throw new UnauthorizedException('Not authorized');
     }
 }

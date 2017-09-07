@@ -32,7 +32,7 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
 $prefix = '/v1/cases';
-//$app->post($prefix . '/example', App\Action\ExampleAction::class, 'example');
+$app->get($prefix . '/user/{id:\d+}', App\Action\UserAction::class, 'user');
 
 //  Developer routes
 $app->get('/dev/view-case-queue', Dev\Action\ViewCaseQueueAction::class, 'dev.view-case-queue');
