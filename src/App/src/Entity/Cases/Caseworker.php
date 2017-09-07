@@ -11,7 +11,9 @@ class Caseworker
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $id;
 
@@ -47,13 +49,13 @@ class Caseworker
 
     /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", nullable=true)
      */
     private $token;
 
     /**
      * @var int
-     * @ORM\Column(name="token_expires", type="integer")
+     * @ORM\Column(name="token_expires", type="integer", nullable=true)
      */
     private $tokenExpires;
 
