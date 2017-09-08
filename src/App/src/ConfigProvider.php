@@ -46,6 +46,8 @@ class ConfigProvider
                 Action\DonorDeceasedAction::class => Action\DonorDeceasedAction::class,
                 Action\VerificationDetailsAction::class => Action\VerificationDetailsAction::class,
                 Action\SessionFinishedAction::class => Action\SessionFinishedAction::class,
+                Action\TermsPageAction::class => Action\TermsPageAction::class,
+                Action\CookiesPageAction::class => Action\CookiesPageAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
