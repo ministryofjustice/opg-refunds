@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -61,7 +62,7 @@ class Caseworker extends AbstractEntity
     protected $tokenExpires;
 
     /**
-     * @var RefundCase[]
+     * @var ArrayCollection|RefundCase[]
      * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="$assignedCases")
      */
     protected $assignedCases;
@@ -187,17 +188,17 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @return RefundCase[]
+     * @return RefundCase[]|ArrayCollection
      */
-    public function getAssignedCases(): array
+    public function getAssignedCases()
     {
         return $this->assignedCases;
     }
 
     /**
-     * @param RefundCase[] $assignedCases
+     * @param RefundCase[]|ArrayCollection $assignedCases
      */
-    public function setAssignedCases(array $assignedCases)
+    public function setAssignedCases($assignedCases)
     {
         $this->assignedCases = $assignedCases;
     }

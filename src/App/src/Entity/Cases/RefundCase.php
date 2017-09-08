@@ -27,7 +27,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     /**
      * @var DateTime
-     * @ORM\Column(name="updated_datetime", type="datetime")
+     * @ORM\Column(name="updated_datetime", type="datetime", nullable=true)
      */
     protected $updatedDateTime;
 
@@ -52,19 +52,19 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @var Caseworker
      * @ORM\ManyToOne(targetEntity="Caseworker", inversedBy="assignedCases")
-     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id", nullable=true)
      */
     protected $assignedTo;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="assigned_datetime", type="datetime")
+     * @ORM\Column(name="assigned_datetime", type="datetime", nullable=true)
      */
     protected $assignedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="finished_datetime", type="datetime")
+     * @ORM\Column(name="finished_datetime", type="datetime", nullable=true)
      */
     protected $finishedDateTime;
 
