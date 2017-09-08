@@ -62,7 +62,7 @@ class Caseworker extends AbstractEntity
     protected $tokenExpires;
 
     /**
-     * @var ArrayCollection|RefundCase[]
+     * @var RefundCase[]
      * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="assignedTo")
      */
     protected $assignedCases;
@@ -188,7 +188,7 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @return RefundCase[]|ArrayCollection
+     * @return RefundCase[]
      */
     public function getAssignedCases()
     {
@@ -196,7 +196,7 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @param RefundCase[]|ArrayCollection $assignedCases
+     * @param RefundCase[] $assignedCases
      */
     public function setAssignedCases($assignedCases)
     {
