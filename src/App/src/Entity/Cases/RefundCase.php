@@ -291,4 +291,9 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     {
         $this->payment = $payment;
     }
+
+    public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
+    {
+        return parent::toArray($excludeProperties, $includeChildren);
+    }
 }

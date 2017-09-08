@@ -63,7 +63,7 @@ class Caseworker extends AbstractEntity
 
     /**
      * @var ArrayCollection|RefundCase[]
-     * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="$assignedCases")
+     * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="assignedTo")
      */
     protected $assignedCases;
 
@@ -203,8 +203,8 @@ class Caseworker extends AbstractEntity
         $this->assignedCases = $assignedCases;
     }
 
-    public function toArray($excludeProperties = ['passwordHash']): array
+    public function toArray($excludeProperties = ['passwordHash'], $includeChildren = ['assignedCases']): array
     {
-        return parent::toArray($excludeProperties);
+        return parent::toArray($excludeProperties, $includeChildren);
     }
 }
