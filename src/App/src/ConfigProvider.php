@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Zend\Authentication\AuthenticationService;
+use Zend\Session\SessionManager;
+
 /**
  * The configuration provider for the App module
  *
@@ -34,19 +37,26 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\SignInAction::class => Action\SignInAction::class,
-                Action\SignOutAction::class => Action\SignOutAction::class,
-                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
+                Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
+                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
             ],
             'factories'  => [
+                //  Actions
+                Action\SignInAction::class => Action\SignInActionFactory::class,
+                Action\SignOutAction::class => Action\SignOutActionFactory::class,
+
                 // Middleware
+                Middleware\Auth\AuthMiddleware::class => Middleware\Auth\AuthMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
-                Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
+                AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
+                SessionManager::class => Service\Session\SessionManagerFactory::class,
             ],
             'initializers' => [
+                Action\Initializers\ApiClientInitializer::class,
                 Action\Initializers\UrlHelperInitializer::class,
                 Action\Initializers\TemplatingSupportInitializer::class,
             ],
@@ -65,6 +75,7 @@ class ConfigProvider
                 'app'    => [__DIR__ . '/../templates/app'],
                 'error'  => [__DIR__ . '/../templates/error'],
                 'layout' => [__DIR__ . '/../templates/layout'],
+                'snippet' => [__DIR__ . '/../templates/snippet'],
             ],
         ];
     }

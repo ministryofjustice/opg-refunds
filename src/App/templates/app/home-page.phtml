@@ -1,0 +1,22 @@
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+
+<h1>Welcome <?= $caseworker['name'] ?></h1>
+
+<p>Caseworker ID: <?= $caseworker['id'] ?></p>
+<p>Email: <?= $caseworker['email'] ?></p>
+<p>Token: <?= $caseworker['token'] ?></p>
+<p>Status: <?= $caseworker['status'] ?></p>
+<p>Roles: <?= $caseworker['roles'] ?></p>
+
+<p>Cases: <?= count($caseworker['assignedCases']) ?></p>
+
+<table>
+<?php foreach ($caseworker['assignedCases'] as $assignedCase) { ?>
+    <tr>
+        <td><?= $assignedCase['donorName'] ?></td>
+        <td><?= $assignedCase['status'] ?></td>
+    </tr>
+<?php } ?>
+</table>
+
+<p><a href="sign-out">Sign out</a></p>

@@ -3,8 +3,8 @@
 namespace App\Action\Initializers;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use Zend\ServiceManager\Initializer\InitializerInterface;
 
 /**
  * Initialize Action middleware with support for rendering.
@@ -14,10 +14,12 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  */
 class TemplatingSupportInitializer implements InitializerInterface
 {
-
+    /**
+     * @param ContainerInterface $container
+     * @param object $instance
+     */
     public function __invoke(ContainerInterface $container, $instance)
     {
-
         if ($instance instanceof TemplatingSupportInterface && $container->has(TemplateRendererInterface::class)) {
             $instance->setTemplateRenderer($container->get(TemplateRendererInterface::class));
         }

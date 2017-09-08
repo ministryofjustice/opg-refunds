@@ -1,5 +1,6 @@
 <?php
 
+use App\Middleware;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
@@ -39,15 +40,15 @@ $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
-$app->pipe(App\Middleware\Session\SessionMiddleware::class);
-$app->pipe(App\Middleware\Session\CsrfMiddleware::class);
+$app->pipe(Middleware\Session\SessionMiddleware::class);
+$app->pipe(Middleware\Session\CsrfMiddleware::class);
 
-// Add more middleware here that needs to introspect the routing results; this
-// might include:
-//
-// - route-based authentication
-// - route-based validation
-// - etc.
+//  Add middleware to verify that there is an authenticated session
+foreach (['/cases'] as $path) {
+    $app->pipe($path, [
+        Middleware\Auth\AuthMiddleware::class,
+    ]);
+}
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();

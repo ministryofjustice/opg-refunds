@@ -1,14 +1,12 @@
 <?php
+
 namespace App\Middleware\Session;
-
-use UnexpectedValueException;
-
-use Psr\Http\Message\ServerRequestInterface;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
-
+use Psr\Http\Message\ServerRequestInterface;
 use Zend\Math\BigInteger\BigInteger;
+use UnexpectedValueException;
 
 /**
  * Injects a CSRF secret into the session.
@@ -18,10 +16,13 @@ use Zend\Math\BigInteger\BigInteger;
  */
 class CsrfMiddleware implements ServerMiddlewareInterface
 {
-
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-
         $session = $request->getAttribute('session');
 
         if (!isset($session)) {

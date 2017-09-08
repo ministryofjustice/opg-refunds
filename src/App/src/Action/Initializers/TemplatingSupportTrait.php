@@ -2,8 +2,8 @@
 
 namespace App\Action\Initializers;
 
-use UnexpectedValueException;
 use Zend\Expressive\Template\TemplateRendererInterface;
+use UnexpectedValueException;
 
 /**
  * Getter and Setter, implementing the TemplatingSupportInterface.
@@ -13,14 +13,22 @@ use Zend\Expressive\Template\TemplateRendererInterface;
  */
 trait TemplatingSupportTrait
 {
-
+    /**
+     * @var TemplateRendererInterface
+     */
     private $template;
 
+    /**
+     * @param TemplateRendererInterface $template
+     */
     public function setTemplateRenderer(TemplateRendererInterface $template)
     {
         $this->template = $template;
     }
 
+    /**
+     * @return TemplateRendererInterface
+     */
     public function getTemplateRenderer() : TemplateRendererInterface
     {
 

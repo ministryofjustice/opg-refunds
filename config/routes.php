@@ -26,8 +26,17 @@
  * );
  */
 
-$app->get('/', App\Action\SignInAction::class, 'sign-in');
-$app->get('/sign-out', App\Action\SignOutAction::class, 'sign-out');
-
-$app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+//  Unauthenticated routes
+$app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
+$app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
+
+//  Authenticated routes
+$prefix = '/cases';
+$app->get($prefix . '/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+
+//  Special case - the home page route requires authentication
+$app->get('/', [
+    App\Middleware\Auth\AuthMiddleware::class,
+    App\Action\HomePageAction::class,
+], 'home');

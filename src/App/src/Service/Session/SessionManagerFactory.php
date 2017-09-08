@@ -1,69 +1,76 @@
 <?php
+
 namespace App\Service\Session;
 
-use Interop\Container\ContainerInterface;
-
 use Aws\DynamoDb\DynamoDbClient;
-use Aws\DynamoDb\StandardSessionConnection;
-
+use Interop\Container\ContainerInterface;
 use Zend\Crypt\BlockCipher;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
+use UnexpectedValueException;
 
+/**
+ * Class SessionManagerFactory
+ * @package App\Service\Session
+ */
 class SessionManagerFactory
 {
-
+    /**
+     * @param ContainerInterface $container
+     * @return SessionManager
+     */
     public function __invoke(ContainerInterface $container)
     {
-
         $config = $container->get('config');
 
-        if (!isset($config['session']['ttl'])) {
-            throw new \UnexpectedValueException('Session TTL not configured');
+        if (!isset($config['session'])) {
+            throw new UnexpectedValueException('Session configuration not found');
         }
 
         $config = $config['session'];
 
-        // Copy TTL value into DynamoDb session_lifetime
-        $config['dynamodb']['settings']['session_lifetime'] = $config['ttl'];
-
-        //---
-
-        if (!isset($config['dynamodb']['client']) || !isset($config['dynamodb']['settings'])) {
-            throw new \UnexpectedValueException('Dynamo DB for sessions not configured');
-        }
-
-        $dynamoDbClient = new DynamoDbClient($config['dynamodb']['client']);
-
-        $sessionConnection = new StandardSessionConnection($dynamoDbClient, $config['dynamodb']['settings']);
-
-        //---
-
-        if (!isset($config['encryption']['keys'])) {
-            throw new \UnexpectedValueException('Session encryption keys not configured');
-        }
-
-        $keys = explode(',', $config['encryption']['keys']);
-
-        $keyChain = new KeyChain;
-
-        foreach ($keys as $key) {
-            $items = explode(':', $key);
-
-            $value = hex2bin($items[1]);
-            if (count($items) != 2 || mb_strlen($value, '8bit') < 32) {
-                throw new \UnexpectedValueException('Session encryption key is too short');
+        //  Apply any native PHP level settings
+        if (isset($config['native_settings']) && is_array($config['native_settings'])) {
+            foreach ($config['native_settings'] as $k => $v) {
+                ini_set('session.' . $k, $v);
             }
-
-            $keyChain->offsetSet($items[0], $value);
         }
 
+        //  Set up the required keys
+        if (!isset($config['encryption']['keys'])) {
+            throw new UnexpectedValueException('Session encryption keys not configured');
+        }
+
+        //  Build the key chain
+        $keyChain = new KeyChain(explode(',', $config['encryption']['keys']));
+
+        //  TODO - This ksort is done the in EncryptedDynamoDB class too - perhaps it doesn't need to be done here
         $keyChain->ksort();
+        $keys = $keyChain->getArrayCopy();
 
-        //---
+        //  Set up the connection to dynamoDB and the block cipher
+        $dynamoDbConfig = $config['dynamodb'];
 
-        $blockCipher = BlockCipher::factory('openssl', ['algo' => 'aes']);
+        $dynamoDbClient = new DynamoDbClient($dynamoDbConfig['client']);
+        $connection = new SaveHandler\HashedKeyDynamoDbSessionConnection($dynamoDbClient, $dynamoDbConfig['settings']);
 
-        //---
+        $blockCipher = BlockCipher::factory('openssl', [
+            'algo' => 'aes'
+        ]);
 
-        return new SessionManager($sessionConnection, $blockCipher, $keyChain);
+        //  Create the save handler for the session manager
+        $saveHandler = new SaveHandler\EncryptedDynamoDB($connection);
+        $saveHandler->setBlockCipher($blockCipher, $keys);
+
+        //  Set up the session manager and return it
+        $manager = new SessionManager();
+        $manager->setSaveHandler($saveHandler);
+
+        $manager->start();
+
+        //  Set the session manager in the container so it is always used
+        Container::setDefaultManager($manager);
+
+        return $manager;
     }
 }

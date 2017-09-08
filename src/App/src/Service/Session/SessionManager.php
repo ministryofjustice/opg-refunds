@@ -1,10 +1,14 @@
 <?php
+
 namespace App\Service\Session;
 
 use Aws\DynamoDb\SessionConnectionInterface as DynamoDbSessionConnectionInterface;
-
 use Zend\Crypt\BlockCipher;
 
+/**
+ * Class SessionManager
+ * @package App\Service\Session
+ */
 class SessionManager
 {
     /**
@@ -29,7 +33,13 @@ class SessionManager
      */
     private $lastReadHash = null;
 
-
+    /**
+     * SessionManager constructor
+     *
+     * @param DynamoDbSessionConnectionInterface $connection
+     * @param BlockCipher $blockCipher
+     * @param KeyChain $keys
+     */
     public function __construct(DynamoDbSessionConnectionInterface $connection, BlockCipher $blockCipher, KeyChain $keys)
     {
         $this->keys = $keys;
@@ -110,7 +120,6 @@ class SessionManager
 
         // Save
         $this->dynamoDbSessionConnection->write($this->hashId($id), $data, $changed);
-
     }
 
     /**
