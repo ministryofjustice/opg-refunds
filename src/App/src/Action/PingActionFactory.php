@@ -4,7 +4,7 @@ namespace App\Action;
 
 use Interop\Container\ContainerInterface;
 
-class PingFactory
+class PingActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {

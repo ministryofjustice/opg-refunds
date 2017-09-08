@@ -33,6 +33,19 @@ class PingAction implements ServerMiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $caseDbConnectionSuccessful = false;
+        $foundCaseworker = false;
+        try {
+            $productRepository = $this->casesEntityManager->getRepository(Caseworker::class);
+            $caseworkers = $productRepository->findBy([], null, 1);
+            $caseDbConnectionSuccessful = true;
+            foreach ($caseworkers as $caseworker) {
+                /** @var Caseworker $caseworker */
+                $foundCaseworker = $caseworker->getId() > 0;
+            }
+        } catch (Exception $ex) {
+            $caseDbConnectionSuccessful = $ex->getMessage();
+        }
+
         $foundCase = false;
         try {
             $productRepository = $this->casesEntityManager->getRepository(RefundCase::class);
@@ -63,6 +76,7 @@ class PingAction implements ServerMiddlewareInterface
         return new JsonResponse([
             'ack' => time(),
             'caseDbConnectionSuccessful' => $caseDbConnectionSuccessful,
+            'foundCaseworker' => $foundCaseworker,
             'foundCase' => $foundCase,
             'siriusDbConnectionSuccessful' => $siriusDbConnectionSuccessful,
             'foundSiriusPoa' => $foundSiriusPoa

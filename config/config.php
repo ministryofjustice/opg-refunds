@@ -14,9 +14,9 @@ $aggregator = new ConfigAggregator([
     // Include cache configuration
     new ArrayProvider($cacheConfig),
 
-    // Default App module config
+    // Modules config
     App\ConfigProvider::class,
-
+    Auth\ConfigProvider::class,
     Dev\ConfigProvider::class,
 
     // Load application config in a pre-defined order in such a way that local settings

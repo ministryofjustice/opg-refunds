@@ -2,44 +2,47 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="verification")
  **/
-class Verification
+class Verification extends AbstractEntity
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    private $type;
+    protected $type;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $passes;
+    protected $passes;
 
     /**
      * @var RefundCase
      * @ORM\OneToOne(targetEntity="RefundCase", inversedBy="verification")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
-    private $case;
+    protected $case;
 
     /**
      * @var Poa
      * @ORM\OneToOne(targetEntity="Poa")
      * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
      */
-    private $poa;
+    protected $poa;
 
     /**
      * @return int

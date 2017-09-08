@@ -2,50 +2,53 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="poa")
  **/
-class Poa
+class Poa extends AbstractEntity
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var DateTime
      * @ORM\Column(name="received_datetime", type="datetime")
      */
-    private $receivedDateTime;
+    protected $receivedDateTime;
 
     /**
      * @var float
      * @ORM\Column(name="net_amount_paid", type="decimal")
      */
-    private $netAmountPaid;
+    protected $netAmountPaid;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
      */
-    private $status;
+    protected $status;
 
     /**
      * @var float
      * @ORM\Column(name="amount_to_refund", type="decimal")
      */
-    private $amountToRefund;
+    protected $amountToRefund;
 
     /**
      * @var RefundCase
      * @ORM\ManyToOne(targetEntity="RefundCase", inversedBy="poas")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
-    private $case;
+    protected $case;
 
     /**
      * @return int

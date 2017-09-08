@@ -2,6 +2,8 @@
 
 return [
 
+    'token_ttl' => 60 * 60 * 1, //  1 hour
+
     'notify' => [
         'api' => [
             'key' => getenv('OPG_REFUNDS_NOTIFY_API_KEY') ?: null,

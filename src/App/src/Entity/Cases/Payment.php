@@ -2,50 +2,53 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="payment")
  **/
-class Payment
+class Payment extends AbstractEntity
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var float
      * @ORM\Column(type="decimal")
      */
-    private $amount;
+    protected $amount;
 
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    private $method;
+    protected $method;
 
     /**
      * @var DateTime
      * @ORM\Column(name="added_datetime", type="datetime")
      */
-    private $addedDateTime;
+    protected $addedDateTime;
 
     /**
      * @var DateTime
      * @ORM\Column(name="processed_datetime", type="datetime")
      */
-    private $processedDateTime;
+    protected $processedDateTime;
 
     /**
      * @var RefundCase
      * @ORM\OneToOne(targetEntity="RefundCase", inversedBy="payment")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
-    private $case;
+    protected $case;
 
     /**
      * @return int

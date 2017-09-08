@@ -2,52 +2,55 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="log")
  **/
-class Log
+class Log extends AbstractEntity
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var DateTime
      * @ORM\Column(name="created_datetime", type="datetime")
      */
-    private $createdDateTime;
+    protected $createdDateTime;
 
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    private $message;
+    protected $message;
 
     /**
      * @var RefundCase
      * @ORM\ManyToOne(targetEntity="RefundCase")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
-    private $case;
+    protected $case;
 
     /**
      * @var Caseworker
      * @ORM\ManyToOne(targetEntity="Caseworker")
      * @ORM\JoinColumn(name="caseworker_id", referencedColumnName="id")
      */
-    private $caseworker;
+    protected $caseworker;
 
     /**
      * @var Poa
      * @ORM\ManyToOne(targetEntity="Poa")
      * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
      */
-    private $poa;
+    protected $poa;
 
     /**
      * @return int

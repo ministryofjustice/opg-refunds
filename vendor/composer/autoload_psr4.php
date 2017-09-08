@@ -50,6 +50,7 @@ return array(
     'Dev\\' => array($baseDir . '/src/Dev/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'ContainerInteropDoctrine\\' => array($vendorDir . '/dasprid/container-interop-doctrine/src'),
+    'Auth\\' => array($baseDir . '/src/Auth/src'),
     'App\\' => array($baseDir . '/src/App/src'),
     'AppTest\\' => array($baseDir . '/test/AppTest'),
 );

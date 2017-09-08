@@ -86,6 +86,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         ),
         'A' => 
         array (
+            'Auth\\' => 5,
             'App\\' => 4,
             'AppTest\\' => 8,
         ),
@@ -270,6 +271,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'ContainerInteropDoctrine\\' => 
         array (
             0 => __DIR__ . '/..' . '/dasprid/container-interop-doctrine/src',
+        ),
+        'Auth\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Auth/src',
         ),
         'App\\' => 
         array (

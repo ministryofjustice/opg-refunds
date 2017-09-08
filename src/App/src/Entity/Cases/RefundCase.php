@@ -2,92 +2,95 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="cases")
  **/
-class RefundCase //Case is a reserved word in PHP 7
+class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 {
     /**
      * @var int
-     * @ORM\Id @ORM\Column(type="integer") @ORM\GeneratedValue
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var DateTime
      * @ORM\Column(name="created_datetime", type="datetime")
      */
-    private $createdDateTime;
+    protected $createdDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="updated_datetime", type="datetime")
+     * @ORM\Column(name="updated_datetime", type="datetime", nullable=true)
      */
-    private $updatedDateTime;
+    protected $updatedDateTime;
 
     /**
      * @var DateTime
      * @ORM\Column(name="received_datetime", type="datetime")
      */
-    private $receivedDateTime;
+    protected $receivedDateTime;
 
     /**
      * @var string
      * @ORM\Column(name="json_data", type="string")
      */
-    private $jsonData;
+    protected $jsonData;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
      */
-    private $status;
+    protected $status;
 
     /**
      * @var Caseworker
      * @ORM\ManyToOne(targetEntity="Caseworker", inversedBy="assignedCases")
-     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id", nullable=true)
      */
-    private $assignedTo;
+    protected $assignedTo;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="assigned_datetime", type="datetime")
+     * @ORM\Column(name="assigned_datetime", type="datetime", nullable=true)
      */
-    private $assignedDateTime;
+    protected $assignedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="finished_datetime", type="datetime")
+     * @ORM\Column(name="finished_datetime", type="datetime", nullable=true)
      */
-    private $finishedDateTime;
+    protected $finishedDateTime;
 
     /**
      * @var string
      * @ORM\Column(name="donor_name", type="string")
      */
-    private $donorName;
+    protected $donorName;
 
     /**
      * @var Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="case")
      */
-    private $poas;
+    protected $poas;
 
     /**
      * @var Verification
      * @ORM\OneToOne(targetEntity="Verification", mappedBy="case")
      */
-    private $verification;
+    protected $verification;
 
     /**
      * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
      */
-    private $payment;
+    protected $payment;
 
     /**
      * @return int
@@ -287,5 +290,10 @@ class RefundCase //Case is a reserved word in PHP 7
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
+    {
+        return parent::toArray($excludeProperties, $includeChildren);
     }
 }
