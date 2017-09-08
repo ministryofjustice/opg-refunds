@@ -2,12 +2,13 @@
 
 namespace App\Entity\Cases;
 
+use App\Entity\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="caseworker")
  **/
-class Caseworker
+class Caseworker extends AbstractEntity
 {
     /**
      * @var int
@@ -15,55 +16,55 @@ class Caseworker
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $id;
+    protected $id;
 
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    private $name;
+    protected $name;
 
     /**
      * @var string
      * @ORM\Column(type="string", unique=true)
      */
-    private $email;
+    protected $email;
 
     /**
      * @var string
      * @ORM\Column(name="password_hash", type="string")
      */
-    private $passwordHash;
+    protected $passwordHash;
 
     /**
      * @var int
      * @ORM\Column(type="integer")
      */
-    private $status;
+    protected $status;
 
     /**
      * @var string
      * @ORM\Column(type="string")
      */
-    private $roles;
+    protected $roles;
 
     /**
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
-    private $token;
+    protected $token;
 
     /**
      * @var int
      * @ORM\Column(name="token_expires", type="integer", nullable=true)
      */
-    private $tokenExpires;
+    protected $tokenExpires;
 
     /**
      * @var RefundCase[]
      * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="$assignedCases")
      */
-    private $assignedCases;
+    protected $assignedCases;
 
     /**
      * @return int
@@ -199,5 +200,10 @@ class Caseworker
     public function setAssignedCases(array $assignedCases)
     {
         $this->assignedCases = $assignedCases;
+    }
+
+    public function toArray($excludeProperties = ['passwordHash']): array
+    {
+        return parent::toArray($excludeProperties);
     }
 }
