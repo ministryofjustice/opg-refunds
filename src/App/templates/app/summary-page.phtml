@@ -74,7 +74,7 @@ $this->layout('layout::default', [
             ],
             [
                 'label' => 'Phone number',
-                'value' => ($details['contact']['mobile']) ?? null
+                'value' => ($details['contact']['phone']) ?? null
             ]
         ],
         'changeURL' => $this->url('apply.contact', ['who'=>$applicant])
