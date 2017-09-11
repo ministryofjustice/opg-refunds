@@ -1,5 +1,8 @@
 <?php
-$this->layout('layout::default')
+$title = 'We are in beta';
+$this->layout('layout::default', [
+    'title' => $title,
+]);
 
 /*
  * Possible reasons:
@@ -14,7 +17,7 @@ $this->layout('layout::default')
     <div class="column-two-thirds">
 
         <h1 class="heading-xlarge">
-            We are in beta
+            <?= $this->e($title) ?>
         </h1>
 
         <p>You cannot access this page because: <?= $this->e($reason) ?></p>

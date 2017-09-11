@@ -1,7 +1,9 @@
-<?php $this->layout('layout::question',
-[
-  'question' => 'Who are you?'
-]) ?>
+<?php
+$title = 'Test page';
+$this->layout('layout::default', [
+    'title' => $title,
+]);
+?>
 
 <?php $this->start('intro-text') ?>
   <p>A refund can be claimed by a donor or by an attorney.</p>

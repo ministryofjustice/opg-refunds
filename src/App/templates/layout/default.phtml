@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Claim a power of attorney refund | GOV.UK</title>
+    <?php $subTitle = 'Claim a power of attorney refund'; ?>
+    <title><?= (isset($title)) ? $this->e($title).' | ' : '' ?><?= ($title!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
     <!--[if gt IE 8]><!--><link href="/assets/govuk_template/stylesheets/govuk-template.css" media="screen" rel="stylesheet" /><!--<![endif]-->
     <!--[if IE 6]><link href="/assets/govuk_template/stylesheets/govuk-template-ie6.css" media="screen" rel="stylesheet" /><![endif]-->

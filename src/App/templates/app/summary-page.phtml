@@ -1,7 +1,12 @@
-<?php $this->layout('layout::default') ?>
+<?php
+$title = 'Check your refund claim';
+$this->layout('layout::default', [
+    'title' => $title,
+]);
+?>
 
 <h1 class="heading-xlarge">
-    Check your refund claim
+    <?= $this->e($title) ?>
 </h1>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

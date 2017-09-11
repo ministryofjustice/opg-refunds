@@ -1,10 +1,15 @@
-<?php $this->layout('layout::default') ?>
+<?php
+$title = 'Your session has finished';
+$this->layout('layout::default', [
+    'title' => $title,
+]);
+?>
 
 <div class="grid-row">
     <div class="column-two-thirds">
 
         <h1 class="heading-xlarge">
-            Your session has finished
+            <?= $this->e($title) ?>
         </h1>
 
         <a class="button" href="<?= $this->url('home') ?>">Start again</a>
