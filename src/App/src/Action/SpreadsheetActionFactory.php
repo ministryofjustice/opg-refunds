@@ -6,7 +6,7 @@ use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
 
-class SpreadsheetFactory
+class SpreadsheetActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {

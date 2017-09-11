@@ -38,7 +38,7 @@ class ConfigProvider
                 //  Actions
                 Action\CaseworkerAction::class => Action\CaseworkerActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
-                Action\SpreadsheetAction::class => Action\SpreadsheetFactory::class,
+                Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
 
                 // Middleware
 
