@@ -44,10 +44,12 @@ class ConfigProvider
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
                 Action\DoneAction::class => Action\DoneAction::class,
                 Action\DonorDeceasedAction::class => Action\DonorDeceasedAction::class,
-                Action\VerificationDetailsAction::class => Action\VerificationDetailsAction::class,
                 Action\SessionFinishedAction::class => Action\SessionFinishedAction::class,
+                Action\CaseNumberAction::class => Action\CaseNumberAction::class,
+                Action\PostcodeAction::class => Action\PostcodeAction::class,
                 Action\TermsPageAction::class => Action\TermsPageAction::class,
                 Action\CookiesPageAction::class => Action\CookiesPageAction::class,
+
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,

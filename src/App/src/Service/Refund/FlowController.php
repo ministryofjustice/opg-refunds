@@ -28,8 +28,12 @@ class FlowController
             'requires'  => 'apply.attorney',
         ],
         [
-            'name'      => 'apply.verification',
-            'requires'  => 'apply.verification',
+            'name'      => 'apply.case',
+            'requires'  => 'apply.case',
+        ],
+        [
+            'name'      => 'apply.postcode',
+            'requires'  => 'apply.postcode',
         ],
         [
             'name'      => 'apply.contact',
@@ -108,8 +112,19 @@ class FlowController
             return 'apply.attorney';
         }
 
-        if (!isset($session['verification']) || !is_array($session['verification'])) {
-            return 'apply.verification';
+        if (!isset($session['case-number']) || !is_array($session['case-number'])) {
+            return 'apply.case';
+        }
+
+        if (!isset($session['case-number']) || !is_array($session['case-number'])) {
+            return 'apply.case';
+        }
+
+        // If they didn't enter a case number, display the postcode page.
+        if (isset($session['case-number']) && !isset($session['case-number']['poa-case-number'])) {
+            if (!isset($session['postcodes']) || !is_array($session['postcodes'])) {
+                return 'apply.postcode';
+            }
         }
 
         if (!isset($session['contact']) || !is_array($session['contact'])) {
