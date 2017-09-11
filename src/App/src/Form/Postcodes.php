@@ -1,6 +1,7 @@
 <?php
 namespace App\Form;
 
+use Zend\Filter;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -45,7 +46,8 @@ class Postcodes extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            ->attach(new StandardInputFilter)
+            ->attach(new Filter\StringToUpper);
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
