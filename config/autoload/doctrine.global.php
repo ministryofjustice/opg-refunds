@@ -3,6 +3,26 @@
 return [
     'doctrine' => [
         'connection' => [
+            'orm_applications' => [
+                'params' => [
+                    'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
+                    'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") : "localhost",
+                    'port'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT") ? intval(getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT")) : 5432,
+                    'user'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME") : "applications_full",
+                    'password'    => getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD") : "applications_full",
+                    'dbname'      => getenv("OPG_REFUNDS_DB_APPLICATIONS_NAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_NAME") : "applications",
+                ],
+            ],
+            'orm_applications_migration' => [
+                'params' => [
+                    'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
+                    'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") : "localhost",
+                    'port'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT") ? intval(getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT")) : 5432,
+                    'user'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATE_USERNAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATE_USERNAME") : "applications_migration",
+                    'password'    => getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATE_PASSWORD") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATE_PASSWORD") : "applications_migration",
+                    'dbname'      => getenv("OPG_REFUNDS_DB_APPLICATIONS_NAME") ? getenv("OPG_REFUNDS_DB_APPLICATIONS_NAME") : "applications",
+                ],
+            ],
             'orm_cases' => [
                 'params' => [
                     'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
@@ -45,6 +65,23 @@ return [
             ],
         ],
         'driver' => [
+            'orm_applications' => [
+                'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
+                'drivers' => [
+                    'App\Entity' => 'applications_entities',
+                ],
+            ],
+            'orm_applications_migration' => [
+                'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
+                'drivers' => [
+                    'App\Entity' => 'applications_entities',
+                ],
+            ],
+            'applications_entities' => [
+                'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
+                'cache' => 'array',
+                'paths' => __DIR__ . '/../../src/App/src/Entity/Applications',
+            ],
             'orm_cases' => [
                 'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
                 'drivers' => [
