@@ -70,6 +70,26 @@ class Client
     }
 
     /**
+     * Get SSCL spreadsheet containing all refundable cases
+     *
+     * @return ResponseInterface
+     */
+    public function getSpreadsheetResponse()
+    {
+        //TODO: Add date or other unique identifier allowing for previous spreadsheets to be downloaded
+
+        //  Not using httpGet because the response of this API endpoint is binary, specifically a .xls file
+        $url = new Uri($this->apiBaseUri . '/v1/cases/spreadsheet');
+
+        $request = new Request('GET', $url, $this->buildHeaders());
+
+        //  Can throw RuntimeException if there is a problem
+        $response = $this->httpClient->sendRequest($request);
+
+        return $response;
+    }
+
+    /**
      * Performs a GET against the API
      *
      * @param string $path
