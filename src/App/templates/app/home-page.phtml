@@ -88,30 +88,14 @@ $this->layout('layout::standard', [
    
 <h2 class="heading-medium">If the donor has died</h2>
 <p>You might be able to claim a refund if the donor's estate is still in probate. Contact the Helpline to find out.</p>
-   
-<h2 class="heading-medium">Refunds Helpline</h2>
 
-<address>
-    <p>
-        Email: <a href="mailto:refunds@opg.gov.uk">refunds@opg.gov.uk</a><br>
-        Telephone: 0300 123 1122<br>
-        Textphone: 0300 123 1123<br>
-        Monday to Friday, 9am to 5pm<br>
-        <a href="https://www.gov.uk/call-charges">Find out about call charges</a>
-    </p>
-</address>
+<?php $this->insert('snippet::refunds-helpline');?>
 
-<div class="panel panel-border-wide">
-    <p>
-    The claim deadline is 31 July 2020.
-    </p>
-</div>
+<?php $this->insert('snippet::claim-deadline');?>
 
 <p>
-    Fee refunds <a href="#">terms and conditions</a>.
+    Fee refunds <a href="/terms">terms and conditions</a>.
 </p>
-
-<p><a href="#">Print this page</a>.</p>
 
 <?php $this->start('sidebar') ?>
     <aside class="govuk-related-items" role="complementary">
