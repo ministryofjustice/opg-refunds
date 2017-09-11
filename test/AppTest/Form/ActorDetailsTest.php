@@ -12,11 +12,10 @@ use App\Form\Fieldset\Dob;
 class ActorDetailsTest extends TestCase
 {
 
-    private function getForm($dobOptional = false)
+    private function getForm()
     {
         return new ActorDetails([
-            'csrf' => bin2hex(random_bytes(32)),
-            'dob-optional' => $dobOptional
+            'csrf' => bin2hex(random_bytes(32))
         ]);
     }
 
@@ -134,6 +133,40 @@ class ActorDetailsTest extends TestCase
         $this->assertFalse( $form->isValid() );
     }
 
+    //---------------------------------------------
+    // Optional Names Tests
+
+    public function testAllFieldsWithoutOptionalNamePresentAndValid()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['poa-title']);
+        unset($data['poa-first']);
+        unset($data['poa-last']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+
+        //---
+
+        // Filter out the optional fields.
+
+        $fieldsToValidate = array_flip(array_diff_key(
+            array_flip(array_keys($form->getElements() + $form->getFieldsets())),
+            // Remove the fields below from the validator.
+            array_flip(['poa-title', 'poa-first', 'poa-last'])
+        ));
+
+        $form->setValidationGroup($fieldsToValidate);
+
+        //---
+
+        $this->assertTrue( $form->isValid() );
+    }
 
     //---------------------------------------------
     // DOB Tests
