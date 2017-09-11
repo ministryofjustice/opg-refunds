@@ -32,7 +32,11 @@
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Power of attorney case number',
         'fields' => [
-            [ 'value' => ($details['case-number']['poa-case-number']) ?? 'Not entered' ]
+            [ 'value' => isset($details['case-number']['poa-case-number']) ?
+                (strlen($details['case-number']['poa-case-number']) == 12)
+                    ? rtrim(chunk_split($details['case-number']['poa-case-number'], 4, '-'), '-')
+                    : $details['case-number']['poa-case-number']
+                : 'Not entered' ]
         ],
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
