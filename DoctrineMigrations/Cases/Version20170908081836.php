@@ -21,10 +21,6 @@ class Version20170908081836 extends AbstractMigration
         $this->addSql('ALTER TABLE cases ALTER updated_datetime DROP NOT NULL');
         $this->addSql('ALTER TABLE cases ALTER assigned_datetime DROP NOT NULL');
         $this->addSql('ALTER TABLE cases ALTER finished_datetime DROP NOT NULL');
-
-        $this->addSql('INSERT INTO cases (assigned_to_id, created_datetime, received_datetime, json_data, status, donor_name) VALUES (1, NOW(), NOW(), \'{}\', 1, \'Test Donor 1\')');
-        $this->addSql('INSERT INTO cases (assigned_to_id, created_datetime, received_datetime, json_data, status, donor_name) VALUES (1, NOW(), NOW(), \'{}\', 1, \'Test Donor 2\')');
-        $this->addSql('INSERT INTO cases (assigned_to_id, created_datetime, received_datetime, json_data, status, donor_name) VALUES (1, NOW(), NOW(), \'{}\', 1, \'Test Donor 3\')');
     }
 
     /**
