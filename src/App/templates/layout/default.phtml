@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Claim a power of attorney refund | GOV.UK</title>
+    <?php $subTitle = 'Claim a power of attorney refund'; ?>
+    <title><?= (isset($title)) ? $this->e($title).' | ' : '' ?><?= ($title!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
     <!--[if gt IE 8]><!--><link href="/assets/govuk_template/stylesheets/govuk-template.css" media="screen" rel="stylesheet" /><!--<![endif]-->
     <!--[if IE 6]><link href="/assets/govuk_template/stylesheets/govuk-template-ie6.css" media="screen" rel="stylesheet" /><![endif]-->
@@ -50,7 +51,7 @@
 
     <div id="global-cookie-message">
       
-        <p>GOV.UK uses cookies to make the site simpler. <a href="https://www.gov.uk/help/cookies">Find out more about cookies</a></p>
+        <p>GOV.UK uses cookies to make the site simpler. <a href="/cookies">Find out more about cookies</a></p>
       
     </div>
 
@@ -79,6 +80,13 @@
 
     <main id="content" role="main">
 
+    <div class="phase-banner">
+        <p>
+            <strong class="phase-tag">BETA</strong>
+            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+        </p>
+        </div>
+
         <?=$this->section('content')?>
 
     </main>
@@ -86,11 +94,15 @@
     <footer class="group js-footer" id="footer" role="contentinfo">
 
         <div class="footer-wrapper">
-        
 
         <div class="footer-meta">
             <div class="footer-meta-inner">
-            
+            <h2 class="visuallyhidden">Support links</h2>
+            <ul>
+                <li><a href="/cookies">Cookies <span class="visuallyhidden">(Opens in a new window)</span></a></li>
+                <li><a href="/terms">Terms and conditions <span class="visuallyhidden">(Opens in a new window)</span></a></li>
+                <li>Built by <a href="https://www.gov.uk/government/organisations/office-of-the-public-guardian" rel="external" target="_blank">OPG Digital</a></li>
+            </ul>
 
             <div class="open-government-licence">
                 <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>

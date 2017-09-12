@@ -63,9 +63,9 @@ class ContactDetails extends AbstractForm
         $inputFilter->add($input);
 
         //------------------------
-        // Mobile number field.
+        // Phone number field.
 
-        $field = new Element\Tel('mobile');
+        $field = new Element\Tel('phone');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -89,14 +89,14 @@ class ContactDetails extends AbstractForm
     }
 
     /**
-     * Returns a validator for checking that either email or mobile is completed.
+     * Returns a validator for checking that either email or phone is completed.
      *
      * @return ValidatorInterface
      */
     private function getOneRequiredValidator() : ValidatorInterface
     {
         return (new Callback(function ($value, $context) {
-            return !empty($context['email']) || !empty($context['mobile']);
+            return !empty($context['email']) || !empty($context['phone']);
         }))->setMessage('one-field-required', Callback::INVALID_VALUE);
     }
 }

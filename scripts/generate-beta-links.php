@@ -1,6 +1,7 @@
 <?php
 
-include_once('../vendor/autoload.php');
+chdir(dirname(__DIR__));
+include_once('vendor/autoload.php');
 
 use Zend\Crypt\Key\Derivation\Pbkdf2;
 use Zend\Math\BigInteger\BigInteger;

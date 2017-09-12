@@ -1,0 +1,132 @@
+<?php
+$title = 'Cookies';
+$this->layout('layout::standard', [
+        'title' => $title
+    ]);
+?>
+
+<p>The power of attorney refunds service puts small files (known as ‘cookies’) onto 
+  your computer to collect information about how you use the service.</p>
+
+<p>These cookies:</p>
+
+<ul class="list list-bullet">
+  <li>measure how you use the service so it can be updated and improved based on your needs</li>
+  <li>remember messages you’ve seen so that we don’t show them to you again</li>
+  <li>let our server temporarily remember information you enter to support your application</li>
+</ul>
+
+<div class="panel panel-border-wide">
+  <p>These cookies aren’t used to identify you personally.</p>
+</div>
+
+<p>Find out about <a href="http://www.aboutcookies.org/" rel="external noopener noreferrer" target="_blank">how to manage 
+cookies (opens new window)</a>.</p>
+
+<h2 class="heading-large">How we use cookies</h2>
+
+<h3 class="heading-medium">Introductory cookie message</h3>
+
+<p>When you first use the service we show a ‘cookie message’. We then store a cookie on your computer 
+  so it knows not to show this message again.</p>
+  
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Purpose</th>
+      <th>Expires</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>seen_cookie_message</td>
+      <td>Saves a message to let us know that you’ve seen our cookie message</td>
+      <td>1 month</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="heading-medium">Your progress when making a refund claim</h3>
+  
+<p>When you apply for a refund we’ll set a cookie to remember your progress through 
+  the screens. This cookie doesn’t store your personal data and is deleted once you’ve completed the claim.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Purpose</th>
+      <th>Expires</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>rs</td>
+      <td>Set to remember information you’ve entered into a page when applying for a refund</td>
+      <td>1 hour</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 class="heading-medium">Measuring the service (Google Analytics)</h3>
+
+<p>We use Google Analytics software to collect information about how you 
+  use this service. We do this to help make sure we’re meeting the needs of 
+  users and to help us make improvements.</p>
+
+<p>Google Analytics stores information about:</p>
+
+<ul class="list list-bullet">
+  <li>the pages you visit in the service</li>
+  <li>how long you spend on each page</li>
+  <li>how you got to the service</li>
+  <li>what you click on while you’re using the service</li>
+</ul>
+
+<p>We don’t collect or store your personal information (for example your
+  name or address) using these cookies.So this information can’t 
+  be used to identify who you are.</p>
+
+<div class="panel panel-border-wide">
+  <p>We don’t allow Google to use or share our analytics data.</p>
+</div>
+
+<p>Google Analytics sets the following cookies:</p>
+
+<table style="margin-bottom: 1.875em;">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Purpose</th>
+      <th>Expires</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_ga</td>
+      <td>This helps us count how many people visit the service by tracking if you’ve visited before</td>
+      <td>2 years</td>
+    </tr>
+    <tr>
+      <td>_gid</td>
+      <td>This helps us count how many people visit the service by tracking if you’ve visited before</td>
+      <td>24 hours</td>
+    </tr>
+    <tr>
+      <td>_gat</td>
+      <td>Used to manage the rate at which page view requests are made</td>
+      <td>1 minute</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>
+  You can <a href="https://tools.google.com/dlpage/gaoptout" rel="external noopener noreferrer" target="_blank">opt out 
+  of Google Analytics cookies (opens new window)</a>.
+</p>
+
+
+<?php $this->start('sidebar') ?>
+    
+<?php $this->stop() ?>

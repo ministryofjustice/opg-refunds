@@ -20,8 +20,15 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
 
         $response = $delegate->process($request);
 
+        $route = $request->getAttribute('Zend\Expressive\Router\RouteResult');
+
+        if (is_null($route)) {
+            // No app route matched, thus don't add caching
+            return $response;
+        }
+
         // Return the current route name
-        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
+        $matchedRoute = $route->getMatchedRouteName();
 
         // If it's an eligibility route
         if ($response instanceof ResponseInterface && substr($matchedRoute, 0, 12) === 'eligibility.') {

@@ -32,7 +32,7 @@ class ContactDetailsTest extends TestCase
 
         $this->assertCount(3, $elements);
         $this->assertArrayHasKey( 'email', $elements);
-        $this->assertArrayHasKey( 'mobile', $elements);
+        $this->assertArrayHasKey( 'phone', $elements);
         $this->assertArrayHasKey( 'secret', $elements);
     }
 
@@ -41,7 +41,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => ' 07635 860 432 ',
+            'phone' => ' 07635 860 432 ',
             'email' => ' test@eXample.com ',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -50,7 +50,7 @@ class ContactDetailsTest extends TestCase
 
         $values = $form->getData();
 
-        $this->assertEquals( '07635860432', $values['mobile'] );
+        $this->assertEquals( '07635860432', $values['phone'] );
         $this->assertEquals( 'test@example.com', $values['email'] );
     }
 
@@ -61,7 +61,7 @@ class ContactDetailsTest extends TestCase
 
         $form->setData([
             'email' => 'test@example.com',
-            'mobile' => '',
+            'phone' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
 
@@ -73,19 +73,19 @@ class ContactDetailsTest extends TestCase
 
         $form->setData([
             'email' => 'not-an-email',
-            'mobile' => '',
+            'phone' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
 
         $this->assertFalse( $form->isValid() );
     }
 
-    public function testMobileIsValidated()
+    public function testphoneIsValidated()
     {
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -97,7 +97,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => 'not-a-mobile',
+            'phone' => 'not-a-phone',
             'email' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -110,7 +110,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -122,7 +122,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '0763586043d',
+            'phone' => '0763586043d',
             'email' => 'test@example.com',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -134,7 +134,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860437',
+            'phone' => '07635860437',
             'email' => 'test-example.com',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -151,7 +151,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
             'secret' => 'incorrect-secret'
         ]);
@@ -165,7 +165,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
         ]);
 
@@ -185,7 +185,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '',
+            'phone' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
 
@@ -208,7 +208,7 @@ class ContactDetailsTest extends TestCase
 
         $form->setData([
             'email' => '',
-            'mobile' => '',
+            'phone' => '',
             'secret' => $form->get('secret')->getValue()
         ]);
 

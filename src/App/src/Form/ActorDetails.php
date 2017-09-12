@@ -137,9 +137,7 @@ class ActorDetails extends AbstractForm
         //------------------------
         // DOB
 
-        $dob = new Fieldset\Dob(
-            ($options['dob-optional']) ?? false
-        );
+        $dob = new Fieldset\Dob();
 
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');

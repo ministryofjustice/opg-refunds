@@ -30,7 +30,19 @@ class ProcessApplication
         $name = implode(' ', $data['donor']['name']);
         $contact = $data['contact'];
 
+        /*
+            The logic is:
+                Only email entered - We send them just an email
+                Only mobile number entered - We send them just an SMS
+                Email and landline entered - We send them just an email
+                Email and mobile entered - We send them an email and SMS
+                Only landline number entered - We don't send a notification.
+         */
+
         try {
+            /*
+             * If an email address was set, we always send them oan email.
+             */
             if (isset($contact['email']) && !empty($contact['email'])) {
                 // Send email...
                 $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
@@ -39,18 +51,28 @@ class ProcessApplication
                     'donor-name' => $name,
                 ]);
             }
-        } catch (ApiException $e){}
+        } catch (ApiException $e) {
+        }
 
         //---
 
         try {
-            if (isset($contact['mobile']) && !empty($contact['mobile'])) {
-                // Send SMS...
-                $this->notifyClient->sendSms($contact['mobile'], 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
-                    'ref' => IdentFormatter::format($reference),
-                ]);
+            /*
+             * If a mobile number was entered, we send a SMS message.
+             */
+            if (isset($contact['phone']) && !empty($contact['phone'])) {
+                // 070 numbers are personal, non-mobile, numbers.
+                $isMobile = (bool)preg_match('/^07/', $contact['phone']) && !preg_match('/^070/', $contact['phone']);
+
+                if ($isMobile) {
+                    // Send SMS...
+                    $this->notifyClient->sendSms($contact['phone'], 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                        'ref' => IdentFormatter::format($reference),
+                    ]);
+                }
             }
-        } catch (ApiException $e){}
+        } catch (ApiException $e) {
+        }
 
         //---
 
