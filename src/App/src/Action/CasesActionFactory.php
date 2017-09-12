@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\Cases;
 use Applications\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 
@@ -14,7 +15,7 @@ class CasesActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new CasesAction(
-            $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(Cases::class),
             $container->get(DataMigration::class)
         );
     }

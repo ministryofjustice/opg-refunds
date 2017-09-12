@@ -46,6 +46,7 @@ class ConfigProvider
                 // Middleware
 
                 //  Services
+                Service\Cases::class => Service\CasesFactory::class,
                 Service\Caseworker::class => Service\CaseworkerFactory::class,
 
                 //Crypt

@@ -2,10 +2,8 @@
 
 namespace App\Action;
 
-use App\Entity\Cases\RefundCase;
+use App\Service\Cases;
 use Applications\Service\DataMigration;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -15,25 +13,19 @@ use Zend\Diactoros\Response\JsonResponse;
 class CasesAction implements ServerMiddlewareInterface
 {
     /**
-     * @var EntityManager
+     * @var Cases
      */
-    private $casesEntityManager;
-
-    /**
-     * @var EntityRepository
-     */
-    private $caseRepository;
+    private $casesService;
 
     /**
      * @var DataMigration
      */
     private $dataMigrationService;
 
-    public function __construct(EntityManager $casesEntityManager, DataMigration $dataMigrationService)
+    public function __construct(Cases $casesService, DataMigration $dataMigrationService)
     {
-        $this->casesEntityManager = $casesEntityManager;
+        $this->casesService = $casesService;
         $this->dataMigrationService = $dataMigrationService;
-        $this->caseRepository = $this->casesEntityManager->getRepository(RefundCase::class);
     }
 
     /**
@@ -51,14 +43,8 @@ class CasesAction implements ServerMiddlewareInterface
         $this->dataMigrationService->migrateAll();
 
         //TODO: Paging
-        $caseArrays = [];
+        $cases = $this->casesService->getAllAsArray();
 
-        $cases = $this->caseRepository->findBy([], null);
-        foreach ($cases as $case) {
-            /** @var RefundCase $case */
-            $caseArrays[] = $case->toArray();
-        }
-
-        return new JsonResponse($caseArrays);
+        return new JsonResponse($cases);
     }
 }

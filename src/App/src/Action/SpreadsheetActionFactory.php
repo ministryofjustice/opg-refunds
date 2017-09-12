@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\Cases;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
@@ -18,6 +19,10 @@ class SpreadsheetActionFactory
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator();
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
 
-        return new SpreadsheetAction($spreadsheetWorksheetGenerator, $spreadsheetGenerator);
+        return new SpreadsheetAction(
+            $container->get(Cases::class),
+            $spreadsheetWorksheetGenerator,
+            $spreadsheetGenerator
+        );
     }
 }
