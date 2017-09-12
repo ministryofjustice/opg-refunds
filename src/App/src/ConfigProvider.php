@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Zend\Crypt\PublicKey\Rsa;
+
 /**
  * The configuration provider for the App module
  *
@@ -44,6 +46,10 @@ class ConfigProvider
 
                 //  Services
                 Service\Caseworker::class => Service\CaseworkerFactory::class,
+
+                //Crypt
+                Crypt\Hybrid::class => Crypt\HybridFactory::class,
+                Rsa::class => Crypt\RsaFactory::class,
             ],
         ];
     }

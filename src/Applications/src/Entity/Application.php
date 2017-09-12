@@ -5,9 +5,6 @@ namespace Applications\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
-/*CREATE INDEX IF NOT EXISTS created_at ON :APPLICATION_TABLE_NAME USING btree (created);
-CREATE INDEX IF NOT EXISTS to_process ON :APPLICATION_TABLE_NAME USING btree (processed,created);*/
-
 /**
  * @ORM\Entity
  * @ORM\Table(name="application", indexes={@ORM\Index(name="created_at", columns={"created"}), @ORM\Index(name="to_process", columns={"processed", "created"})})
@@ -34,7 +31,7 @@ class Application
     protected $processed;
 
     /**
-     * @var array
+     * @var resource
      * @ORM\Column(type="binary", nullable=true)
      */
     protected $data;
@@ -80,17 +77,17 @@ class Application
     }
 
     /**
-     * @return array
+     * @return resource
      */
-    public function getData(): array
+    public function getData()
     {
         return $this->data;
     }
 
     /**
-     * @param array $data
+     * @param resource $data
      */
-    public function setData(array $data)
+    public function setData($data)
     {
         $this->data = $data;
     }

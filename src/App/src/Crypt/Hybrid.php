@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Crypt;
 
 use Zend\Crypt\Hybrid as ZendHybrid;

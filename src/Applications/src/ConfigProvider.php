@@ -35,6 +35,8 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
+                //  Services
+                Service\DataMigration::class => Service\DataMigrationFactory::class
             ],
         ];
     }
