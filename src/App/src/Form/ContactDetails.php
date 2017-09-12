@@ -70,7 +70,11 @@ class ContactDetails extends AbstractForm
 
         $input->getFilterChain()
             ->attach(new StandardInputFilter)
-            ->attach(new \Zend\I18n\Filter\Alnum)
+            ->attach(new Filter\PregReplace([
+                // Strip out non-(alnum and +)
+                'pattern'     => '/[^a-zA-Z0-9+]/',
+                'replacement' => '',
+            ]))
             ->attach(new Filter\PregReplace([
                 // Strip off county codes for UK numbers.
                 'pattern'     => '/^^[0]*44[0]*/',
@@ -79,7 +83,7 @@ class ContactDetails extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(0))
-            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits));
+            ->attach(new Validator\AllowEmptyValidatorWrapper($this->getPhoneNumberValidator()));
 
 
         $input->setRequired(true);
@@ -103,5 +107,12 @@ class ContactDetails extends AbstractForm
         return (new Callback(function ($value, $context) {
             return !empty($context['email']) || !empty($context['phone']);
         }))->setMessage('one-field-required', Callback::INVALID_VALUE);
+    }
+
+    private function getPhoneNumberValidator() : ValidatorInterface
+    {
+        return (new Callback(function ($value) {
+            return preg_match('/^[+]?[0-9]+$/', $value);
+        }))->setMessage('phone-invalid', Callback::INVALID_VALUE);
     }
 }
