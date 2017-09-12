@@ -3,6 +3,7 @@
 namespace App\Action;
 
 use App\Entity\Cases\RefundCase;
+use Applications\Service\DataMigration;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -23,9 +24,15 @@ class CasesAction implements ServerMiddlewareInterface
      */
     private $caseRepository;
 
-    public function __construct(EntityManager $casesEntityManager)
+    /**
+     * @var DataMigration
+     */
+    private $dataMigrationService;
+
+    public function __construct(EntityManager $casesEntityManager, DataMigration $dataMigrationService)
     {
         $this->casesEntityManager = $casesEntityManager;
+        $this->dataMigrationService = $dataMigrationService;
         $this->caseRepository = $this->casesEntityManager->getRepository(RefundCase::class);
     }
 
@@ -40,6 +47,9 @@ class CasesAction implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        //TODO: Get proper migration running via cron job
+        $this->dataMigrationService->migrateAll();
+
         //TODO: Paging
         $caseArrays = [];
 

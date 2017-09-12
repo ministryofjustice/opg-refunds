@@ -116,9 +116,13 @@ class DataMigration
 
     public function migrateAll()
     {
+        $migrationCounter = 0;
+
         while ($this->migrateOne()) {
-            echo 'Migrated';
+            $migrationCounter++;
         };
+
+        return $migrationCounter;
     }
 
     /**

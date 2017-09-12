@@ -41,7 +41,7 @@ class Version20170912131142 extends AbstractMigration
 
         $this->addSql('UPDATE caseworker SET status = \'active\'');
 
-        $fullUsername = getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME');
+        $fullUsername = getenv('OPG_REFUNDS_DB_CASES_FULL_USERNAME');
         $this->addSql("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $fullUsername");
         $this->addSql("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $fullUsername");
 
