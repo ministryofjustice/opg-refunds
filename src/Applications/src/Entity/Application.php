@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity\Applications;
+namespace Applications\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
