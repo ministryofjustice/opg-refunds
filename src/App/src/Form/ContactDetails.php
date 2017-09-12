@@ -70,7 +70,12 @@ class ContactDetails extends AbstractForm
 
         $input->getFilterChain()
             ->attach(new StandardInputFilter)
-            ->attach(new \Zend\I18n\Filter\Alnum);
+            ->attach(new \Zend\I18n\Filter\Alnum)
+            ->attach(new Filter\PregReplace([
+                // Strip off county codes for UK numbers.
+                'pattern'     => '/^^[0]*44[0]*/',
+                'replacement' => '0',
+            ]));
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(0))
