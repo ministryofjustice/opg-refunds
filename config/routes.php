@@ -37,3 +37,4 @@ $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spread
 
 //  Developer routes
 $app->get('/dev/view-case-queue', Dev\Action\ViewCaseQueueAction::class, 'dev.view-case-queue');
+$app->get('/dev/migrate', Dev\Action\MigrateAction::class, 'dev.migrate');

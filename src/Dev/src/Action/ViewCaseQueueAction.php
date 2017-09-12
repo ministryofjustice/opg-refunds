@@ -14,6 +14,9 @@ class ViewCaseQueueAction implements ServerMiddlewareInterface
      * @var DataMigration
      */
     private $dataMigrationService;
+    /**
+     * @var Rsa
+     */
     private $bankCipher;
 
     public function __construct(DataMigration $dataMigrationService, Rsa $bankCipher)
@@ -33,5 +36,4 @@ class ViewCaseQueueAction implements ServerMiddlewareInterface
 
         return new JsonResponse(['id' => $application->getId(), 'payload' => $payload]);
     }
-
 }

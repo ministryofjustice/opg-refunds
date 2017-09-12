@@ -14,8 +14,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @var int
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="bigint")
      */
     protected $id;
 
@@ -91,6 +90,16 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
      */
     protected $payment;
+
+    public function __construct($id, $receivedDateTime, $jsonData, $donorName)
+    {
+        $this->id = $id;
+        $this->receivedDateTime = $receivedDateTime;
+        $this->jsonData = $jsonData;
+        $this->donorName = $donorName;
+
+        $this->createdDateTime = new DateTime();
+    }
 
     /**
      * @return int

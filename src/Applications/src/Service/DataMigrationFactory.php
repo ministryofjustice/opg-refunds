@@ -15,6 +15,7 @@ class DataMigrationFactory
     {
         return new DataMigration(
             $container->get('doctrine.entity_manager.orm_applications'),
+            $container->get('doctrine.entity_manager.orm_cases'),
             $container->get(HybridCipher::class)
         );
     }
