@@ -3,6 +3,7 @@ namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 
 use Dflydev\FigCookies\SetCookie;
@@ -38,7 +39,29 @@ class BetaAction extends AbstractAction
             ]) );
         }
 
-        //---
+        //--------------------
+        // Cookie check
+
+        $cookies = $request->getCookieParams();
+        $query = $request->getQueryParams();
+
+        $haveCookie = isset($cookies[$this->cookieName]);
+        $haveQuery = isset($query['cookies']);
+
+        // If we don't have a cookie AND the user has not already been redirect
+        // Redirect them, ensuring we send the cookie.
+        if (!$haveCookie && !$haveQuery) {
+            $response = new Response\RedirectResponse($this->getUrlHelper()->generate().'?cookies=1' );
+            return $this->addCookieToResponse($response, $id, $expires, $signature);
+        }
+
+        // If we still don't have a cookie after the user has been redirected
+        // Display the cookies disabled page.
+        if (!$haveCookie && $haveQuery) {
+            return new Response\HtmlResponse( $this->getTemplateRenderer()->render('app::cookies-disabled-page'));
+        }
+
+        //--------------------
 
         /*
          * If we are here, the link is valid.
@@ -49,14 +72,25 @@ class BetaAction extends AbstractAction
         // We're redirecting them to the homepage.
         $response = new Response\RedirectResponse($this->getUrlHelper()->generate('home'));
 
-        // Set a cookie with the session ID.
-        $response = FigResponseCookies::set($response, SetCookie::create($this->cookieName)
+        return $this->addCookieToResponse($response, $id, $expires, $signature);
+    }
+
+    /**
+     * Added the beta cookie to the passed response.
+     *
+     * @param Response $response
+     * @param $id
+     * @param $expires
+     * @param $signature
+     * @return ResponseInterface
+     */
+    private function addCookieToResponse(Response $response, $id, $expires, $signature) : ResponseInterface
+    {
+        return FigResponseCookies::set($response, SetCookie::create($this->cookieName)
             ->withValue("{$id}-{$expires}-{$signature}")
             ->withSecure(true)
             ->withHttpOnly(true)
             ->withPath('/')
             ->withExpires($expires));
-
-        return $response;
     }
 }
