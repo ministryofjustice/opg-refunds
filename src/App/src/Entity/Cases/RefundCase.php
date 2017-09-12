@@ -11,6 +11,11 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 {
+    const STATUS_NEW = 'new';
+    const STATUS_ASSIGNED = 'assigned';
+    const STATUS_REJECTED = 'rejected';
+    const STATUS_ACCEPTED = 'accepted';
+
     /**
      * @var int
      * @ORM\Id
@@ -37,14 +42,14 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     protected $receivedDateTime;
 
     /**
-     * @var string
-     * @ORM\Column(name="json_data", type="string")
+     * @var resource
+     * @ORM\Column(name="json_data", type="binary")
      */
     protected $jsonData;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string")
      */
     protected $status;
 
@@ -91,7 +96,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
      */
     protected $payment;
 
-    public function __construct($id, $receivedDateTime, $jsonData, $donorName)
+    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
@@ -99,6 +104,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
         $this->donorName = $donorName;
 
         $this->createdDateTime = new DateTime();
+        $this->status = self::STATUS_NEW;
     }
 
     /**
@@ -160,9 +166,9 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return string
      */
-    public function getJsonData(): string
+    public function getJsonData()
     {
-        return $this->jsonData;
+        return stream_get_contents($this->jsonData);
     }
 
     /**
@@ -174,17 +180,17 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
     /**
-     * @param int $status
+     * @param string $status
      */
-    public function setStatus(int $status)
+    public function setStatus(string $status)
     {
         $this->status = $status;
     }

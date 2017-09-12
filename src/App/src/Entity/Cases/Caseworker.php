@@ -38,8 +38,8 @@ class Caseworker extends AbstractEntity
     protected $passwordHash;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string")
      */
     protected $status;
 
@@ -124,17 +124,17 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
     /**
-     * @param int $status
+     * @param string $status
      */
-    public function setStatus(int $status)
+    public function setStatus(string $status)
     {
         $this->status = $status;
     }

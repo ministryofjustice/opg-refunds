@@ -77,15 +77,15 @@ class Application
     }
 
     /**
-     * @return resource
+     * @return string
      */
-    public function getData()
+    public function getData(): string
     {
-        return $this->data;
+        return stream_get_contents($this->data);
     }
 
     /**
-     * @param resource $data
+     * @param string $data
      */
     public function setData($data)
     {

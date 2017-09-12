@@ -5,6 +5,7 @@ namespace Applications\Service;
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\RefundCase;
 use Applications\Entity\Application;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -52,7 +53,7 @@ class DataMigration
     /**
      * @return Application
      */
-    public function getNextApplication(): Application
+    public function getNextApplication()
     {
         /** @var Application $application */
         $application = $this->applicationRepository->findOneBy(['processed' => false], ['created' => 'DESC']);
@@ -65,8 +66,7 @@ class DataMigration
      */
     public function getDecryptedData(Application $application): string
     {
-        $data = stream_get_contents($application->getData());
-        $json = gzinflate($this->fullCipher->decrypt($data));
+        $json = gzinflate($this->fullCipher->decrypt($application->getData()));
         return $json;
     }
 
@@ -94,10 +94,40 @@ class DataMigration
         if ($application !== null) {
             $refundCase = $this->getRefundCase($application);
 
-            $this->casesEntityManager->persist($refundCase);
-            $this->casesEntityManager->flush();
+            if ($this->caseRepository->findOneBy(['id' => $refundCase->getId()]) === null) {
+                try {
+                    $this->casesEntityManager->persist($refundCase);
+                    $this->casesEntityManager->flush();
+
+                    $this->setProcessed($application);
+
+                } catch (UniqueConstraintViolationException $ex) {
+                    $this->setProcessed($application);
+                }
+            } else {
+                $this->setProcessed($application);
+            }
+
+            return true;
         }
 
         return false;
+    }
+
+    public function migrateAll()
+    {
+        while ($this->migrateOne()) {
+            echo 'Migrated';
+        };
+    }
+
+    /**
+     * @param Application $application
+     */
+    private function setProcessed(Application $application)
+    {
+        $application->setProcessed(true);
+        $this->applicationsEntityManager->persist($application);
+        $this->applicationsEntityManager->flush();
     }
 }

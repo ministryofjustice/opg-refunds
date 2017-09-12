@@ -28,6 +28,10 @@ class ViewCaseQueueAction implements ServerMiddlewareInterface
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $application = $this->dataMigrationService->getNextApplication();
+        if ($application === null) {
+            return new JsonResponse([]);
+        }
+
         $decryptedData = $this->dataMigrationService->getDecryptedData($application);
 
         $payload = json_decode($decryptedData, true);
