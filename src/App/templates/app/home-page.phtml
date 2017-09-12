@@ -1,22 +1,57 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<h1>Welcome <?= $caseworker['name'] ?></h1>
+<p>Logged in as <?= $caseworker['name'] ?></p>
 
-<p>Caseworker ID: <?= $caseworker['id'] ?></p>
-<p>Email: <?= $caseworker['email'] ?></p>
-<p>Token: <?= $caseworker['token'] ?></p>
-<p>Status: <?= $caseworker['status'] ?></p>
-<p>Roles: <?= $caseworker['roles'] ?></p>
-
-<p>Cases: <?= count($caseworker['assignedCases']) ?></p>
+<h2>Your outstanding claims</h2>
 
 <table>
-<?php foreach ($caseworker['assignedCases'] as $assignedCase) { ?>
+    <thead>
     <tr>
-        <td><?= $assignedCase['donorName'] ?></td>
-        <td><?= $assignedCase['status'] ?></td>
+        <th>Case / ref number</th>
+        <th>Donor name</th>
+        <th>Date received</th>
+        <th>Date claim modified</th>
+        <th></th>
     </tr>
-<?php } ?>
+    </thead>
+    <tbody>
+    <?php foreach ($caseworker['assignedCases'] as $assignedCase) { ?>
+        <tr>
+            <td><?= $assignedCase['id'] ?></td>
+            <td><?= $assignedCase['donorName'] ?></td>
+            <td><?= $assignedCase['receivedDateTime'] ?></td>
+            <td><?= $assignedCase['updatedDateTime'] ?></td>
+            <td>View</td>
+        </tr>
+    <?php } ?>
+    </tbody>
 </table>
+
+<h2>All claims</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Case / ref number</th>
+            <th>Donor name</th>
+            <th>Date received</th>
+            <th>Date claim modified</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($cases as $case) { ?>
+        <tr>
+            <td><?= $case['id'] ?></td>
+            <td><?= $case['donorName'] ?></td>
+            <td><?= $case['receivedDateTime'] ?></td>
+            <td><?= $case['updatedDateTime'] ?></td>
+            <td><?= $case['status'] ?></td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
+
+<p><a href="cases/download">Download SSCL spreadsheet</a></p>
 
 <p><a href="sign-out">Sign out</a></p>

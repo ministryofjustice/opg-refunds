@@ -70,6 +70,16 @@ class Client
     }
 
     /**
+     * Get all cases
+     *
+     * @return array|null
+     */
+    public function getCases()
+    {
+        return $this->httpGet('/v1/cases/cases');
+    }
+
+    /**
      * Get SSCL spreadsheet containing all refundable cases
      *
      * @return ResponseInterface

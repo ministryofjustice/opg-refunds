@@ -24,8 +24,11 @@ class HomePageAction extends AbstractApiClientAction
         //  Even though the caseworker details are in the session get them again with a GET call to the API
         $caseworker = $this->getApiClient()->getCaseworker($identity['id']);
 
+        $cases = $this->getApiClient()->getCases();
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
             'caseworker' => $caseworker,
+            'cases' => $cases,
         ]));
     }
 }
