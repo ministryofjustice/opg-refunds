@@ -77,7 +77,7 @@ class ContactDetails extends AbstractForm
             ]))
             ->attach(new Filter\PregReplace([
                 // Strip off county codes for UK numbers.
-                'pattern'     => '/^^[0]*44[0]*/',
+                'pattern'     => '/^[+]?[0]*44[0]*/',
                 'replacement' => '0',
             ]));
 
