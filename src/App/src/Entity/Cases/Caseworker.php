@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Caseworker extends AbstractEntity
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+
     /**
      * @var int
      * @ORM\Id

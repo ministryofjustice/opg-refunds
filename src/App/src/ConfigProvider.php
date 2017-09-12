@@ -38,6 +38,7 @@ class ConfigProvider
             ],
             'factories'  => [
                 //  Actions
+                Action\CasesAction::class => Action\CasesActionFactory::class,
                 Action\CaseworkerAction::class => Action\CaseworkerActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,

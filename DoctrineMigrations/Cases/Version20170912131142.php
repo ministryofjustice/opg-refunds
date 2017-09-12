@@ -38,6 +38,16 @@ class Version20170912131142 extends AbstractMigration
         $this->addSql('ALTER TABLE poa ALTER status DROP DEFAULT');
         $this->addSql('ALTER TABLE caseworker ALTER status TYPE VARCHAR(255)');
         $this->addSql('ALTER TABLE caseworker ALTER status DROP DEFAULT');
+
+        $this->addSql('UPDATE caseworker SET status = \'active\'');
+
+        $fullUsername = getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME');
+        $this->addSql("GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO $fullUsername");
+        $this->addSql("GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO $fullUsername");
+
+        $migrationUsername = getenv('OPG_REFUNDS_DB_CASES_MIGRATION_USERNAME');
+        $this->addSql("GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $migrationUsername");
+        $this->addSql("GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $migrationUsername");
     }
 
     /**
