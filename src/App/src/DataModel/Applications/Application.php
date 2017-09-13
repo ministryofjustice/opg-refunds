@@ -191,6 +191,36 @@ class Application extends AbstractDataModel
         return $this;
     }
 
+    public function __construct($data = null)
+    {
+        $this->verification = new Verification();
+
+        parent::__construct($data);
+    }
+
+    protected function populate(array $data)
+    {
+        foreach ($data as $k => $v) {
+            switch ($k) {
+                case 'case-number':
+                    if ($v['have-poa-case-number'] === 'yes') {
+                        $this->verification->setCaseNumber($v['poa-case-number']);
+                    }
+                    break;
+                case 'postcodes':
+                    if (in_array('donor-postcode', $v['postcode-options'])) {
+                        $this->verification->setDonorPostcode($v['donor-postcode']);
+                    }
+                    if (in_array('attorney-postcode', $v['postcode-options'])) {
+                        $this->verification->setAttorneyPostcode($v['attorney-postcode']);
+                    }
+                    break;
+            }
+        }
+
+        return parent::populate($data);
+    }
+
     protected function map($property, $value)
     {
         switch ($property) {

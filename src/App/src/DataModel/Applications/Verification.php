@@ -74,21 +74,4 @@ class Verification extends AbstractDataModel
         $this->attorneyPostcode = $attorneyPostcode;
         return $this;
     }
-
-    protected function populate(array $data)
-    {
-        foreach ($data as $k => $v) {
-            switch ($k) {
-                case 'case-number':
-                    $this->setCaseNumber($v);
-                    break;
-                case 'donor-postcode':
-                    $this->setDonorPostcode($v);
-                    break;
-                case 'attorney-postcode':
-                    $this->setAttorneyPostcode($v);
-                    break;
-            }
-        }
-    }
 }
