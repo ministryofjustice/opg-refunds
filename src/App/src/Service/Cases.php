@@ -30,13 +30,23 @@ class Cases
     }
 
     /**
+     * @return RefundCase[]
+     */
+    public function getAll()
+    {
+        $cases = $this->repository->findBy([], null);
+
+        return $cases;
+    }
+
+    /**
      * @return array
      */
     public function getAllAsArray()
     {
         $caseArrays = [];
 
-        $cases = $this->repository->findBy([], null);
+        $cases = $this->getAll();
         foreach ($cases as $case) {
             /** @var RefundCase $case */
             $caseArrays[] = $case->toArray();

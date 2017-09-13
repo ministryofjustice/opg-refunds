@@ -37,7 +37,7 @@ class SpreadsheetFileNameFormatterTest extends TestCase
 
         $this->assertStringStartsWith('Temp_Spreadsheet_SSCL_', $result);
         $this->assertStringEndsWith('.xls', $result);
-        $this->assertGreaterThan(40, strlen($result));
+        $this->assertGreaterThan(39, strlen($result));
     }
 
     public function testGetTempFileNameSsclXlsx()
@@ -49,6 +49,6 @@ class SpreadsheetFileNameFormatterTest extends TestCase
 
         $this->assertStringStartsWith('Temp_Spreadsheet_SSCL_', $result);
         $this->assertStringEndsWith('.xlsx', $result);
-        $this->assertGreaterThan(40, strlen($result));
+        $this->assertGreaterThan(39, strlen($result));
     }
 }

@@ -6,6 +6,7 @@ use App\Service\Cases;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
+use Zend\Crypt\PublicKey\Rsa;
 
 class SpreadsheetActionFactory
 {
@@ -21,6 +22,7 @@ class SpreadsheetActionFactory
 
         return new SpreadsheetAction(
             $container->get(Cases::class),
+            $container->get(Rsa::class),
             $spreadsheetWorksheetGenerator,
             $spreadsheetGenerator
         );

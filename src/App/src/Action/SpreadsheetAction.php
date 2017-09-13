@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Entity\Cases\RefundCase;
 use App\Service\Cases;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
@@ -9,6 +10,7 @@ use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Crypt\PublicKey\Rsa;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
@@ -18,6 +20,11 @@ class SpreadsheetAction implements ServerMiddlewareInterface
      * @var Cases
      */
     private $casesService;
+
+    /**
+     * @var Rsa
+     */
+    private $bankCipher;
 
     /**
      * @var ISpreadsheetWorksheetGenerator
@@ -31,16 +38,27 @@ class SpreadsheetAction implements ServerMiddlewareInterface
 
     public function __construct(
         Cases $casesService,
+        Rsa $bankCipher,
         ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator,
         ISpreadsheetGenerator $spreadsheetGenerator
     ) {
         $this->casesService = $casesService;
+        $this->bankCipher = $bankCipher;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $cases = $this->casesService->getAll();
+        foreach ($cases as $case) {
+            /** @var RefundCase $case */
+            $caseArray = $case->toArray();
+            $application = json_decode($caseArray['jsonData'], true);
+            $application['account']['details'] = json_decode($this->bankCipher->decrypt($application['account']['details']), true);
+            $caseArray['application'] = $application;
+        }
+
         $data = [
             [
                 'payeeName' => 'Mr Unit Test',

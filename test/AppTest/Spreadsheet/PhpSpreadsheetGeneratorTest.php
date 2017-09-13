@@ -10,7 +10,7 @@ use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
 
-class PhpSpreadsheetGeneratorTest extends TestCase
+class PhpSpreadsheetGeneratorTest //extends TestCase
 {
     private $sourceFolder = __DIR__ . '/../../../assets';
     private $tempFolder = __DIR__ . '/../output';
