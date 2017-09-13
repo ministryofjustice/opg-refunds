@@ -47,9 +47,10 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $applicationBuilder = new ApplicationBuilder();
 
         $account = new Account();
-        $account->setName('Mr Unit Test');
-        $account->setAccountNumber('12345678');
-        $account->setSortCode('112233');
+        $account
+            ->setName('Mr Unit Test')
+            ->setAccountNumber('12345678')
+            ->setSortCode('112233');
 
         $application = $applicationBuilder->withAccount($account)->build();
 

@@ -37,10 +37,12 @@ class Payment extends AbstractDataModel
 
     /**
      * @param float $amount
+     * @return Payment $this
      */
     public function setAmount(float $amount)
     {
         $this->amount = $amount;
+        return $this;
     }
 
     /**
@@ -53,10 +55,12 @@ class Payment extends AbstractDataModel
 
     /**
      * @param string $method
+     * @return Payment $this
      */
     public function setMethod(string $method)
     {
         $this->method = $method;
+        return $this;
     }
 
     /**
@@ -69,10 +73,12 @@ class Payment extends AbstractDataModel
 
     /**
      * @param DateTime $addedDateTime
+     * @return Payment $this
      */
     public function setAddedDateTime(DateTime $addedDateTime)
     {
         $this->addedDateTime = $addedDateTime;
+        return $this;
     }
 
     /**
@@ -85,10 +91,12 @@ class Payment extends AbstractDataModel
 
     /**
      * @param DateTime $processedDateTime
+     * @return Payment $this
      */
     public function setProcessedDateTime(DateTime $processedDateTime)
     {
         $this->processedDateTime = $processedDateTime;
+        return $this;
     }
 
     protected function map($property, $value)

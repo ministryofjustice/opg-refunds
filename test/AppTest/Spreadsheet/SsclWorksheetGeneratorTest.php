@@ -43,9 +43,10 @@ class SsclWorksheetGeneratorTest extends TestCase
         $this->applicationBuilder = new ApplicationBuilder();
 
         $account = new Account();
-        $account->setName('Mr Unit Test');
-        $account->setAccountNumber('12345678');
-        $account->setSortCode('112233');
+        $account
+            ->setName('Mr Unit Test')
+            ->setAccountNumber('12345678')
+            ->setSortCode('112233');
 
         $application = $this->applicationBuilder->withAccount($account)->build();
 

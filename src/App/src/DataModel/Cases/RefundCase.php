@@ -78,10 +78,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param int $id
+     * @return RefundCase $this
      */
     public function setId(int $id)
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -94,10 +96,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param DateTime $createdDateTime
+     * @return RefundCase $this
      */
     public function setCreatedDateTime(DateTime $createdDateTime)
     {
         $this->createdDateTime = $createdDateTime;
+        return $this;
     }
 
     /**
@@ -110,10 +114,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param DateTime $updatedDateTime
+     * @return RefundCase $this
      */
     public function setUpdatedDateTime(DateTime $updatedDateTime)
     {
         $this->updatedDateTime = $updatedDateTime;
+        return $this;
     }
 
     /**
@@ -126,10 +132,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param DateTime $receivedDateTime
+     * @return RefundCase $this
      */
     public function setReceivedDateTime(DateTime $receivedDateTime)
     {
         $this->receivedDateTime = $receivedDateTime;
+        return $this;
     }
 
     /**
@@ -142,10 +150,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param Application $application
+     * @return RefundCase $this
      */
     public function setApplication(Application $application)
     {
         $this->application = $application;
+        return $this;
     }
 
     /**
@@ -158,10 +168,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param string $status
+     * @return RefundCase $this
      */
     public function setStatus(string $status)
     {
         $this->status = $status;
+        return $this;
     }
 
     /**
@@ -174,10 +186,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param int $assignedToId
+     * @return RefundCase $this
      */
     public function setAssignedToId(int $assignedToId)
     {
         $this->assignedToId = $assignedToId;
+        return $this;
     }
 
     /**
@@ -190,10 +204,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param DateTime $assignedDateTime
+     * @return RefundCase $this
      */
     public function setAssignedDateTime(DateTime $assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
+        return $this;
     }
 
     /**
@@ -206,10 +222,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param DateTime $finishedDateTime
+     * @return RefundCase $this
      */
     public function setFinishedDateTime(DateTime $finishedDateTime)
     {
         $this->finishedDateTime = $finishedDateTime;
+        return $this;
     }
 
     /**
@@ -222,10 +240,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param string $donorName
+     * @return RefundCase $this
      */
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+        return $this;
     }
 
     /**
@@ -238,10 +258,12 @@ class RefundCase extends AbstractDataModel
 
     /**
      * @param Payment $payment
+     * @return RefundCase $this
      */
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+        return $this;
     }
 
     protected function map($property, $value)

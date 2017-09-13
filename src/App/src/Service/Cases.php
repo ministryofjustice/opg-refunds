@@ -76,11 +76,15 @@ class Cases
             if ($bankCipher !== null) {
                 $applicationArray = json_decode($applicationJsonData, true);
                 $accountDetails = json_decode($bankCipher->decrypt($applicationArray['account']['details']), true);
-                $application->getAccount()->setAccountNumber($accountDetails['account-number']);
-                $application->getAccount()->setSortCode($accountDetails['sort-code']);
+                $application->getAccount()
+                    ->setAccountNumber($accountDetails['account-number'])
+                    ->setSortCode($accountDetails['sort-code']);
             }
 
-            $case = new CaseDataModel($caseEntity->toArray(['jsonData', 'assignedTo', 'poas', 'verification'], ['payment']));
+            $case = new CaseDataModel($caseEntity->toArray(
+                ['jsonData', 'assignedTo', 'poas', 'verification'],
+                ['payment']
+            ));
             $case->setApplication($application);
             $assignedTo = $caseEntity->getAssignedTo();
             if ($assignedTo !== null) {

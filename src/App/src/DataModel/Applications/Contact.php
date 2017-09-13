@@ -26,10 +26,12 @@ class Contact extends AbstractDataModel
 
     /**
      * @param string $email
+     * @return Contact $this
      */
     public function setEmail(string $email)
     {
         $this->email = $email;
+        return $this;
     }
 
     /**
@@ -42,9 +44,11 @@ class Contact extends AbstractDataModel
 
     /**
      * @param string $mobile
+     * @return Contact $this
      */
     public function setMobile(string $mobile)
     {
         $this->mobile = $mobile;
+        return $this;
     }
 }

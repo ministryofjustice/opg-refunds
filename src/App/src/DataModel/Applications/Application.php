@@ -57,10 +57,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param string $applicant
+     * @return Application $this
      */
     public function setApplicant(string $applicant)
     {
         $this->applicant = $applicant;
+        return $this;
     }
 
     /**
@@ -73,10 +75,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Donor $donor
+     * @return Application $this
      */
     public function setDonor(Donor $donor)
     {
         $this->donor = $donor;
+        return $this;
     }
 
     /**
@@ -89,10 +93,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Attorney $attorney
+     * @return Application $this
      */
     public function setAttorney(Attorney $attorney)
     {
         $this->attorney = $attorney;
+        return $this;
     }
 
     /**
@@ -105,10 +111,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Contact $contact
+     * @return Application $this
      */
     public function setContact(Contact $contact)
     {
         $this->contact = $contact;
+        return $this;
     }
 
     /**
@@ -121,10 +129,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Verification $verification
+     * @return Application $this
      */
     public function setVerification(Verification $verification)
     {
         $this->verification = $verification;
+        return $this;
     }
 
     /**
@@ -137,10 +147,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Account $account
+     * @return Application $this
      */
     public function setAccount(Account $account)
     {
         $this->account = $account;
+        return $this;
     }
 
     /**
@@ -153,10 +165,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param DateTime $submitted
+     * @return Application $this
      */
     public function setSubmitted(DateTime $submitted)
     {
         $this->submitted = $submitted;
+        return $this;
     }
 
     /**
@@ -169,10 +183,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param DateTime $expected
+     * @return Application $this
      */
     public function setExpected(DateTime $expected)
     {
         $this->expected = $expected;
+        return $this;
     }
 
     protected function map($property, $value)
