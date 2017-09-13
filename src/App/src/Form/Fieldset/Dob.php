@@ -48,8 +48,8 @@ class Dob extends Fieldset
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
             ->attach(new Validator\Digits, true)
-            ->attach(new Validator\Between(['min'=>1, 'max'=>31]), true)
             ->attach($this->getValidDateValidator(), true)
+            ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
             ->attach($this->getMinAgeValidator(), true);
 
@@ -69,7 +69,8 @@ class Dob extends Fieldset
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
             ->attach(new Validator\Digits, true)
-            ->attach(new Validator\Between(['min'=>1, 'max'=>12]), true)
+            ->attach($this->getValidDateValidator(), true)
+            ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
             ->attach($this->getMinAgeValidator(), true);
 
@@ -86,11 +87,11 @@ class Dob extends Fieldset
         $input->getFilterChain()
             ->attach(new StandardInputFilter);
 
-        $year = (int)date('Y');
-
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
             ->attach(new Validator\Digits, true)
+            ->attach($this->getValidDateValidator(), true)
+            ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
             ->attach($this->getMinAgeValidator(), true);
 
@@ -128,9 +129,29 @@ class Dob extends Fieldset
     private function getValidDateValidator() : ValidatorInterface
     {
         return (new Callback(function ($value, $context) {
-            $context = array_filter($context);
-            return (count($context) != 3) || checkdate($context['month'], $context['day'], $context['year']);
+            return checkdate($context['month'], $context['day'], $context['year']);
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
+    }
+
+    private function getFutureDateValidator() : ValidatorInterface
+    {
+        return (new Callback(function ($value, $context) {
+
+            $context = array_filter($context);
+            if (count($context) != 3) {
+                // Don't validate unless all fields present.
+                return true;
+            }
+
+            if (!checkdate($context['month'], $context['day'], $context['year'])) {
+                // Don't validate if date is invalid
+                return true;
+            }
+
+            $born = new DateTime("{$context['year']}-{$context['month']}-{$context['day']}");
+
+            return ($born < new DateTime);
+        }))->setMessage('future-date', Callback::INVALID_VALUE);
     }
 
     private function getMinAgeValidator() : ValidatorInterface
