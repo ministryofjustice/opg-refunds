@@ -31,6 +31,22 @@ class ContactDetails extends AbstractForm
         $this->setInputFilter($inputFilter);
 
         //------------------------
+
+        $field = new Element\MultiCheckbox('contact-options');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $field->setValueOptions([
+            'email' => 'email',
+            'phone' => 'phone',
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
         // Email address field.
 
         $field = new Element\Email('email');
@@ -41,8 +57,7 @@ class ContactDetails extends AbstractForm
             ->attach(new Filter\StringToLower);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty(0))
-            ->attach($this->getOneRequiredValidator(), true, 100)
+            ->attach(new Validator\NotEmpty, true)
             ;
 
         //---
@@ -56,11 +71,9 @@ class ContactDetails extends AbstractForm
 
         //---
 
-        $input->setRequired(true);
-        $input->setContinueIfEmpty(true);
-
         $this->add($field);
         $inputFilter->add($input);
+
 
         //------------------------
         // Phone number field.
@@ -70,15 +83,16 @@ class ContactDetails extends AbstractForm
 
         $input->getFilterChain()
             ->attach(new StandardInputFilter)
-            ->attach(new \Zend\I18n\Filter\Alnum);
+            ->attach(new Filter\PregReplace([
+                // Strip out non-(alnum and +)
+                'pattern'     => '/[^a-zA-Z0-9+]/',
+                'replacement' => '',
+            ]));
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty(0))
-            ->attach(new Validator\AllowEmptyValidatorWrapper(new Validator\Digits));
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\AllowEmptyValidatorWrapper($this->getPhoneNumberValidator()));
 
-
-        $input->setRequired(true);
-        $input->setContinueIfEmpty(true);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -89,14 +103,13 @@ class ContactDetails extends AbstractForm
     }
 
     /**
-     * Returns a validator for checking that either email or phone is completed.
-     *
+     * (Very) simple phone number validator
      * @return ValidatorInterface
      */
-    private function getOneRequiredValidator() : ValidatorInterface
+    private function getPhoneNumberValidator() : ValidatorInterface
     {
-        return (new Callback(function ($value, $context) {
-            return !empty($context['email']) || !empty($context['phone']);
-        }))->setMessage('one-field-required', Callback::INVALID_VALUE);
+        return (new Callback(function ($value) {
+            return preg_match('/^[+]?[0-9]+$/', $value);
+        }))->setMessage('phone-invalid', Callback::INVALID_VALUE);
     }
 }

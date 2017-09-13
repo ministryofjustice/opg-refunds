@@ -275,13 +275,67 @@ class ActorDetailsTest extends TestCase
 
     public function testWellFormattedButInvalidDate()
     {
-        $form = $this->getForm( true );
+        $form = $this->getForm();
         $data = $this->getValidData();
 
         $data['dob'] = [
             'day' => '30',
             'month' => '2',
             'year' => '1987',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenAllDateIsZero()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '0',
+            'month' => '0',
+            'year' => '0',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenYearIsZero()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '30',
+            'month' => '2',
+            'year' => '0',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenFarFutureDate()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '20',
+            'month' => '11',
+            'year' => '2100',
         ];
 
         $form->setData(

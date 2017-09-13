@@ -1,18 +1,14 @@
 <?php
-$title = 'Your session has finished';
-$this->layout('layout::default', [
-    'title' => $title,
-]);
+    $title = "Sorry, you'll have to start again";
+    $this->layout('layout::standard', [
+        'title' => $title,
+    ]);
 ?>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
+<p>Your session automatically ends if you don’t use this service for 1 hour.</p>
 
-        <h1 class="heading-xlarge">
-            <?= $this->e($title) ?>
-        </h1>
+<p>We do this for your security. We haven't saved any information you entered.</p>
 
-        <a class="button" href="<?= $this->url('home') ?>">Start again</a>
-
-    </div>
-</div>
+<p>
+    <a class="button" href="<?= $this->url('home') ?>">Start a refund claim</a>
+</p>

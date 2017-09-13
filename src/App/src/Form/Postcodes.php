@@ -21,13 +21,17 @@ class Postcodes extends AbstractForm
 
         //------------------------
 
-        $notEmpty = new Validator\NotEmpty();
-        $notEmpty->setMessage('one-field-required', Validator\NotEmpty::IS_EMPTY);
+        $field = new Element\MultiCheckbox('postcode-options');
+        $input = new Input($field->getName());
 
-        // Form level input.
-        $input = new Input('one-field-required');
-        $input->getValidatorChain()->attach($notEmpty, true);
-        $input->setRequired(true);
+        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $field->setValueOptions([
+            'donor-postcode' => 'donor-postcode',
+            'attorney-postcode' => 'attorney-postcode',
+        ]);
+
+        $this->add($field);
         $inputFilter->add($input);
 
         //------------------------
@@ -56,23 +60,11 @@ class Postcodes extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        $input->setRequired(false);
-    }
-
-    public function setData($data)
-    {
-        // If at least one field is passed, enter a value into the 'one-field-required' check.
-        $allFieldsEmpty = empty($data['donor-postcode']) && empty($data['attorney-postcode']);
-        $data['one-field-required'] = (!$allFieldsEmpty) ? 'valid' : '';
-
-        return parent::setData($data);
     }
 
     public function getFormattedData()
     {
         $data = parent::getData();
-
-        unset($data['one-field-required']);
 
         // Filter out empty values
         return array_filter( $data );
