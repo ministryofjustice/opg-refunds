@@ -5,6 +5,7 @@ namespace AppTest\DataModel\Cases;
 use App\DataModel\Applications\Application;
 use App\DataModel\Cases\Payment;
 use App\DataModel\Cases\RefundCase;
+use App\Service\IdentFormatter;
 
 class RefundCaseBuilder
 {
@@ -16,7 +17,9 @@ class RefundCaseBuilder
     public function __construct()
     {
         $this->case = new RefundCase();
-        $this->case->setId(1234567890);
+        $this->case
+            ->setId(1234567890)
+            ->setReferenceNumber(IdentFormatter::format($this->case->getId()));
     }
 
     /**

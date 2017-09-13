@@ -4,6 +4,7 @@ namespace App\Entity\Cases;
 
 use App\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\AbstractEntity;
+use App\Service\IdentFormatter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -305,6 +306,8 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
     {
-        return parent::toArray($excludeProperties, $includeChildren);
+        $caseArray = parent::toArray($excludeProperties, $includeChildren);
+        $caseArray['referenceNumber'] = IdentFormatter::format($this->getId());
+        return $caseArray;
     }
 }

@@ -19,6 +19,11 @@ class RefundCase extends AbstractDataModel
     protected $id;
 
     /**
+     * @var string
+     */
+    protected $referenceNumber;
+
+    /**
      * @var DateTime
      */
     protected $createdDateTime;
@@ -83,6 +88,24 @@ class RefundCase extends AbstractDataModel
     public function setId(int $id)
     {
         $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferenceNumber(): string
+    {
+        return $this->referenceNumber;
+    }
+
+    /**
+     * @param string $referenceNumber
+     * @return RefundCase $this
+     */
+    public function setReferenceNumber(string $referenceNumber)
+    {
+        $this->referenceNumber = $referenceNumber;
         return $this;
     }
 

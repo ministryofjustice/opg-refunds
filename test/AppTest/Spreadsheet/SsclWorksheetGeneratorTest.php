@@ -113,7 +113,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Unique Payee Reference
             $this->assertEquals(4, $cells[2]->getColumn());
-            $this->assertEquals(IdentFormatter::format($case->getId()), $cells[2]->getData());
+            $this->assertEquals($case->getReferenceNumber(), $cells[2]->getData());
 
             //Payee Name
             $this->assertEquals(5, $cells[3]->getColumn());
