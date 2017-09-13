@@ -21,7 +21,7 @@ class Poa extends AbstractEntity
 
     /**
      * @var DateTime
-     * @ORM\Column(name="received_datetime", type="datetime")
+     * @ORM\Column(name="received_datetime", type="datetimetz")
      */
     protected $receivedDateTime;
 

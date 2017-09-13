@@ -25,19 +25,19 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     /**
      * @var DateTime
-     * @ORM\Column(name="created_datetime", type="datetime")
+     * @ORM\Column(name="created_datetime", type="datetimetz")
      */
     protected $createdDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="updated_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_datetime", type="datetimetz", nullable=true)
      */
     protected $updatedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="received_datetime", type="datetime")
+     * @ORM\Column(name="received_datetime", type="datetimetz")
      */
     protected $receivedDateTime;
 
@@ -62,13 +62,13 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     /**
      * @var DateTime
-     * @ORM\Column(name="assigned_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="assigned_datetime", type="datetimetz", nullable=true)
      */
     protected $assignedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="finished_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="finished_datetime", type="datetimetz", nullable=true)
      */
     protected $finishedDateTime;
 

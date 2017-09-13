@@ -41,6 +41,8 @@ class ApplicationTest extends TestCase
 
         $this->assertNotNull($application->getAccount());
         $this->assertEquals('Mr Test Attorney', $application->getAccount()->getName());
+        $this->assertNull($application->getAccount()->getAccountNumber());
+        $this->assertNull($application->getAccount()->getSortCode());
 
         $this->assertEquals(new DateTime('2017-09-11T11:05:10+0000'), $application->getSubmitted());
         $this->assertEquals(new DateTime('2017-12-04'), $application->getExpected());
@@ -120,6 +122,8 @@ class ApplicationTest extends TestCase
 
         $this->assertNotNull($application->getAccount());
         $this->assertEquals('Mr Test Donor', $application->getAccount()->getName());
+        $this->assertNull($application->getAccount()->getAccountNumber());
+        $this->assertNull($application->getAccount()->getSortCode());
 
         $this->assertEquals(new DateTime('2017-09-11T09:54:13+0000'), $application->getSubmitted());
         $this->assertEquals(new DateTime('2017-12-04'), $application->getExpected());

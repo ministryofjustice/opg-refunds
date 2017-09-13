@@ -33,13 +33,13 @@ class Payment extends AbstractEntity
 
     /**
      * @var DateTime
-     * @ORM\Column(name="added_datetime", type="datetime")
+     * @ORM\Column(name="added_datetime", type="datetimetz")
      */
     protected $addedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="processed_datetime", type="datetime")
+     * @ORM\Column(name="processed_datetime", type="datetimetz")
      */
     protected $processedDateTime;
 

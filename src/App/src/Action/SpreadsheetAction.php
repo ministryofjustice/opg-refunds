@@ -2,7 +2,9 @@
 
 namespace App\Action;
 
-use App\Entity\Cases\RefundCase;
+use App\DataModel\Applications\Application;
+use App\DataModel\Cases\RefundCase as CaseDataModel;
+use App\Entity\Cases\RefundCase as CaseEntity;
 use App\Service\Cases;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
@@ -50,14 +52,7 @@ class SpreadsheetAction implements ServerMiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $cases = $this->casesService->getAll();
-        foreach ($cases as $case) {
-            /** @var RefundCase $case */
-            $caseArray = $case->toArray();
-            $application = json_decode($caseArray['jsonData'], true);
-            $application['account']['details'] = json_decode($this->bankCipher->decrypt($application['account']['details']), true);
-            $caseArray['application'] = $application;
-        }
+        $cases = $this->casesService->getAllDataModelsWithBankDetails($this->bankCipher);
 
         $data = [
             [

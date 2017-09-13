@@ -12,6 +12,16 @@ class Account extends AbstractDataModel
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $accountNumber;
+
+    /**
+     * @var string
+     */
+    protected $sortCode;
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -25,5 +35,37 @@ class Account extends AbstractDataModel
     public function setName(string $name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountNumber()
+    {
+        return $this->accountNumber;
+    }
+
+    /**
+     * @param string $accountNumber
+     */
+    public function setAccountNumber(string $accountNumber)
+    {
+        $this->accountNumber = $accountNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSortCode()
+    {
+        return $this->sortCode;
+    }
+
+    /**
+     * @param string $sortCode
+     */
+    public function setSortCode(string $sortCode)
+    {
+        $this->sortCode = $sortCode;
     }
 }
