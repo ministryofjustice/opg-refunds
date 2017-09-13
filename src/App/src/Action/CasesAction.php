@@ -43,7 +43,7 @@ class CasesAction implements ServerMiddlewareInterface
         $this->dataMigrationService->migrateAll();
 
         //TODO: Paging
-        $cases = $this->casesService->getAllEntitiesAsArray();
+        $cases = $this->casesService->getAllAsArray();
 
         return new JsonResponse($cases);
     }

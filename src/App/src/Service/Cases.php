@@ -34,29 +34,27 @@ class Cases
     }
 
     /**
-     * @return CaseEntity[]
+     * @return CaseDataModel[]
      */
-    public function getAllEntities()
+    public function getAll()
     {
-        $cases = $this->repository->findBy([], null);
+        $caseEntities = $this->repository->findBy([], null);
 
-        return $cases;
+        return $this->getDataModels($caseEntities);
     }
 
-    /**
-     * @return array
-     */
-    public function getAllEntitiesAsArray()
+    public function getAllAsArray()
     {
-        $caseArrays = [];
+        $cases = [];
 
-        $cases = $this->getAllEntities();
-        foreach ($cases as $case) {
-            /** @var CaseEntity $case */
-            $caseArrays[] = $case->toArray();
+        $caseEntities = $this->repository->findBy([], null);
+        $caseDataModels = $this->getDataModels($caseEntities);
+
+        foreach ($caseDataModels as $caseDataModel) {
+            $cases[] = $caseDataModel->toArray();
         }
 
-        return $caseArrays;
+        return $cases;
     }
 
     /**
@@ -65,9 +63,20 @@ class Cases
      */
     public function getAllRefundable(Rsa $bankCipher)
     {
+        //TODO: Return only those which can be refunded
+        $caseEntities = $this->repository->findBy([], null);
+
+        return $this->getDataModels($caseEntities);
+    }
+
+    /**
+     * @param CaseEntity[] $caseEntities
+     * @return CaseDataModel[]
+     */
+    private function getDataModels(array $caseEntities, Rsa $bankCipher = null)
+    {
         $cases = [];
 
-        $caseEntities = $this->getAllEntities();
         foreach ($caseEntities as $caseEntity) {
             /** @var CaseEntity $caseEntity */
             $applicationJsonData = $caseEntity->getJsonData();

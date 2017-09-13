@@ -2,6 +2,7 @@
 
 namespace App\DataModel;
 
+use DateTime;
 use InvalidArgumentException;
 
 class AbstractDataModel
@@ -36,6 +37,31 @@ class AbstractDataModel
             // else if it's not null (or array) now, it was an invalid data type...
             throw new InvalidArgumentException('Invalid argument passed to constructor');
         }
+    }
+
+    /**
+     * @param array $excludeProperties Properties to remove from the array
+     * @return array
+     */
+    public function toArray($excludeProperties = []): array
+    {
+        $values = get_object_vars($this);
+
+        foreach ($excludeProperties as $excludeProperty) {
+            unset($values[$excludeProperty]);
+        }
+
+        foreach ($values as $k => $v) {
+            if ($v instanceof DateTime) {
+                $values[$k] = $v->format(DATE_ISO8601);
+            }
+
+            if ($v instanceof AbstractDataModel) {
+                $values[$k] = $v->toArray();
+            }
+        }
+
+        return $values;
     }
 
     /**
