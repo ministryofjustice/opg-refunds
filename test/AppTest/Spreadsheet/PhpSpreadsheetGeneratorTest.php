@@ -2,15 +2,19 @@
 
 namespace AppTest\Spreadsheet;
 
+use App\DataModel\Applications\Account;
+use App\DataModel\Cases\Payment;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetWorksheet;
 use App\Spreadsheet\SsclWorksheetGenerator;
+use AppTest\DataModel\Applications\ApplicationBuilder;
+use AppTest\DataModel\Cases\RefundCaseBuilder;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
 
-class PhpSpreadsheetGeneratorTest //extends TestCase
+class PhpSpreadsheetGeneratorTest extends TestCase
 {
     private $sourceFolder = __DIR__ . '/../../../assets';
     private $tempFolder = __DIR__ . '/../output';
@@ -39,18 +43,26 @@ class PhpSpreadsheetGeneratorTest //extends TestCase
     {
         $this->spreadsheetGenerator = new PhpSpreadsheetGenerator($this->sourceFolder, $this->tempFolder);
 
-        $data = [
-            [
-                'payeeName' => 'Mr Unit Test',
-                'accountNumber' => '12345678',
-                'sortCode' => '112233',
-                'amount' => 45,
-                'reference' => 'AREFERENCE123'
-            ]
-        ];
+        $refundCaseBuilder = new RefundCaseBuilder();
+        $applicationBuilder = new ApplicationBuilder();
+
+        $account = new Account();
+        $account->setName('Mr Unit Test');
+        $account->setAccountNumber('12345678');
+        $account->setSortCode('112233');
+
+        $application = $applicationBuilder->withAccount($account)->build();
+
+        $payment = new Payment();
+        $payment->setAmount(45);
+
+        $case = $refundCaseBuilder
+            ->withApplication($application)
+            ->withPayment($payment)
+            ->build();
 
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator();
-        $this->worksheet = $spreadsheetWorksheetGenerator->generate($data);
+        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$case]);
     }
 
     /**
