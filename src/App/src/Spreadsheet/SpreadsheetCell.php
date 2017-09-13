@@ -13,15 +13,25 @@ class SpreadsheetCell
      */
     private $row;
     /**
-     * @var string
+     * @var string|int
      */
     private $data;
 
-    public function __construct(int $column, int $row, string $data)
+    /**
+     * SpreadsheetCell constructor.
+     * @param int $column
+     * @param int $row
+     * @param string|int $data
+     */
+    public function __construct(int $column, int $row, $data)
     {
         $this->column = $column;
         $this->row = $row;
-        $this->data = $data;
+        if (is_string($data)) {
+            $this->data = $data ?: '';
+        } else {
+            $this->data = $data;
+        }
     }
 
     /**
@@ -41,9 +51,9 @@ class SpreadsheetCell
     }
 
     /**
-     * @return string
+     * @return int|string
      */
-    public function getData(): string
+    public function getData()
     {
         return $this->data;
     }
