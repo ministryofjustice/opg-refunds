@@ -19,24 +19,44 @@
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     
-    <fieldset>
-        <legend class="form-label-bold">Give one or both</legend>
+    <div class="form-group">
+        <fieldset>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('email'),
-            'formLabel' => 'Email address',
-            'formType' => 'text',
-            'formLabelBold' => false
-        ]) ?>
+            <legend>
+                <h1 class="heading-medium">
+                What are your contact details?
+                </h1>
+                <span class="body-text">Select all options that are relevant to you.</span>
+            </legend>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('phone'),
-            'formLabel' => 'Phone number (mobile or landline)',
-            'formType' => 'text',
-            'formLabelBold' => false
-        ]) ?>
+            <?php $this->insert('snippet::input-checkboxes', [
+                'formElement' => $form->get('contact-options'),
+                'question' => 'What are your contact details? Select all options that are relevant to you.',
+                'options' => [
+                    'email' => [
+                        'optionLabel' => "Email address",
+                        'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                            'formElement' => $form->get('email'),
+                            'formLabel' => 'Email address',
+                            'formType' => 'text',
+                            'formLabelBold' => true
+                        ])
+                    ],
+                    'phone' => [
+                        'optionLabel' => "Phone number",
+                        'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                            'formElement' => $form->get('phone'),
+                            'formLabel' => 'Phone number (mobile or landline)',
+                            'formType' => 'text',
+                            'formLabelBold' => true
+                        ])
+                    ]
+                ],
+            ])
+            ?>
 
-    </fieldset>
+        </fieldset>
+    </div>
 
     <div class="form-group">
         <input type="submit" class="button" value="Continue">
