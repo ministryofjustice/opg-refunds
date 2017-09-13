@@ -2,6 +2,7 @@
 
 namespace App\Entity\Cases;
 
+use App\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -11,11 +12,6 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 {
-    const STATUS_NEW = 'new';
-    const STATUS_ASSIGNED = 'assigned';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_ACCEPTED = 'accepted';
-
     /**
      * @var int
      * @ORM\Id
@@ -104,7 +100,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
         $this->donorName = $donorName;
 
         $this->createdDateTime = new DateTime();
-        $this->status = self::STATUS_NEW;
+        $this->status = CaseDataModel::STATUS_NEW;
     }
 
     /**
@@ -198,7 +194,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Caseworker
      */
-    public function getAssignedTo(): Caseworker
+    public function getAssignedTo()
     {
         return $this->assignedTo;
     }

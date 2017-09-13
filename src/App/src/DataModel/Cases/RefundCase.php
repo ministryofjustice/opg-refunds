@@ -8,6 +8,11 @@ use DateTime;
 
 class RefundCase extends AbstractDataModel
 {
+    const STATUS_NEW = 'new';
+    const STATUS_ASSIGNED = 'assigned';
+    const STATUS_REJECTED = 'rejected';
+    const STATUS_ACCEPTED = 'accepted';
+
     /**
      * @var int
      */
@@ -57,6 +62,11 @@ class RefundCase extends AbstractDataModel
      * @var string
      */
     protected $donorName;
+
+    /**
+     * @var Payment
+     */
+    private $payment;
 
     /**
      * @return int
@@ -218,11 +228,29 @@ class RefundCase extends AbstractDataModel
         $this->donorName = $donorName;
     }
 
+    /**
+     * @return Payment
+     */
+    public function getPayment(): Payment
+    {
+        return $this->payment;
+    }
+
+    /**
+     * @param Payment $payment
+     */
+    public function setPayment(Payment $payment)
+    {
+        $this->payment = $payment;
+    }
+
     protected function map($property, $value)
     {
         switch ($property) {
             case 'application':
                 return (($value instanceof Application || is_null($value)) ? $value : new Application($value));
+            case 'payment':
+                return (($value instanceof Payment || is_null($value)) ? $value : new Payment($value));
             case 'createdDateTime':
             case 'updatedDateTime':
             case 'receivedDateTime':

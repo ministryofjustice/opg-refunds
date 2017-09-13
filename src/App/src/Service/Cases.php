@@ -89,7 +89,10 @@ class Cases
 
             $case = new CaseDataModel($caseEntity->toArray(['jsonData', 'assignedTo', 'poas', 'verification'], []));
             $case->setApplication($application);
-            $case->setAssignedToId($caseEntity->getAssignedTo()->getId());
+            $assignedTo = $caseEntity->getAssignedTo();
+            if ($assignedTo !== null) {
+                $case->setAssignedToId($assignedTo->getId());
+            }
 
             $cases[] = $case;
         }

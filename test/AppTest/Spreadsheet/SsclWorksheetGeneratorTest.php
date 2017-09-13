@@ -2,9 +2,14 @@
 
 namespace AppTest\Spreadsheet;
 
+use App\DataModel\Applications\Account;
+use App\DataModel\Cases\Payment;
+use App\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetRow;
 use App\Spreadsheet\SsclWorksheetGenerator;
+use AppTest\DataModel\Applications\ApplicationBuilder;
+use AppTest\DataModel\Cases\RefundCaseBuilder;
 use PHPUnit\Framework\TestCase;
 
 class SsclWorksheetGeneratorTest extends TestCase
@@ -14,9 +19,41 @@ class SsclWorksheetGeneratorTest extends TestCase
      */
     private $generator;
 
+    /**
+     * @var RefundCaseBuilder
+     */
+    private $refundCaseBuilder;
+
+    /**
+     * @var ApplicationBuilder
+     */
+    private $applicationBuilder;
+
+    /**
+     * @var CaseDataModel
+     */
+    private $case;
+
     public function setUp()
     {
         $this->generator = new SsclWorksheetGenerator();
+        $this->refundCaseBuilder = new RefundCaseBuilder();
+        $this->applicationBuilder = new ApplicationBuilder();
+
+        $account = new Account();
+        $account->setName('Mr Unit Test');
+        $account->setAccountNumber('12345678');
+        $account->setSortCode('112233');
+
+        $application = $this->applicationBuilder->withAccount($account)->build();
+
+        $payment = new Payment();
+        $payment->setAmount(45);
+
+        $this->case = $this->refundCaseBuilder
+            ->withApplication($application)
+            ->withPayment($payment)
+            ->build();
     }
 
     public function testEmptyArray()
@@ -32,19 +69,14 @@ class SsclWorksheetGeneratorTest extends TestCase
         $this->assertEquals(0, count($rows));
     }
 
-    public function testSingleRow()
+    public function testSingleCase()
     {
-        $data = [
-            [
-                'payeeName' => 'Mr Unit Test',
-                'accountNumber' => '12345678',
-                'sortCode' => '112233',
-                'amount' => 45,
-                'reference' => 'AREFERENCE123'
-            ]
+        /** @var CaseDataModel[] $cases */
+        $cases = [
+            $this->case
         ];
 
-        $result = $this->generator->generate($data);
+        $result = $this->generator->generate($cases);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -56,7 +88,11 @@ class SsclWorksheetGeneratorTest extends TestCase
 
         foreach ($rows as $idx => $row) {
             $cells = $row->getCells();
-            $datum = $data[$idx];
+
+            /** @var CaseDataModel $case */
+            $case = $cases[$idx];
+            $account = $case->getApplication()->getAccount();
+            $payment = $case->getPayment();
 
             //Verify all cells have the same, valid row number
             foreach ($cells as $cell) {
@@ -66,27 +102,27 @@ class SsclWorksheetGeneratorTest extends TestCase
             //Verify each cell contains the correct column and data
             //reference
             $this->assertEquals(4, $cells[0]->getColumn());
-            $this->assertEquals($datum['reference'], $cells[0]->getData());
+            $this->assertEquals($case->getId(), $cells[0]->getData());
 
             //payeeName
             $this->assertEquals(5, $cells[1]->getColumn());
-            $this->assertEquals($datum['payeeName'], $cells[1]->getData());
+            $this->assertEquals($account->getName(), $cells[1]->getData());
 
             //sortCode
             $this->assertEquals(11, $cells[2]->getColumn());
-            $this->assertEquals($datum['sortCode'], $cells[2]->getData());
+            $this->assertEquals($account->getSortCode(), $cells[2]->getData());
 
             //accountNumber
             $this->assertEquals(12, $cells[3]->getColumn());
-            $this->assertEquals($datum['accountNumber'], $cells[3]->getData());
+            $this->assertEquals($account->getAccountNumber(), $cells[3]->getData());
 
             //amount
             $this->assertEquals(26, $cells[4]->getColumn());
-            $this->assertEquals($datum['amount'], $cells[4]->getData());
+            $this->assertEquals($payment->getAmount(), $cells[4]->getData());
 
             //amount
             $this->assertEquals(28, $cells[5]->getColumn());
-            $this->assertEquals($datum['amount'], $cells[5]->getData());
+            $this->assertEquals($payment->getAmount(), $cells[5]->getData());
         }
     }
 }
