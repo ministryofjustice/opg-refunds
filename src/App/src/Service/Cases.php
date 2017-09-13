@@ -66,11 +66,12 @@ class Cases
         //TODO: Return only those which can be refunded
         $caseEntities = $this->repository->findBy([], null);
 
-        return $this->getDataModels($caseEntities);
+        return $this->getDataModels($caseEntities, $bankCipher);
     }
 
     /**
      * @param CaseEntity[] $caseEntities
+     * @param Rsa|null $bankCipher supply to decrypt bank details
      * @return CaseDataModel[]
      */
     private function getDataModels(array $caseEntities, Rsa $bankCipher = null)
