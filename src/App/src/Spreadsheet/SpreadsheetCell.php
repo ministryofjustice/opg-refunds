@@ -28,7 +28,7 @@ class SpreadsheetCell
         $this->column = $column;
         $this->row = $row;
         if (is_string($data)) {
-            $this->data = $data ?: '';
+            $this->data = $data ?: 'NOT SUPPLIED';
         } else {
             $this->data = $data;
         }
