@@ -17,7 +17,7 @@
     <tbody>
     <?php foreach ($caseworker['assignedCases'] as $assignedCase) { ?>
         <tr>
-            <td><?= $assignedCase['id'] ?></td>
+            <td><?= $assignedCase['referenceNumber'] ?></td>
             <td><?= $assignedCase['donorName'] ?></td>
             <td><?= $assignedCase['receivedDateTime'] ?></td>
             <td><?= $assignedCase['updatedDateTime'] ?></td>
@@ -42,7 +42,7 @@
     <tbody>
     <?php foreach ($cases as $case) { ?>
         <tr>
-            <td><?= $case['id'] ?></td>
+            <td><?= $case['referenceNumber'] ?></td>
             <td><?= $case['donorName'] ?></td>
             <td><?= $case['receivedDateTime'] ?></td>
             <td><?= $case['updatedDateTime'] ?></td>
