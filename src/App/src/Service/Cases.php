@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\DataModel\Applications\Application;
+use App\DataModel\Cases\Payment;
 use App\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\Cases\RefundCase as CaseEntity;
 use Doctrine\ORM\EntityManager;
@@ -59,18 +60,10 @@ class Cases
     }
 
     /**
-     * @return CaseDataModel[]
-     */
-    public function getAllDataModels()
-    {
-        return $this->getAllDataModelsWithBankDetails(null);
-    }
-
-    /**
      * @param Rsa $bankCipher
      * @return CaseDataModel[]
      */
-    public function getAllDataModelsWithBankDetails(Rsa $bankCipher)
+    public function getAllRefundable(Rsa $bankCipher)
     {
         $cases = [];
 
@@ -87,12 +80,17 @@ class Cases
                 $application->getAccount()->setSortCode($accountDetails['sort-code']);
             }
 
-            $case = new CaseDataModel($caseEntity->toArray(['jsonData', 'assignedTo', 'poas', 'verification'], []));
+            $case = new CaseDataModel($caseEntity->toArray(['jsonData', 'assignedTo', 'poas', 'verification'], ['payment']));
             $case->setApplication($application);
             $assignedTo = $caseEntity->getAssignedTo();
             if ($assignedTo !== null) {
                 $case->setAssignedToId($assignedTo->getId());
             }
+
+            //TODO: Remove once payment is populated
+            $payment = new Payment();
+            $payment->setAmount(10);
+            $case->setPayment($payment);
 
             $cases[] = $case;
         }

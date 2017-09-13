@@ -52,19 +52,9 @@ class SpreadsheetAction implements ServerMiddlewareInterface
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $cases = $this->casesService->getAllDataModelsWithBankDetails($this->bankCipher);
+        $cases = $this->casesService->getAllRefundable($this->bankCipher);
 
-        $data = [
-            [
-                'payeeName' => 'Mr Unit Test',
-                'accountNumber' => '12345678',
-                'sortCode' => '112233',
-                'amount' => 45,
-                'reference' => 'AREFERENCE123'
-            ]
-        ];
-
-        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($data);
+        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($cases);
 
         $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
         $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;
