@@ -109,7 +109,7 @@ class Payment extends AbstractEntity
     /**
      * @return DateTime
      */
-    public function getProcessedDateTime(): DateTime
+    public function getProcessedDateTime()
     {
         return $this->processedDateTime;
     }
