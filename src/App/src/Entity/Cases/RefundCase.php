@@ -39,7 +39,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     protected $receivedDateTime;
 
     /**
-     * @var resource
+     * @var resource|string
      * @ORM\Column(name="json_data", type="binary")
      */
     protected $jsonData;
@@ -165,7 +165,10 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
      */
     public function getJsonData()
     {
-        return stream_get_contents($this->jsonData);
+        if (is_resource($this->jsonData)) {
+            return stream_get_contents($this->jsonData);
+        }
+        return $this->jsonData;
     }
 
     /**

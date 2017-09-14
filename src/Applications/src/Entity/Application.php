@@ -31,7 +31,7 @@ class Application
     protected $processed;
 
     /**
-     * @var resource
+     * @var resource|string
      * @ORM\Column(type="binary", nullable=true)
      */
     protected $data;
@@ -81,7 +81,10 @@ class Application
      */
     public function getData(): string
     {
-        return stream_get_contents($this->data);
+        if (is_resource($this->data)) {
+            return stream_get_contents($this->data);
+        }
+        return $this->data;
     }
 
     /**
