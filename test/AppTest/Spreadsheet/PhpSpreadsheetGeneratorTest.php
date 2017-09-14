@@ -2,8 +2,8 @@
 
 namespace AppTest\Spreadsheet;
 
-use App\DataModel\Applications\Account;
-use App\DataModel\Cases\Payment;
+use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetWorksheet;

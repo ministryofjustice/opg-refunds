@@ -2,7 +2,7 @@
 
 namespace App\Spreadsheet;
 
-use App\DataModel\Cases\RefundCase as CaseDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Service\IdentFormatter;
 use DateTime;
 

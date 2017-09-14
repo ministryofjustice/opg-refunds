@@ -2,7 +2,7 @@
 
 namespace App\Entity\Cases;
 
-use App\DataModel\Cases\RefundCase as CaseDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\AbstractEntity;
 use App\Service\IdentFormatter;
 use DateTime;
@@ -131,7 +131,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getUpdatedDateTime(): DateTime
+    public function getUpdatedDateTime()
     {
         return $this->updatedDateTime;
     }
@@ -214,7 +214,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getAssignedDateTime(): DateTime
+    public function getAssignedDateTime()
     {
         return $this->assignedDateTime;
     }
@@ -230,7 +230,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getFinishedDateTime(): DateTime
+    public function getFinishedDateTime()
     {
         return $this->finishedDateTime;
     }

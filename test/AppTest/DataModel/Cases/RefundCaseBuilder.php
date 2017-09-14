@@ -2,9 +2,9 @@
 
 namespace AppTest\DataModel\Cases;
 
-use App\DataModel\Applications\Application;
-use App\DataModel\Cases\Payment;
-use App\DataModel\Cases\RefundCase;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
 use App\Service\IdentFormatter;
 
 class RefundCaseBuilder

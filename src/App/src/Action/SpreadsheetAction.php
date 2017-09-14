@@ -2,8 +2,8 @@
 
 namespace App\Action;
 
-use App\DataModel\Applications\Application;
-use App\DataModel\Cases\RefundCase as CaseDataModel;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\Cases\RefundCase as CaseEntity;
 use App\Service\Cases;
 use App\Spreadsheet\ISpreadsheetGenerator;

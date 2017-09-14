@@ -2,8 +2,8 @@
 
 namespace AppTest\DataModel\Applications;
 
-use App\DataModel\Applications\Account;
-use App\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 
 class ApplicationBuilder
 {
