@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
+    "content-hash": "906df249921190a6daf28603634f177f",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -854,7 +854,7 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-master",
+            "version": "dev-REF-191-caseworker_roles_screens",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
@@ -883,7 +883,7 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-191-caseworker_roles_screens",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
             "time": "2017-09-14T17:22:31+00:00"

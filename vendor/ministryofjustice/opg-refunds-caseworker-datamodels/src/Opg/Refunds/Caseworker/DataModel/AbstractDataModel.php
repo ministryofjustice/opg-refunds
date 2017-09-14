@@ -89,11 +89,12 @@ abstract class AbstractDataModel
     }
 
     /**
-     * Returns $this as an array
+     * Returns $this as an array - exclude the fields in the filter array if provided
      *
+     * @param array $excludeFilter
      * @return array
      */
-    public function toArray()
+    public function toArray(array $excludeFilter = [])
     {
         $objectValues = get_object_vars($this);
 
@@ -102,6 +103,10 @@ abstract class AbstractDataModel
         foreach ($objectValues as $varName => $varValue) {
             //  Translate property name to array key property
             $varName = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $varName));
+
+            if (in_array($varName, $excludeFilter)) {
+                continue;
+            }
 
             if (is_scalar($varValue)) {
                 $values[$varName] = $varValue;

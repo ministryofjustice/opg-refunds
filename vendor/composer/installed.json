@@ -4408,8 +4408,8 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "dev-REF-191-caseworker_roles_screens",
+        "version_normalized": "dev-REF-191-caseworker_roles_screens",
         "source": {
             "type": "git",
             "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
@@ -4440,7 +4440,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-191-caseworker_roles_screens",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     }
