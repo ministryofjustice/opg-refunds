@@ -6,6 +6,7 @@ use App\Entity\Cases\Caseworker as CaseworkerEntity;
 use App\Exception\InvalidInputException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
 
 /**
  * Class Caseworker
@@ -38,7 +39,7 @@ class Caseworker
      * Find a caseworker by ID
      *
      * @param int $id
-     * @return CaseworkerEntity
+     * @return CaseworkerModel
      * @throws InvalidInputException
      */
     public function findById(int $id)
@@ -50,7 +51,7 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $caseworker;
+        return $this->convertToDataModel($caseworker);
     }
 
     /**
@@ -58,7 +59,7 @@ class Caseworker
      *
      * @param string $email
      * @param string $password
-     * @return CaseworkerEntity
+     * @return CaseworkerModel
      * @throws InvalidInputException
      */
     public function findByCredentials(string $email, string $password)
@@ -70,14 +71,14 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $caseworker;
+        return $this->convertToDataModel($caseworker);
     }
 
     /**
      * Find a caseworker by a request token value - used by authentication
      *
      * @param string $token
-     * @return CaseworkerEntity
+     * @return CaseworkerModel
      * @throws InvalidInputException
      */
     public function findByToken(string $token)
@@ -89,7 +90,7 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $caseworker;
+        return $this->convertToDataModel($caseworker);
     }
 
     /**
@@ -111,5 +112,27 @@ class Caseworker
         $this->entityManager->flush();
 
         return true;
+    }
+
+    /**
+     * Convert the doctrine entity into a data model
+     *
+     * @param CaseworkerEntity $caseworkerEntity
+     * @return CaseworkerModel
+     */
+    private function convertToDataModel(CaseworkerEntity $caseworkerEntity)
+    {
+        $caseworker = new CaseworkerModel();
+
+        $caseworker->setId($caseworkerEntity->getId())
+                   ->setName($caseworkerEntity->getName())
+                   ->setEmail($caseworkerEntity->getEmail())
+                   ->setPasswordHash($caseworkerEntity->getPasswordHash())
+                   ->setStatus($caseworkerEntity->getStatus())
+                   ->setRoles($caseworkerEntity->getRoles())
+                   ->setToken($caseworkerEntity->getToken())
+                   ->setTokenExpires($caseworkerEntity->getTokenExpires());
+
+        return $caseworker;
     }
 }

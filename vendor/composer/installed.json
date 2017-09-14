@@ -4429,7 +4429,7 @@
         },
         "time": "2017-09-14T17:22:31+00:00",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"

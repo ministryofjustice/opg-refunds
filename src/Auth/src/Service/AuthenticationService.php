@@ -2,9 +2,9 @@
 
 namespace Auth\Service;
 
-use App\Entity\Cases\Caseworker;
 use App\Service\Caseworker as CaseworkerService;
 use Auth\Exception\UnauthorizedException;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
 use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
@@ -71,6 +71,8 @@ class AuthenticationService
 
             $created = $this->caseworkerService->setToken($caseworker->getId(), $token, time() + $this->tokenTtl);
         } while (!$created);
+
+        $caseworker->setToken($token);
 
         return $caseworker;
     }

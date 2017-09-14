@@ -310,7 +310,7 @@ class RefundCase extends AbstractDataModel
      *
      * @param string $property
      * @param mixed $value
-     * @return DateTime|mixed|Application|Payment
+     * @return mixed
      */
     protected function map($property, $value)
     {

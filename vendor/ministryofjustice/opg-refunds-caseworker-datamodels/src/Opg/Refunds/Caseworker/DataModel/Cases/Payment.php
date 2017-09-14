@@ -112,7 +112,7 @@ class Payment extends AbstractDataModel
      *
      * @param string $property
      * @param mixed $value
-     * @return DateTime|mixed
+     * @return mixed
      */
     protected function map($property, $value)
     {

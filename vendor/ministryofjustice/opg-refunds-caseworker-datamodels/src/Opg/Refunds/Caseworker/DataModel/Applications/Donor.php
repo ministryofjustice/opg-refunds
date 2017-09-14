@@ -89,7 +89,7 @@ class Donor extends AbstractDataModel
      *
      * @param string $property
      * @param mixed $value
-     * @return DateTime|mixed|Name
+     * @return mixed
      */
     protected function map($property, $value)
     {

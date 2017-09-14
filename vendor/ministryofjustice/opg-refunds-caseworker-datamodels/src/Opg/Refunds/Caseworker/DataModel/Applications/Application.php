@@ -230,7 +230,7 @@ class Application extends AbstractDataModel
      *
      * @param string $property
      * @param mixed $value
-     * @return DateTime|mixed|Account|Attorney|Contact|Donor|CaseNumber|Postcodes
+     * @return mixed
      */
     protected function map($property, $value)
     {
