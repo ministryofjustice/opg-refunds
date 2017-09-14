@@ -129,6 +129,9 @@ class Dob extends Fieldset
     private function getValidDateValidator() : ValidatorInterface
     {
         return (new Callback(function ($value, $context) {
+            if (count(array_filter($context)) != 3) {
+                return false;
+            }
             return checkdate($context['month'], $context['day'], $context['year']);
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }
