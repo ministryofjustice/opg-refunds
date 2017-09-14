@@ -12,6 +12,12 @@ return [
         ],
     ],
 
+    'json' => [
+        'schema' => [
+            'path' => 'config/json-schema.json'
+        ]
+    ],
+
     'beta' => [
 
         // Set to false when we move out of beta
