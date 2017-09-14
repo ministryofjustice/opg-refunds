@@ -513,12 +513,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "47cfadd8e627ba7f38eeb99c2de6efbf88cf90a8"
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/47cfadd8e627ba7f38eeb99c2de6efbf88cf90a8",
-                "reference": "47cfadd8e627ba7f38eeb99c2de6efbf88cf90a8",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +537,7 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
-            "time": "2017-09-14T15:23:23+00:00"
+            "time": "2017-09-14T17:22:31+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

@@ -17,10 +17,10 @@
     <tbody>
     <?php foreach ($caseworker['assignedCases'] as $assignedCase) { ?>
         <tr>
-            <td><?= $assignedCase['referenceNumber'] ?></td>
-            <td><?= $assignedCase['donorName'] ?></td>
-            <td><?= $assignedCase['receivedDateTime'] ?></td>
-            <td><?= $assignedCase['updatedDateTime'] ?></td>
+            <td><?= $assignedCase->getReferenceNumber() ?></td>
+            <td><?= $assignedCase->getDonorName() ?></td>
+            <td><?= $assignedCase->getReceivedDateTime()->format('d/m/Y') ?></td>
+            <td><?= ($assignedCase->getUpdatedDateTime() ?: $assignedCase->getReceivedDateTime())->format('d/m/Y') ?></td>
             <td>View</td>
         </tr>
     <?php } ?>
@@ -42,11 +42,11 @@
     <tbody>
     <?php foreach ($cases as $case) { ?>
         <tr>
-            <td><?= $case['referenceNumber'] ?></td>
-            <td><?= $case['donorName'] ?></td>
-            <td><?= $case['receivedDateTime'] ?></td>
-            <td><?= $case['updatedDateTime'] ?></td>
-            <td><?= $case['status'] ?></td>
+            <td><?= $case->getReferenceNumber() ?></td>
+            <td><?= $case->getDonorName() ?></td>
+            <td><?= $case->getReceivedDateTime()->format('d/m/Y') ?></td>
+            <td><?= ($case->getUpdatedDateTime() ?: $case->getReceivedDateTime())->format('d/m/Y') ?></td>
+            <td><?= $case->getStatus() ?></td>
         </tr>
     <?php } ?>
     </tbody>
