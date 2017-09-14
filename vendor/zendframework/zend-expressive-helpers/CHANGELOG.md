@@ -2,6 +2,54 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 4.1.0 - 2017-09-11
+
+### Added
+
+- [#45](https://github.com/zendframework/zend-expressive-helpers/pull/45) adds
+  `Zend\Expressive\Helper\ContentLengthMiddleware`. This middleware will inject
+  a `Content-Length` response header if none already exists and the response
+  body size is non-null.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 4.0.1 - 2017-09-11
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- We no longer test against HHVM. Tests were running against that platform prior
+  to this release, but we are no longer testing against it as the PHP versions
+  we support have features that HHVM does not support at this time.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#42](https://github.com/zendframework/zend-expressive-helpers/pull/42) fixes
+  how the `UrlHelper` generates a URI when using the currently matched route.
+  Previously, doing so would not append either provided query string arguments
+  or fragment identifiers; it now does.
+
 ## 4.0.0 - 2017-03-13
 
 ### Added
