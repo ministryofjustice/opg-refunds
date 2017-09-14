@@ -16,7 +16,7 @@ use Zend\Diactoros\Response\RedirectResponse;
  * Class SessionMiddleware
  * @package App\Middleware\Session
  */
-class AuthMiddleware implements ServerMiddlewareInterface
+class AuthenticationMiddleware implements ServerMiddlewareInterface
 {
     /**
      * @var AuthenticationService
@@ -29,7 +29,7 @@ class AuthMiddleware implements ServerMiddlewareInterface
     private $urlHelper;
 
     /**
-     * AuthMiddleware constructor
+     * AuthenticationMiddleware constructor
      *
      * @param AuthenticationService $authService
      * @param UrlHelper $urlHelper

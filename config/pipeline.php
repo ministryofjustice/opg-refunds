@@ -43,10 +43,10 @@ $app->pipe(UrlHelperMiddleware::class);
 $app->pipe(Middleware\Session\SessionMiddleware::class);
 $app->pipe(Middleware\Session\CsrfMiddleware::class);
 
-//  Add middleware to verify that there is an authenticated session
+//  Middleware to determine if the user is authenticated or not
 foreach (['/cases'] as $path) {
     $app->pipe($path, [
-        Middleware\Auth\AuthMiddleware::class,
+        Middleware\Auth\AuthenticationMiddleware::class,
     ]);
 }
 

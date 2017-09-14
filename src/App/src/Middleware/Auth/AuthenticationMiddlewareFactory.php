@@ -7,18 +7,18 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Expressive\Helper\UrlHelper;
 
 /**
- * Class AuthMiddlewareFactory
+ * Class AuthenticationMiddlewareFactory
  * @package App\Middleware\Session
  */
-class AuthMiddlewareFactory
+class AuthenticationMiddlewareFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return AuthMiddleware
+     * @return AuthenticationMiddleware
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new AuthMiddleware(
+        return new AuthenticationMiddleware(
             $container->get(AuthenticationService::class),
             $container->get(UrlHelper::class)
         );
