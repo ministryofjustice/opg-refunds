@@ -1,6 +1,8 @@
 <?php
 namespace App\Service\Refund;
 
+use League\JsonGuard\Validator as JsonValidator;
+
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
 
@@ -9,11 +11,16 @@ class ProcessApplication
 
     private $notifyClient;
     private $dataHandler;
+    private $jsonSchemaPath;
 
-    public function __construct(NotifyClient $notifyClient, Data\DataHandlerInterface $dataHandler)
-    {
+    public function __construct(
+        NotifyClient $notifyClient,
+        Data\DataHandlerInterface $dataHandler,
+        string $jsonSchemaPath
+    ) {
         $this->notifyClient = $notifyClient;
         $this->dataHandler = $dataHandler;
+        $this->jsonSchemaPath = $jsonSchemaPath;
     }
 
     public function process(array $data) : string
@@ -24,6 +31,21 @@ class ProcessApplication
 
         // Include the date submitted
         $data['submitted'] = gmdate(\DateTime::ISO8601);
+
+        //---
+
+        // Validate the generated JSON against our schema.
+        $validator = new JsonValidator(
+            json_decode(json_encode($data)),
+            json_decode(file_get_contents($this->jsonSchemaPath))
+        );
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
+        }
+
+        //---
 
         $reference = $this->dataHandler->store($data);
 
