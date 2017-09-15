@@ -1,17 +1,11 @@
 <?php
-$title = 'We are in beta';
-$this->layout('layout::default', [
+$title = "You can't use this service yet";
+$this->layout('layout::standard', [
     'title' => $title,
 ]);
 ?>
-<div class="grid-row">
-    <div class="column-two-thirds">
+<p>This is a <a href="https://www.gov.uk/help/beta">beta service</a>, which means we're still developing it.</p>
 
-        <h1 class="heading-xlarge">
-            <?= $this->e($title) ?>
-        </h1>
+<p>Only people who've been invited can use this service at the moment.</p>
 
-        <p>beta-unavailable-page</p>
-
-    </div>
-</div>
+<?php $this->insert('snippet::refunds-helpline');?>

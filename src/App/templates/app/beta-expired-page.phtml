@@ -1,17 +1,17 @@
 <?php
-$title = 'We are in beta';
-$this->layout('layout::default', [
+$title = 'Your link has expired';
+$this->layout('layout::standard', [
     'title' => $title,
 ]);
 ?>
-<div class="grid-row">
-    <div class="column-two-thirds">
 
-        <h1 class="heading-xlarge">
-            <?= $this->e($title) ?>
-        </h1>
+<p>Sorry, but the link we sent you to access this service has expired.</p>
 
-        <p>beta-expired-page</p>
+<p>Links can only be used for a certain length of time.
+This is because this is a <a href="https://www.gov.uk/help/beta">beta service</a>.</p>
 
-    </div>
-</div>
+<h2 class="heading-medium">Get a new link</h2>
+
+<p>If you would still like to use this service, contact us to ask for a new link.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>
