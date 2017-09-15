@@ -41,6 +41,7 @@ return array(
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-message/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
+    'Opg\\Refunds\\Caseworker\\DataModel\\' => array($vendorDir . '/ministryofjustice/opg-refunds-caseworker-datamodels/src/Opg/Refunds/Caseworker/DataModel'),
     'League\\Plates\\' => array($vendorDir . '/league/plates/src'),
     'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),
     'Interop\\Http\\ServerMiddleware\\' => array($vendorDir . '/http-interop/http-middleware/src'),

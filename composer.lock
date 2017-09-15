@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "507959c0c2ae1d6b15d12c0ee000268d",
+    "content-hash": "59159305480b419cc54bd7589667b240",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -506,6 +506,42 @@
                 "views"
             ],
             "time": "2016-12-28T00:14:17+00:00"
+        },
+        {
+            "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0.8 || ^5.7.15"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP data models for the LPA Refunds project",
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
+            "time": "2017-09-14T17:22:31+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -4417,6 +4453,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

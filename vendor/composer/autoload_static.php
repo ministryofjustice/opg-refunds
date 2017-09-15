@@ -69,6 +69,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
         ),
+        'O' => 
+        array (
+            'Opg\\Refunds\\Caseworker\\DataModel\\' => 33,
+        ),
         'L' => 
         array (
             'League\\Plates\\' => 14,
@@ -257,6 +261,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Opg\\Refunds\\Caseworker\\DataModel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ministryofjustice/opg-refunds-caseworker-datamodels/src/Opg/Refunds/Caseworker/DataModel',
         ),
         'League\\Plates\\' => 
         array (

@@ -37,6 +37,7 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,

@@ -7,11 +7,18 @@
     "config": {
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+        }
+    ],
     "require": {
         "php": "^7.0",
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-authentication": "^2.5",

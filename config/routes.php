@@ -34,6 +34,7 @@ $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'pass
 //  Authenticated routes
 $prefix = '/cases';
 $app->get($prefix . '/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+$app->get($prefix . '/download', App\Action\DownloadAction::class, 'download');
 
 //  Special case - the home page route requires authentication
 $app->get('/', [

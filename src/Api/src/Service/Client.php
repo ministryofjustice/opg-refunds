@@ -6,6 +6,7 @@ use Api\Exception;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -67,6 +68,41 @@ class Client
     public function getCaseworker(int $caseworkerId)
     {
         return $this->httpGet('/v1/cases/caseworker/' . $caseworkerId);
+    }
+
+    /**
+     * Get all cases
+     *
+     * @return array|null
+     */
+    public function getCases()
+    {
+        $cases = [];
+        $casesArray = $this->httpGet('/v1/cases/cases');
+        foreach ($casesArray as $caseArray) {
+            $cases[] = new RefundCase($caseArray);
+        }
+        return $cases;
+    }
+
+    /**
+     * Get SSCL spreadsheet containing all refundable cases
+     *
+     * @return ResponseInterface
+     */
+    public function getSpreadsheetResponse()
+    {
+        //TODO: Add date or other unique identifier allowing for previous spreadsheets to be downloaded
+
+        //  Not using httpGet because the response of this API endpoint is binary, specifically a .xls file
+        $url = new Uri($this->apiBaseUri . '/v1/cases/spreadsheet');
+
+        $request = new Request('GET', $url, $this->buildHeaders());
+
+        //  Can throw RuntimeException if there is a problem
+        $response = $this->httpClient->sendRequest($request);
+
+        return $response;
     }
 
     /**
