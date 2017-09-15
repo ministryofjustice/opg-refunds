@@ -11,7 +11,7 @@ use DateTime;
  */
 class Caseworker extends AbstractDataModel
 {
-    const CASEWORKER_ROLE_CASEWORKER = 'Cashworker';
+    const CASEWORKER_ROLE_CASEWORKER = 'Caseworker';
     const CASEWORKER_ROLE_REPORTING  = 'Reporting';
     const CASEWORKER_ROLE_REFUND     = 'RefundManager';
     const CASEWORKER_ROLE_ADMIN      = 'Admin';
