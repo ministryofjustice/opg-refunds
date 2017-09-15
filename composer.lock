@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "f93f8c423e99b632986308171b9b800e",
+    "content-hash": "59159305480b419cc54bd7589667b240",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -537,6 +537,10 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
             "time": "2017-09-14T17:22:31+00:00"
         },
         {
@@ -4449,8 +4453,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "roave/security-advisories": 20,
-        "ministryofjustice/opg-refunds-caseworker-datamodels": 20
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
+        "roave/security-advisories": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
