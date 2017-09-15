@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "66fc353fa2f38966414d0f3b7d1c083e",
+    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -851,6 +851,42 @@
                 "response"
             ],
             "time": "2017-01-14T15:23:42+00:00"
+        },
+        {
+            "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^6.0.8 || ^5.7.15"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "PHP data models for the LPA Refunds project",
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
+            "time": "2017-09-14T17:22:31+00:00"
         },
         {
             "name": "nikic/fast-route",
@@ -4268,6 +4304,7 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
         "phpoffice/phpspreadsheet": 10,
         "roave/security-advisories": 20
     },

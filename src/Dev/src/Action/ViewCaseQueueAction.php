@@ -1,10 +1,8 @@
 <?php
 namespace Dev\Action;
 
-use PDO;
-
+use Applications\Service\DataMigration;
 use Zend\Crypt\PublicKey\Rsa;
-use App\Crypt\Hybrid as HybridCipher;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -12,29 +10,34 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class ViewCaseQueueAction implements ServerMiddlewareInterface
 {
-    private $db;
+    /**
+     * @var DataMigration
+     */
+    private $dataMigrationService;
+    /**
+     * @var Rsa
+     */
     private $bankCipher;
-    private $fullCipher;
 
-    public function __construct(PDO $db, Rsa $bankCipher, HybridCipher $fullCipher)
+    public function __construct(DataMigration $dataMigrationService, Rsa $bankCipher)
     {
-        $this->db = $db;
         $this->bankCipher = $bankCipher;
-        $this->fullCipher = $fullCipher;
+        $this->dataMigrationService = $dataMigrationService;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $sql = 'SELECT * FROM application ORDER BY created DESC LIMIT 1';
+        $application = $this->dataMigrationService->getNextApplication();
+        if ($application === null) {
+            return new JsonResponse([]);
+        }
 
-        $stmt = $this->db->query($sql);
-        $row = $stmt->fetchObject();
+        $decryptedData = $this->dataMigrationService->getDecryptedData($application);
 
-        $payload = json_decode(gzinflate($this->fullCipher->decrypt(stream_get_contents($row->data))), true);
+        $payload = json_decode($decryptedData, true);
 
         $payload['account']['details'] = json_decode($this->bankCipher->decrypt($payload['account']['details']), true);
 
-        return new JsonResponse(['id' => $row->id, 'payload' => $payload]);
+        return new JsonResponse(['id' => $application->getId(), 'payload' => $payload]);
     }
-
 }

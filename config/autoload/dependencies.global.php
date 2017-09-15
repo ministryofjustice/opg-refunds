@@ -36,6 +36,8 @@ return [
             Middleware\ErrorResponseGenerator::class         => Container\ErrorResponseGeneratorFactory::class,
             Middleware\NotFoundHandler::class                => Container\NotFoundHandlerFactory::class,
 
+            'doctrine.entity_manager.orm_applications' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications'],
+            'doctrine.entity_manager.orm_applications_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications_migration'],
             'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
             'doctrine.entity_manager.orm_cases_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases_migration'],
             'doctrine.entity_manager.orm_sirius' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius'],

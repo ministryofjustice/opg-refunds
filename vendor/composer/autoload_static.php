@@ -59,6 +59,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
             'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PackageVersions\\' => 16,
         ),
+        'O' => 
+        array (
+            'Opg\\Refunds\\Caseworker\\DataModel\\' => 33,
+        ),
         'I' => 
         array (
             'Interop\\Http\\ServerMiddleware\\' => 30,
@@ -87,6 +91,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'A' => 
         array (
             'Auth\\' => 5,
+            'Applications\\' => 13,
             'App\\' => 4,
             'AppTest\\' => 8,
         ),
@@ -220,6 +225,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
         ),
+        'Opg\\Refunds\\Caseworker\\DataModel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ministryofjustice/opg-refunds-caseworker-datamodels/src/Opg/Refunds/Caseworker/DataModel',
+        ),
         'Interop\\Http\\ServerMiddleware\\' => 
         array (
             0 => __DIR__ . '/..' . '/http-interop/http-middleware/src',
@@ -275,6 +284,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'Auth\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Auth/src',
+        ),
+        'Applications\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Applications/src',
         ),
         'App\\' => 
         array (

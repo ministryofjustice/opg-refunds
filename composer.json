@@ -9,11 +9,18 @@
     "config": {
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+        }
+    ],
     "require": {
         "php": "^7.0",
         "dasprid/container-interop-doctrine": "^1.0",
         "doctrine/migrations": "^1.5",
         "doctrine/orm": "^2.5",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
         "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
         "symfony/yaml": "^3.3",
@@ -36,6 +43,7 @@
     "autoload": {
         "psr-4": {
             "App\\": "src/App/src/",
+            "Applications\\": "src/Applications/src/",
             "Auth\\": "src/Auth/src/",
             "Dev\\": "src/Dev/src/"
         }

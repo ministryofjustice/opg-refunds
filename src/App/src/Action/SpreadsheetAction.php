@@ -2,47 +2,59 @@
 
 namespace App\Action;
 
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
+use App\Entity\Cases\RefundCase as CaseEntity;
+use App\Service\Cases;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Crypt\PublicKey\Rsa;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
 class SpreadsheetAction implements ServerMiddlewareInterface
 {
     /**
+     * @var Cases
+     */
+    private $casesService;
+
+    /**
+     * @var Rsa
+     */
+    private $bankCipher;
+
+    /**
      * @var ISpreadsheetWorksheetGenerator
      */
     private $spreadsheetWorksheetGenerator;
+
     /**
      * @var ISpreadsheetGenerator
      */
     private $spreadsheetGenerator;
 
     public function __construct(
+        Cases $casesService,
+        Rsa $bankCipher,
         ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator,
         ISpreadsheetGenerator $spreadsheetGenerator
     ) {
+        $this->casesService = $casesService;
+        $this->bankCipher = $bankCipher;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $data = [
-            [
-                'payeeName' => 'Mr Unit Test',
-                'accountNumber' => '12345678',
-                'sortCode' => '112233',
-                'amount' => 45,
-                'reference' => 'AREFERENCE123'
-            ]
-        ];
+        $cases = $this->casesService->getAllRefundable($this->bankCipher);
 
-        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($data);
+        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($cases);
 
         $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
         $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;

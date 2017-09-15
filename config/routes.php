@@ -32,8 +32,10 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
 $prefix = '/v1/cases';
+$app->get($prefix . '/cases', App\Action\CasesAction::class, 'cases');
 $app->get($prefix . '/caseworker/{id:\d+}', App\Action\CaseworkerAction::class, 'caseworker');
+$app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
 
 //  Developer routes
 $app->get('/dev/view-case-queue', Dev\Action\ViewCaseQueueAction::class, 'dev.view-case-queue');
-$app->get('/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
+$app->get('/dev/migrate', Dev\Action\MigrateAction::class, 'dev.migrate');

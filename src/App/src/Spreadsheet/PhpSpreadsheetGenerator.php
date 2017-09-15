@@ -3,7 +3,7 @@
 namespace App\Spreadsheet;
 
 use InvalidArgumentException;
-use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
 
 class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
@@ -54,7 +54,9 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 
         if ($schema === ISpreadsheetGenerator::SCHEMA_SSCL && $fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLS) {
             $reader = new XlsReader();
-            $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'OPG Multi-SOP1 Refund Requests.xls';
+            //$reader->setReadDataOnly(true);
+            $reader->setLoadSheetsOnly($spreadsheetWorksheet->getName());
+            $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'OPG Multi-SOP1 Refund Requests No Formatting.xlsx';
             $ssclSourceSpreadsheet = $reader->load($ssclSourceSpreadsheetFilename);
 
             $dataSheet = $ssclSourceSpreadsheet->getSheetByName($spreadsheetWorksheet->getName());
@@ -67,7 +69,6 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 
             $writer = new XlsWriter($ssclSourceSpreadsheet);
             $writer->save($outputFilePath);
-            //$writer->save('php://output');            // to download the file in the browser
 
             return $outputFilePath;
         }

@@ -2,7 +2,9 @@
 
 namespace App\Entity\Cases;
 
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\AbstractEntity;
+use App\Service\IdentFormatter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,38 +16,37 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @var int
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\Column(type="bigint")
      */
     protected $id;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="created_datetime", type="datetime")
+     * @ORM\Column(name="created_datetime", type="datetimetz")
      */
     protected $createdDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="updated_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_datetime", type="datetimetz", nullable=true)
      */
     protected $updatedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="received_datetime", type="datetime")
+     * @ORM\Column(name="received_datetime", type="datetimetz")
      */
     protected $receivedDateTime;
 
     /**
-     * @var string
-     * @ORM\Column(name="json_data", type="string")
+     * @var resource|string
+     * @ORM\Column(name="json_data", type="binary")
      */
     protected $jsonData;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var string
+     * @ORM\Column(type="string")
      */
     protected $status;
 
@@ -58,13 +59,13 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     /**
      * @var DateTime
-     * @ORM\Column(name="assigned_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="assigned_datetime", type="datetimetz", nullable=true)
      */
     protected $assignedDateTime;
 
     /**
      * @var DateTime
-     * @ORM\Column(name="finished_datetime", type="datetime", nullable=true)
+     * @ORM\Column(name="finished_datetime", type="datetimetz", nullable=true)
      */
     protected $finishedDateTime;
 
@@ -91,6 +92,17 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
      */
     protected $payment;
+
+    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName)
+    {
+        $this->id = $id;
+        $this->receivedDateTime = $receivedDateTime;
+        $this->jsonData = $jsonData;
+        $this->donorName = $donorName;
+
+        $this->createdDateTime = new DateTime();
+        $this->status = CaseDataModel::STATUS_NEW;
+    }
 
     /**
      * @return int
@@ -119,7 +131,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getUpdatedDateTime(): DateTime
+    public function getUpdatedDateTime()
     {
         return $this->updatedDateTime;
     }
@@ -151,8 +163,11 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return string
      */
-    public function getJsonData(): string
+    public function getJsonData()
     {
+        if (is_resource($this->jsonData)) {
+            return stream_get_contents($this->jsonData);
+        }
         return $this->jsonData;
     }
 
@@ -165,17 +180,17 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
     /**
-     * @param int $status
+     * @param string $status
      */
-    public function setStatus(int $status)
+    public function setStatus(string $status)
     {
         $this->status = $status;
     }
@@ -183,7 +198,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Caseworker
      */
-    public function getAssignedTo(): Caseworker
+    public function getAssignedTo()
     {
         return $this->assignedTo;
     }
@@ -199,7 +214,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getAssignedDateTime(): DateTime
+    public function getAssignedDateTime()
     {
         return $this->assignedDateTime;
     }
@@ -215,7 +230,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return DateTime
      */
-    public function getFinishedDateTime(): DateTime
+    public function getFinishedDateTime()
     {
         return $this->finishedDateTime;
     }
@@ -294,6 +309,8 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 
     public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
     {
-        return parent::toArray($excludeProperties, $includeChildren);
+        $caseArray = parent::toArray($excludeProperties, $includeChildren);
+        $caseArray['referenceNumber'] = IdentFormatter::format($this->getId());
+        return $caseArray;
     }
 }

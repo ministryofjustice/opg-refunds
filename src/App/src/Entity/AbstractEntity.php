@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
+use DateTime;
 
 abstract class AbstractEntity
 {
@@ -21,12 +22,20 @@ abstract class AbstractEntity
         }
 
         foreach ($values as $k => $v) {
+            if ($v instanceof DateTime) {
+                $values[$k] = $v->format(DATE_ISO8601);
+            }
+
             if ($v instanceof PersistentCollection && in_array($k, $includeChildren)) {
                 $childValues = [];
                 foreach ($v as $value) {
                     $childValues[] = $value->toArray();
                 }
                 $values[$k] = $childValues;
+            }
+
+            if (is_resource($v)) {
+                $values[$k] = stream_get_contents($v);
             }
         }
 

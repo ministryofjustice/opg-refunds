@@ -21,7 +21,7 @@ class Log extends AbstractEntity
 
     /**
      * @var DateTime
-     * @ORM\Column(name="created_datetime", type="datetime")
+     * @ORM\Column(name="created_datetime", type="datetimetz")
      */
     protected $createdDateTime;
 

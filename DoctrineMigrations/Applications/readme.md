@@ -1,0 +1,2 @@
+- Generate migration file: `docker-compose run --rm api bash -c "gosu app bash -c 'cd app && scripts/doctrine-migrations.sh Applications migrations:diff'"`
+- Execute migrations: `docker-compose run --rm api bash -c "gosu app bash -c \"cd app && scripts/doctrine-migrations.sh Applications 'migrations:migrate --no-interaction -vvv'\""`

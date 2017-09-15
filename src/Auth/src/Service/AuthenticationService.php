@@ -54,7 +54,7 @@ class AuthenticationService
         $caseworker = $this->caseworkerService->findByCredentials($email, $password);
 
         //  Confirm that the caseworker is active
-        if ($caseworker->getStatus() !== 1) {
+        if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');
         }
 
@@ -88,7 +88,7 @@ class AuthenticationService
         $caseworker = $this->caseworkerService->findByToken($token);
 
         //  Confirm that the caseworker is active
-        if ($caseworker->getStatus() !== 1) {
+        if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');
         }
 

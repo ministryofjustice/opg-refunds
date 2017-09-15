@@ -45,15 +45,7 @@ class AuthAction implements ServerMiddlewareInterface
             try {
                 $caseworker = $this->authService->validatePassword($requestBody['email'], $requestBody['password']);
 
-                //  TODO - Implement a more elegant way of translating entity data into an JSON response
-                return new JsonResponse([
-                    'id'     => $caseworker->getId(),
-                    'name'   => $caseworker->getName(),
-                    'email'  => $caseworker->getEmail(),
-                    'status' => $caseworker->getStatus(),
-                    'roles'  => $caseworker->getRoles(),
-                    'token'  => $caseworker->getToken(),
-                ]);
+                return new JsonResponse($caseworker->toArray());
             } catch (InvalidInputException $ignore) {
                 //  Authentication failed - exception thrown below
             }
