@@ -104,8 +104,6 @@ class BetaCheckMiddleware implements ServerMiddlewareInterface
         }
 
         // Display the error
-        return new Response\HtmlResponse( $this->templateRenderer->render($page, [
-            'reason' => isset($isValid) ? $isValid : 'no-cookie'
-        ]) );
+        return new Response\HtmlResponse( $this->templateRenderer->render($page) );
     }
 }
