@@ -11,10 +11,13 @@ use DateTime;
  */
 class Caseworker extends AbstractDataModel
 {
-    const CASEWORKER_ROLE_CASEWORKER = 'Caseworker';
-    const CASEWORKER_ROLE_REPORTING  = 'Reporting';
-    const CASEWORKER_ROLE_REFUND     = 'RefundManager';
-    const CASEWORKER_ROLE_ADMIN      = 'Admin';
+    const ROLE_CASEWORKER = 'Caseworker';
+    const ROLE_REPORTING  = 'Reporting';
+    const ROLE_REFUND     = 'RefundManager';
+    const ROLE_ADMIN      = 'Admin';
+
+    const STATUS_ACTIVE   = 'active';
+    const STATUS_INACTIVE = 'inactive';
 
     /**
      * @var int
@@ -37,7 +40,7 @@ class Caseworker extends AbstractDataModel
     protected $passwordHash;
 
     /**
-     * @var int
+     * @var string
      */
     protected $status;
 
@@ -138,18 +141,18 @@ class Caseworker extends AbstractDataModel
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getStatus(): int
+    public function getStatus(): string
     {
         return $this->status;
     }
 
     /**
-     * @param int $status
+     * @param string $status
      * @return $this
      */
-    public function setStatus(int $status)
+    public function setStatus(string $status)
     {
         $this->status = $status;
 

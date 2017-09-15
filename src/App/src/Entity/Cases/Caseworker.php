@@ -13,9 +13,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
  **/
 class Caseworker extends AbstractEntity
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
-
     /**
      * Class of the datamodel that this entity can be converted to
      *

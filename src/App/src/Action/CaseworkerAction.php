@@ -2,7 +2,6 @@
 
 namespace App\Action;
 
-use App\Exception\InvalidInputException;
 use App\Service\Caseworker as CaseworkerService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -45,6 +44,14 @@ class CaseworkerAction implements ServerMiddlewareInterface
             return new JsonResponse($caseworker->toArray());
         }
 
-        throw new InvalidInputException('Caseworker not found');
+        //  Get all of the caseworkers
+        $caseworkers = $this->caseworkerService->findAll();
+        $caseworkersData = [];
+
+        foreach ($caseworkers as $caseworker) {
+            $caseworkersData[] = $caseworker->toArray();
+        }
+
+        return new JsonResponse($caseworkersData);
     }
 }

@@ -69,10 +69,13 @@ class AuthenticationService
                 throw new Exception('Unable to generate a strong token');
             }
 
-            $created = $this->caseworkerService->setToken($caseworker->getId(), $token, time() + $this->tokenTtl);
+            $tokenExpires = time() + $this->tokenTtl;
+
+            $created = $this->caseworkerService->setToken($caseworker->getId(), $token, $tokenExpires);
         } while (!$created);
 
-        $caseworker->setToken($token);
+        $caseworker->setToken($token)
+                   ->setTokenExpires($tokenExpires);
 
         return $caseworker;
     }

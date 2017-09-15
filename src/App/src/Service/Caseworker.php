@@ -14,6 +14,8 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
  */
 class Caseworker
 {
+    use EntityToModelTrait;
+
     /**
      * @var EntityRepository
      */
@@ -36,6 +38,20 @@ class Caseworker
     }
 
     /**
+     * Find all caseworkers
+     *
+     * @return CaseworkerModel[]
+     * @throws InvalidInputException
+     */
+    public function findAll()
+    {
+        /** @var CaseworkerEntity[] $caseworkers */
+        $caseworkers = $this->repository->findBy([]);
+
+        return $this->translateToDataModelArray($caseworkers);
+    }
+
+    /**
      * Find a caseworker by ID
      *
      * @param int $id
@@ -45,13 +61,11 @@ class Caseworker
     public function findById(int $id)
     {
         /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneById($id);
+        $caseworker = $this->repository->findOneBy([
+            'id' => $id,
+        ]);
 
-        if (!$caseworker instanceof CaseworkerEntity) {
-            throw new InvalidInputException('Caseworker not found');
-        }
-
-        return $caseworker->getAsDataModel();
+        return $this->translateToDataModel($caseworker);
     }
 
     /**
@@ -65,13 +79,18 @@ class Caseworker
     public function findByCredentials(string $email, string $password)
     {
         /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneByEmail($email);
+        $caseworker = $this->repository->findOneBy([
+            'email' => $email,
+        ]);
 
-        if (!$caseworker instanceof CaseworkerEntity || $caseworker->getPasswordHash() != hash('sha256', $password)) {
+        /** @var CaseworkerModel $caseworkerModel */
+        $caseworkerModel = $this->translateToDataModel($caseworker);
+
+        if ($caseworkerModel->getPasswordHash() != hash('sha256', $password)) {
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $caseworker->getAsDataModel();
+        return $caseworkerModel;
     }
 
     /**
@@ -84,13 +103,11 @@ class Caseworker
     public function findByToken(string $token)
     {
         /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneByToken($token);
+        $caseworker = $this->repository->findOneBy([
+            'token' => $token,
+        ]);
 
-        if (!$caseworker instanceof CaseworkerEntity) {
-            throw new InvalidInputException('Caseworker not found');
-        }
-
-        return $caseworker->getAsDataModel();
+        return $this->translateToDataModel($caseworker);
     }
 
     /**

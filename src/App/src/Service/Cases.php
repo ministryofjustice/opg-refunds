@@ -38,7 +38,7 @@ class Cases
      */
     public function getAll()
     {
-        $caseEntities = $this->repository->findBy([], null);
+        $caseEntities = $this->repository->findBy([]);
 
         return $this->getDataModels($caseEntities);
     }
@@ -47,7 +47,7 @@ class Cases
     {
         $cases = [];
 
-        $caseEntities = $this->repository->findBy([], null);
+        $caseEntities = $this->repository->findBy([]);
         $caseDataModels = $this->getDataModels($caseEntities);
 
         foreach ($caseDataModels as $caseDataModel) {
@@ -64,7 +64,7 @@ class Cases
     public function getAllRefundable(Rsa $bankCipher)
     {
         //TODO: Return only those which can be refunded
-        $caseEntities = $this->repository->findBy([], null);
+        $caseEntities = $this->repository->findBy([]);
 
         return $this->getDataModels($caseEntities, $bankCipher);
     }
