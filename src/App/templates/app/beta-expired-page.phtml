@@ -3,15 +3,6 @@ $title = 'We are in beta';
 $this->layout('layout::default', [
     'title' => $title,
 ]);
-
-/*
- * Possible reasons:
- * - no-cookie
- * - link-used
- * - missing-data
- * - expired
- * - invalid-signature
- */
 ?>
 <div class="grid-row">
     <div class="column-two-thirds">
@@ -20,7 +11,7 @@ $this->layout('layout::default', [
             <?= $this->e($title) ?>
         </h1>
 
-        <p>You cannot access this page because: <?= $this->e($reason) ?></p>
+        <p>beta-expired-page</p>
 
     </div>
 </div>

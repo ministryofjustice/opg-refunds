@@ -79,8 +79,32 @@ class BetaCheckMiddleware implements ServerMiddlewareInterface
 
         //---
 
+        $isValid = isset($isValid) ? $isValid : 'no-cookie';
+
+        /*
+         * Possible reasons:
+         * - no-cookie
+         * - link-used
+         * - missing-data
+         * - expired
+         * - invalid-signature
+         */
+        switch ($isValid) {
+            case 'no-cookie':
+                $page = 'app::beta-unavailable-page';
+                break;
+            case 'link-used':
+                $page = 'app::beta-submitted-page';
+                break;
+            case 'expired':
+                $page = 'app::beta-expired-page';
+                break;
+            default:
+                $page = 'app::beta-invalid-page';
+        }
+
         // Display the error
-        return new Response\HtmlResponse( $this->templateRenderer->render('app::beta-page', [
+        return new Response\HtmlResponse( $this->templateRenderer->render($page, [
             'reason' => isset($isValid) ? $isValid : 'no-cookie'
         ]) );
     }
