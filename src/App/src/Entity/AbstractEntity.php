@@ -4,34 +4,75 @@ namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use DateTime;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Exception;
 
 abstract class AbstractEntity
 {
     /**
-     * @param array $excludeProperties Properties to remove from the array
-     * @param array $includeChildren Only include complex child properties if they are included here
-     * @return array
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
      */
-    public function toArray($excludeProperties = [], $includeChildren = []): array
-    {
-        $values = get_object_vars($this);
+    protected $dataModelClass;
 
-        foreach ($excludeProperties as $excludeProperty) {
-            unset($values[$excludeProperty]);
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * @param array $customFieldMappings
+     * @param array $excludeFilter
+     * @return AbstractDataModel
+     * @throws Exception
+     */
+    public function getAsDataModel(array $customFieldMappings = [], array $excludeFilter = [])
+    {
+        if (empty($this->dataModelClass)) {
+            throw new Exception('Model class string must be provided for conversion');
         }
 
-        foreach ($values as $k => $v) {
-            if ($v instanceof DateTime) {
-                $values[$k] = $v->format(DATE_ISO8601);
+        $entityMethods = get_class_methods($this);
+
+        $model = new $this->dataModelClass();
+
+        foreach ($entityMethods as $entityMethod) { //$varName => $varValue) {
+            //  Must be a get method to continue
+            if (strpos($entityMethod, 'get') !== 0) {
+                continue;
             }
 
-            if ($v instanceof PersistentCollection && in_array($k, $includeChildren)) {
-                $childValues = [];
-                foreach ($v as $value) {
-                    $childValues[] = $value->toArray();
+            //  Get the field name - excepting any mapping if provided
+            $entityFieldName = substr($entityMethod, 3);
+            $entityFieldName = (isset($customFieldMappings[$entityFieldName]) ? $customFieldMappings[$entityFieldName] : $entityFieldName);
+
+            //  Exclude the field if required
+            if (in_array($entityFieldName, $excludeFilter)) {
+                continue;
+            }
+
+            //  Try to find a set method on the model and use it
+            $entitySetMethod = 'set' . $entityFieldName;
+
+            if (method_exists($model, $entitySetMethod)) {
+                //  Determine which value to set
+                $value = $this->$entityMethod();
+
+                //  Don't set null values
+                if (is_null($value)) {
+                    continue;
                 }
-                $values[$k] = $childValues;
+
+                //  Transfer the value from the entity field to the model field
+                if ($value instanceof PersistentCollection) {
+                    $collection = [];
+
+                    foreach ($value as $i => $thisValue) {
+                        $collection[] = $thisValue->getAsDataModel();
+                    }
+
+                    $value = $collection;
+                }
+
+                $model->$entitySetMethod($value);
             }
 
             if (is_resource($v)) {
@@ -39,6 +80,6 @@ abstract class AbstractEntity
             }
         }
 
-        return $values;
+        return $model;
     }
 }

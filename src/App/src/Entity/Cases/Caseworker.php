@@ -5,6 +5,8 @@ namespace App\Entity\Cases;
 use App\Entity\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
 
 /**
  * @ORM\Entity @ORM\Table(name="caseworker")
@@ -13,6 +15,13 @@ class Caseworker extends AbstractEntity
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = CaseworkerModel::class;
 
     /**
      * @var int
@@ -206,8 +215,19 @@ class Caseworker extends AbstractEntity
         $this->assignedCases = $assignedCases;
     }
 
-    public function toArray($excludeProperties = ['passwordHash'], $includeChildren = ['assignedCases']): array
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * @param array $customFieldMappings
+     * @param array $excludeFilter
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $customFieldMappings = [], array $excludeFilter = [])
     {
-        return parent::toArray($excludeProperties, $includeChildren);
+        $customFieldMappings = array_merge($customFieldMappings, [
+            'AssignedCases' => 'RefundCases',
+        ]);
+
+        return parent::getAsDataModel($customFieldMappings, $excludeFilter);
     }
 }

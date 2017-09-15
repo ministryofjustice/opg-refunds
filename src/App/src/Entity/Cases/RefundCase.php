@@ -7,12 +7,20 @@ use App\Entity\AbstractEntity;
 use App\Service\IdentFormatter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
 
 /**
  * @ORM\Entity @ORM\Table(name="cases")
  **/
 class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
 {
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = RefundCaseModel::class;
+
     /**
      * @var int
      * @ORM\Id
@@ -294,7 +302,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Payment
      */
-    public function getPayment(): Payment
+    public function getPayment()
     {
         return $this->payment;
     }
@@ -305,12 +313,5 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
-    }
-
-    public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
-    {
-        $caseArray = parent::toArray($excludeProperties, $includeChildren);
-        $caseArray['referenceNumber'] = IdentFormatter::format($this->getId());
-        return $caseArray;
     }
 }

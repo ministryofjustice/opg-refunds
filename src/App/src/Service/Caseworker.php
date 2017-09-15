@@ -51,7 +51,7 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $this->convertToDataModel($caseworker);
+        return $caseworker->getAsDataModel();
     }
 
     /**
@@ -71,7 +71,7 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $this->convertToDataModel($caseworker);
+        return $caseworker->getAsDataModel();
     }
 
     /**
@@ -90,7 +90,7 @@ class Caseworker
             throw new InvalidInputException('Caseworker not found');
         }
 
-        return $this->convertToDataModel($caseworker);
+        return $caseworker->getAsDataModel();
     }
 
     /**
@@ -112,27 +112,5 @@ class Caseworker
         $this->entityManager->flush();
 
         return true;
-    }
-
-    /**
-     * Convert the doctrine entity into a data model
-     *
-     * @param CaseworkerEntity $caseworkerEntity
-     * @return CaseworkerModel
-     */
-    private function convertToDataModel(CaseworkerEntity $caseworkerEntity)
-    {
-        $caseworker = new CaseworkerModel();
-
-        $caseworker->setId($caseworkerEntity->getId())
-                   ->setName($caseworkerEntity->getName())
-                   ->setEmail($caseworkerEntity->getEmail())
-                   ->setPasswordHash($caseworkerEntity->getPasswordHash())
-                   ->setStatus($caseworkerEntity->getStatus())
-                   ->setRoles($caseworkerEntity->getRoles())
-                   ->setToken($caseworkerEntity->getToken())
-                   ->setTokenExpires($caseworkerEntity->getTokenExpires());
-
-        return $caseworker;
     }
 }
