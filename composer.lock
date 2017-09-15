@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b40c922aebad98b0ab16548095baa80",
+    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -882,6 +882,10 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
             "time": "2017-09-14T17:22:31+00:00"
         },
         {
@@ -4300,9 +4304,9 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
         "phpoffice/phpspreadsheet": 10,
-        "roave/security-advisories": 20,
-        "ministryofjustice/opg-refunds-caseworker-datamodels": 20
+        "roave/security-advisories": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
