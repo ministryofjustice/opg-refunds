@@ -16,7 +16,7 @@ class CaseworkerTest extends AbstractDataModelTestCase
               ->setEmail('case.worker@digital.justice.gov.uk')
               ->setPasswordHash('p@55w0rdh@$hh3r3')
               ->setStatus(1)
-              ->setRoles(Caseworker::CASEWORKER_ROLE_CASEWORKER)
+              ->setRoles(Caseworker::ROLE_CASEWORKER)
               ->setToken('abcdefghijklmnopqrstuvwxyz')
               ->setTokenExpires(1504925010);
 
@@ -25,7 +25,7 @@ class CaseworkerTest extends AbstractDataModelTestCase
         $this->assertEquals('case.worker@digital.justice.gov.uk', $model->getEmail());
         $this->assertEquals('p@55w0rdh@$hh3r3', $model->getPasswordHash());
         $this->assertEquals(1, $model->getStatus());
-        $this->assertEquals(Caseworker::CASEWORKER_ROLE_CASEWORKER, $model->getRoles());
+        $this->assertEquals(Caseworker::ROLE_CASEWORKER, $model->getRoles());
         $this->assertEquals('abcdefghijklmnopqrstuvwxyz', $model->getToken());
         $this->assertEquals(1504925010, $model->getTokenExpires());
     }
@@ -38,7 +38,7 @@ class CaseworkerTest extends AbstractDataModelTestCase
             'email' => 'case.worker@digital.justice.gov.uk',
             'password-hash' => 'p@55w0rdh@$hh3r3',
             'status' => 1,
-            'roles' => Caseworker::CASEWORKER_ROLE_CASEWORKER,
+            'roles' => Caseworker::ROLE_CASEWORKER,
             'token' => 'abcdefghijklmnopqrstuvwxyz',
             'token-expires' => 1504925010,
         ];
