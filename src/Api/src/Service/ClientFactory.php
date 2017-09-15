@@ -2,8 +2,8 @@
 
 namespace Api\Service;
 
-use Http\Client\HttpClient;
 use Interop\Container\ContainerInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
 use Zend\Authentication\Storage\Session;
 use Zend\Session\Container;
 
@@ -19,7 +19,7 @@ class ClientFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        //  TODO - Stop certificate verification temporarily until we have fixed the self signing cert issue - then use $container->get(HttpClient::class),
+        //  TODO - Stop certificate verification temporarily until we have fixed the self signing cert issue - then use $container->get(\Http\Client\HttpClient::class),
         $httpClient = \Http\Adapter\Guzzle6\Client::createWithConfig([
             'verify' => false,
         ]);
@@ -31,8 +31,9 @@ class ClientFactory
         $token = null;
         $session = new Container(Session::NAMESPACE_DEFAULT);
 
-        if (isset($session['storage']['token'])) {
-            $token = $session['storage']['token'];
+        if (isset($session['storage'])) {
+            $caseworker = $session['storage'];
+            $token = ($caseworker instanceof Caseworker ? $caseworker->getToken() : null);
         }
 
         return new Client(
