@@ -4,6 +4,8 @@ $elementId = "id-{$formElement->getName()}";
 
 $hasErrors = !empty($formElement->getMessages());
 
+$value = $formElement->getValue();
+
 ?>
 
 <div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
@@ -20,7 +22,13 @@ $hasErrors = !empty($formElement->getMessages());
 
             <div class="multiple-choice" <?php if (isset($option['dataTargetMarkup'])): ?>data-target="<?= "{$elementId}-{$name}-info" ?>"<?php endif ?>>
 
-                <input id="<?= "{$elementId}-{$name}" ?>" type="radio" name="<?= $this->e($formElement->getName()) ?>" value="<?= $this->e($formElement->getValueOptions()[$name]) ?>">
+                <input
+                    id="<?= "{$elementId}-{$name}" ?>"
+                    type="radio"
+                    name="<?= $this->e($formElement->getName()) ?>"
+                    value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
+                    <?= ($value == $formElement->getValueOptions()[$name])?' checked':'' ?>
+                >
 
                 <label class="form-label" for="<?= "{$elementId}-{$name}" ?>">
 

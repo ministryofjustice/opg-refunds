@@ -27,7 +27,20 @@ class DonorDetailsAction extends AbstractAction
         $isUpdate = isset($session['donor']);
 
         if ($request->getMethod() == 'POST') {
-            $form->setData($request->getParsedBody());
+            $data = $request->getParsedBody();
+            $form->setData($data);
+
+            // If they have not checked to enter a second name, don't validate those fields.
+            if (!isset($data['poa-name-different'])) {
+                // Filter out the optional fields.
+                $fieldsToValidate = array_flip(array_diff_key(
+                    array_flip(array_keys($form->getElements() + $form->getFieldsets())),
+                    // Remove the fields below from the validator.
+                    array_flip(['poa-title', 'poa-first', 'poa-last'])
+                ));
+
+                $form->setValidationGroup($fieldsToValidate);
+            }
 
             if ($form->isValid()) {
                 $session['donor'] = $form->getFormattedData();

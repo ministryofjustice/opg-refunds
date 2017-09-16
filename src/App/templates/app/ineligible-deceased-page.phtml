@@ -1,35 +1,14 @@
-<?php $this->layout('layout::standard', ['title'=>'As the donor has died']) ?>
+<?php $this->layout('layout::standard', ['title'=>'Sorry, you can\'t claim online']) ?>
 
 <p>
-  We're sorry but you can't claim unless the donor's estate is in probate.
-</p> 
+Please contact the Refunds Helpline.
+</p>
+
 <p>
-  This is because only the person who made a power of attorney, or 
-  their estate, is entitled to a refund.
+We will discuss your situation and let you know who is entitled 
+to claim the refund and what they need to do.
 </p> 
 
-<p>Fee refunds <a href="#">terms and conditions</a>.</p>
+<?php $this->insert('snippet::refunds-helpline');?>
 
-<h2 class="heading-medium">If the estate is in probate</h2>
-
-<p>The executor of the estate will need to call the Refunds Helpline.</p>
-
-<p>We'll ask for the probate reference number. </p> 
-
-<h2 class="heading-medium">Refunds Helpline</h2>
-
-<address>
-    <p>
-        Email: <a href="mailto:refunds@opg.gov.uk">refunds@opg.gov.uk</a><br>
-        Telephone: 0300 123 1122<br>
-        Textphone: 0300 123 1123<br>
-        Monday to Friday, 9am to 5pm<br>
-        <a href="https://www.gov.uk/call-charges">Find out about call charges</a>
-    </p>
-</address>
-
-<div class="panel panel-border-wide">
-    <p>
-    The claim deadline is 31 July 2020.
-    </p>
-</div>
+<?php $this->insert('snippet::claim-deadline');?>

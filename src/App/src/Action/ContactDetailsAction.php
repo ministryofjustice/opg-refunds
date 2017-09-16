@@ -29,7 +29,22 @@ class ContactDetailsAction extends AbstractAction
         ]);
 
         if ($request->getMethod() == 'POST') {
-            $form->setData($request->getParsedBody());
+            $data = $request->getParsedBody();
+            $form->setData($data);
+
+            $fields = array_keys($form->getElements() + $form->getFieldsets());
+
+            // Remove these values (initially)
+            $fields = array_diff($fields, ['email', 'phone']);
+
+            $key = 'contact-options';
+            if (isset($data[$key]) && is_array($data[$key]) && count($data[$key]) > 0
+            ){
+                // Add back in the selected postcode fields.
+                $fields = array_merge($fields, $data[$key]);
+            }
+
+            $form->setValidationGroup($fields);
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getData();

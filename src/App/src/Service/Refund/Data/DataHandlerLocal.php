@@ -42,7 +42,7 @@ class DataHandlerLocal implements DataHandlerInterface
             //----------------------------
             // (Attempt to) save the data
 
-            $sql  = 'INSERT INTO refund.application(id, created, processed, data) ';
+            $sql  = 'INSERT INTO application(id, created, processed, data) ';
             $sql .= 'VALUES(:id, :created, :processed, :data)';
 
             $statement = $this->db->prepare($sql);

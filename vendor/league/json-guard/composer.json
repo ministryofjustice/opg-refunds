@@ -1,0 +1,69 @@
+{
+    "name": "league/json-guard",
+    "type": "library",
+    "description": "A validator for JSON using json-schema.",
+    "keywords": [
+        "Validation",
+        "json",
+        "schema",
+        "json-schema",
+        "json-schema.org"
+    ],
+    "homepage": "https://github.com/thephpleague/json-guard",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Allan",
+            "email": "matthew.james.allan@gmail.com",
+            "homepage": "https://mattallan.org",
+            "role": "Developer"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "json-schema/JSON-Schema-Test-Suite",
+                "version": "1.2.0",
+                "source": {
+                    "url": "https://github.com/json-schema/JSON-Schema-Test-Suite",
+                    "type": "git",
+                    "reference": "1.2.0"
+                }
+            }
+        }
+    ],
+    "require": {
+        "php": ">=5.6.0",
+        "psr/container": "^1.0",
+        "ext-bcmath": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1",
+        "squizlabs/php_codesniffer": "~2.3",
+        "json-schema/JSON-Schema-Test-Suite": "1.2.0",
+        "league/json-reference": "1.0.0",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "League\\JsonGuard\\": "src"
+        },
+        "files": [
+            "src/functions.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "League\\JsonGuard\\Test\\": "tests",
+            "League\\JsonGuard\\Bench\\": "tests/benchmarks"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test-server": "php -S localhost:1234 -t ./vendor/json-schema/JSON-Schema-Test-Suite/remotes/",
+        "cs": "phpcs --standard=psr2 src/",
+        "bench": "phpbench run ./tests/benchmarks --report=default"
+    }
+}

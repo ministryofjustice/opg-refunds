@@ -3,17 +3,19 @@ namespace AppTest\Form;
 
 use PHPUnit\Framework\TestCase;
 
+use DateTime;
+use DateInterval;
+
 use App\Form\ActorDetails;
 use App\Form\Fieldset\Dob;
 
 class ActorDetailsTest extends TestCase
 {
 
-    private function getForm($dobOptional = false)
+    private function getForm()
     {
         return new ActorDetails([
-            'csrf' => bin2hex(random_bytes(32)),
-            'dob-optional' => $dobOptional
+            'csrf' => bin2hex(random_bytes(32))
         ]);
     }
 
@@ -23,10 +25,13 @@ class ActorDetailsTest extends TestCase
             'title' => 'Ms',
             'first' => 'Betty',
             'last' => 'Jones',
+            'poa-title' => 'Sir',
+            'poa-first' => 'Fred',
+            'poa-last' => 'Jones',
             'dob' => [
                 'day' => '1',
                 'month' => '1',
-                'year' => date('Y'),
+                'year' => date('Y') - 20,
             ]
         ];
     }
@@ -45,10 +50,13 @@ class ActorDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(4, $elements);
+        $this->assertCount(8, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);
+        $this->assertArrayHasKey( 'poa-title', $elements);
+        $this->assertArrayHasKey( 'poa-first', $elements);
+        $this->assertArrayHasKey( 'poa-last', $elements);
         $this->assertArrayHasKey( 'secret', $elements);
 
         //---
@@ -125,93 +133,43 @@ class ActorDetailsTest extends TestCase
         $this->assertFalse( $form->isValid() );
     }
 
+    //---------------------------------------------
+    // Optional Names Tests
+
+    public function testAllFieldsWithoutOptionalNamePresentAndValid()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['poa-title']);
+        unset($data['poa-first']);
+        unset($data['poa-last']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+
+        //---
+
+        // Filter out the optional fields.
+
+        $fieldsToValidate = array_flip(array_diff_key(
+            array_flip(array_keys($form->getElements() + $form->getFieldsets())),
+            // Remove the fields below from the validator.
+            array_flip(['poa-title', 'poa-first', 'poa-last'])
+        ));
+
+        $form->setValidationGroup($fieldsToValidate);
+
+        //---
+
+        $this->assertTrue( $form->isValid() );
+    }
 
     //---------------------------------------------
     // DOB Tests
-
-    public function testDobCanBeSetWhenOptional()
-    {
-        $form = $this->getForm( true );
-        $data = $this->getValidData();
-
-        $form->setData(
-            ['secret' => $form->get('secret')->getValue()] + $data
-        );
-
-        $this->assertTrue( $form->isValid() );
-    }
-
-    public function testDobCanBeMissingWhenOptional()
-    {
-        $form = $this->getForm( true );
-        $data = $this->getValidData();
-
-        $data['dob'] = [
-            'day' => '',
-            'month' => '',
-            'year' => '',
-        ];
-
-        $form->setData(
-            ['secret' => $form->get('secret')->getValue()] + $data
-        );
-
-        $this->assertTrue( $form->isValid() );
-    }
-
-    public function testDobCannotJustBeDayWhenMissing()
-    {
-        $form = $this->getForm( true );
-        $data = $this->getValidData();
-
-        $data['dob'] = [
-            'day' => '1',
-            'month' => '',
-            'year' => '',
-        ];
-
-        $form->setData(
-            ['secret' => $form->get('secret')->getValue()] + $data
-        );
-
-        $this->assertFalse( $form->isValid() );
-    }
-
-    public function testDobCannotJustBeMonthWhenMissing()
-    {
-        $form = $this->getForm( true );
-        $data = $this->getValidData();
-
-        $data['dob'] = [
-            'day' => '',
-            'month' => '2',
-            'year' => '',
-        ];
-
-        $form->setData(
-            ['secret' => $form->get('secret')->getValue()] + $data
-        );
-
-        $this->assertFalse( $form->isValid() );
-    }
-
-    public function testDobCannotJustBeYearWhenMissing()
-    {
-        $form = $this->getForm( true );
-        $data = $this->getValidData();
-
-        $data['dob'] = [
-            'day' => '',
-            'month' => '',
-            'year' => date('Y'),
-        ];
-
-        $form->setData(
-            ['secret' => $form->get('secret')->getValue()] + $data
-        );
-
-        $this->assertFalse( $form->isValid() );
-    }
 
     public function testDobDayRange()
     {
@@ -253,38 +211,131 @@ class ActorDetailsTest extends TestCase
         }
     }
 
-    public function testDobYearRange()
+    public function testValidDobYearRange()
     {
         $form = $this->getForm();
         $data = $this->getValidData();
 
-        $minYear = (int)date('Y') - Dob::MAX_AGE;
-        $maxYear = (int)date('Y');
+        $age18  = new DateTime('2017-04-01 -'.Dob::MIN_AGE.' years');
+        $age120 = new DateTime('2017-04-01 -'.Dob::MAX_AGE.' years +1 day');
 
-        for ($i = $minYear-1; $i <= $maxYear+1; $i++) {
-            $data['dob']['year'] = $i;
+        $testDate = clone $age120;
+
+        while ($testDate < $age18) {
+            $data['dob']['year'] = $testDate->format('Y');
+            $data['dob']['month'] = $testDate->format('m');
+            $data['dob']['day'] = $testDate->format('d');
 
             $form->setData(
                 ['secret' => $form->get('secret')->getValue()] + $data
             );
 
-            if ($i > $minYear-1 && $i < $maxYear+1) {
-                $this->assertTrue( $form->isValid() );
-            } else {
-                $this->assertFalse( $form->isValid() );
-            }
+            $this->assertTrue( $form->isValid() );
+
+            $testDate->add( new DateInterval('P1M') );
         }
+    }
+
+    public function testInvalidDobYearRange()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $age18 = new DateTime('2017-04-01 -'.Dob::MIN_AGE.' years');
+
+        $age18->add( new DateInterval('P1D') );
+
+        $data['dob']['year'] = $age18->format('Y');
+        $data['dob']['month'] = $age18->format('m');
+        $data['dob']['day'] = $age18->format('d');
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+
+        //---
+
+        $age120 = new DateTime('2017-04-01 -'.Dob::MAX_AGE.' years');
+
+        $age120->sub( new DateInterval('P1D') );
+
+        $data['dob']['year'] = $age120->format('Y');
+        $data['dob']['month'] = $age120->format('m');
+        $data['dob']['day'] = $age120->format('d');
+
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
     }
 
     public function testWellFormattedButInvalidDate()
     {
-        $form = $this->getForm( true );
+        $form = $this->getForm();
         $data = $this->getValidData();
 
         $data['dob'] = [
             'day' => '30',
             'month' => '2',
             'year' => '1987',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenAllDateIsZero()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '0',
+            'month' => '0',
+            'year' => '0',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenYearIsZero()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '30',
+            'month' => '2',
+            'year' => '0',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testWhenFarFutureDate()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '20',
+            'month' => '11',
+            'year' => '2100',
         ];
 
         $form->setData(

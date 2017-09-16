@@ -1,0 +1,58 @@
+<?php
+$title = 'Postcodes on power of attorney';
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<p>We need at least one postcode from the power of attorney.</p>
+
+<div class="panel panel-border-wide">
+    <p>Postcodes are on the registered document.</p>
+</div>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
+    <h1 class="heading-medium">
+        What postcodes can you supply?
+    </h1>
+    <span class="body-text">Select all options that are relevant to you.</span>
+
+    <?php $this->insert('snippet::input-checkboxes', [
+        'formElement' => $form->get('postcode-options'),
+        'question' => 'What postcodes can you supply? Select all options that are relevant to you.',
+        'options' => [
+            'donor-postcode' => [
+                'optionLabel' => "Donor postcode",
+                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                    'formElement' => $form->get('donor-postcode'),
+                    'formLabel' => 'Donor postcode',
+                    'formType' => 'text',
+                    'formHint' => 'When power of attorney was made',
+                    'formLabelBold' => true
+                ])
+            ],
+            'attorney-postcode' => [
+                'optionLabel' => "Attorney postcode",
+                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                    'formElement' => $form->get('attorney-postcode'),
+                    'formLabel' => 'Attorney postcode',
+                    'formType' => 'text',
+                    'formHint' => 'When power of attorney was made',
+                    'formLabelBold' => true
+                ])
+            ]
+        ],
+    ])
+    ?>
+
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>

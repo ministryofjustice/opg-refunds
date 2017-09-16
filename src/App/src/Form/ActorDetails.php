@@ -68,12 +68,76 @@ class ActorDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+
+        //------------------------
+        // POA Name - Checkbox
+
+        $field = new Element\Checkbox('poa-name-different', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - Title
+
+        $field = new Element\Text('poa-title');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - First
+
+        $field = new Element\Text('poa-first');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - Last
+
+        $field = new Element\Text('poa-last');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
         //------------------------
         // DOB
 
-        $dob = new Fieldset\Dob(
-            ($options['dob-optional']) ?? false
-        );
+        $dob = new Fieldset\Dob();
 
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');
@@ -87,10 +151,17 @@ class ActorDetails extends AbstractForm
 
     public function setFormattedData(array $data)
     {
-
         $data['title'] = $data['name']['title'] ?? null;
         $data['first'] = $data['name']['first'] ?? null;
         $data['last'] = $data['name']['last'] ?? null;
+
+        $data['poa-title'] = $data['poa-name']['title'] ?? null;
+        $data['poa-first'] = $data['poa-name']['first'] ?? null;
+        $data['poa-last'] = $data['poa-name']['last'] ?? null;
+
+        if (isset($data['poa-first'])) {
+            $data['poa-name-different'] = 'yes';
+        }
 
         if (isset($data['dob'])) {
             $dob = $data['dob'];
@@ -112,6 +183,14 @@ class ActorDetails extends AbstractForm
         $response = [];
 
         $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+
+        if (isset($result['poa-first'])) {
+            $response['poa-name'] = [
+                'title' => $result['poa-title'],
+                'first' => $result['poa-first'],
+                'last' => $result['poa-last'],
+            ];
+        }
 
         //---
 

@@ -34,6 +34,9 @@ $app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/test', App\Action\TestAction::class, 'test');
 $app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck.json');
 
+$app->get('/terms', App\Action\TermsPageAction::class, 'terms');
+$app->get('/cookies', App\Action\CookiesPageAction::class, 'cookies');
+
 $app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session');
 
 //---
@@ -53,7 +56,8 @@ $prefix = '/application/by-{who:donor|attorney}';
 
 $app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
 $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
-$app->route($prefix.'/verification', App\Action\VerificationDetailsAction::class, ['GET', 'POST'], 'apply.verification');
+$app->route($prefix.'/case-number', App\Action\CaseNumberAction::class, ['GET', 'POST'], 'apply.case');
+$app->route($prefix.'/postcode', App\Action\PostcodeAction::class, ['GET', 'POST'], 'apply.postcode');
 $app->route($prefix.'/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
 $app->route($prefix.'/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
 $app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET', 'POST'], 'apply.summary');

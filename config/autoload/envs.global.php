@@ -12,6 +12,12 @@ return [
         ],
     ],
 
+    'json' => [
+        'schema' => [
+            'path' => 'config/json-schema.json'
+        ]
+    ],
+
     'beta' => [
 
         // Set to false when we move out of beta
@@ -63,11 +69,11 @@ return [
         'postgresql' => [
 
             'adapter' => 'pgsql',
-            'host' => getenv('API_DATABASE_HOSTNAME') ?: null,
-            'port' => getenv('API_DATABASE_PORT') ?: null,
-            'dbname' => getenv('API_DATABASE_NAME') ?: null,
-            'username' => getenv('API_DATABASE_USERNAME') ?: null,
-            'password' => getenv('API_DATABASE_PASSWORD') ?: null,
+            'host' => getenv('OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME') ?: null,
+            'port' => getenv('OPG_REFUNDS_DB_APPLICATIONS_PORT') ?: null,
+            'dbname' => getenv('OPG_REFUNDS_DB_APPLICATIONS_NAME') ?: null,
+            'username' => getenv('OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME') ?: null,
+            'password' => getenv('OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD') ?: null,
             'options' => [
                 PDO::ATTR_PERSISTENT => true
             ]

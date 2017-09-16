@@ -30,10 +30,11 @@ class ContactDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(3, $elements);
+        $this->assertCount(4, $elements);
         $this->assertArrayHasKey( 'email', $elements);
-        $this->assertArrayHasKey( 'mobile', $elements);
+        $this->assertArrayHasKey( 'phone', $elements);
         $this->assertArrayHasKey( 'secret', $elements);
+        $this->assertArrayHasKey( 'contact-options', $elements);
     }
 
     public function testFilters()
@@ -41,7 +42,7 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => ' 07635 860 432 ',
+            'phone' => ' 07635 860 432 ',
             'email' => ' test@eXample.com ',
             'secret' => $form->get('secret')->getValue()
         ]);
@@ -50,59 +51,8 @@ class ContactDetailsTest extends TestCase
 
         $values = $form->getData();
 
-        $this->assertEquals( '07635860432', $values['mobile'] );
+        $this->assertEquals( '07635860432', $values['phone'] );
         $this->assertEquals( 'test@example.com', $values['email'] );
-    }
-
-    public function testEmailIsValidated()
-    {
-
-        $form = $this->getForm();
-
-        $form->setData([
-            'email' => 'test@example.com',
-            'mobile' => '',
-            'secret' => $form->get('secret')->getValue()
-        ]);
-
-        $this->assertTrue( $form->isValid() );
-
-        //---
-
-        $form = $this->getForm();
-
-        $form->setData([
-            'email' => 'not-an-email',
-            'mobile' => '',
-            'secret' => $form->get('secret')->getValue()
-        ]);
-
-        $this->assertFalse( $form->isValid() );
-    }
-
-    public function testMobileIsValidated()
-    {
-        $form = $this->getForm();
-
-        $form->setData([
-            'mobile' => '07635860432',
-            'email' => '',
-            'secret' => $form->get('secret')->getValue()
-        ]);
-
-        $this->assertTrue( $form->isValid() );
-
-        //---
-
-        $form = $this->getForm();
-
-        $form->setData([
-            'mobile' => 'not-a-mobile',
-            'email' => '',
-            'secret' => $form->get('secret')->getValue()
-        ]);
-
-        $this->assertFalse( $form->isValid() );
     }
 
     public function testValidationWhenTogether()
@@ -110,9 +60,10 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
-            'secret' => $form->get('secret')->getValue()
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertTrue( $form->isValid() );
@@ -122,9 +73,10 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '0763586043d',
+            'phone' => '0763586043d',
             'email' => 'test@example.com',
-            'secret' => $form->get('secret')->getValue()
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -134,9 +86,10 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860437',
+            'phone' => '07635860437',
             'email' => 'test-example.com',
-            'secret' => $form->get('secret')->getValue()
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -151,9 +104,10 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
-            'secret' => 'incorrect-secret'
+            'secret' => 'incorrect-secret',
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -165,8 +119,9 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '07635860432',
+            'phone' => '07635860432',
             'email' => 'test@example.com',
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -185,8 +140,9 @@ class ContactDetailsTest extends TestCase
         $form = $this->getForm();
 
         $form->setData([
-            'mobile' => '',
-            'secret' => $form->get('secret')->getValue()
+            'phone' => '',
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -197,7 +153,8 @@ class ContactDetailsTest extends TestCase
 
         $form->setData([
             'email' => '',
-            'secret' => $form->get('secret')->getValue()
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
@@ -208,8 +165,9 @@ class ContactDetailsTest extends TestCase
 
         $form->setData([
             'email' => '',
-            'mobile' => '',
-            'secret' => $form->get('secret')->getValue()
+            'phone' => '',
+            'secret' => $form->get('secret')->getValue(),
+            'contact-options' => ['email','phone']
         ]);
 
         $this->assertFalse( $form->isValid() );
