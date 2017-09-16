@@ -3,6 +3,13 @@ $title = ($applicant == 'attorney') ? 'Your details (attorney)' : 'Attorney deta
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
+
+
+// Error messages are in a snippet as shared between donor and attorney page
+$this->fetch('snippet::actor-errors', [
+    'firstPerson' => ($applicant != 'donor')
+]);
+
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

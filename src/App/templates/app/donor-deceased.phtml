@@ -7,6 +7,15 @@ $this->layout('layout::standard', [
 
 $form->setAttribute('method', 'get');
 $form->setAttribute('action', $this->url('eligibility.deceased.answer'));
+
+$this->addErrorMap([
+    'donor-deceased' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Confirm if the donor is alive or has died'
+        ]
+    ]
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

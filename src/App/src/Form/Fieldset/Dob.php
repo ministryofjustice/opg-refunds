@@ -8,10 +8,10 @@ use Zend\InputFilter\Input;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator\Callback;
-use Zend\Validator\Date;
 use Zend\Validator\ValidatorInterface;
 
 use App\Validator;
+use App\Filter\Sprintf as SprintfFilter;
 use App\Filter\StandardInput as StandardInputFilter;
 
 class Dob extends Fieldset
@@ -46,7 +46,9 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\NotEmpty(
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+            ), true)
             ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -67,7 +69,9 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\NotEmpty(
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+            ), true)
             ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -88,7 +92,9 @@ class Dob extends Fieldset
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\NotEmpty(
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+            ), true)
             ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -126,13 +132,15 @@ class Dob extends Fieldset
         return $combined;
     }
 
+    //---------------------------------------
+
     private function getValidDateValidator() : ValidatorInterface
     {
         return (new Callback(function ($value, $context) {
             if (count(array_filter($context)) != 3) {
-                return false;
+                return true;
             }
-            return checkdate($context['month'], $context['day'], $context['year']);
+            return checkdate($context['month'], $context['day'], $context['year']) && ($context['year'] < 9999);
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }
 
@@ -151,7 +159,7 @@ class Dob extends Fieldset
                 return true;
             }
 
-            $born = new DateTime("{$context['year']}-{$context['month']}-{$context['day']}");
+            $born = DateTime::createFromFormat('Y-m-d', "{$context['year']}-{$context['month']}-{$context['day']}");
 
             return ($born < new DateTime);
         }))->setMessage('future-date', Callback::INVALID_VALUE);
@@ -172,10 +180,10 @@ class Dob extends Fieldset
                 return true;
             }
 
-            $born = new DateTime("{$context['year']}-{$context['month']}-{$context['day']}");
+            $born = DateTime::createFromFormat('Y-m-d', "{$context['year']}-{$context['month']}-{$context['day']}");
 
             // Over 18 on the 1st April 2017
-            return ($born->diff(new DateTime('2017-04-01'))->y >= self::MIN_AGE);
+            return ($born->diff(new DateTime)->y >= self::MIN_AGE);
         }))->setMessage('too-young', Callback::INVALID_VALUE);
     }
 
@@ -194,10 +202,10 @@ class Dob extends Fieldset
                 return true;
             }
 
-            $born = new DateTime("{$context['year']}-{$context['month']}-{$context['day']}");
+            $born = DateTime::createFromFormat('Y-m-d', "{$context['year']}-{$context['month']}-{$context['day']}");
 
             // Under 120 on the 1st April 2017
-            return ($born->diff(new DateTime('2017-04-01'))->y < self::MAX_AGE);
+            return ($born->diff(new DateTime)->y < self::MAX_AGE);
         }))->setMessage('too-old', Callback::INVALID_VALUE);
     }
 
