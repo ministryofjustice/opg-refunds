@@ -33,10 +33,33 @@ class BetaAction extends AbstractAction
 
         $isValid = $this->checker->isLinkValid($id, $expires, $signature);
 
-        if (!$isValid) {
-            return new Response\HtmlResponse( $this->getTemplateRenderer()->render('app::beta-page', [
-                'reason' => $isValid
-            ]) );
+        if (is_string($isValid)) {
+
+            /*
+             * Possible reasons:
+             * - no-cookie
+             * - link-used
+             * - missing-data
+             * - expired
+             * - invalid-signature
+             */
+            switch ($isValid) {
+                case 'no-cookie':
+                    $page = 'app::beta-unavailable-page';
+                    break;
+                case 'link-used':
+                    $page = 'app::beta-submitted-page';
+                    break;
+                case 'expired':
+                    $page = 'app::beta-expired-page';
+                    break;
+                default:
+                    $page = 'app::beta-invalid-page';
+            }
+
+            // Display the error
+            return new Response\HtmlResponse( $this->getTemplateRenderer()->render($page) );
+
         }
 
         //--------------------
