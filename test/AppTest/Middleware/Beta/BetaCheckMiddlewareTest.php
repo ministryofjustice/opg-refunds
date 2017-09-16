@@ -79,7 +79,7 @@ class BetaCheckMiddlewareTest extends TestCase
     {
         $middleware = $this->getInstance(true);
 
-        $this->templateRenderer->render( Argument::type('string'),[ 'reason'=>'no-cookie' ] )
+        $this->templateRenderer->render( 'app::beta-unavailable-page' )
             ->willReturn( self::TEST_HTML )
             ->shouldBeCalled();
 
@@ -99,7 +99,7 @@ class BetaCheckMiddlewareTest extends TestCase
     {
         $middleware = $this->getInstance(true);
 
-        $this->templateRenderer->render( Argument::type('string'),[ 'reason'=>'no-cookie' ] )
+        $this->templateRenderer->render( 'app::beta-unavailable-page' )
             ->willReturn( self::TEST_HTML )
             ->shouldBeCalled();
 
@@ -123,7 +123,7 @@ class BetaCheckMiddlewareTest extends TestCase
     {
         $middleware = $this->getInstance(true);
 
-        $this->templateRenderer->render( Argument::type('string'),[ 'reason'=>self::TEST_ERROR_SLUG ] )
+        $this->templateRenderer->render( 'app::beta-invalid-page' )
             ->willReturn( self::TEST_HTML )
             ->shouldBeCalled();
 
@@ -147,7 +147,7 @@ class BetaCheckMiddlewareTest extends TestCase
     {
         $middleware = $this->getInstance(true);
 
-        $this->templateRenderer->render( Argument::type('string'),[ 'reason'=>'link-used' ] )
+        $this->templateRenderer->render( 'app::beta-submitted-page' )
             ->willReturn( self::TEST_HTML )
             ->shouldBeCalled();
 
