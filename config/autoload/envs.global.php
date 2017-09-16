@@ -21,7 +21,7 @@ return [
     'beta' => [
 
         // Set to false when we move out of beta
-        'enabled' => true,
+        'enabled' => false,
 
         'cookie' => [
             'name' => 'beta'
