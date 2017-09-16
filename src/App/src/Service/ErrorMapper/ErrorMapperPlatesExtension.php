@@ -21,8 +21,8 @@ class ErrorMapperPlatesExtension implements ExtensionInterface
 
     public function register(Engine $engine)
     {
-        $engine->registerFunction('addLocalErrorMap', [$this->mapper, 'addLocalMap']);
-        $engine->registerFunction('addFieldErrorMap', [$this->mapper, 'addFieldMap']);
-        $engine->registerFunction('humanError', [$this->mapper, 'getHumanMessage']);
+        $engine->registerFunction('addErrorMap', [$this->mapper, 'addErrorMap']);
+        $engine->registerFunction('summaryError', [$this->mapper, 'getSummaryError']);
+        $engine->registerFunction('fieldError', [$this->mapper, 'getFieldError']);
     }
 }

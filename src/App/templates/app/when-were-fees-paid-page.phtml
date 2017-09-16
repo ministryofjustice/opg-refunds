@@ -8,9 +8,15 @@ $this->layout('layout::standard', [
 $form->setAttribute('method', 'get');
 $form->setAttribute('action', $this->url('eligibility.when.answer'));
 
-$this->addLocalErrorMap([
-    'required' => 'field is required'
+$this->addErrorMap([
+    'fees-in-range' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Select yes if you think you paid between April 2013 and March 2017'
+        ]
+    ]
 ]);
+
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

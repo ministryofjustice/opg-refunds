@@ -5,60 +5,29 @@ use Zend\Stdlib\ArrayUtils;
 
 class ErrorMapper
 {
-
     /**
-     * Error mappings across the whole site.
-     *
+     * Store of error messages.
      * @var array
      */
-    private $globalMap = array();
+    private $errors = array();
 
-    /**
-     * Error mappings across the whole site for a specific field.
-     *
-     * @var array
-     */
-    private $globalFieldMap = array();
-
-    /**
-     * Error mappings for local (page level) messages.
-     *
-     * @var array
-     */
-    private $localMap = array();
-
-    /**
-     * Error mappings for local (page level) messages, for a specific field.
-     *
-     * @var array
-     */
-    private $localFieldMap = array();
-
-
-    public function addLocalMap(array $map)
+    public function addErrorMap(array $map, $locale = 'en-GB')
     {
-        $this->localMap = ArrayUtils::merge($this->localMap, $map);
-    }
-
-    public function addFieldMap(array $map)
-    {
-        $this->fieldMap = ArrayUtils::merge($this->fieldMap, $map);
-    }
-
-    public function getHumanMessage($field, $slug, $locale = 'en-GB')
-    {
-        $map = $this->globalMap;
-
-        if (isset($this->globalFieldMap[$field])) {
-            $map = ArrayUtils::merge($map, $this->globalFieldMap[$field]);
+        // Ensure there's an array for the locale
+        if (!isset($this->errors[$locale])) {
+            $this->errors[$locale] = array();
         }
 
-        $map = ArrayUtils::merge($map, $this->localMap);
+        $this->errors[$locale] = ArrayUtils::merge($this->errors[$locale], $map);
+    }
 
-        if (isset($this->localFieldMap[$field])) {
-            $map = ArrayUtils::merge($map, $this->localFieldMap[$field]);
-        }
+    public function getSummaryError($field, $slug, $locale = 'en-GB')
+    {
+        return ($this->errors[$locale][$field][$slug]['summary']) ?? $slug;
+    }
 
-        return ($map[$slug]) ?? $slug;
+    public function getFieldError($field, $slug, $locale = 'en-GB')
+    {
+        return ($this->errors[$locale][$field][$slug]['field']) ?? $slug;
     }
 }
