@@ -7,6 +7,15 @@ $this->layout('layout::standard', [
 
 $form->setAttribute('method', 'get');
 $form->setAttribute('action', $this->url('eligibility.who.answer'));
+
+$this->addErrorMap([
+    'who' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Confirm if you are the donor or an attorney'
+        ]
+    ]
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

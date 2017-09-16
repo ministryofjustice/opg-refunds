@@ -23,11 +23,13 @@ class ErrorMapper
 
     public function getSummaryError($field, $slug, $locale = 'en-GB')
     {
+        $slug = explode(':', $slug)[0];
         return ($this->errors[$locale][$field][$slug]['summary']) ?? $slug;
     }
 
     public function getFieldError($field, $slug, $locale = 'en-GB')
     {
+        $slug = explode(':', $slug)[0];
         return ($this->errors[$locale][$field][$slug]['field']) ?? $slug;
     }
 }

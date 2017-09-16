@@ -130,7 +130,7 @@ class Dob extends Fieldset
     {
         return (new Callback(function ($value, $context) {
             if (count(array_filter($context)) != 3) {
-                return false;
+                return true;
             }
             return checkdate($context['month'], $context['day'], $context['year']);
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
