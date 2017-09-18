@@ -69,7 +69,6 @@ class RefundCaseTest extends AbstractDataModelTestCase
         $now = new DateTime();
 
         $model->setId(12345678)
-              ->setReferenceNumber('REF-1234')
               ->setCreatedDateTime($now)
               ->setUpdatedDateTime($now)
               ->setReceivedDateTime($now)
@@ -82,7 +81,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
               ->setPayment($this->payment);
 
         $this->assertEquals(12345678, $model->getId());
-        $this->assertEquals('REF-1234', $model->getReferenceNumber());
+        $this->assertEquals('R000 1234 5678', $model->getReferenceNumber());
         $this->assertEquals($now, $model->getCreatedDateTime());
         $this->assertEquals($now, $model->getUpdatedDateTime());
         $this->assertEquals($now, $model->getReceivedDateTime());
@@ -101,7 +100,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
 
         $data = [
             'id'                 => 12345678,
-            'reference-number'   => 'REF-1234',
+            'reference-number'   => 'R000 1234 5678',
             'created-date-time'  => $this->dateTimeToString($now),
             'updated-date-time'  => $this->dateTimeToString($now),
             'received-date-time' => $this->dateTimeToString($now),
