@@ -69,7 +69,9 @@ class ContactDetails extends AbstractForm
         );
 
         // Special case: override the validator the field returns to allow a empty value.
-        $field->setValidator( $emailValidator );
+        $field->setValidator( new Validator\AllowEmptyValidatorWrapper(
+            $emailValidator
+        ));
 
         //---
 
