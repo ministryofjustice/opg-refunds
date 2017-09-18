@@ -11,7 +11,7 @@
 <p>We will use these details to:</p>
 
 <ul class="list list-bullet">
-    <li>send email or text message updates - if a refund is approved, for example</li>
+    <li>send you email or text message updates about the refund</li>
     <li>contact you if we need more information</li> 
 </ul>
 
@@ -19,44 +19,31 @@
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     
-    <div class="form-group">
-        <fieldset>
-
-            <legend>
-                <h1 class="heading-medium">
-                What are your contact details?
-                </h1>
-                <span class="body-text">Select all options that are relevant to you.</span>
-            </legend>
-
-            <?php $this->insert('snippet::input-checkboxes', [
-                'formElement' => $form->get('contact-options'),
-                'question' => 'What are your contact details? Select all options that are relevant to you.',
-                'options' => [
-                    'email' => [
-                        'optionLabel' => "Email address",
-                        'dataTargetMarkup' => $this->fetch('snippet::input-text', [
-                            'formElement' => $form->get('email'),
-                            'formLabel' => 'Email address',
-                            'formType' => 'text',
-                            'formLabelBold' => true
-                        ])
-                    ],
-                    'phone' => [
-                        'optionLabel' => "Phone number",
-                        'dataTargetMarkup' => $this->fetch('snippet::input-text', [
-                            'formElement' => $form->get('phone'),
-                            'formLabel' => 'Phone number (mobile or landline)',
-                            'formType' => 'text',
-                            'formLabelBold' => true
-                        ])
-                    ]
-                ],
-            ])
-            ?>
-
-        </fieldset>
-    </div>
+    <?php $this->insert('snippet::input-checkboxes', [
+        'formElement' => $form->get('contact-options'),
+        'question' => 'What contact details can you give?',
+        'options' => [
+            'email' => [
+                'optionLabel' => "Email",
+                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                    'formElement' => $form->get('email'),
+                    'formLabel' => 'Email address',
+                    'formType' => 'text',
+                    'formLabelBold' => true
+                ])
+            ],
+            'phone' => [
+                'optionLabel' => "Phone number (mobile or landline)",
+                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                    'formElement' => $form->get('phone'),
+                    'formLabel' => 'Phone number',
+                    'formType' => 'text',
+                    'formLabelBold' => true
+                ])
+            ]
+        ],
+    ])
+    ?>
 
     <div class="form-group">
         <input type="submit" class="button" value="Continue">

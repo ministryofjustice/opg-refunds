@@ -1,5 +1,5 @@
 <?php
-$title = 'Postcodes on power of attorney';
+$title = 'Postcodes on the power of attorney';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
@@ -7,42 +7,37 @@ $this->layout('layout::standard', [
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<p>We need at least one postcode from the power of attorney.</p>
+<p>We need at least one postcode from <?= ($applicant == 'donor') ? "your" : "the donor's" ?> power of attorney, at the time it was registered.</p>
 
 <div class="panel panel-border-wide">
-    <p>Postcodes are on the registered document.</p>
+    <p>We just need what was on one of the documents so we can look up 
+    <?= ($applicant == 'donor') ? "your" : "the donor's" ?> case.
+    So don't worry if you've moved or if there's more than one power of attorney.</p>
 </div>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
-    <h1 class="heading-medium">
-        What postcodes can you supply?
-    </h1>
-    <span class="body-text">Select all options that are relevant to you.</span>
-
     <?php $this->insert('snippet::input-checkboxes', [
         'formElement' => $form->get('postcode-options'),
-        'question' => 'What postcodes can you supply? Select all options that are relevant to you.',
+        'question' => 'What postcodes can you give?',
         'options' => [
             'donor-postcode' => [
-                'optionLabel' => "Donor postcode",
+                'optionLabel' => "Donor postcode on power of attorney document",
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('donor-postcode'),
                     'formLabel' => 'Donor postcode',
                     'formType' => 'text',
-                    'formHint' => 'When power of attorney was made',
                     'formLabelBold' => true
                 ])
             ],
             'attorney-postcode' => [
-                'optionLabel' => "Attorney postcode",
+                'optionLabel' => "Attorney postcode on power of attorney document",
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('attorney-postcode'),
                     'formLabel' => 'Attorney postcode',
                     'formType' => 'text',
-                    'formHint' => 'When power of attorney was made',
                     'formLabelBold' => true
                 ])
             ]
