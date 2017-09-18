@@ -6,7 +6,6 @@ use Api\Exception;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -71,18 +70,13 @@ class Client
     }
 
     /**
-     * Get all cases
+     * Get all refund cases
      *
-     * @return array|null
+     * @return array
      */
-    public function getCases()
+    public function getRefundCases()
     {
-        $cases = [];
-        $casesArray = $this->httpGet('/v1/cases/cases');
-        foreach ($casesArray as $caseArray) {
-            $cases[] = new RefundCase($caseArray);
-        }
-        return $cases;
+        return $this->httpGet('/v1/cases/refund-case');
     }
 
     /**

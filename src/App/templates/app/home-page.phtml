@@ -7,7 +7,7 @@
 <table>
     <thead>
     <tr>
-        <th>Case / ref number</th>
+        <th>Refund case / ref number</th>
         <th>Donor name</th>
         <th>Date received</th>
         <th>Date claim modified</th>
@@ -15,15 +15,21 @@
     </tr>
     </thead>
     <tbody>
-    <?php foreach ($caseworker->getRefundCases() as $refundCase) { ?>
-        <tr>
-            <td><?= $refundCase->getReferenceNumber() ?></td>
-            <td><?= $refundCase->getDonorName() ?></td>
-            <td><?= $refundCase->getReceivedDateTime()->format('d/m/Y') ?></td>
-            <td><?= ($refundCase->getUpdatedDateTime() ?: $refundCase->getReceivedDateTime())->format('d/m/Y') ?></td>
-            <td>View</td>
-        </tr>
-    <?php } ?>
+        <?php if (count($caseworker->getRefundCases())) { ?>
+            <?php foreach ($caseworker->getRefundCases() as $refundCase) { ?>
+                <tr>
+                    <td><?= $refundCase->getReferenceNumber() ?></td>
+                    <td><?= $refundCase->getDonorName() ?></td>
+                    <td><?= $refundCase->getReceivedDateTime()->format('d/m/Y') ?></td>
+                    <td><?= ($refundCase->getUpdatedDateTime() ?: $refundCase->getReceivedDateTime())->format('d/m/Y') ?></td>
+                    <td>View</td>
+                </tr>
+            <?php } ?>
+        <?php } else { ?>
+            <tr>
+                <td colspan="5">No claims</td>
+            </tr>
+        <?php } ?>
     </tbody>
 </table>
 
@@ -32,7 +38,7 @@
 <table>
     <thead>
         <tr>
-            <th>Case / ref number</th>
+            <th>Refund case / ref number</th>
             <th>Donor name</th>
             <th>Date received</th>
             <th>Date claim modified</th>
@@ -40,15 +46,21 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach ($cases as $case) { ?>
-        <tr>
-            <td><?= $case->getReferenceNumber() ?></td>
-            <td><?= $case->getDonorName() ?></td>
-            <td><?= $case->getReceivedDateTime()->format('d/m/Y') ?></td>
-            <td><?= ($case->getUpdatedDateTime() ?: $case->getReceivedDateTime())->format('d/m/Y') ?></td>
-            <td><?= $case->getStatus() ?></td>
-        </tr>
-    <?php } ?>
+        <?php if (count($refundCases)) { ?>
+            <?php foreach ($refundCases as $refundCase) { ?>
+                <tr>
+                    <td><?= $refundCase->getReferenceNumber() ?></td>
+                    <td><?= $refundCase->getDonorName() ?></td>
+                    <td><?= $refundCase->getReceivedDateTime()->format('d/m/Y') ?></td>
+                    <td><?= ($refundCase->getUpdatedDateTime() ?: $refundCase->getReceivedDateTime())->format('d/m/Y') ?></td>
+                    <td><?= $refundCase->getStatus() ?></td>
+                </tr>
+            <?php } ?>
+        <?php } else { ?>
+            <tr>
+                <td colspan="5">No claims</td>
+            </tr>
+        <?php } ?>
     </tbody>
 </table>
 

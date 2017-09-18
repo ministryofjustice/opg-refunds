@@ -4,6 +4,7 @@ namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -27,11 +28,17 @@ class HomePageAction extends AbstractApiClientAction
         $caseworkerData = $this->getApiClient()->getCaseworker($identity->getId());
         $caseworker = new Caseworker($caseworkerData);
 
-        $cases = $this->getApiClient()->getCases();
+        $refundCases = [];
+
+        $refundCasesData = $this->getApiClient()->getRefundCases();
+
+        foreach ($refundCasesData as $refundCaseData) {
+            $refundCases[] = new RefundCase($refundCaseData);
+        }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'caseworker' => $caseworker,
-            'cases' => $cases,
+            'caseworker'  => $caseworker,
+            'refundCases' => $refundCases,
         ]));
     }
 }
