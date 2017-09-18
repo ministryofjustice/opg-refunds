@@ -51,7 +51,7 @@ class AuthenticationService
     public function validatePassword(string $email, string $password)
     {
         /** @var Caseworker $caseworker */
-        $caseworker = $this->caseworkerService->findByCredentials($email, $password);
+        $caseworker = $this->caseworkerService->getByCredentials($email, $password);
 
         //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
@@ -90,7 +90,7 @@ class AuthenticationService
     public function validateToken(string $token)
     {
         /** @var Caseworker $caseworker */
-        $caseworker = $this->caseworkerService->findByToken($token);
+        $caseworker = $this->caseworkerService->getByToken($token);
 
         //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {

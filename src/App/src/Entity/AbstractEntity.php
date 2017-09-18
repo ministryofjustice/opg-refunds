@@ -34,7 +34,7 @@ abstract class AbstractEntity
 
         $model = new $this->dataModelClass();
 
-        foreach ($entityMethods as $entityMethod) { //$varName => $varValue) {
+        foreach ($entityMethods as $entityMethod) {
             //  Must be a get method to continue
             if (strpos($entityMethod, 'get') !== 0) {
                 continue;
@@ -73,10 +73,6 @@ abstract class AbstractEntity
                 }
 
                 $model->$entitySetMethod($value);
-            }
-
-            if (is_resource($v)) {
-                $values[$k] = stream_get_contents($v);
             }
         }
 

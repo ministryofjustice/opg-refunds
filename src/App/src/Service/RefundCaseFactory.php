@@ -3,21 +3,23 @@
 namespace App\Service;
 
 use Interop\Container\ContainerInterface;
+use Zend\Crypt\PublicKey\Rsa;
 
 /**
- * Class CasesFactory
+ * Class RefundCaseFactory
  * @package App\Service
  */
-class CasesFactory
+class RefundCaseFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Cases
+     * @return RefundCase
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new Cases(
-            $container->get('doctrine.entity_manager.orm_cases')
+        return new RefundCase(
+            $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(Rsa::class)
         );
     }
 }

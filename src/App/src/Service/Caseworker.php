@@ -38,12 +38,11 @@ class Caseworker
     }
 
     /**
-     * Find all caseworkers
+     * Get all caseworkers
      *
      * @return CaseworkerModel[]
-     * @throws InvalidInputException
      */
-    public function findAll()
+    public function getAll()
     {
         /** @var CaseworkerEntity[] $caseworkers */
         $caseworkers = $this->repository->findBy([]);
@@ -52,13 +51,12 @@ class Caseworker
     }
 
     /**
-     * Find a caseworker by ID
+     * Get a specific caseworker
      *
      * @param int $id
      * @return CaseworkerModel
-     * @throws InvalidInputException
      */
-    public function findById(int $id)
+    public function getById(int $id)
     {
         /** @var CaseworkerEntity $caseworker */
         $caseworker = $this->repository->findOneBy([
@@ -69,14 +67,14 @@ class Caseworker
     }
 
     /**
-     * Find a caseworker by a set of credentials - used by authentication
+     * Get a caseworker using a set of credentials - used by authentication
      *
      * @param string $email
      * @param string $password
      * @return CaseworkerModel
      * @throws InvalidInputException
      */
-    public function findByCredentials(string $email, string $password)
+    public function getByCredentials(string $email, string $password)
     {
         /** @var CaseworkerEntity $caseworker */
         $caseworker = $this->repository->findOneBy([
@@ -94,13 +92,12 @@ class Caseworker
     }
 
     /**
-     * Find a caseworker by a request token value - used by authentication
+     * Get a caseworker using a request token - used by authentication
      *
      * @param string $token
      * @return CaseworkerModel
-     * @throws InvalidInputException
      */
-    public function findByToken(string $token)
+    public function getByToken(string $token)
     {
         /** @var CaseworkerEntity $caseworker */
         $caseworker = $this->repository->findOneBy([

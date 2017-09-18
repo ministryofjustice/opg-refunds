@@ -2,7 +2,7 @@
 
 namespace App\Spreadsheet;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
 use App\Service\IdentFormatter;
 use DateTime;
 
@@ -11,7 +11,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
     const WORKSHEET_NAME = 'Data';
 
     /**
-     * @param CaseDataModel[] $cases the source data to generate the worksheet from. Should be a multidimensional array
+     * @param RefundCaseModel[] $cases the source data to generate the worksheet from. Should be a multidimensional array
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
     public function generate(array $cases): SpreadsheetWorksheet

@@ -4,7 +4,7 @@ namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetRow;
 use App\Spreadsheet\SsclWorksheetGenerator;
@@ -31,7 +31,7 @@ class SsclWorksheetGeneratorTest extends TestCase
     private $applicationBuilder;
 
     /**
-     * @var CaseDataModel
+     * @var RefundCase
      */
     private $case;
 
@@ -73,7 +73,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
     public function testSingleCase()
     {
-        /** @var CaseDataModel[] $cases */
+        /** @var RefundCase[] $cases */
         $cases = [
             $this->case
         ];
@@ -91,7 +91,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         foreach ($rows as $idx => $row) {
             $cells = $row->getCells();
 
-            /** @var CaseDataModel $case */
+            /** @var RefundCase $case */
             $case = $cases[$idx];
             $account = $case->getApplication()->getAccount();
             $payment = $case->getPayment();

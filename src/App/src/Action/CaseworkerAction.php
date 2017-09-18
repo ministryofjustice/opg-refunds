@@ -39,13 +39,13 @@ class CaseworkerAction implements ServerMiddlewareInterface
         $caseworkerId = $request->getAttribute('id');
 
         if (is_numeric($caseworkerId)) {
-            $caseworker = $this->caseworkerService->findById($caseworkerId);
+            $caseworker = $this->caseworkerService->getById($caseworkerId);
 
             return new JsonResponse($caseworker->toArray());
         }
 
         //  Get all of the caseworkers
-        $caseworkers = $this->caseworkerService->findAll();
+        $caseworkers = $this->caseworkerService->getAll();
         $caseworkersData = [];
 
         foreach ($caseworkers as $caseworker) {

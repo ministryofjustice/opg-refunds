@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\Cases;
+use App\Service\RefundCase as RefundCaseService;
 use Applications\Service\DataMigration;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -10,21 +10,25 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
-class CasesAction implements ServerMiddlewareInterface
+/**
+ * Class RefundCaseAction
+ * @package App\Action
+ */
+class RefundCaseAction implements ServerMiddlewareInterface
 {
     /**
-     * @var Cases
+     * @var RefundCaseService
      */
-    private $casesService;
+    private $refundCaseService;
 
     /**
      * @var DataMigration
      */
     private $dataMigrationService;
 
-    public function __construct(Cases $casesService, DataMigration $dataMigrationService)
+    public function __construct(RefundCaseService $refundCaseService, DataMigration $dataMigrationService)
     {
-        $this->casesService = $casesService;
+        $this->refundCaseService = $refundCaseService;
         $this->dataMigrationService = $dataMigrationService;
     }
 
@@ -42,9 +46,14 @@ class CasesAction implements ServerMiddlewareInterface
         //TODO: Get proper migration running via cron job
         $this->dataMigrationService->migrateAll();
 
-        //TODO: Paging
-        $cases = $this->casesService->getAllAsArray();
+        //  Get all of the refund cases
+        $refundCases = $this->refundCaseService->getAll();
+        $refundCasesData = [];
 
-        return new JsonResponse($cases);
+        foreach ($refundCases as $refundCase) {
+            $refundCasesData[] = $refundCase->toArray();
+        }
+
+        return new JsonResponse($refundCasesData);
     }
 }

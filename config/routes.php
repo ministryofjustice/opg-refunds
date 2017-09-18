@@ -32,7 +32,7 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
 $prefix = '/v1/cases';
-$app->get($prefix . '/cases', App\Action\CasesAction::class, 'cases');
+$app->get($prefix . '/refund-case', App\Action\RefundCaseAction::class, 'refund-case');
 $app->get($prefix . '/caseworker[/{id:\d+}]', App\Action\CaseworkerAction::class, 'caseworker');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
 
