@@ -12,7 +12,7 @@ $this->layout('layout::standard', [
 <div class="panel panel-border-wide">
     <p>We just need what was on one of the documents so we can look up 
     <?= ($applicant == 'donor') ? "your" : "the donor's" ?> case.
-    So don't worry if you’ve moved or if there's more than one power of attorney.</p>
+    So don't worry if you've moved or if there's more than one power of attorney.</p>
 </div>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
