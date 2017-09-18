@@ -83,12 +83,15 @@ class ProcessApplication
              * If a mobile number was entered, we send a SMS message.
              */
             if (isset($contact['phone']) && !empty($contact['phone'])) {
+                // Strip off county codes for UK numbers.
+                $phone = preg_replace('/^[+]?[0]*44/', '0', $contact['phone']);
+
                 // 070 numbers are personal, non-mobile, numbers.
-                $isMobile = (bool)preg_match('/^07/', $contact['phone']) && !preg_match('/^070/', $contact['phone']);
+                $isMobile = (bool)preg_match('/^07/', $phone) && !preg_match('/^070/', $phone);
 
                 if ($isMobile) {
                     // Send SMS...
-                    $this->notifyClient->sendSms($contact['phone'], 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                    $this->notifyClient->sendSms($phone, 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
                         'ref' => IdentFormatter::format($reference),
                     ]);
                 }
