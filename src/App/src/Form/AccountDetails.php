@@ -36,6 +36,26 @@ class AccountDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+        //------------------------
+        // Account Number
+
+        $field = new Element\Text('account-number');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
+            ->attach((new Validator\StringLength(['min' => 8, 'max' => 8])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //---
+
+        $this->addCsrfElement($inputFilter);
 
         //------------------------
         // Sort Code
@@ -57,26 +77,5 @@ class AccountDetails extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
-
-        //------------------------
-        // Account Number
-
-        $field = new Element\Text('account-number');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach(new Validator\Digits, true)
-            ->attach((new Validator\StringLength(['min' => 8, 'max' => 8])));
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-        //---
-
-        $this->addCsrfElement($inputFilter);
     }
 }

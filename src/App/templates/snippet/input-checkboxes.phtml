@@ -20,7 +20,7 @@ $vales = $formElement->getValue() ?? array();
         <legend class="visually-hidden"><?= $this->e($question) ?></legend>
 
         <?php foreach($formElement->getMessages() as $message): ?>
-            <p class="error-message"><?= $this->e($message) ?></p>
+            <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
         <?php endforeach ?>
 
         <?php foreach($options as $name => $option): ?>

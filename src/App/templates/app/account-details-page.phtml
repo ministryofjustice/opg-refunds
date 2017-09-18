@@ -4,7 +4,56 @@ $title = ($applicant == 'donor') ? 'Your bank details' : 'Donor\'s bank details'
 $this->layout('layout::standard',
     [
         'title' => $title
-    ])
+    ]);
+
+$this->addErrorMap([
+    'name' => [
+        'required' => [
+            'summary'   => 'You must give the account holder name',
+            'field'     => 'Enter the name'
+        ],
+        'too-long' => [
+            'summary'   => 'Account holder name is too long',
+            'field'     => 'Enter a valid name'
+        ]
+    ],
+    'account-number' => [
+        'required' => [
+            'summary'   => 'You must give the account number',
+            'field'     => 'Enter the account number'
+        ],
+        'too-long' => [
+            'summary'   => 'Account number is too long',
+            'field'     => 'Enter 8 numbers'
+        ],
+        'too-short' => [
+            'summary'   => 'Account number is too short',
+            'field'     => 'Enter 8 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Account number can\'t contain letters',
+            'field'     => 'Enter 8 numbers'
+        ],
+    ],
+    'sort-code' => [
+        'required' => [
+            'summary'   => 'You must give the sort code',
+            'field'     => 'Enter the sort code'
+        ],
+        'too-long' => [
+            'summary'   => 'Sort code is too long',
+            'field'     => 'Enter 6 numbers'
+        ],
+        'too-short' => [
+            'summary'   => 'Sort code is too short',
+            'field'     => 'Enter 6 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Sort code can\'t contain letters',
+            'field'     => 'Enter 6 numbers'
+        ],
+    ],
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
