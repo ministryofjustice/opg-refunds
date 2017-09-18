@@ -858,12 +858,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "9f821d78ce1e20514af22ab509fe27636532d6ef"
+                "reference": "6277a63334cd327d900e4fd356457b6c5372f47e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9f821d78ce1e20514af22ab509fe27636532d6ef",
-                "reference": "9f821d78ce1e20514af22ab509fe27636532d6ef",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/6277a63334cd327d900e4fd356457b6c5372f47e",
+                "reference": "6277a63334cd327d900e4fd356457b6c5372f47e",
                 "shasum": ""
             },
             "require": {
@@ -886,7 +886,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-191-caseworker_roles_screens",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-09-15 23:18:22"
+            "time": "2017-09-18 20:52:05"
         },
         {
             "name": "nikic/fast-route",

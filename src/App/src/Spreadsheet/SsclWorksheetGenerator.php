@@ -3,7 +3,6 @@
 namespace App\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
-use App\Service\IdentFormatter;
 use DateTime;
 
 class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
@@ -27,7 +26,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
 
             $cells[] = new SpreadsheetCell(0, $rowIndex, 'MOJ');
             $cells[] = new SpreadsheetCell(3, $rowIndex, 'Client');
-            $cells[] = new SpreadsheetCell(4, $rowIndex, IdentFormatter::format($case->getId()));
+            $cells[] = new SpreadsheetCell(4, $rowIndex, $case->getReferenceNumber());
             $cells[] = new SpreadsheetCell(5, $rowIndex, $account->getName());
             $cells[] = new SpreadsheetCell(6, $rowIndex, 'UNDEFINED');
             $cells[] = new SpreadsheetCell(7, $rowIndex, 'UNDEFINED');

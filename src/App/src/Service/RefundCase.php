@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
 use App\Entity\Cases\RefundCase as RefundCaseEntity;
@@ -80,10 +81,6 @@ class RefundCase
      */
     public function translateToDataModel($entity)
     {
-        //  Get the case from the trait method
-        /** @var RefundCaseModel $refundCase */
-        $refundCase = $this->traitTranslateToDataModel($entity);
-
         /** @var RefundCaseEntity $entity */
         $applicationJsonData = $entity->getJsonData();
         $application = new Application($applicationJsonData);
@@ -91,15 +88,20 @@ class RefundCase
         if ($this->bankCipher !== null) {
             $applicationArray = json_decode($applicationJsonData, true);
             $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
+
             $application->getAccount()
                 ->setAccountNumber($accountDetails['account-number'])
                 ->setSortCode($accountDetails['sort-code']);
         }
 
+        //  Get the case using the trait method
+        /** @var RefundCaseModel $refundCase */
+        $refundCase = $this->traitTranslateToDataModel($entity);
+
         $refundCase->setApplication($application);
         $assignedTo = $entity->getAssignedTo();
 
-        if ($assignedTo !== null) {
+        if ($assignedTo instanceof Caseworker) {
             $refundCase->setAssignedToId($assignedTo->getId());
         }
 

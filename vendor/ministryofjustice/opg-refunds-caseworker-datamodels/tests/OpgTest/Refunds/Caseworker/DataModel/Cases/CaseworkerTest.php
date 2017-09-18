@@ -36,7 +36,7 @@ class CaseworkerTest extends AbstractDataModelTestCase
             'id' => 5,
             'name' => 'Mr Case Worker',
             'email' => 'case.worker@digital.justice.gov.uk',
-            'password-hash' => 'p@55w0rdh@$hh3r3',
+            //  password-hash is not returned in toArray for security
             'status' => 1,
             'roles' => Caseworker::ROLE_CASEWORKER,
             'token' => 'abcdefghijklmnopqrstuvwxyz',

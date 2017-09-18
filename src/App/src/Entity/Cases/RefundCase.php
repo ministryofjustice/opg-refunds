@@ -3,7 +3,6 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
-use App\Service\IdentFormatter;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
@@ -312,25 +311,5 @@ class RefundCase extends AbstractEntity
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
-    }
-
-    /**
-     * Returns the entity as a datamodel structure
-     *
-     * @param array $customFieldMappings
-     * @param array $excludeFilter
-     * @return AbstractDataModel
-     * @throws Exception
-     */
-    public function getAsDataModel(array $customFieldMappings = [], array $excludeFilter = [])
-    {
-        /** @var RefundCaseModel $refundCase */
-        $refundCase = parent::getAsDataModel($customFieldMappings, $excludeFilter);
-
-        //  Set the formatted reference number
-        $referenceNumber = IdentFormatter::format($refundCase->getId());
-        $refundCase->setReferenceNumber($referenceNumber);
-
-        return $refundCase;
     }
 }
