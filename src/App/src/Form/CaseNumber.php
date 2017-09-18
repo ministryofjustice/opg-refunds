@@ -36,9 +36,10 @@ class CaseNumber extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
+            ->attach(new Validator\Digits, true)
             ->attach($this->getOnlineLapValidator(), true)
             ->attach($this->getCaseNumberValidator(), true)
-            ->attach((new Validator\StringLength(['max' => 15])));
+            ->attach((new Validator\StringLength(['max' => 12])));
 
         $this->add($field);
         $inputFilter->add($input);

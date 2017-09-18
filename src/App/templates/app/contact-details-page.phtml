@@ -1,9 +1,44 @@
 <?php 
-    $title = 'Your contact details';
-    $this->layout('layout::standard',
-    [
-        'title' => $title
-    ])
+$title = 'Your contact details';
+$this->layout('layout::standard',
+[
+    'title' => $title
+]);
+
+$this->addErrorMap([
+    'contact-options' => [
+        'required' => [
+            'summary'   => 'You must choose a way to be contacted',
+            'field'     => 'Choose how we contact you'
+        ]
+    ],
+    'email' => [
+        'required' => [
+            'summary'   => 'You haven\'t given your email address',
+            'field'     => 'Enter your email address'
+        ],
+        'email-invalid' => [
+            'summary'   => 'Check your email address',
+            'field'     => 'Enter a valid email address'
+        ],
+        // If the hostname was invalid, so was the email address.
+        // Thus there's no need to output the hostname validation
+        'hostname-invalid' => [
+            'summary'   => '',
+            'field'     => ''
+        ],
+    ],
+    'phone' => [
+        'required' => [
+            'summary'   => 'You haven\'t given your phone number',
+            'field'     => 'Enter your phone number'
+        ],
+        'phone-invalid' => [
+            'summary'   => 'Check your phone number',
+            'field'     => 'Enter a valid phone number'
+        ]
+    ]
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

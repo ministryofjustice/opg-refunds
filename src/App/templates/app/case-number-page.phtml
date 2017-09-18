@@ -3,6 +3,37 @@ $title = 'Can you give a reference number?';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
+
+$this->addErrorMap([
+    'have-poa-case-number' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Tell us if you can give a reference number'
+        ]
+    ],
+    'poa-case-number' => [
+        'required' => [
+            'summary'   => 'You haven\'t given a reference number',
+            'field'     => 'Enter a power of attorney reference number or change your answer'
+        ],
+        'too-long' => [
+            'summary'   => 'The reference must be 7 or 12 numbers long',
+            'field'     => 'Enter a reference - 7 or 12 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Check the reference number',
+            'field'     => 'Enter a reference - 7 or 12 numbers, no letters'
+        ],
+        'invalid-case-number' => [
+            'summary'   => 'The reference must be 7 or 12 numbers long',
+            'field'     => 'Enter a reference - 7 or 12 numbers'
+        ],
+        'lpa-tool-ref' => [
+            'summary'   => 'The reference must be 7 or 12 numbers long',
+            'field'     => 'Enter a reference - 7 or 12 numbers'
+        ],
+    ]
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>

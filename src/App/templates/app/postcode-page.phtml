@@ -3,6 +3,35 @@ $title = 'Postcodes on the power of attorney';
 $this->layout('layout::standard', [
     'title' => $title,
 ]);
+
+$this->addErrorMap([
+    'postcode-options' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'You must give at least one postcode'
+        ]
+    ],
+    'donor-postcode' => [
+        'required' => [
+            'summary'   => 'You haven\'t entered the donor postcode',
+            'field'     => 'Enter the donor postcode'
+        ],
+        'too-long' => [
+            'summary'   => 'This postcode is too long',
+            'field'     => 'Enter a valid postcode'
+        ],
+    ],
+    'attorney-postcode' => [
+        'required' => [
+            'summary'   => 'You haven\'t entered the donor postcode',
+            'field'     => 'Enter the donor postcode'
+        ],
+        'too-long' => [
+            'summary'   => 'This postcode is too long',
+            'field'     => 'Enter a valid postcode'
+        ],
+    ],
+]);
 ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
