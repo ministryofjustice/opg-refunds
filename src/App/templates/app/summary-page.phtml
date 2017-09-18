@@ -17,8 +17,12 @@ $this->layout('layout::default', [
         'title' => 'Donor details',
         'fields' => [
             [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
-            [ 'value' => (isset($details['donor']['poa-name']['first'])) ? "{$details['donor']['poa-name']['title']} {$details['donor']['poa-name']['first']} {$details['donor']['poa-name']['last']}" : null ],
             [ 'value' => date('j F Y', strtotime($details['donor']['dob'])) ],
+            [
+                    'label' => (isset($details['donor']['poa-name']['first'])) ? 'Name on power of attorney' : null,
+                    'value' => (isset($details['donor']['poa-name']['first'])) ? "{$details['donor']['poa-name']['title']} {$details['donor']['poa-name']['first']} {$details['donor']['poa-name']['last']}" : null
+            ],
+
         ],
         'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>
@@ -27,8 +31,11 @@ $this->layout('layout::default', [
         'title' => 'Attorney details',
         'fields' => [
             [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
-            [ 'value' => (isset($details['attorney']['poa-name']['first'])) ? "{$details['attorney']['poa-name']['title']} {$details['attorney']['poa-name']['first']} {$details['attorney']['poa-name']['last']}" : null ],
             [ 'value' => date('j F Y', strtotime($details['attorney']['dob'])) ],
+            [
+                'label' => (isset($details['attorney']['poa-name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['attorney']['poa-name']['first'])) ? "{$details['attorney']['poa-name']['title']} {$details['attorney']['poa-name']['first']} {$details['attorney']['poa-name']['last']}" : null
+            ],
         ],
         'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
     ]) ?>
@@ -53,11 +60,11 @@ $this->layout('layout::default', [
             'fields' => [
                 [
                     'label' => 'Donor postcode',
-                    'value' => ($details['postcodes']['donor-postcode']) ?? null
+                    'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
                 ],
                 [
                     'label' => 'Attorney postcode',
-                    'value' => ($details['postcodes']['attorney-postcode']) ?? null
+                    'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
                 ]
             ],
             'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
@@ -70,11 +77,11 @@ $this->layout('layout::default', [
         'fields' => [
             [
                 'label' => 'Email address',
-                'value' => ($details['contact']['email']) ?? null
+                'value' => ($details['contact']['email']) ?? 'Not entered'
             ],
             [
                 'label' => 'Phone number',
-                'value' => ($details['contact']['phone']) ?? null
+                'value' => ($details['contact']['phone']) ?? 'Not entered'
             ]
         ],
         'changeURL' => $this->url('apply.contact', ['who'=>$applicant])
