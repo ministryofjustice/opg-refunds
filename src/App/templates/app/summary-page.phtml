@@ -42,7 +42,7 @@ $this->layout('layout::default', [
 
 
     <?php $this->insert('snippet::check-your-details-section', [
-        'title' => 'Power of attorney case number',
+        'title' => 'Reference number',
         'fields' => [
             [ 'value' => isset($details['case-number']['poa-case-number']) ?
                 (strlen($details['case-number']['poa-case-number']) == 12)
