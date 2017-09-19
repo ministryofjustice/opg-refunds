@@ -22,5 +22,4 @@ abstract class AbstractAction implements
 
         return FlowController::routeAccessible($matchedRoute, $session, $request->getAttribute('who'));
     }
-
 }

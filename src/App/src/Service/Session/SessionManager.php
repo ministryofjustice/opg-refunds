@@ -110,7 +110,6 @@ class SessionManager
 
         // Save
         $this->dynamoDbSessionConnection->write($this->hashId($id), $data, $changed);
-
     }
 
     /**
@@ -146,5 +145,4 @@ class SessionManager
     {
         return hash('sha512', $id.$data);
     }
-
 }

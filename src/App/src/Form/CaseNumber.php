@@ -67,7 +67,7 @@ class CaseNumber extends AbstractForm
     public function getFormattedData()
     {
         // Filter out empty values
-        return array_filter( parent::getData() );
+        return array_filter(parent::getData());
     }
 
     /**

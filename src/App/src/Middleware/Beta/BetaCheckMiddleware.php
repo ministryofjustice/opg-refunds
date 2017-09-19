@@ -103,6 +103,6 @@ class BetaCheckMiddleware implements ServerMiddlewareInterface
         }
 
         // Display the error
-        return new Response\HtmlResponse( $this->templateRenderer->render($page) );
+        return new Response\HtmlResponse($this->templateRenderer->render($page));
     }
 }

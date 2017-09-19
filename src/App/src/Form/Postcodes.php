@@ -59,7 +59,6 @@ class Postcodes extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
-
     }
 
     public function getFormattedData()
@@ -67,7 +66,6 @@ class Postcodes extends AbstractForm
         $data = parent::getData();
 
         // Filter out empty values
-        return array_filter( $data );
+        return array_filter($data);
     }
-
 }

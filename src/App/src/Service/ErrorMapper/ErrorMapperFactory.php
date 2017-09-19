@@ -10,5 +10,4 @@ class ErrorMapperFactory
     {
         return new ErrorMapper;
     }
-
 }

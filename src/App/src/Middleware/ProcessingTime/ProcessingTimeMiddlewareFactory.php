@@ -27,5 +27,4 @@ class ProcessingTimeMiddlewareFactory
 
         return new ProcessingTimeMiddleware($time);
     }
-
 }

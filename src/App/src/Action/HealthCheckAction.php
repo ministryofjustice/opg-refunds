@@ -43,7 +43,7 @@ class HealthCheckAction implements ServerMiddlewareInterface
 
         $ok = true;
 
-        foreach($result as $test){
+        foreach ($result as $test) {
             $ok = $ok && $test['ok'];
         }
 
@@ -58,27 +58,26 @@ class HealthCheckAction implements ServerMiddlewareInterface
     private function numberOdValidAsymmetricKeys()
     {
 
-        if(!isset($this->config['security']['rsa']['keys']['public'])){
+        if (!isset($this->config['security']['rsa']['keys']['public'])) {
             return 0;
         }
 
         $paths = $this->config['security']['rsa']['keys']['public'];
 
-        if(!is_array($paths)){
+        if (!is_array($paths)) {
             return 0;
         }
 
         //---
 
         $found = 0;
-        foreach($paths as $path){
-
+        foreach ($paths as $path) {
             try {
                 // This will exception if the file can't be found or if it's not valid as a key
                 \Zend\Crypt\PublicKey\Rsa\PublicKey::fromFile($path);
                 $found++;
-            } catch (Exception $e){}
-
+            } catch (Exception $e) {
+            }
         }
 
         return $found;

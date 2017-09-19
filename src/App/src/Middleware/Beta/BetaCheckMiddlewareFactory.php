@@ -29,5 +29,4 @@ class BetaCheckMiddlewareFactory
             $config['beta']['enabled']
         );
     }
-
 }

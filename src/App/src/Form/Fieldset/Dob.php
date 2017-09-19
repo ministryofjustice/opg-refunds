@@ -123,7 +123,7 @@ class Dob extends Fieldset
     {
         $messages = parent::getMessages($elementName);
 
-        $combined = array();
+        $combined = [];
 
         foreach ($messages as $errors) {
             $combined = array_merge($combined, $errors);
@@ -208,5 +208,4 @@ class Dob extends Fieldset
             return ($born->diff(new DateTime)->y < self::MAX_AGE);
         }))->setMessage('too-old', Callback::INVALID_VALUE);
     }
-
 }

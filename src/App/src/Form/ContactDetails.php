@@ -69,7 +69,7 @@ class ContactDetails extends AbstractForm
         );
 
         // Special case: override the validator the field returns to allow a empty value.
-        $field->setValidator( new Validator\AllowEmptyValidatorWrapper(
+        $field->setValidator(new Validator\AllowEmptyValidatorWrapper(
             $emailValidator
         ));
 
@@ -95,7 +95,7 @@ class ContactDetails extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
-            ->attach( $this->getPhoneNumberValidator(), true );
+            ->attach($this->getPhoneNumberValidator(), true);
 
 
         $this->add($field);

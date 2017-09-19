@@ -9,13 +9,13 @@ class ErrorMapper
      * Store of error messages.
      * @var array
      */
-    private $errors = array();
+    private $errors = [];
 
     public function addErrorMap(array $map, $locale = 'en-GB')
     {
         // Ensure there's an array for the locale
         if (!isset($this->errors[$locale])) {
-            $this->errors[$locale] = array();
+            $this->errors[$locale] = [];
         }
 
         $this->errors[$locale] = ArrayUtils::merge($this->errors[$locale], $map);

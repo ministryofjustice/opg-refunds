@@ -47,16 +47,15 @@ class DataHandlerLocal implements DataHandlerInterface
 
             $statement = $this->db->prepare($sql);
 
-            $statement->bindValue(':id', $id, PDO::PARAM_INT );
-            $statement->bindValue(':created', date('r'), PDO::PARAM_STR );
-            $statement->bindValue(':processed', false, PDO::PARAM_BOOL );
-            $statement->bindValue(':data', $data, PDO::PARAM_LOB );
+            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+            $statement->bindValue(':created', date('r'), PDO::PARAM_STR);
+            $statement->bindValue(':processed', false, PDO::PARAM_BOOL);
+            $statement->bindValue(':data', $data, PDO::PARAM_LOB);
 
             try {
                 $statement->execute();
 
                 $failed = false;
-
             } catch (\PDOException $e) {
                 // If it's not a duplicate key error, re-throw it.
                 if ($e->getCode() != 23505) {
@@ -73,5 +72,4 @@ class DataHandlerLocal implements DataHandlerInterface
 
         return $id;
     }
-
 }

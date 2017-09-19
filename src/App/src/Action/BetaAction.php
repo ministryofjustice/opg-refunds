@@ -34,7 +34,6 @@ class BetaAction extends AbstractAction
         $isValid = $this->checker->isLinkValid($id, $expires, $signature);
 
         if (is_string($isValid)) {
-
             /*
              * Possible reasons:
              * - no-cookie
@@ -58,8 +57,7 @@ class BetaAction extends AbstractAction
             }
 
             // Display the error
-            return new Response\HtmlResponse( $this->getTemplateRenderer()->render($page) );
-
+            return new Response\HtmlResponse($this->getTemplateRenderer()->render($page));
         }
 
         //--------------------
@@ -74,14 +72,14 @@ class BetaAction extends AbstractAction
         // If we don't have a cookie AND the user has not already been redirect
         // Redirect them, ensuring we send the cookie.
         if (!$haveCookie && !$haveQuery) {
-            $response = new Response\RedirectResponse($this->getUrlHelper()->generate().'?cookies=1' );
+            $response = new Response\RedirectResponse($this->getUrlHelper()->generate().'?cookies=1');
             return $this->addCookieToResponse($response, $id, $expires, $signature);
         }
 
         // If we still don't have a cookie after the user has been redirected
         // Display the cookies disabled page.
         if (!$haveCookie && $haveQuery) {
-            return new Response\HtmlResponse( $this->getTemplateRenderer()->render('app::cookies-disabled-page'));
+            return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::cookies-disabled-page'));
         }
 
         //--------------------
