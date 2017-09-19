@@ -77,6 +77,11 @@ class Application
     }
 
     /**
+     * IMPORTANT - $this->data is set as a PHP "resource" by Doctrine but leaving it like that means that
+     * repeated calls to this function will yield different results (i.e. the first call will return the full
+     * string and subsequent calls will return a blank string). Therefore on the first call the resource is set
+     * to a proper string value.
+     *
      * @return string
      */
     public function getData(): string

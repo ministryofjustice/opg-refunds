@@ -2,12 +2,10 @@
 
 namespace App\Action;
 
-use App\Service\RefundCase as RefundCaseService;
-use App\Service\SpreadsheetService;
+use App\Service\Spreadsheet;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
-use Zend\Crypt\PublicKey\Rsa;
 
 /**
  * Class SpreadsheetActionFactory
@@ -30,7 +28,7 @@ class SpreadsheetActionFactory
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
 
         return new SpreadsheetAction(
-            $container->get(SpreadsheetService::class),
+            $container->get(Spreadsheet::class),
             $spreadsheetWorksheetGenerator,
             $spreadsheetGenerator
         );

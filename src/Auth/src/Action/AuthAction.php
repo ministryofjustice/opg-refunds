@@ -4,7 +4,7 @@ namespace Auth\Action;
 
 use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
-use Auth\Service\AuthenticationService;
+use Auth\Service\Authentication;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,16 +17,16 @@ use Zend\Diactoros\Response\JsonResponse;
 class AuthAction implements ServerMiddlewareInterface
 {
     /**
-     * @var AuthenticationService
+     * @var Authentication
      */
     private $authService;
 
     /**
      * AuthAction constructor
      *
-     * @param AuthenticationService $authService
+     * @param Authentication $authService
      */
-    public function __construct(AuthenticationService $authService)
+    public function __construct(Authentication $authService)
     {
         $this->authService = $authService;
     }

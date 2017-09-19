@@ -6,18 +6,18 @@ use Interop\Container\ContainerInterface;
 use Zend\Crypt\PublicKey\Rsa;
 
 /**
- * Class SpreadsheetServiceFactory
+ * Class SpreadsheetFactory
  * @package App\Service
  */
-class SpreadsheetServiceFactory
+class SpreadsheetFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return SpreadsheetService
+     * @return Spreadsheet
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new SpreadsheetService(
+        return new Spreadsheet(
             $container->get('doctrine.entity_manager.orm_cases'),
             $container->get(Rsa::class)
         );

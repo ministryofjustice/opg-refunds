@@ -2,7 +2,7 @@
 
 namespace Auth\Action;
 
-use Auth\Service\AuthenticationService;
+use Auth\Service\Authentication;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ class AuthActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new AuthAction(
-            $container->get(AuthenticationService::class)
+            $container->get(Authentication::class)
         );
     }
 }

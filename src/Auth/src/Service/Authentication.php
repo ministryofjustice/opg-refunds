@@ -13,10 +13,10 @@ use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
 /**
- * Class AuthenticationService
+ * Class Authentication
  * @package Auth\Service
  */
-class AuthenticationService
+class Authentication
 {
     use EntityToModelTrait;
 
@@ -38,7 +38,7 @@ class AuthenticationService
     private $tokenTtl;
 
     /**
-     * AuthenticationService constructor
+     * Authentication constructor
      *
      * @param EntityManager $entityManager
      * @param int $tokenTtl
@@ -65,7 +65,7 @@ class AuthenticationService
             'email' => $email,
         ]);
 
-        if ($caseworker->getPasswordHash() != hash('sha256', $password)) {
+        if (is_null($caseworker) || $caseworker->getPasswordHash() != hash('sha256', $password)) {
             throw new InvalidInputException('Caseworker not found');
         }
 

@@ -48,7 +48,7 @@ class ConfigProvider
                 //  Services
                 Service\RefundCase::class => Service\RefundCaseFactory::class,
                 Service\Caseworker::class => Service\CaseworkerFactory::class,
-                Service\SpreadsheetService::class => Service\SpreadsheetServiceFactory::class,
+                Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt
                 Crypt\Hybrid::class => Crypt\HybridFactory::class,
