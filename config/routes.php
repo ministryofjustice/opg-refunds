@@ -31,13 +31,11 @@ $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.i
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
 
-//  Authenticated routes
-$prefix = '/cases';
-$app->get($prefix . '/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
-$app->get($prefix . '/download', App\Action\DownloadAction::class, 'download');
-
-//  Special case - the home page route requires authentication
-$app->get('/', [
-    App\Middleware\Auth\AuthMiddleware::class,
-    App\Action\HomePageAction::class,
-], 'home');
+//  Authenticated routes - see AuthorizationMiddleware
+$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/admin', App\Action\AdminAction::class, 'admin');
+$app->get('/caseworker', App\Action\CaseworkerAction::class, 'caseworker');
+$app->get('/refund', App\Action\RefundAction::class, 'refund');
+$app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
+$app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+$app->get('/download', App\Action\DownloadAction::class, 'download');

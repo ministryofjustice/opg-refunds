@@ -25,6 +25,7 @@ class ConfigProvider
         return [
             'dependencies' => $this->getDependencies(),
             'templates'    => $this->getTemplates(),
+            'rbac'         => include __DIR__ . '/../config/rbac.php',
         ];
     }
 
@@ -37,10 +38,14 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                Action\AdminAction::class => Action\AdminAction::class,
+                Action\CaseworkerAction::class => Action\CaseworkerAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
+                Action\RefundAction::class => Action\RefundAction::class,
+                Action\ReportingAction::class => Action\ReportingAction::class,
             ],
             'factories'  => [
                 //  Actions
@@ -48,7 +53,7 @@ class ConfigProvider
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
 
                 // Middleware
-                Middleware\Auth\AuthMiddleware::class => Middleware\Auth\AuthMiddlewareFactory::class,
+                Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services

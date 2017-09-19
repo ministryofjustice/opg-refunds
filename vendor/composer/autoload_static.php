@@ -30,6 +30,7 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
             'Zend\\Stdlib\\' => 12,
             'Zend\\Session\\' => 13,
             'Zend\\ServiceManager\\' => 20,
+            'Zend\\Permissions\\Rbac\\' => 22,
             'Zend\\Math\\' => 10,
             'Zend\\InputFilter\\' => 17,
             'Zend\\Hydrator\\' => 14,
@@ -144,6 +145,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Zend\\ServiceManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-servicemanager/src',
+        ),
+        'Zend\\Permissions\\Rbac\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-permissions-rbac/src',
         ),
         'Zend\\Math\\' => 
         array (

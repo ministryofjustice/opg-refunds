@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "59159305480b419cc54bd7589667b240",
+    "content-hash": "99f5b880c7d1a1766efb7a57eca0566d",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -513,12 +513,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958"
+                "reference": "04f2740054bccab7af5d3433eed334938c83a9b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/5e4830140473c060c86fb1bc7cceaf33f50fa958",
-                "reference": "5e4830140473c060c86fb1bc7cceaf33f50fa958",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/04f2740054bccab7af5d3433eed334938c83a9b6",
+                "reference": "04f2740054bccab7af5d3433eed334938c83a9b6",
                 "shasum": ""
             },
             "require": {
@@ -541,7 +541,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-09-14T17:22:31+00:00"
+            "time": "2017-09-19 10:44:37"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -2110,6 +2110,51 @@
                 "zf2"
             ],
             "time": "2016-04-28T17:37:42+00:00"
+        },
+        {
+            "name": "zendframework/zend-permissions-rbac",
+            "version": "2.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-permissions-rbac.git",
+                "reference": "4213a4889ae7d7607c7974124965d12d1c395115"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-permissions-rbac/zipball/4213a4889ae7d7607c7974124965d12d1c395115",
+                "reference": "4213a4889ae7d7607c7974124965d12d1c395115",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.23"
+            },
+            "require-dev": {
+                "fabpot/php-cs-fixer": "1.7.*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.5-dev",
+                    "dev-develop": "2.6-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Permissions\\Rbac\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "provides a role-based access control management",
+            "homepage": "https://github.com/zendframework/zend-permissions-rbac",
+            "keywords": [
+                "rbac",
+                "zf2"
+            ],
+            "time": "2015-06-03T14:05:54+00:00"
         },
         {
             "name": "zendframework/zend-servicemanager",

@@ -43,12 +43,8 @@ $app->pipe(UrlHelperMiddleware::class);
 $app->pipe(Middleware\Session\SessionMiddleware::class);
 $app->pipe(Middleware\Session\CsrfMiddleware::class);
 
-//  Add middleware to verify that there is an authenticated session
-foreach (['/cases'] as $path) {
-    $app->pipe($path, [
-        Middleware\Auth\AuthMiddleware::class,
-    ]);
-}
+// Authorization middleware to detemine if the user can access the requested route
+$app->pipe(Middleware\Auth\AuthorizationMiddleware::class);
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();
