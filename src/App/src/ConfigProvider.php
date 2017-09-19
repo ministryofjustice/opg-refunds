@@ -25,6 +25,7 @@ class ConfigProvider
         return [
             'dependencies' => $this->getDependencies(),
             'templates'    => $this->getTemplates(),
+            'rbac'         => include __DIR__ . '/../config/rbac.php',
         ];
     }
 
@@ -52,7 +53,7 @@ class ConfigProvider
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
 
                 // Middleware
-                Middleware\Auth\AuthenticationMiddleware::class => Middleware\Auth\AuthenticationMiddlewareFactory::class,
+                Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
