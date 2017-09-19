@@ -215,16 +215,19 @@ class Caseworker extends AbstractEntity
     /**
      * Returns the entity as a datamodel structure
      *
-     * @param array $customFieldMappings
-     * @param array $excludeFilter
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $customFieldMappings = [], array $excludeFilter = [])
+    public function getAsDataModel(array $modelToEntityMappings = [])
     {
-        $customFieldMappings = array_merge($customFieldMappings, [
-            'AssignedCases' => 'RefundCases',
+        $modelToEntityMappings = array_merge($modelToEntityMappings, [
+            'RefundCases' => 'AssignedCases',
         ]);
 
-        return parent::getAsDataModel($customFieldMappings, $excludeFilter);
+        return parent::getAsDataModel($modelToEntityMappings);
     }
 }

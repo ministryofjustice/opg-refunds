@@ -2,7 +2,6 @@
 
 namespace App\Action;
 
-use App\Service\RefundCase as RefundCaseService;
 use App\Service\SpreadsheetService;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;

@@ -4,9 +4,9 @@ namespace App\Service;
 
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use App\Entity\Cases\Caseworker as CaseworkerEntity;
 use App\Entity\Cases\RefundCase as RefundCaseEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -75,22 +75,14 @@ class SpreadsheetService
 
         //  Deserialize the application from the JSON data
         /** @var RefundCaseEntity $entity */
-        $applicationJsonData = $entity->getJsonData();
-        $application = new Application($applicationJsonData);
-
-        $applicationArray = json_decode($applicationJsonData, true);
+        $applicationArray = json_decode($entity->getJsonData(), true);
         $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
 
-        $application->getAccount()
-            ->setAccountNumber($accountDetails['account-number'])
-            ->setSortCode($accountDetails['sort-code']);
-
-        $refundCase->setApplication($application);
-
-        $assignedTo = $entity->getAssignedTo();
-        if ($assignedTo instanceof Caseworker) {
-            $refundCase->setAssignedToId($assignedTo->getId());
-        }
+        //  Set the sort code and account numnber in the account
+        $account = $refundCase->getApplication()
+                              ->getAccount();
+        $account->setAccountNumber($accountDetails['account-number'])
+                ->setSortCode($accountDetails['sort-code']);
 
         //TODO: Remove once payment is populated
         $payment = new Payment();

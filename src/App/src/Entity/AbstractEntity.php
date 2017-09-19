@@ -2,9 +2,9 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Closure;
 use Exception;
 
 abstract class AbstractEntity
@@ -19,20 +19,46 @@ abstract class AbstractEntity
     /**
      * Returns the entity as a datamodel structure
      *
-     * @param array $customFieldMappings
-     * @param array $excludeFilter
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
      * @return AbstractDataModel
      * @throws Exception
      */
-    public function getAsDataModel(array $customFieldMappings = [], array $excludeFilter = [])
+    public function getAsDataModel(array $modelToEntityMappings = [])
     {
         if (empty($this->dataModelClass)) {
             throw new Exception('Model class string must be provided for conversion');
         }
 
-        $entityMethods = get_class_methods($this);
-
         $model = new $this->dataModelClass();
+
+        //  Process any callbacks in the model to entity mappings then UNSET THEM
+        foreach ($modelToEntityMappings as $modelFieldName => $callbackMapping) {
+            if ($callbackMapping instanceof Closure) {
+                //  Get the callback result and set the value (if not null)
+                $modelFieldValue = call_user_func($callbackMapping);
+
+                if (is_null($modelFieldValue)) {
+                    continue;
+                }
+
+                //  Try to find a set method on the model and use it
+                $modelSetMethod = 'set' . $modelFieldName;
+
+                if (method_exists($model, $modelSetMethod)) {
+                    $model->$modelSetMethod($modelFieldValue);
+                }
+
+                //  Unset the callback so it is not used below
+                unset($modelToEntityMappings[$modelFieldName]);
+            }
+        }
+
+        //  Loop through the entity methods and transfer the values to the datamodel
+        $entityMethods = get_class_methods($this);
 
         foreach ($entityMethods as $entityMethod) {
             //  Must be a get method to continue
@@ -40,19 +66,18 @@ abstract class AbstractEntity
                 continue;
             }
 
-            //  Get the field name - excepting any mapping if provided
-            $entityFieldName = substr($entityMethod, 3);
-            $entityFieldName = (isset($customFieldMappings[$entityFieldName]) ? $customFieldMappings[$entityFieldName] : $entityFieldName);
+            //  Get the field name (by default it will be the same for entity and model
+            $entityFieldName = $modelFieldName = substr($entityMethod, 3);
 
-            //  Exclude the field if required
-            if (in_array($entityFieldName, $excludeFilter)) {
-                continue;
+            //  If there is a mapping for the model field name then swap that in
+            if (in_array($entityFieldName, $modelToEntityMappings)) {
+                $modelFieldName = array_search($entityFieldName, $modelToEntityMappings);
             }
 
             //  Try to find a set method on the model and use it
-            $entitySetMethod = 'set' . $entityFieldName;
+            $modelSetMethod = 'set' . $modelFieldName;
 
-            if (method_exists($model, $entitySetMethod)) {
+            if (method_exists($model, $modelSetMethod)) {
                 //  Determine which value to set
                 $value = $this->$entityMethod();
 
@@ -72,7 +97,7 @@ abstract class AbstractEntity
                     $value = $collection;
                 }
 
-                $model->$entitySetMethod($value);
+                $model->$modelSetMethod($value);
             }
         }
 

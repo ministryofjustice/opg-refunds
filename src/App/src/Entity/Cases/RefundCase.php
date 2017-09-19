@@ -3,9 +3,11 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use DateTime;
 
 /**
  * @ORM\Entity @ORM\Table(name="cases")
@@ -172,8 +174,9 @@ class RefundCase extends AbstractEntity
     public function getJsonData()
     {
         if (is_resource($this->jsonData)) {
-            return stream_get_contents($this->jsonData);
+            $this->jsonData = stream_get_contents($this->jsonData);
         }
+
         return $this->jsonData;
     }
 
@@ -268,7 +271,7 @@ class RefundCase extends AbstractEntity
     /**
      * @return Poa[]
      */
-    public function getPoas(): array
+    public function getPoas()
     {
         return $this->poas;
     }
@@ -284,7 +287,7 @@ class RefundCase extends AbstractEntity
     /**
      * @return Verification
      */
-    public function getVerification(): Verification
+    public function getVerification()
     {
         return $this->verification;
     }
@@ -311,5 +314,29 @@ class RefundCase extends AbstractEntity
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [])
+    {
+        $modelToEntityMappings = array_merge($modelToEntityMappings, [
+            'Application' => function () {
+                return new ApplicationModel($this->getJsonData());
+            },
+            'AssignedToId' => function () {
+                return ($this->getAssignedTo() instanceof Caseworker ? $this->getAssignedTo()->getId() : null);
+            },
+        ]);
+
+        return parent::getAsDataModel($modelToEntityMappings);
     }
 }
