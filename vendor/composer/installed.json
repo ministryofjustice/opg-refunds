@@ -4657,5 +4657,124 @@
             "schema",
             "validation"
         ]
+    },
+    {
+        "name": "zendframework/zend-log",
+        "version": "2.9.2",
+        "version_normalized": "2.9.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-log.git",
+            "reference": "bf7489578d092d6ff7508117d1d920a4764fbd6a"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-log/zipball/bf7489578d092d6ff7508117d1d920a4764fbd6a",
+            "reference": "bf7489578d092d6ff7508117d1d920a4764fbd6a",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.6 || ^7.0",
+            "psr/log": "^1.0",
+            "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
+            "zendframework/zend-stdlib": "^2.7 || ^3.0"
+        },
+        "provide": {
+            "psr/log-implementation": "1.0.0"
+        },
+        "require-dev": {
+            "mikey179/vfsstream": "^1.6",
+            "phpunit/phpunit": "^5.7.15 || ^6.0.8",
+            "zendframework/zend-coding-standard": "~1.0.0",
+            "zendframework/zend-db": "^2.6",
+            "zendframework/zend-escaper": "^2.5",
+            "zendframework/zend-filter": "^2.5",
+            "zendframework/zend-mail": "^2.6.1",
+            "zendframework/zend-validator": "^2.6"
+        },
+        "suggest": {
+            "ext-mongo": "mongo extension to use Mongo writer",
+            "ext-mongodb": "mongodb extension to use MongoDB writer",
+            "zendframework/zend-console": "Zend\\Console component to use the RequestID log processor",
+            "zendframework/zend-db": "Zend\\Db component to use the database log writer",
+            "zendframework/zend-escaper": "Zend\\Escaper component, for use in the XML log formatter",
+            "zendframework/zend-mail": "Zend\\Mail component to use the email log writer",
+            "zendframework/zend-validator": "Zend\\Validator component to block invalid log messages"
+        },
+        "time": "2017-05-17T16:03:26+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.9-dev",
+                "dev-develop": "2.10-dev"
+            },
+            "zf": {
+                "component": "Zend\\Log",
+                "config-provider": "Zend\\Log\\ConfigProvider"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\Log\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "component for general purpose logging",
+        "homepage": "https://github.com/zendframework/zend-log",
+        "keywords": [
+            "log",
+            "logging",
+            "zf2"
+        ]
+    },
+    {
+        "name": "ministryofjustice/opg-refunds-logger",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
+            "reference": "a045cd9a94cc7b9d7546f88c92c280187b71bfa8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/a045cd9a94cc7b9d7546f88c92c280187b71bfa8",
+            "reference": "a045cd9a94cc7b9d7546f88c92c280187b71bfa8",
+            "shasum": ""
+        },
+        "require": {
+            "aws/aws-sdk-php": "^3.3",
+            "php": "^7.0",
+            "zendframework/zend-log": "^2.9"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.3",
+            "squizlabs/php_codesniffer": "^3.0"
+        },
+        "time": "2017-09-19T14:54:06+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Opg\\Refunds\\Log\\": "src/Opg/Refunds/Log/"
+            }
+        },
+        "autoload-dev": {
+            "psr-4": {
+                "OpgTest\\Refunds\\Log\\": "test/Opg/Refunds/Log/"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "description": "Common logging component for OPG Refunds",
+        "support": {
+            "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/master",
+            "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
+        }
     }
 ]
