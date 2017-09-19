@@ -2,7 +2,6 @@
 
 namespace Auth\Service;
 
-use App\Service\Caseworker as CaseworkerService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -22,7 +21,7 @@ class AuthenticationServiceFactory
         $config = $container->get('config');
 
         return new AuthenticationService(
-            $container->get(CaseworkerService::class),
+            $container->get('doctrine.entity_manager.orm_cases'),
             $config['token_ttl']
         );
     }

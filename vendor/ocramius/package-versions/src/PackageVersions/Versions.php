@@ -25,7 +25,7 @@ final class Versions
   'doctrine/orm' => 'v2.5.10@c78afd51721804f4f76ff30d9b6f6159eb046161',
   'fig/http-message-util' => '1.1.2@20b2c280cb6914b7b83089720df44e490f4b42f0',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-REF-191-caseworker_roles_screens@6277a63334cd327d900e4fd356457b6c5372f47e',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-master@04f2740054bccab7af5d3433eed334938c83a9b6',
   'nikic/fast-route' => 'v1.2.0@b5f95749071c82a8e0f58586987627054400cdf6',
   'ocramius/package-versions' => '1.1.3@72b226d2957e9e6a9ed09aeaa29cabd840d1a3b7',
   'ocramius/proxy-manager' => '2.0.4@a55d08229f4f614bf335759ed0cf63378feeb2e6',
@@ -88,7 +88,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-191-caseworker_roles_screens@5a2e70d6b86760ead1a5925a84cd5a4cf7c6f80b',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-191-caseworker_roles_screens@c94dd24b862f59f784b6b4a927147c9076b6a968',
 );
 
     private function __construct()

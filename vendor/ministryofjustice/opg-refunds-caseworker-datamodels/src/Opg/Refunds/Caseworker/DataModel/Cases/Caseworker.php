@@ -3,7 +3,6 @@
 namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
-use DateTime;
 
 /**
  * Class Caseworker
@@ -33,11 +32,6 @@ class Caseworker extends AbstractDataModel
      * @var string
      */
     protected $email;
-
-    /**
-     * @var string
-     */
-    protected $passwordHash;
 
     /**
      * @var string
@@ -117,25 +111,6 @@ class Caseworker extends AbstractDataModel
     public function setEmail(string $email)
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPasswordHash(): string
-    {
-        return $this->passwordHash;
-    }
-
-    /**
-     * @param string $passwordHash
-     * @return $this
-     */
-    public function setPasswordHash(string $passwordHash)
-    {
-        $this->passwordHash = $passwordHash;
 
         return $this;
     }
@@ -252,20 +227,5 @@ class Caseworker extends AbstractDataModel
             default:
                 return parent::map($property, $value);
         }
-    }
-
-    /**
-     * Returns $this as an array - exclude the fields in the filter array if provided
-     *
-     * @param array $excludeFilter
-     * @return array
-     */
-    public function toArray(array $excludeFilter = [])
-    {
-        //  For security reasons don't extract the password hash value to an array
-        //  If that value is required it can be purposefully retrieved using the get method above
-        return parent::toArray(array_merge($excludeFilter, [
-            'password-hash',
-        ]));
     }
 }

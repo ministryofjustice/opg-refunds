@@ -2,8 +2,12 @@
 
 namespace Auth\Service;
 
-use App\Service\Caseworker as CaseworkerService;
+use App\Entity\Cases\Caseworker as CaseworkerEntity;
+use App\Exception\InvalidInputException;
+use App\Service\EntityToModelTrait;
 use Auth\Exception\UnauthorizedException;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
 use Zend\Math\BigInteger\BigInteger;
 use Exception;
@@ -14,12 +18,17 @@ use Exception;
  */
 class AuthenticationService
 {
+    use EntityToModelTrait;
+
     /**
-     * Caseworker service
-     *
-     * @var CaseworkerService
+     * @var EntityRepository
      */
-    private $caseworkerService;
+    private $repository;
+
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
     /**
      * The number of seconds before an auth token expires
@@ -31,12 +40,13 @@ class AuthenticationService
     /**
      * AuthenticationService constructor
      *
-     * @param CaseworkerService $caseworkerService
+     * @param EntityManager $entityManager
      * @param int $tokenTtl
      */
-    public function __construct(CaseworkerService $caseworkerService, int $tokenTtl)
+    public function __construct(EntityManager $entityManager, int $tokenTtl)
     {
-        $this->caseworkerService = $caseworkerService;
+        $this->repository = $entityManager->getRepository(CaseworkerEntity::class);
+        $this->entityManager = $entityManager;
         $this->tokenTtl = $tokenTtl;
     }
 
@@ -50,8 +60,14 @@ class AuthenticationService
      */
     public function validatePassword(string $email, string $password)
     {
-        /** @var Caseworker $caseworker */
-        $caseworker = $this->caseworkerService->getByCredentials($email, $password);
+        /** @var CaseworkerEntity $caseworker */
+        $caseworker = $this->repository->findOneBy([
+            'email' => $email,
+        ]);
+
+        if ($caseworker->getPasswordHash() != hash('sha256', $password)) {
+            throw new InvalidInputException('Caseworker not found');
+        }
 
         //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
@@ -71,13 +87,10 @@ class AuthenticationService
 
             $tokenExpires = time() + $this->tokenTtl;
 
-            $created = $this->caseworkerService->setToken($caseworker->getId(), $token, $tokenExpires);
+            $created = $this->setToken($caseworker->getId(), $token, $tokenExpires);
         } while (!$created);
 
-        $caseworker->setToken($token)
-                   ->setTokenExpires($tokenExpires);
-
-        return $caseworker;
+        return $this->translateToDataModel($caseworker);;
     }
 
     /**
@@ -89,8 +102,10 @@ class AuthenticationService
      */
     public function validateToken(string $token)
     {
-        /** @var Caseworker $caseworker */
-        $caseworker = $this->caseworkerService->getByToken($token);
+        /** @var CaseworkerEntity $caseworker */
+        $caseworker = $this->repository->findOneBy([
+            'token' => $token,
+        ]);
 
         //  Confirm that the caseworker is active
         if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
@@ -103,8 +118,29 @@ class AuthenticationService
         }
 
         //  Increase the token expires value
-        $this->caseworkerService->setToken($caseworker->getId(), $caseworker->getToken(),  time() + $this->tokenTtl);
+        $this->setToken($caseworker->getId(), $caseworker->getToken(),  time() + $this->tokenTtl);
 
-        return $caseworker;
+        return $this->translateToDataModel($caseworker);
+    }
+
+    /**
+     * Set the token values against a caseworker record
+     *
+     * @param int $id
+     * @param string $token
+     * @param int $tokenExpires
+     * @return bool
+     */
+    public function setToken(int $id, string $token, int $tokenExpires)
+    {
+        /** @var CaseworkerEntity $caseworker */
+        $caseworker = $this->entityManager->getReference(CaseworkerEntity::class, $id);
+
+        $caseworker->setToken($token);
+        $caseworker->setTokenExpires($tokenExpires);
+
+        $this->entityManager->flush();
+
+        return true;
     }
 }

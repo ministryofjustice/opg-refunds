@@ -20,7 +20,7 @@
         "dasprid/container-interop-doctrine": "^1.0",
         "doctrine/migrations": "^1.5",
         "doctrine/orm": "^2.5",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-191-caseworker_roles_screens",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
         "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
         "symfony/yaml": "^3.3",
