@@ -5,18 +5,18 @@ namespace App\Service;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class CasesFactory
+ * Class RefundCaseFactory
  * @package App\Service
  */
-class CasesFactory
+class RefundCaseFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return Cases
+     * @return RefundCase
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new Cases(
+        return new RefundCase(
             $container->get('doctrine.entity_manager.orm_cases')
         );
     }

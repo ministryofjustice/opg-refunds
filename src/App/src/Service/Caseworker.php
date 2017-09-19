@@ -6,6 +6,7 @@ use App\Entity\Cases\Caseworker as CaseworkerEntity;
 use App\Exception\InvalidInputException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
 
 /**
  * Class Caseworker
@@ -13,6 +14,8 @@ use Doctrine\ORM\EntityRepository;
  */
 class Caseworker
 {
+    use EntityToModelTrait;
+
     /**
      * @var EntityRepository
      */
@@ -35,81 +38,31 @@ class Caseworker
     }
 
     /**
-     * Find a caseworker by ID
+     * Get all caseworkers
+     *
+     * @return CaseworkerModel[]
+     */
+    public function getAll()
+    {
+        /** @var CaseworkerEntity[] $caseworkers */
+        $caseworkers = $this->repository->findBy([]);
+
+        return $this->translateToDataModelArray($caseworkers);
+    }
+
+    /**
+     * Get a specific caseworker
      *
      * @param int $id
-     * @return CaseworkerEntity
-     * @throws InvalidInputException
+     * @return CaseworkerModel
      */
-    public function findById(int $id)
+    public function getById(int $id)
     {
         /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneById($id);
+        $caseworker = $this->repository->findOneBy([
+            'id' => $id,
+        ]);
 
-        if (!$caseworker instanceof CaseworkerEntity) {
-            throw new InvalidInputException('Caseworker not found');
-        }
-
-        return $caseworker;
-    }
-
-    /**
-     * Find a caseworker by a set of credentials - used by authentication
-     *
-     * @param string $email
-     * @param string $password
-     * @return CaseworkerEntity
-     * @throws InvalidInputException
-     */
-    public function findByCredentials(string $email, string $password)
-    {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneByEmail($email);
-
-        if (!$caseworker instanceof CaseworkerEntity || $caseworker->getPasswordHash() != hash('sha256', $password)) {
-            throw new InvalidInputException('Caseworker not found');
-        }
-
-        return $caseworker;
-    }
-
-    /**
-     * Find a caseworker by a request token value - used by authentication
-     *
-     * @param string $token
-     * @return CaseworkerEntity
-     * @throws InvalidInputException
-     */
-    public function findByToken(string $token)
-    {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneByToken($token);
-
-        if (!$caseworker instanceof CaseworkerEntity) {
-            throw new InvalidInputException('Caseworker not found');
-        }
-
-        return $caseworker;
-    }
-
-    /**
-     * Set the token values against a caseworker
-     *
-     * @param int $id
-     * @param string $token
-     * @param int $tokenExpires
-     * @return bool
-     */
-    public function setToken(int $id, string $token, int $tokenExpires)
-    {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->entityManager->getReference(CaseworkerEntity::class, $id);
-
-        $caseworker->setToken($token);
-        $caseworker->setTokenExpires($tokenExpires);
-
-        $this->entityManager->flush();
-
-        return true;
+        return $this->translateToDataModel($caseworker);
     }
 }

@@ -2,43 +2,105 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\PersistentCollection;
-use DateTime;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Closure;
+use Exception;
 
 abstract class AbstractEntity
 {
     /**
-     * @param array $excludeProperties Properties to remove from the array
-     * @param array $includeChildren Only include complex child properties if they are included here
-     * @return array
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
      */
-    public function toArray($excludeProperties = [], $includeChildren = []): array
+    protected $dataModelClass;
+
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @return AbstractDataModel
+     * @throws Exception
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [])
     {
-        $values = get_object_vars($this);
-
-        foreach ($excludeProperties as $excludeProperty) {
-            unset($values[$excludeProperty]);
+        if (empty($this->dataModelClass)) {
+            throw new Exception('Model class string must be provided for conversion');
         }
 
-        foreach ($values as $k => $v) {
-            if ($v instanceof DateTime) {
-                $values[$k] = $v->format(DATE_ISO8601);
-            }
+        $model = new $this->dataModelClass();
 
-            if ($v instanceof PersistentCollection && in_array($k, $includeChildren)) {
-                $childValues = [];
-                foreach ($v as $value) {
-                    $childValues[] = $value->toArray();
+        //  Process any callbacks in the model to entity mappings then UNSET THEM
+        foreach ($modelToEntityMappings as $modelFieldName => $callbackMapping) {
+            if ($callbackMapping instanceof Closure) {
+                //  Get the callback result and set the value (if not null)
+                $modelFieldValue = call_user_func($callbackMapping);
+
+                if (is_null($modelFieldValue)) {
+                    continue;
                 }
-                $values[$k] = $childValues;
-            }
 
-            if (is_resource($v)) {
-                $values[$k] = stream_get_contents($v);
+                //  Try to find a set method on the model and use it
+                $modelSetMethod = 'set' . $modelFieldName;
+
+                if (method_exists($model, $modelSetMethod)) {
+                    $model->$modelSetMethod($modelFieldValue);
+                }
+
+                //  Unset the callback so it is not used below
+                unset($modelToEntityMappings[$modelFieldName]);
             }
         }
 
-        return $values;
+        //  Loop through the entity methods and transfer the values to the datamodel
+        $entityMethods = get_class_methods($this);
+
+        foreach ($entityMethods as $entityMethod) {
+            //  Must be a get method to continue
+            if (strpos($entityMethod, 'get') !== 0) {
+                continue;
+            }
+
+            //  Get the field name (by default it will be the same for entity and model
+            $entityFieldName = $modelFieldName = substr($entityMethod, 3);
+
+            //  If there is a mapping for the model field name then swap that in
+            if (in_array($entityFieldName, $modelToEntityMappings)) {
+                $modelFieldName = array_search($entityFieldName, $modelToEntityMappings);
+            }
+
+            //  Try to find a set method on the model and use it
+            $modelSetMethod = 'set' . $modelFieldName;
+
+            if (method_exists($model, $modelSetMethod)) {
+                //  Determine which value to set
+                $value = $this->$entityMethod();
+
+                //  Don't set null values
+                if (is_null($value)) {
+                    continue;
+                }
+
+                //  Transfer the value from the entity field to the model field
+                if ($value instanceof PersistentCollection) {
+                    $collection = [];
+
+                    foreach ($value as $i => $thisValue) {
+                        $collection[] = $thisValue->getAsDataModel();
+                    }
+
+                    $value = $collection;
+                }
+
+                $model->$modelSetMethod($value);
+            }
+        }
+
+        return $model;
     }
 }

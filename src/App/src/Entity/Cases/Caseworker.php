@@ -5,14 +5,20 @@ namespace App\Entity\Cases;
 use App\Entity\AbstractEntity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
 
 /**
  * @ORM\Entity @ORM\Table(name="caseworker")
  **/
 class Caseworker extends AbstractEntity
 {
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = CaseworkerModel::class;
 
     /**
      * @var int
@@ -206,8 +212,22 @@ class Caseworker extends AbstractEntity
         $this->assignedCases = $assignedCases;
     }
 
-    public function toArray($excludeProperties = ['passwordHash'], $includeChildren = ['assignedCases']): array
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [])
     {
-        return parent::toArray($excludeProperties, $includeChildren);
+        $modelToEntityMappings = array_merge($modelToEntityMappings, [
+            'RefundCases' => 'AssignedCases',
+        ]);
+
+        return parent::getAsDataModel($modelToEntityMappings);
     }
 }

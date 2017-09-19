@@ -4,6 +4,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use DateTime;
 
 /**
@@ -101,18 +102,11 @@ class RefundCase extends AbstractDataModel
      */
     public function getReferenceNumber(): string
     {
-        return $this->referenceNumber;
-    }
+        if (!is_null($this->id)) {
+            return IdentFormatter::format($this->id);
+        }
 
-    /**
-     * @param string $referenceNumber
-     * @return $this
-     */
-    public function setReferenceNumber(string $referenceNumber)
-    {
-        $this->referenceNumber = $referenceNumber;
-
-        return $this;
+        return null;
     }
 
     /**
@@ -310,7 +304,7 @@ class RefundCase extends AbstractDataModel
      *
      * @param string $property
      * @param mixed $value
-     * @return DateTime|mixed|Application|Payment
+     * @return mixed
      */
     protected function map($property, $value)
     {

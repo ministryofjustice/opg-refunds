@@ -2,31 +2,26 @@
 
 namespace App\Action;
 
-use Opg\Refunds\Caseworker\DataModel\Applications\Application;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
-use App\Entity\Cases\RefundCase as CaseEntity;
-use App\Service\Cases;
+use App\Service\SpreadsheetService;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Crypt\PublicKey\Rsa;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
 
+/**
+ * Class SpreadsheetAction
+ * @package App\Action
+ */
 class SpreadsheetAction implements ServerMiddlewareInterface
 {
     /**
-     * @var Cases
+     * @var SpreadsheetService
      */
-    private $casesService;
-
-    /**
-     * @var Rsa
-     */
-    private $bankCipher;
+    private $spreadsheetService;
 
     /**
      * @var ISpreadsheetWorksheetGenerator
@@ -38,23 +33,30 @@ class SpreadsheetAction implements ServerMiddlewareInterface
      */
     private $spreadsheetGenerator;
 
-    public function __construct(
-        Cases $casesService,
-        Rsa $bankCipher,
-        ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator,
-        ISpreadsheetGenerator $spreadsheetGenerator
-    ) {
-        $this->casesService = $casesService;
-        $this->bankCipher = $bankCipher;
+    /**
+     * SpreadsheetAction constructor
+     *
+     * @param SpreadsheetService $spreadsheetService
+     * @param ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator
+     * @param ISpreadsheetGenerator $spreadsheetGenerator
+     */
+    public function __construct(SpreadsheetService $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
+    {
+        $this->spreadsheetService = $spreadsheetService;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return Response
+     */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $cases = $this->casesService->getAllRefundable($this->bankCipher);
+        $refundCases = $this->spreadsheetService->getAllRefundable();
 
-        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($cases);
+        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($refundCases);
 
         $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
         $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;

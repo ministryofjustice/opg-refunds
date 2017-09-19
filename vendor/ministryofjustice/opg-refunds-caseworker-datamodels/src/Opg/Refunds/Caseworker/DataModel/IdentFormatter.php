@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace Opg\Refunds\Caseworker\DataModel;
 
 /**
  * For formatting Refund Application IDs, ready for the user.

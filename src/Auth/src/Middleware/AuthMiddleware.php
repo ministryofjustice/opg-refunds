@@ -2,7 +2,6 @@
 
 namespace Auth\Middleware;
 
-use App\Entity\Cases\Caseworker;
 use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\AuthenticationService;

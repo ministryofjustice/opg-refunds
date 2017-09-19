@@ -2,17 +2,25 @@
 
 namespace App\Entity\Cases;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as CaseDataModel;
 use App\Entity\AbstractEntity;
-use App\Service\IdentFormatter;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use DateTime;
 
 /**
  * @ORM\Entity @ORM\Table(name="cases")
  **/
-class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
+class RefundCase extends AbstractEntity
 {
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = RefundCaseModel::class;
+
     /**
      * @var int
      * @ORM\Id
@@ -101,7 +109,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
         $this->donorName = $donorName;
 
         $this->createdDateTime = new DateTime();
-        $this->status = CaseDataModel::STATUS_NEW;
+        $this->status = RefundCaseModel::STATUS_NEW;
     }
 
     /**
@@ -166,8 +174,9 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     public function getJsonData()
     {
         if (is_resource($this->jsonData)) {
-            return stream_get_contents($this->jsonData);
+            $this->jsonData = stream_get_contents($this->jsonData);
         }
+
         return $this->jsonData;
     }
 
@@ -262,7 +271,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Poa[]
      */
-    public function getPoas(): array
+    public function getPoas()
     {
         return $this->poas;
     }
@@ -278,7 +287,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Verification
      */
-    public function getVerification(): Verification
+    public function getVerification()
     {
         return $this->verification;
     }
@@ -294,7 +303,7 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
     /**
      * @return Payment
      */
-    public function getPayment(): Payment
+    public function getPayment()
     {
         return $this->payment;
     }
@@ -307,10 +316,27 @@ class RefundCase extends AbstractEntity //Case is a reserved word in PHP 7
         $this->payment = $payment;
     }
 
-    public function toArray($excludeProperties = ['assignedTo'], $includeChildren = ['poas']): array
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [])
     {
-        $caseArray = parent::toArray($excludeProperties, $includeChildren);
-        $caseArray['referenceNumber'] = IdentFormatter::format($this->getId());
-        return $caseArray;
+        $modelToEntityMappings = array_merge($modelToEntityMappings, [
+            'Application' => function () {
+                return new ApplicationModel($this->getJsonData());
+            },
+            'AssignedToId' => function () {
+                return ($this->getAssignedTo() instanceof Caseworker ? $this->getAssignedTo()->getId() : null);
+            },
+        ]);
+
+        return parent::getAsDataModel($modelToEntityMappings);
     }
 }
