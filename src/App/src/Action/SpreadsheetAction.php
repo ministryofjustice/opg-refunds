@@ -3,6 +3,7 @@
 namespace App\Action;
 
 use App\Service\RefundCase as RefundCaseService;
+use App\Service\SpreadsheetService;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
@@ -19,9 +20,9 @@ use Zend\Diactoros\Stream;
 class SpreadsheetAction implements ServerMiddlewareInterface
 {
     /**
-     * @var RefundCaseService
+     * @var SpreadsheetService
      */
-    private $refundCaseService;
+    private $spreadsheetService;
 
     /**
      * @var ISpreadsheetWorksheetGenerator
@@ -36,13 +37,13 @@ class SpreadsheetAction implements ServerMiddlewareInterface
     /**
      * SpreadsheetAction constructor
      *
-     * @param RefundCaseService $refundCaseService
+     * @param SpreadsheetService $spreadsheetService
      * @param ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator
      * @param ISpreadsheetGenerator $spreadsheetGenerator
      */
-    public function __construct(RefundCaseService $refundCaseService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
+    public function __construct(SpreadsheetService $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
     {
-        $this->refundCaseService = $refundCaseService;
+        $this->spreadsheetService = $spreadsheetService;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
     }
@@ -54,7 +55,7 @@ class SpreadsheetAction implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $refundCases = $this->refundCaseService->getAllRefundable();
+        $refundCases = $this->spreadsheetService->getAllRefundable();
 
         $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($refundCases);
 

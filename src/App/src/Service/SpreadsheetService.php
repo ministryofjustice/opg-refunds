@@ -5,16 +5,18 @@ namespace App\Service;
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
 use App\Entity\Cases\RefundCase as RefundCaseEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Zend\Crypt\PublicKey\Rsa;
 
 /**
- * Class RefundCase
+ * Class SpreadsheetService
  * @package App\Service
  */
-class RefundCase
+class SpreadsheetService
 {
     use EntityToModelTrait {
         translateToDataModel as protected traitTranslateToDataModel;
@@ -31,24 +33,31 @@ class RefundCase
     private $entityManager;
 
     /**
+     * @var Rsa
+     */
+    private $bankCipher;
+
+    /**
      * Case constructor
      *
      * @param EntityManager $entityManager
+     * @param Rsa $bankCipher
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, Rsa $bankCipher)
     {
         $this->repository = $entityManager->getRepository(RefundCaseEntity::class);
         $this->entityManager = $entityManager;
+        $this->bankCipher = $bankCipher;
     }
 
     /**
-     * Get all refund cases
+     * Get all refundable cases
      *
      * @return RefundCaseModel[]
      */
-    public function getAll()
+    public function getAllRefundable()
     {
-        /** @var RefundCaseEntity[] $refundCases */
+        //  TODO: Return only those which can be refunded
         $refundCases = $this->repository->findBy([]);
 
         return $this->translateToDataModelArray($refundCases);
@@ -66,13 +75,27 @@ class RefundCase
 
         //  Deserialize the application from the JSON data
         /** @var RefundCaseEntity $entity */
-        $application = new Application($entity->getJsonData());
+        $applicationJsonData = $entity->getJsonData();
+        $application = new Application($applicationJsonData);
+
+        $applicationArray = json_decode($applicationJsonData, true);
+        $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
+
+        $application->getAccount()
+            ->setAccountNumber($accountDetails['account-number'])
+            ->setSortCode($accountDetails['sort-code']);
+
         $refundCase->setApplication($application);
 
         $assignedTo = $entity->getAssignedTo();
         if ($assignedTo instanceof Caseworker) {
             $refundCase->setAssignedToId($assignedTo->getId());
         }
+
+        //TODO: Remove once payment is populated
+        $payment = new Payment();
+        $payment->setAmount(10);
+        $refundCase->setPayment($payment);
 
         return $refundCase;
     }

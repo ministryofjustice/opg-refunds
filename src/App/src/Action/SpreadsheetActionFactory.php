@@ -3,6 +3,7 @@
 namespace App\Action;
 
 use App\Service\RefundCase as RefundCaseService;
+use App\Service\SpreadsheetService;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
@@ -29,7 +30,7 @@ class SpreadsheetActionFactory
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
 
         return new SpreadsheetAction(
-            $container->get(RefundCaseService::class),
+            $container->get(SpreadsheetService::class),
             $spreadsheetWorksheetGenerator,
             $spreadsheetGenerator
         );
