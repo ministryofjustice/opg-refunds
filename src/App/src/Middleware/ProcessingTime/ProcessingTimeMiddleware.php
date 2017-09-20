@@ -27,5 +27,4 @@ class ProcessingTimeMiddleware implements ServerMiddlewareInterface
             $request->withAttribute('processingTime', $this->processingTime)
         );
     }
-
 }

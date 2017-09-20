@@ -65,7 +65,8 @@ class FlowController
     {
         // Find what route this route is dependent on.
         $requiredIndex = array_search(
-            $route, array_column(self::$routes, 'name')
+            $route,
+            array_column(self::$routes, 'name')
         );
 
         $requiredRoute = self::$routes[$requiredIndex]['requires'];
@@ -73,11 +74,13 @@ class FlowController
         //---
 
         $requiredIndex = array_search(
-            $requiredRoute, array_column(self::$routes, 'name')
+            $requiredRoute,
+            array_column(self::$routes, 'name')
         );
 
         $allowedIndex = array_search(
-            self::getNextRouteName($session), array_column(self::$routes, 'name')
+            self::getNextRouteName($session),
+            array_column(self::$routes, 'name')
         );
 
         // Route is accessible if it's index is >= the current route's index.

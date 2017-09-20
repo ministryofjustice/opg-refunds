@@ -93,9 +93,9 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
             // Add a strict SameSite value to the cookie
             $response = $response->withHeader(
-                'Set-Cookie', $response->getHeader('Set-Cookie')[0].'; SameSite=strict'
+                'Set-Cookie',
+                $response->getHeader('Set-Cookie')[0].'; SameSite=strict'
             );
-
         } elseif ($response instanceof ResponseInterface) {
             // If there's no data to store, kill the cookie.
             $response = FigResponseCookies::set($response, SetCookie::createExpired(self::COOKIE_NAME)

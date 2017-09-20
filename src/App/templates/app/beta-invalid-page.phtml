@@ -1,0 +1,19 @@
+<?php
+$title = "Something isn't right";
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+
+<p>The link you've used doesn't look right. 
+Check that you didn't miss part of the link or add any extra characters.</p>
+
+<h2 class="heading-medium">Get a new link</h2>
+
+<p>If you've tried to re-enter your link but still can't access the service
+you can contact us to ask for a new link. </p>
+
+<?php $this->insert('snippet::refunds-helpline');?>
+
+<h2 class="heading-medium">Why you need a link</h2>
+<p>We're using links because this is a beta service and we're not letting everyone access it yet.</p>

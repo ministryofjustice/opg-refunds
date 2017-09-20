@@ -25,10 +25,9 @@ class BetaLinkCheckerFactory
 
         //---
 
-        if (
-            !isset($config['link']['signature']['key']) ||
+        if (!isset($config['link']['signature']['key']) ||
             mb_strlen(hex2bin($config['link']['signature']['key']), '8bit') != 32
-        ){
+        ) {
             throw new \UnexpectedValueException('Signature key not configured');
         }
 

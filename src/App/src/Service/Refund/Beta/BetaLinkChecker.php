@@ -19,7 +19,7 @@ class BetaLinkChecker
         array $dynamoSettings,
         string $key,
         bool $betaEnabled
-    ){
+    ) {
         $this->key = $key;
         $this->dynamoClient = $dynamoClient;
         $this->dynamoSettings = $dynamoSettings;
@@ -57,7 +57,7 @@ class BetaLinkChecker
 
         // Validate signature
 
-        $signature = BigInteger::factory('bcmath')->baseConvert( $signature, 62, 16 );
+        $signature = BigInteger::factory('bcmath')->baseConvert($signature, 62, 16);
         $iv = hex2bin(mb_substr($signature, 0, 64, '8bit'));
         $hmac = mb_substr($signature, 64, null, '8bit');
 

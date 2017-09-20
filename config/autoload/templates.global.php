@@ -13,4 +13,10 @@ return [
     'templates' => [
         'extension' => 'phtml',
     ],
+
+    'plates' => [
+        'extensions' => [
+            App\Service\ErrorMapper\ErrorMapperPlatesExtension::class
+        ],
+    ],
 ];

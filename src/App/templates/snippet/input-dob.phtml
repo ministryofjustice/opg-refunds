@@ -9,7 +9,7 @@ $hasErrors = !empty($formElement->getMessages());
             <?= $this->e($formLabel) ?>
             <span class="form-hint">For example, 31 3 1980</span>
             <?php foreach($formElement->getMessages() as $message): ?>
-                <span class="error-message"><?= $this->e($message) ?></span>
+                <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
             <?php endforeach ?>
         </legend>
 

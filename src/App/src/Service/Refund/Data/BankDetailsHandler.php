@@ -36,5 +36,4 @@ class BankDetailsHandler
             'details' => $this->cipher->encrypt($accountDetails)
         ];
     }
-
 }

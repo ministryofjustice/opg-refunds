@@ -1,0 +1,11 @@
+<?php
+$title = "You can't use this service yet";
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+<p>This is a <a href="https://www.gov.uk/help/beta">beta service</a>, which means we're still developing it.</p>
+
+<p>Only people who've been invited can use this service at the moment.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>

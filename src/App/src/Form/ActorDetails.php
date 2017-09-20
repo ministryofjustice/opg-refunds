@@ -194,7 +194,7 @@ class ActorDetails extends AbstractForm
 
         //---
 
-        $result['dob'] = array_filter( $result['dob'] );
+        $result['dob'] = array_filter($result['dob']);
 
         if (!empty($result['dob'])) {
             $response['dob'] = $result['dob']['year'].'-'

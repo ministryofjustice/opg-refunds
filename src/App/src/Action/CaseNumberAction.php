@@ -14,7 +14,7 @@ class CaseNumberAction extends AbstractAction
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$this->isActionAccessible($request)) {
-            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
         }
 
         //---
@@ -44,6 +44,12 @@ class CaseNumberAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['case-number'] = $form->getFormattedData();
+
+                // If any postcode details have previously been added,
+                // but now we have a reference, remove the postcodes.
+                if (isset($session['postcodes']) && $data['have-poa-case-number'] === 'yes') {
+                    unset($session['postcodes']);
+                }
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(

@@ -75,6 +75,10 @@ class ConfigProvider
                 Service\Refund\Data\DataHandlerInterface::class => Service\Refund\Data\DataHandlerFactory::class,
                 Service\Refund\Data\BankDetailsHandler::class => Service\Refund\Data\BankDetailsHandlerFactory::class,
                 Service\Refund\Beta\BetaLinkChecker::class => Service\Refund\Beta\BetaLinkCheckerFactory::class,
+                Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
+
+                // View Helper
+                Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

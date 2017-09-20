@@ -14,7 +14,7 @@ class AttorneyDetailsAction extends AbstractAction
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$this->isActionAccessible($request)) {
-            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
         }
 
         //---

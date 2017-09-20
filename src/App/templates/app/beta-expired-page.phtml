@@ -1,0 +1,17 @@
+<?php
+$title = 'Your link has expired';
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+
+<p>Sorry, but the link we sent you to access this service has expired.</p>
+
+<p>Links can only be used for a certain length of time.
+This is because this is a <a href="https://www.gov.uk/help/beta">beta service</a>.</p>
+
+<h2 class="heading-medium">Get a new link</h2>
+
+<p>If you would still like to use this service, contact us to ask for a new link.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>

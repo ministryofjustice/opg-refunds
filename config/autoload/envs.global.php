@@ -45,7 +45,7 @@ return [
 
         ],
 
-    ],
+    ], // beta
 
     'security' => [
 
@@ -63,7 +63,7 @@ return [
             'salt' => getenv('OPG_REFUNDS_BANK_HASH_SALT') ?: '',
         ],
 
-    ],
+    ], // security
 
     'db' => [
         'postgresql' => [
@@ -79,7 +79,7 @@ return [
             ]
 
         ],
-    ],
+    ], // db
 
     'session' => [
 
@@ -102,6 +102,24 @@ return [
 
         ],
 
-    ],
+    ], // session
+
+    'log' => [
+
+        'path' => '/var/log/app/application.log',
+
+        'sns' => [
+            'client' => [
+                'version' => '2010-03-31',
+                'region' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_REGION') ?: null,
+            ],
+            'endpoints' => [
+                'major' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR') ?: null,
+                'minor' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR') ?: null,
+                'info' =>  getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO') ?: null,
+            ],
+        ], // sns
+
+    ], // log
 
 ];

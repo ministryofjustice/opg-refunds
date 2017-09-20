@@ -45,5 +45,4 @@ class AbstractForm extends ZendForm
         }
         return $data;
     }
-
 }

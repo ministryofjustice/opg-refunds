@@ -14,7 +14,7 @@ class PostcodeAction extends AbstractAction
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$this->isActionAccessible($request)) {
-            return new Response\RedirectResponse( $this->getUrlHelper()->generate('session') );
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
         }
 
         //---
@@ -38,7 +38,7 @@ class PostcodeAction extends AbstractAction
 
             $key = 'postcode-options';
             if (isset($data[$key]) && is_array($data[$key]) && count($data[$key]) > 0
-            ){
+            ) {
                 // Add back in the selected postcode fields.
                 $fields = array_merge($fields, $data[$key]);
             }

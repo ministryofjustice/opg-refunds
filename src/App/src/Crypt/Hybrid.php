@@ -29,5 +29,4 @@ class Hybrid extends ZendHybrid
 
         return parent::decrypt($msg, $privateKey, $passPhrase, $id);
     }
-
 }

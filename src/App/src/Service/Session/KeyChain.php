@@ -1,4 +1,6 @@
 <?php
 namespace App\Service\Session;
 
-class KeyChain extends \ArrayObject {}
+class KeyChain extends \ArrayObject
+{
+}
