@@ -8,7 +8,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="user")
+ * @ORM\Entity @ORM\Table(name="`user`")
  **/
 class User extends AbstractEntity
 {

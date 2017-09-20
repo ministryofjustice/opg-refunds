@@ -85,19 +85,19 @@ class Claim extends AbstractEntity
 
     /**
      * @var Poa[]
-     * @ORM\OneToMany(targetEntity="Poa", mappedBy="case")
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim")
      */
     protected $poas;
 
     /**
      * @var Verification
-     * @ORM\OneToOne(targetEntity="Verification", mappedBy="case")
+     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim")
      */
     protected $verification;
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim")
      */
     protected $payment;
 

@@ -47,7 +47,7 @@ class AuthAction implements ServerMiddlewareInterface
 
                 //  Get the user details excluding the cases
                 $userData = $user->toArray([
-                    'refund-cases',
+                    'claim',
                 ]);
 
                 return new JsonResponse($userData);
