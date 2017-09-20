@@ -59,14 +59,14 @@ class Client
     }
 
     /**
-     * Get caseworker details
+     * Get user details
      *
-     * @param int $caseworkerId
+     * @param int $userId
      * @return array
      */
-    public function getCaseworker(int $caseworkerId)
+    public function getUser(int $userId)
     {
-        return $this->httpGet('/v1/cases/caseworker/' . $caseworkerId);
+        return $this->httpGet('/v1/cases/user/' . $userId);
     }
 
     /**
@@ -74,9 +74,9 @@ class Client
      *
      * @return array
      */
-    public function getRefundCases()
+    public function getClaims()
     {
-        return $this->httpGet('/v1/cases/refund-case');
+        return $this->httpGet('/v1/cases/claim');
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -21,24 +21,24 @@ class HomePageAction extends AbstractApiClientAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        /** @var Caseworker $identity */
+        /** @var User $identity */
         $identity = $request->getAttribute('identity');
 
-        //  Even though the caseworker details are in the session get them again with a GET call to the API
-        $caseworkerData = $this->getApiClient()->getCaseworker($identity->getId());
-        $caseworker = new Caseworker($caseworkerData);
+        //  Even though the user details are in the session get them again with a GET call to the API
+        $userData = $this->getApiClient()->getUser($identity->getId());
+        $user = new User($userData);
 
-        $refundCases = [];
+        $claims = [];
 
-        $refundCasesData = $this->getApiClient()->getRefundCases();
+        $claimsData = $this->getApiClient()->getClaims();
 
-        foreach ($refundCasesData as $refundCaseData) {
-            $refundCases[] = new RefundCase($refundCaseData);
+        foreach ($claimsData as $claimData) {
+            $claims[] = new Claim($claimData);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'caseworker'  => $caseworker,
-            'refundCases' => $refundCases,
+            'user'  => $user,
+            'claims' => $claims,
         ]));
     }
 }

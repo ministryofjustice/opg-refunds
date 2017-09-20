@@ -3,7 +3,7 @@
 namespace Api\Service;
 
 use Interop\Container\ContainerInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Zend\Authentication\Storage\Session;
 use Zend\Session\Container;
 
@@ -32,8 +32,8 @@ class ClientFactory
         $session = new Container(Session::NAMESPACE_DEFAULT);
 
         if (isset($session['storage'])) {
-            $caseworker = $session['storage'];
-            $token = ($caseworker instanceof Caseworker ? $caseworker->getToken() : null);
+            $user = $session['storage'];
+            $token = ($user instanceof User ? $user->getToken() : null);
         }
 
         return new Client(

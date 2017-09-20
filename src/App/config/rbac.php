@@ -1,18 +1,18 @@
 <?php
 
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 
 return [
     'roles' => [
-        Caseworker::ROLE_ADMIN      => [],
-        Caseworker::ROLE_REFUND     => [],
-        Caseworker::ROLE_REPORTING  => [],
-        Caseworker::ROLE_CASEWORKER => [],
+        User::ROLE_ADMIN      => [],
+        User::ROLE_REFUND     => [],
+        User::ROLE_REPORTING  => [],
+        User::ROLE_CASEWORKER => [],
         'authenticated-user'        => [
-            Caseworker::ROLE_ADMIN,
-            Caseworker::ROLE_REFUND,
-            Caseworker::ROLE_REPORTING,
-            Caseworker::ROLE_CASEWORKER,
+            User::ROLE_ADMIN,
+            User::ROLE_REFUND,
+            User::ROLE_REPORTING,
+            User::ROLE_CASEWORKER,
         ],
         'guest'                     => [
             'authenticated-user'
@@ -28,17 +28,17 @@ return [
             'sign.out',
             'password.set.new',
         ],
-        Caseworker::ROLE_CASEWORKER => [
+        User::ROLE_CASEWORKER => [
             'caseworker',
         ],
-        Caseworker::ROLE_REPORTING => [
+        User::ROLE_REPORTING => [
             'reporting',
         ],
-        Caseworker::ROLE_REFUND => [
+        User::ROLE_REFUND => [
             'refund',
             'download',
         ],
-        Caseworker::ROLE_ADMIN => [
+        User::ROLE_ADMIN => [
             'admin',
         ],
     ],
