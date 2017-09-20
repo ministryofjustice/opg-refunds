@@ -117,5 +117,34 @@ return [
                 'paths' => __DIR__ . '/../../src/App/src/Entity/Sirius',
             ],
         ],
+        'configuration' => [
+            'orm_applications' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'orm_applications_migration' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'applications_entities' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'orm_cases' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'orm_cases_migration' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'cases_entities' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'orm_sirius' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'orm_sirius_migration' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+            'sirius_entities' => [
+                'proxy_dir' => sys_get_temp_dir(),
+            ],
+        ],
     ]
 ];
