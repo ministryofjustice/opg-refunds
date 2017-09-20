@@ -32,11 +32,11 @@ $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
-$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/', App\Action\HomeAction::class, 'home');
 $app->get('/admin', App\Action\AdminAction::class, 'admin');
 $app->get('/caseworker', App\Action\CaseworkerAction::class, 'caseworker');
-$app->get('/refund', App\Action\RefundAction::class, 'refund');
-$app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
+$app->get('/refund', App\Action\HomeRefundAction::class, 'refund.home');
+$app->get('/reporting', App\Action\HomeReportingAction::class, 'reporting.home');
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
 $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');

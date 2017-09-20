@@ -2,4 +2,37 @@
 
 <h1>Admin page</h1>
 
+<h2>Caseworkers</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php if (count($caseworkers)) { ?>
+        <?php foreach ($caseworkers as $caseworker) { ?>
+            <tr>
+                <td><?= $caseworker->getName() ?></td>
+                <td><?= $caseworker->getEmail() ?></td>
+                <td><?= $caseworker->getStatus() ?></td>
+                <td><?= $caseworker->getRoles() ?></td>
+                <td>
+                    <button>Edit</button>
+                </td>
+            </tr>
+        <?php } ?>
+    <?php } else { ?>
+        <tr>
+            <td colspan="5">No claims</td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
+
 <p><a href="/">Back to home page</a></p>

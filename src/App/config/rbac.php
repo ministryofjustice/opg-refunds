@@ -40,10 +40,10 @@ return [
             'claim.reject',
         ],
         User::ROLE_REPORTING => [
-            'reporting',
+            'reporting.home',
         ],
         User::ROLE_REFUND => [
-            'refund',
+            'refund.home',
             'download',
             'csv.download',
         ],
