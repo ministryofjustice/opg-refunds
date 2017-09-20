@@ -14,7 +14,7 @@ class RefundCaseService extends AbstractApiClientService
     public function getNextRefundCase()
     {
         //  GET on caseworker's case endpoint without an id means get next refund case
-        $refundCaseArray = $this->getApiClient()->httpGet('/v1/cases/caseworker/case');
+        $refundCaseArray = $this->getApiClient()->httpGet('/v1/cases/caseworker/claim');
 
         if ($refundCaseArray === null) {
             return null;
