@@ -7,7 +7,6 @@ use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\Stream;
@@ -16,7 +15,7 @@ use Zend\Diactoros\Stream;
  * Class SpreadsheetAction
  * @package App\Action
  */
-class SpreadsheetAction implements ServerMiddlewareInterface
+class SpreadsheetAction extends AbstractRestfulAction
 {
     /**
      * @var Spreadsheet
@@ -52,7 +51,7 @@ class SpreadsheetAction implements ServerMiddlewareInterface
      * @param DelegateInterface $delegate
      * @return Response
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claims = $this->spreadsheetService->getAllRefundable();
 

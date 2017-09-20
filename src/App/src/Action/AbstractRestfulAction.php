@@ -7,6 +7,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Exception;
+use Zend\Expressive\Router\RouteResult;
 
 /**
  * Class AbstractRestfulAction
@@ -23,22 +24,26 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
     final public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         //  Using the route action and the request method map to a specific action function
+        $action = $request->getAttribute('action', 'index');
         $method = $request->getMethod();
 
         //  HTTP to CRUD mappings
         $actionMappings = [
-            RequestMethodInterface::METHOD_GET    => 'index',
-            RequestMethodInterface::METHOD_POST   => 'add',
-            RequestMethodInterface::METHOD_PUT    => 'edit',
-            RequestMethodInterface::METHOD_PATCH  => 'modify',
-            RequestMethodInterface::METHOD_DELETE => 'delete',
+            'index'  => RequestMethodInterface::METHOD_GET,
+            'add'    => RequestMethodInterface::METHOD_POST,
+            'edit'   => RequestMethodInterface::METHOD_PUT,
+            'delete' => RequestMethodInterface::METHOD_DELETE,
         ];
 
-        if (!isset($actionMappings[$method])) {
-            throw new Exception(sprintf('%s method can not be used in this result action: %s', $method, get_class($this)), 404);
+        if (isset($actionMappings[$action]) && $actionMappings[$action] == $method) {
+            return $this->{$action . 'Action'}($request, $delegate);
         }
 
-        return $this->{$actionMappings[$method] . 'Action'}($request, $delegate);
+        //  Could not match so throw an exception
+        $routeResult = $request->getAttribute(RouteResult::class);
+        $routeName = $routeResult->getMatchedRouteName();
+
+        throw new Exception(sprintf('%s action is not available for route %s using %s method', $action, $routeName, $method), 404);
     }
 
     /**

@@ -35,7 +35,7 @@ $prefix = '/v1/cases';
 $app->route($prefix . '/claim[/{id:\d+}]', App\Action\ClaimAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'claim');
 $app->route($prefix . '/claim/{claimId:\d+}/log[/{id:\d+}]', App\Action\ClaimLogAction::class, ['GET', 'POST'], 'claim.log');
 $app->route($prefix . '/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
-$app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
+$app->route($prefix . '/user/{action:add|edit|delete}[/{id:\d+}]', App\Action\UserAction::class, ['POST', 'PUT', 'DELETE'], 'user.update');
 $app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
 

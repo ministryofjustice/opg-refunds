@@ -38,8 +38,7 @@ class ClaimAction extends AbstractRestfulAction
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     *
-     * @return ResponseInterface
+     * @return JsonResponse
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
