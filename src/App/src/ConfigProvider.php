@@ -40,6 +40,7 @@ class ConfigProvider
                 //  Actions
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
+                Action\CaseworkerClaimAction::class => Action\CaseworkerClaimActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
 

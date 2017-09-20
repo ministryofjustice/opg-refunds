@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Action;
+
+use App\Service\RefundCase;
+use Applications\Service\DataMigration;
+use Interop\Container\ContainerInterface;
+
+/**
+ * Class CaseworkerClaimActionFactory
+ * @package App\Action
+ */
+class CaseworkerClaimActionFactory
+{
+    /**
+     * @param ContainerInterface $container
+     * @return CaseworkerClaimAction
+     */
+    public function __invoke(ContainerInterface $container)
+    {
+        return new CaseworkerClaimAction(
+            $container->get(RefundCase::class),
+            $container->get(DataMigration::class)
+        );
+    }
+}

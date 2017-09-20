@@ -34,6 +34,7 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 $prefix = '/v1/cases';
 $app->get($prefix . '/claim', App\Action\ClaimAction::class, 'claim');
 $app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
+$app->get($prefix . '/caseworker/claim[/{id:\d+}]', App\Action\CaseworkerClaimAction::class, 'caseworker.claim');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
 
 //  Developer routes
