@@ -5,6 +5,7 @@ namespace App\Entity\Cases;
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="user")
@@ -70,9 +71,9 @@ class User extends AbstractEntity
 
     /**
      * @var Claim[]
-     * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="assignedTo")
+     * @ORM\OneToMany(targetEntity="Claim", mappedBy="assignedTo")
      */
-    protected $assignedCases;
+    protected $assignedClaims;
 
     /**
      * @return int
@@ -197,17 +198,17 @@ class User extends AbstractEntity
     /**
      * @return Claim[]
      */
-    public function getAssignedCases()
+    public function getAssignedClaims()
     {
-        return $this->assignedCases;
+        return $this->assignedClaims;
     }
 
     /**
-     * @param Claim[] $assignedCases
+     * @param Claim[] $assignedClaims
      */
-    public function setAssignedCases($assignedCases)
+    public function setAssignedClaims($assignedClaims)
     {
-        $this->assignedCases = $assignedCases;
+        $this->assignedClaims = $assignedClaims;
     }
 
     /**
@@ -223,7 +224,7 @@ class User extends AbstractEntity
     public function getAsDataModel(array $modelToEntityMappings = [])
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
-            'RefundCases' => 'AssignedCases',
+            'Claims' => 'AssignedClaims',
         ]);
 
         return parent::getAsDataModel($modelToEntityMappings);

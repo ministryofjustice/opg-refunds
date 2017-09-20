@@ -2,13 +2,13 @@
 
 namespace Auth\Service;
 
-use App\Entity\Cases\User as CaseworkerEntity;
+use App\Entity\Cases\User as UserEntity;
 use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
 use Auth\Exception\UnauthorizedException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
@@ -45,36 +45,36 @@ class Authentication
      */
     public function __construct(EntityManager $entityManager, int $tokenTtl)
     {
-        $this->repository = $entityManager->getRepository(CaseworkerEntity::class);
+        $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->tokenTtl = $tokenTtl;
     }
 
     /**
-     * Validate a caseworker password
+     * Validate a user password
      *
      * @param string $email
      * @param string $password
-     * @return Caseworker
+     * @return User
      * @throws UnauthorizedException|Exception
      */
     public function validatePassword(string $email, string $password)
     {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneBy([
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
             'email' => $email,
         ]);
 
-        if (is_null($caseworker) || $caseworker->getPasswordHash() != hash('sha256', $password)) {
-            throw new InvalidInputException('Caseworker not found');
+        if (is_null($user) || $user->getPasswordHash() != hash('sha256', $password)) {
+            throw new InvalidInputException('User not found');
         }
 
-        //  Confirm that the caseworker is active
-        if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
+        //  Confirm that the user is active
+        if ($user->getStatus() !== User::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');
         }
 
-        //  Attempt to generate a token for the caseworker
+        //  Attempt to generate a token for the user
         do {
             $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
 
@@ -87,44 +87,44 @@ class Authentication
 
             $tokenExpires = time() + $this->tokenTtl;
 
-            $created = $this->setToken($caseworker->getId(), $token, $tokenExpires);
+            $created = $this->setToken($user->getId(), $token, $tokenExpires);
         } while (!$created);
 
-        return $this->translateToDataModel($caseworker);;
+        return $this->translateToDataModel($user);
     }
 
     /**
      * Validate a request token
      *
      * @param string $token
-     * @return Caseworker
+     * @return User
      * @throws UnauthorizedException
      */
     public function validateToken(string $token)
     {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->repository->findOneBy([
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
             'token' => $token,
         ]);
 
-        //  Confirm that the caseworker is active
-        if ($caseworker->getStatus() !== Caseworker::STATUS_ACTIVE) {
+        //  Confirm that the user is active
+        if ($user->getStatus() !== User::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');
         }
 
         //  Check to see if the token has expired
-        if (time() > $caseworker->getTokenExpires()) {
+        if (time() > $user->getTokenExpires()) {
             throw new UnauthorizedException('Token expired');
         }
 
         //  Increase the token expires value
-        $this->setToken($caseworker->getId(), $caseworker->getToken(),  time() + $this->tokenTtl);
+        $this->setToken($user->getId(), $user->getToken(),  time() + $this->tokenTtl);
 
-        return $this->translateToDataModel($caseworker);
+        return $this->translateToDataModel($user);
     }
 
     /**
-     * Set the token values against a caseworker record
+     * Set the token values against a user record
      *
      * @param int $id
      * @param string $token
@@ -133,11 +133,11 @@ class Authentication
      */
     public function setToken(int $id, string $token, int $tokenExpires)
     {
-        /** @var CaseworkerEntity $caseworker */
-        $caseworker = $this->entityManager->getReference(CaseworkerEntity::class, $id);
+        /** @var UserEntity $user */
+        $user = $this->entityManager->getReference(UserEntity::class, $id);
 
-        $caseworker->setToken($token);
-        $caseworker->setTokenExpires($tokenExpires);
+        $user->setToken($token);
+        $user->setTokenExpires($tokenExpires);
 
         $this->entityManager->flush();
 

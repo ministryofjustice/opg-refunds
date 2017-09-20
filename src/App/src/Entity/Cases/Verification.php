@@ -32,10 +32,10 @@ class Verification extends AbstractEntity
 
     /**
      * @var Claim
-     * @ORM\OneToOne(targetEntity="RefundCase", inversedBy="verification")
-     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Claim", inversedBy="verification")
+     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
-    protected $case;
+    protected $claim;
 
     /**
      * @var Poa
@@ -95,17 +95,17 @@ class Verification extends AbstractEntity
     /**
      * @return Claim
      */
-    public function getCase(): Claim
+    public function getClaim(): Claim
     {
-        return $this->case;
+        return $this->claim;
     }
 
     /**
-     * @param Claim $case
+     * @param Claim $claim
      */
-    public function setCase(Claim $case)
+    public function setClaim(Claim $claim)
     {
-        $this->case = $case;
+        $this->claim = $claim;
     }
 
     /**

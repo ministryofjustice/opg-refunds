@@ -38,16 +38,16 @@ class ConfigProvider
             ],
             'factories'  => [
                 //  Actions
-                Action\RefundCaseAction::class => Action\RefundCaseActionFactory::class,
-                Action\CaseworkerAction::class => Action\CaseworkerActionFactory::class,
+                Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\UserAction::class => Action\UserActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
 
                 // Middleware
 
                 //  Services
-                Service\RefundCase::class => Service\RefundCaseFactory::class,
-                Service\Caseworker::class => Service\CaseworkerFactory::class,
+                Service\Claim::class => Service\ClaimFactory::class,
+                Service\User::class => Service\UserFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt

@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\RefundCase as RefundCaseService;
+use App\Service\Claim as ClaimService;
 use Applications\Service\DataMigration;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -11,24 +11,24 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class RefundCaseAction
+ * Class ClaimAction
  * @package App\Action
  */
-class RefundCaseAction implements ServerMiddlewareInterface
+class ClaimAction implements ServerMiddlewareInterface
 {
     /**
-     * @var RefundCaseService
+     * @var ClaimService
      */
-    private $refundCaseService;
+    private $claimService;
 
     /**
      * @var DataMigration
      */
     private $dataMigrationService;
 
-    public function __construct(RefundCaseService $refundCaseService, DataMigration $dataMigrationService)
+    public function __construct(ClaimService $claimService, DataMigration $dataMigrationService)
     {
-        $this->refundCaseService = $refundCaseService;
+        $this->claimService = $claimService;
         $this->dataMigrationService = $dataMigrationService;
     }
 
@@ -47,13 +47,13 @@ class RefundCaseAction implements ServerMiddlewareInterface
         $this->dataMigrationService->migrateAll();
 
         //  Get all of the refund cases
-        $refundCases = $this->refundCaseService->getAll();
-        $refundCasesData = [];
+        $claims = $this->claimService->getAll();
+        $claimsData = [];
 
-        foreach ($refundCases as $refundCase) {
-            $refundCasesData[] = $refundCase->toArray();
+        foreach ($claims as $claim) {
+            $claimsData[] = $claim->toArray();
         }
 
-        return new JsonResponse($refundCasesData);
+        return new JsonResponse($claimsData);
     }
 }

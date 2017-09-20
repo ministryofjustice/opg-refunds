@@ -54,9 +54,9 @@ class SpreadsheetAction implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $refundCases = $this->spreadsheetService->getAllRefundable();
+        $claims = $this->spreadsheetService->getAllRefundable();
 
-        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($refundCases);
+        $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims);
 
         $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
         $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;

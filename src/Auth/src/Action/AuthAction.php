@@ -43,14 +43,14 @@ class AuthAction implements ServerMiddlewareInterface
 
         if (isset($requestBody['email']) && isset($requestBody['password'])) {
             try {
-                $caseworker = $this->authService->validatePassword($requestBody['email'], $requestBody['password']);
+                $user = $this->authService->validatePassword($requestBody['email'], $requestBody['password']);
 
-                //  Get the caseworker details excluding the cases
-                $caseworkerData = $caseworker->toArray([
+                //  Get the user details excluding the cases
+                $userData = $user->toArray([
                     'refund-cases',
                 ]);
 
-                return new JsonResponse($caseworkerData);
+                return new JsonResponse($userData);
             } catch (InvalidInputException $ignore) {
                 //  Authentication failed - exception thrown below
             }

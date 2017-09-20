@@ -2,16 +2,16 @@
 
 namespace App\Service;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
-use App\Entity\Cases\Claim as RefundCaseEntity;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use App\Entity\Cases\Claim as ClaimEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Class RefundCase
+ * Class Claim
  * @package App\Service
  */
-class RefundCase
+class Claim
 {
     use EntityToModelTrait;
 
@@ -26,26 +26,26 @@ class RefundCase
     private $entityManager;
 
     /**
-     * Case constructor
+     * Claim constructor
      *
      * @param EntityManager $entityManager
      */
     public function __construct(EntityManager $entityManager)
     {
-        $this->repository = $entityManager->getRepository(RefundCaseEntity::class);
+        $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
     }
 
     /**
-     * Get all refund cases
+     * Get all claims
      *
-     * @return RefundCaseModel[]
+     * @return ClaimModel[]
      */
     public function getAll()
     {
-        /** @var RefundCaseEntity[] $refundCases */
-        $refundCases = $this->repository->findBy([]);
+        /** @var ClaimEntity[] $claims */
+        $claims = $this->repository->findBy([]);
 
-        return $this->translateToDataModelArray($refundCases);
+        return $this->translateToDataModelArray($claims);
     }
 }

@@ -45,10 +45,10 @@ class Poa extends AbstractEntity
 
     /**
      * @var Claim
-     * @ORM\ManyToOne(targetEntity="RefundCase", inversedBy="poas")
-     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     * @ORM\ManyToOne(targetEntity="Claim", inversedBy="poas")
+     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
-    protected $case;
+    protected $claim;
 
     /**
      * @return int
@@ -125,16 +125,16 @@ class Poa extends AbstractEntity
     /**
      * @return Claim
      */
-    public function getCase(): Claim
+    public function getClaim(): Claim
     {
-        return $this->case;
+        return $this->claim;
     }
 
     /**
-     * @param Claim $case
+     * @param Claim $claim
      */
-    public function setCase(Claim $case)
+    public function setClaim(Claim $claim)
     {
-        $this->case = $case;
+        $this->claim = $claim;
     }
 }

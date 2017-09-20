@@ -9,7 +9,7 @@ use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetWorksheet;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
-use AppTest\DataModel\Cases\RefundCaseBuilder;
+use AppTest\DataModel\Cases\ClaimBuilder;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
@@ -43,7 +43,7 @@ class PhpSpreadsheetGeneratorTest extends TestCase
     {
         $this->spreadsheetGenerator = new PhpSpreadsheetGenerator($this->sourceFolder, $this->tempFolder);
 
-        $refundCaseBuilder = new RefundCaseBuilder();
+        $claimBuilder = new ClaimBuilder();
         $applicationBuilder = new ApplicationBuilder();
 
         $account = new Account();
@@ -57,13 +57,13 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $payment = new Payment();
         $payment->setAmount(45);
 
-        $case = $refundCaseBuilder
+        $claim = $claimBuilder
             ->withApplication($application)
             ->withPayment($payment)
             ->build();
 
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator();
-        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$case]);
+        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$claim]);
     }
 
     /**

@@ -8,7 +8,7 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Zend\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ViewCaseQueueAction implements ServerMiddlewareInterface
+class ViewClaimQueueAction implements ServerMiddlewareInterface
 {
     /**
      * @var DataMigration

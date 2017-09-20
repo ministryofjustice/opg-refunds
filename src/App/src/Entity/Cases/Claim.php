@@ -7,6 +7,7 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="claim")
@@ -59,7 +60,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="Caseworker", inversedBy="assignedCases")
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="assignedClaims")
      * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id", nullable=true)
      */
     protected $assignedTo;

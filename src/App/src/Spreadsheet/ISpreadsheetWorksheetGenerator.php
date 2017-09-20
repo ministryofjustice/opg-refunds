@@ -2,13 +2,13 @@
 
 namespace App\Spreadsheet;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 
 interface ISpreadsheetWorksheetGenerator
 {
     /**
-     * @param RefundCaseModel[] $cases the source data to generate the worksheet from. Should be a multidimensional array
+     * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
      * @return SpreadsheetWorksheet worksheet that can be passed to a compatible ISpreadsheetGenerator instance
      */
-    public function generate(array $cases): SpreadsheetWorksheet;
+    public function generate(array $claims): SpreadsheetWorksheet;
 }

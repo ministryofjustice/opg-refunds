@@ -4,47 +4,46 @@ namespace AppTest\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
-use App\Service\IdentFormatter;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 
-class RefundCaseBuilder
+class ClaimBuilder
 {
     /**
-     * @var RefundCase
+     * @var Claim
      */
-    private $case;
+    private $claim;
 
     public function __construct()
     {
-        $this->case = new RefundCase();
-        $this->case->setId(1234567890);
+        $this->claim = new Claim();
+        $this->claim->setId(1234567890);
     }
 
     /**
-     * @return RefundCase
+     * @return Claim
      */
     public function build()
     {
-        return $this->case;
+        return $this->claim;
     }
 
     /**
      * @param Application $application
-     * @return RefundCaseBuilder $this
+     * @return ClaimBuilder $this
      */
     public function withApplication(Application $application)
     {
-        $this->case->setApplication($application);
+        $this->claim->setApplication($application);
         return $this;
     }
 
     /**
      * @param Payment $payment
-     * @return RefundCaseBuilder $this
+     * @return ClaimBuilder $this
      */
     public function withPayment(Payment $payment)
     {
-        $this->case->setPayment($payment);
+        $this->claim->setPayment($payment);
         return $this;
     }
 }
