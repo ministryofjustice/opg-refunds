@@ -80,7 +80,6 @@ abstract class AbstractEntity
             $modelSetMethod = 'set' . $modelFieldName;
 
             if (method_exists($model, $modelSetMethod)) {
-                //  Determine which value to set
                 $value = $this->$entityMethod();
 
                 //  Don't set null values
@@ -109,5 +108,47 @@ abstract class AbstractEntity
         }
 
         return $model;
+    }
+
+    /**
+     * @param AbstractDataModel $model
+     * @throws Exception
+     */
+    public function setFromDataModel(AbstractDataModel $model)
+    {
+        if (get_class($model) != $this->dataModelClass) {
+            throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $this->dataModelClass));
+        }
+
+        //  Loop through the entity methods and transfer the values from the datamodel
+        $entityMethods = get_class_methods($this);
+
+        foreach ($entityMethods as $entityMethod) {
+            //  Must be a set method to continue
+            if (strpos($entityMethod, 'set') !== 0) {
+                continue;
+            }
+
+            //  Get the field name (by default it will be the same for entity and model
+            $entityFieldName = $modelFieldName = substr($entityMethod, 3);
+
+            //  TODO - No model to entity mappings here - possibly add later
+
+            //  Try to find a set method on the model and use it
+            $modelGetMethod = 'get' . $modelFieldName;
+
+            if (method_exists($model, $modelGetMethod)) {
+                //  Determine which value to get
+                $value = $model->$modelGetMethod();
+
+                //  Don't set null or none scalar values
+                //  TODO - Enhance this if it becomes required in the future
+                if (is_null($value) || !is_scalar($value)) {
+                    continue;
+                }
+
+                $this->$entityMethod($value);
+            }
+        }
     }
 }
