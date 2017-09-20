@@ -5,10 +5,10 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 
 /**
- * Class Caseworker
+ * Class User
  * @package Opg\Refunds\Caseworker\DataModel\Cases
  */
-class Caseworker extends AbstractDataModel
+class User extends AbstractDataModel
 {
     const ROLE_CASEWORKER = 'Caseworker';
     const ROLE_REPORTING  = 'Reporting';
@@ -49,14 +49,9 @@ class Caseworker extends AbstractDataModel
     protected $token;
 
     /**
-     * @var int
+     * @var Claim[]
      */
-    protected $tokenExpires;
-
-    /**
-     * @var RefundCase[]
-     */
-    protected $refundCases;
+    protected $claims;
 
     /**
      * @return int
@@ -173,39 +168,20 @@ class Caseworker extends AbstractDataModel
     }
 
     /**
-     * @return int
-     */
-    public function getTokenExpires(): int
-    {
-        return $this->tokenExpires;
-    }
-
-    /**
-     * @param int $tokenExpires
-     * @return $this
-     */
-    public function setTokenExpires(int $tokenExpires)
-    {
-        $this->tokenExpires = $tokenExpires;
-
-        return $this;
-    }
-
-    /**
      * @return array
      */
-    public function getRefundCases()
+    public function getClaims()
     {
-        return $this->refundCases;
+        return $this->claims;
     }
 
     /**
-     * @param array $refundCases
+     * @param array $claims
      * @return $this
      */
-    public function setRefundCases(array $refundCases)
+    public function setClaims(array $claims)
     {
-        $this->refundCases = $refundCases;
+        $this->claims = $claims;
 
         return $this;
     }
@@ -220,9 +196,9 @@ class Caseworker extends AbstractDataModel
     protected function map($property, $value)
     {
         switch ($property) {
-            case 'refundCases':
+            case 'claims':
                 return array_map(function ($value) {
-                    return ($value instanceof RefundCase ? $value : new RefundCase($value));
+                    return ($value instanceof Claim ? $value : new Claim($value));
                 }, $value);
             default:
                 return parent::map($property, $value);
