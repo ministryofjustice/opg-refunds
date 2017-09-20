@@ -4,11 +4,11 @@ namespace OpgTest\Refunds\Caseworker\DataModel\Applications;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use OpgTest\Refunds\Caseworker\DataModel\AbstractDataModelTestCase;
 use DateTime;
 
-class RefundCaseTest extends AbstractDataModelTestCase
+class ClaimTest extends AbstractDataModelTestCase
 {
     /**
      * @var Application
@@ -64,7 +64,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
 
     public function testGetsAndSets()
     {
-        $model = new RefundCase();
+        $model = new Claim();
 
         $now = new DateTime();
 
@@ -73,7 +73,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
               ->setUpdatedDateTime($now)
               ->setReceivedDateTime($now)
               ->setApplication($this->application)
-              ->setStatus(RefundCase::STATUS_NEW)
+              ->setStatus(Claim::STATUS_NEW)
               ->setAssignedToId(123)
               ->setAssignedDateTime($now)
               ->setFinishedDateTime($now)
@@ -86,7 +86,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
         $this->assertEquals($now, $model->getUpdatedDateTime());
         $this->assertEquals($now, $model->getReceivedDateTime());
         $this->assertEquals($this->application, $model->getApplication());
-        $this->assertEquals(RefundCase::STATUS_NEW, $model->getStatus());
+        $this->assertEquals(Claim::STATUS_NEW, $model->getStatus());
         $this->assertEquals(123, $model->getAssignedToId());
         $this->assertEquals($now, $model->getAssignedDateTime());
         $this->assertEquals($now, $model->getFinishedDateTime());
@@ -105,7 +105,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
             'updated-date-time'  => $this->dateTimeToString($now),
             'received-date-time' => $this->dateTimeToString($now),
             'application'        => $this->application->toArray(),
-            'status'             => RefundCase::STATUS_NEW,
+            'status'             => Claim::STATUS_NEW,
             'assigned-to-id'     => 123,
             'assigned-date-time' => $this->dateTimeToString($now),
             'finished-date-time' => $this->dateTimeToString($now),
@@ -113,7 +113,7 @@ class RefundCaseTest extends AbstractDataModelTestCase
             'payment'            => $this->payment->toArray(),
         ];
 
-        $model = new RefundCase($data);
+        $model = new Claim($data);
 
         $this->assertSame($data, $model->toArray());
     }

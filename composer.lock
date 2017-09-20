@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
+    "content-hash": "66c040c2c9112d7bcbb7cf73abe38c2a",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -854,16 +854,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-master",
+            "version": "dev-refundcase-to-claim",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "a3503151022396c012728bcdbb24fadea2d222a3"
+                "reference": "86f2a26b752e0e82ff10e94ac3157df80e369c43"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a3503151022396c012728bcdbb24fadea2d222a3",
-                "reference": "a3503151022396c012728bcdbb24fadea2d222a3",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/86f2a26b752e0e82ff10e94ac3157df80e369c43",
+                "reference": "86f2a26b752e0e82ff10e94ac3157df80e369c43",
                 "shasum": ""
             },
             "require": {
@@ -882,11 +882,7 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
-            "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
-                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
-            },
-            "time": "2017-09-20 07:04:21"
+            "time": "2017-09-20T15:47:54+00:00"
         },
         {
             "name": "nikic/fast-route",
