@@ -49,11 +49,6 @@ class Caseworker extends AbstractDataModel
     protected $token;
 
     /**
-     * @var int
-     */
-    protected $tokenExpires;
-
-    /**
      * @var RefundCase[]
      */
     protected $refundCases;
@@ -168,25 +163,6 @@ class Caseworker extends AbstractDataModel
     public function setToken(string $token)
     {
         $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getTokenExpires(): int
-    {
-        return $this->tokenExpires;
-    }
-
-    /**
-     * @param int $tokenExpires
-     * @return $this
-     */
-    public function setTokenExpires(int $tokenExpires)
-    {
-        $this->tokenExpires = $tokenExpires;
 
         return $this;
     }
