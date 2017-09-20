@@ -2,7 +2,7 @@
 
 namespace Auth\Middleware;
 
-use Auth\Service\AuthenticationService;
+use Auth\Service\Authentication;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ class AuthMiddlewareFactory
     public function __invoke(ContainerInterface $container)
     {
         return new AuthMiddleware(
-            $container->get(AuthenticationService::class)
+            $container->get(Authentication::class)
         );
     }
 }

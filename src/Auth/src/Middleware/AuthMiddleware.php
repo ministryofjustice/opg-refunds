@@ -4,7 +4,7 @@ namespace Auth\Middleware;
 
 use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
-use Auth\Service\AuthenticationService;
+use Auth\Service\Authentication;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -16,16 +16,16 @@ use Psr\Http\Message\ServerRequestInterface;
 class AuthMiddleware implements ServerMiddlewareInterface
 {
     /**
-     * @var AuthenticationService
+     * @var Authentication
      */
     private $authService;
 
     /**
      * AuthMiddleware constructor
      *
-     * @param AuthenticationService $authService
+     * @param Authentication $authService
      */
-    public function __construct(AuthenticationService $authService)
+    public function __construct(Authentication $authService)
     {
         $this->authService = $authService;
     }

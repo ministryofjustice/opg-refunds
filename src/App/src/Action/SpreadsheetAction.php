@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\SpreadsheetService;
+use App\Service\Spreadsheet;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
@@ -19,7 +19,7 @@ use Zend\Diactoros\Stream;
 class SpreadsheetAction implements ServerMiddlewareInterface
 {
     /**
-     * @var SpreadsheetService
+     * @var Spreadsheet
      */
     private $spreadsheetService;
 
@@ -36,11 +36,11 @@ class SpreadsheetAction implements ServerMiddlewareInterface
     /**
      * SpreadsheetAction constructor
      *
-     * @param SpreadsheetService $spreadsheetService
+     * @param Spreadsheet $spreadsheetService
      * @param ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator
      * @param ISpreadsheetGenerator $spreadsheetGenerator
      */
-    public function __construct(SpreadsheetService $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
+    public function __construct(Spreadsheet $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
     {
         $this->spreadsheetService = $spreadsheetService;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;

@@ -42,7 +42,7 @@ class ConfigProvider
                 Middleware\AuthMiddleware::class => Middleware\AuthMiddlewareFactory::class,
 
                 //  Services
-                Service\AuthenticationService::class => Service\AuthenticationServiceFactory::class,
+                Service\Authentication::class => Service\AuthenticationFactory::class,
             ],
         ];
     }

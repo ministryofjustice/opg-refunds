@@ -17,9 +17,7 @@ class RefundCaseBuilder
     public function __construct()
     {
         $this->case = new RefundCase();
-        $this->case
-            ->setId(1234567890)
-            ->setReferenceNumber(IdentFormatter::format($this->case->getId()));
+        $this->case->setId(1234567890);
     }
 
     /**

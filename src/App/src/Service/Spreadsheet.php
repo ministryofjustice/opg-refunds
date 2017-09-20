@@ -13,10 +13,10 @@ use Doctrine\ORM\EntityRepository;
 use Zend\Crypt\PublicKey\Rsa;
 
 /**
- * Class SpreadsheetService
+ * Class Spreadsheet
  * @package App\Service
  */
-class SpreadsheetService
+class Spreadsheet
 {
     use EntityToModelTrait {
         translateToDataModel as protected traitTranslateToDataModel;
