@@ -2,17 +2,23 @@
 
 <p>Logged in as <?= $user->getName(); ?></p>
 
+<h2>Process a claim</h2>
+
+<p>Add a new power of attorney refund</p>
+
+<a href="/process-new-claim">Process new claim</a>
+
 <h2>Your outstanding claims</h2>
 
 <table>
     <thead>
-    <tr>
-        <th>Claim number</th>
-        <th>Donor name</th>
-        <th>Date received</th>
-        <th>Date claim modified</th>
-        <th></th>
-    </tr>
+        <tr>
+            <th>Claim number</th>
+            <th>Donor name</th>
+            <th>Received</th>
+            <th>Modified</th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
         <?php if (count($user->getClaims())) { ?>
@@ -33,36 +39,7 @@
     </tbody>
 </table>
 
-<h2>All claims</h2>
-
-<table>
-    <thead>
-        <tr>
-            <th>Claim number</th>
-            <th>Donor name</th>
-            <th>Date received</th>
-            <th>Date claim modified</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (count($claims)) { ?>
-            <?php foreach ($claims as $claim) { ?>
-                <tr>
-                    <td><?= $claim->getReferenceNumber() ?></td>
-                    <td><?= $claim->getDonorName() ?></td>
-                    <td><?= $claim->getReceivedDateTime()->format('d/m/Y') ?></td>
-                    <td><?= ($claim->getUpdatedDateTime() ?: $claim->getReceivedDateTime())->format('d/m/Y') ?></td>
-                    <td><?= $claim->getStatus() ?></td>
-                </tr>
-            <?php } ?>
-        <?php } else { ?>
-            <tr>
-                <td colspan="5">No claims</td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
+<h2>Role test links</h2>
 
 <p><a href="/caseworker">Case worker user page</a></p>
 <p><a href="/reporting">Reporting user page</a></p>

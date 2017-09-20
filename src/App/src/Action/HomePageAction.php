@@ -28,17 +28,8 @@ class HomePageAction extends AbstractApiClientAction
         $userData = $this->getApiClient()->getUser($identity->getId());
         $user = new User($userData);
 
-        $claims = [];
-
-        $claimsData = $this->getApiClient()->getClaims();
-
-        foreach ($claimsData as $claimData) {
-            $claims[] = new Claim($claimData);
-        }
-
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'user'  => $user,
-            'claims' => $claims,
+            'user'  => $user
         ]));
     }
 }

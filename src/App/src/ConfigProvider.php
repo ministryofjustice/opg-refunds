@@ -47,11 +47,14 @@ class ConfigProvider
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
+
+                Service\RefundCaseService::class => Service\RefundCaseService::class,
             ],
             'factories'  => [
                 //  Actions
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
+                Action\ProcessNewClaimAction::class => Action\ProcessNewClaimActionFactory::class,
 
                 // Middleware
                 Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
