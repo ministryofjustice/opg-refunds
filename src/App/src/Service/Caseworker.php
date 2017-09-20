@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\Cases\Caseworker as CaseworkerEntity;
+use App\Entity\Cases\User as CaseworkerEntity;
 use App\Exception\InvalidInputException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;

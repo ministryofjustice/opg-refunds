@@ -3,22 +3,20 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker as CaseworkerModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 
 /**
- * @ORM\Entity @ORM\Table(name="caseworker")
+ * @ORM\Entity @ORM\Table(name="user")
  **/
-class Caseworker extends AbstractEntity
+class User extends AbstractEntity
 {
     /**
      * Class of the datamodel that this entity can be converted to
      *
      * @var string
      */
-    protected $dataModelClass = CaseworkerModel::class;
+    protected $dataModelClass = UserModel::class;
 
     /**
      * @var int
@@ -71,7 +69,7 @@ class Caseworker extends AbstractEntity
     protected $tokenExpires;
 
     /**
-     * @var RefundCase[]
+     * @var Claim[]
      * @ORM\OneToMany(targetEntity="RefundCase", mappedBy="assignedTo")
      */
     protected $assignedCases;
@@ -197,7 +195,7 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @return RefundCase[]
+     * @return Claim[]
      */
     public function getAssignedCases()
     {
@@ -205,7 +203,7 @@ class Caseworker extends AbstractEntity
     }
 
     /**
-     * @param RefundCase[] $assignedCases
+     * @param Claim[] $assignedCases
      */
     public function setAssignedCases($assignedCases)
     {

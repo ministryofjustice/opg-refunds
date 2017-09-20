@@ -44,7 +44,7 @@ class Payment extends AbstractEntity
     protected $processedDateTime;
 
     /**
-     * @var RefundCase
+     * @var Claim
      * @ORM\OneToOne(targetEntity="RefundCase", inversedBy="payment")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
@@ -123,17 +123,17 @@ class Payment extends AbstractEntity
     }
 
     /**
-     * @return RefundCase
+     * @return Claim
      */
-    public function getCase(): RefundCase
+    public function getCase(): Claim
     {
         return $this->case;
     }
 
     /**
-     * @param RefundCase $case
+     * @param Claim $case
      */
-    public function setCase(RefundCase $case)
+    public function setCase(Claim $case)
     {
         $this->case = $case;
     }

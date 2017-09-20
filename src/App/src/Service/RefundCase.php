@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
-use App\Entity\Cases\RefundCase as RefundCaseEntity;
+use App\Entity\Cases\Claim as RefundCaseEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 

@@ -2,8 +2,8 @@
 
 namespace App\Action;
 
-use App\Entity\Cases\Caseworker;
-use App\Entity\Cases\RefundCase;
+use App\Entity\Cases\User;
+use App\Entity\Cases\Claim;
 use App\Entity\Sirius\Poa as SiriusPoa;
 use Doctrine\ORM\EntityManager;
 use Exception;
@@ -39,11 +39,11 @@ class PingAction implements ServerMiddlewareInterface
         $caseDbConnectionSuccessful = false;
         $foundCaseworker = false;
         try {
-            $productRepository = $this->casesEntityManager->getRepository(Caseworker::class);
+            $productRepository = $this->casesEntityManager->getRepository(User::class);
             $caseworkers = $productRepository->findBy([], null, 1);
             $caseDbConnectionSuccessful = true;
             foreach ($caseworkers as $caseworker) {
-                /** @var Caseworker $caseworker */
+                /** @var User $caseworker */
                 $foundCaseworker = $caseworker->getId() > 0;
             }
         } catch (Exception $ex) {
@@ -52,11 +52,11 @@ class PingAction implements ServerMiddlewareInterface
 
         $foundCase = false;
         try {
-            $productRepository = $this->casesEntityManager->getRepository(RefundCase::class);
+            $productRepository = $this->casesEntityManager->getRepository(Claim::class);
             $cases = $productRepository->findBy([], null, 1);
             $caseDbConnectionSuccessful = true;
             foreach ($cases as $case) {
-                /** @var RefundCase $case */
+                /** @var Claim $case */
                 $foundCase = $case->getId() > 0;
             }
         } catch (Exception $ex) {

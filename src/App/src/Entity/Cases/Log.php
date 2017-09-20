@@ -32,14 +32,14 @@ class Log extends AbstractEntity
     protected $message;
 
     /**
-     * @var RefundCase
+     * @var Claim
      * @ORM\ManyToOne(targetEntity="RefundCase")
      * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
      */
     protected $case;
 
     /**
-     * @var Caseworker
+     * @var User
      * @ORM\ManyToOne(targetEntity="Caseworker")
      * @ORM\JoinColumn(name="caseworker_id", referencedColumnName="id")
      */
@@ -93,33 +93,33 @@ class Log extends AbstractEntity
     }
 
     /**
-     * @return RefundCase
+     * @return Claim
      */
-    public function getCase(): RefundCase
+    public function getCase(): Claim
     {
         return $this->case;
     }
 
     /**
-     * @param RefundCase $case
+     * @param Claim $case
      */
-    public function setCase(RefundCase $case)
+    public function setCase(Claim $case)
     {
         $this->case = $case;
     }
 
     /**
-     * @return Caseworker
+     * @return User
      */
-    public function getCaseworker(): Caseworker
+    public function getCaseworker(): User
     {
         return $this->caseworker;
     }
 
     /**
-     * @param Caseworker $caseworker
+     * @param User $caseworker
      */
-    public function setCaseworker(Caseworker $caseworker)
+    public function setCaseworker(User $caseworker)
     {
         $this->caseworker = $caseworker;
     }
