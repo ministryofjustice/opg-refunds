@@ -3,23 +3,23 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
-use Doctrine\ORM\Mapping as ORM;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateTime;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="cases")
+ * @ORM\Entity @ORM\Table(name="claim")
  **/
-class RefundCase extends AbstractEntity
+class Claim extends AbstractEntity
 {
     /**
      * Class of the datamodel that this entity can be converted to
      *
      * @var string
      */
-    protected $dataModelClass = RefundCaseModel::class;
+    protected $dataModelClass = ClaimModel::class;
 
     /**
      * @var int
@@ -59,8 +59,8 @@ class RefundCase extends AbstractEntity
     protected $status;
 
     /**
-     * @var Caseworker
-     * @ORM\ManyToOne(targetEntity="Caseworker", inversedBy="assignedCases")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User", inversedBy="assignedClaims")
      * @ORM\JoinColumn(name="assigned_to_id", referencedColumnName="id", nullable=true)
      */
     protected $assignedTo;
@@ -85,19 +85,19 @@ class RefundCase extends AbstractEntity
 
     /**
      * @var Poa[]
-     * @ORM\OneToMany(targetEntity="Poa", mappedBy="case")
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim")
      */
     protected $poas;
 
     /**
      * @var Verification
-     * @ORM\OneToOne(targetEntity="Verification", mappedBy="case")
+     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim")
      */
     protected $verification;
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="case")
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim")
      */
     protected $payment;
 
@@ -109,7 +109,7 @@ class RefundCase extends AbstractEntity
         $this->donorName = $donorName;
 
         $this->createdDateTime = new DateTime();
-        $this->status = RefundCaseModel::STATUS_NEW;
+        $this->status = ClaimModel::STATUS_NEW;
     }
 
     /**
@@ -210,7 +210,7 @@ class RefundCase extends AbstractEntity
     }
 
     /**
-     * @return Caseworker
+     * @return User
      */
     public function getAssignedTo()
     {
@@ -218,9 +218,9 @@ class RefundCase extends AbstractEntity
     }
 
     /**
-     * @param Caseworker $assignedTo
+     * @param User $assignedTo
      */
-    public function setAssignedTo(Caseworker $assignedTo)
+    public function setAssignedTo(User $assignedTo)
     {
         $this->assignedTo = $assignedTo;
     }
@@ -338,7 +338,7 @@ class RefundCase extends AbstractEntity
                 return new ApplicationModel($this->getJsonData());
             },
             'AssignedToId' => function () {
-                return ($this->getAssignedTo() instanceof Caseworker ? $this->getAssignedTo()->getId() : null);
+                return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getId() : null);
             },
         ]);
 

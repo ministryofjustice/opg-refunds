@@ -2,7 +2,7 @@
 
 namespace App\Spreadsheet;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateTime;
 
 class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
@@ -10,23 +10,23 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
     const WORKSHEET_NAME = 'Data';
 
     /**
-     * @param RefundCaseModel[] $cases the source data to generate the worksheet from. Should be a multidimensional array
+     * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
-    public function generate(array $cases): SpreadsheetWorksheet
+    public function generate(array $claims): SpreadsheetWorksheet
     {
         $rows = [];
 
-        foreach ($cases as $idx => $case) {
+        foreach ($claims as $idx => $claim) {
             $rowIndex = $idx + 3;
-            $account = $case->getApplication()->getAccount();
-            $payment = $case->getPayment();
+            $account = $claim->getApplication()->getAccount();
+            $payment = $claim->getPayment();
 
             $cells = [];
 
             $cells[] = new SpreadsheetCell(0, $rowIndex, 'MOJ');
             $cells[] = new SpreadsheetCell(3, $rowIndex, 'Client');
-            $cells[] = new SpreadsheetCell(4, $rowIndex, $case->getReferenceNumber());
+            $cells[] = new SpreadsheetCell(4, $rowIndex, $claim->getReferenceNumber());
             $cells[] = new SpreadsheetCell(5, $rowIndex, $account->getName());
             $cells[] = new SpreadsheetCell(6, $rowIndex, 'UNDEFINED');
             $cells[] = new SpreadsheetCell(7, $rowIndex, 'UNDEFINED');

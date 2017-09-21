@@ -37,7 +37,7 @@ class ConfigProvider
             ],
             'factories'  => [
                 Action\MigrateAction::class => Action\MigrateActionFactory::class,
-                Action\ViewCaseQueueAction::class => Action\ViewCaseQueueFactory::class,
+                Action\ViewClaimQueueAction::class => Action\ViewClaimQueueFactory::class,
             ],
         ];
     }

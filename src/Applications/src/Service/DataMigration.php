@@ -3,7 +3,7 @@
 namespace Applications\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
-use App\Entity\Cases\RefundCase;
+use App\Entity\Cases\Claim;
 use Applications\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
@@ -46,7 +46,7 @@ class DataMigration
         $this->applicationsEntityManager = $applicationsEntityManager;
         $this->applicationRepository = $this->applicationsEntityManager->getRepository(Application::class);
         $this->casesEntityManager = $casesEntityManager;
-        $this->caseRepository = $this->casesEntityManager->getRepository(RefundCase::class);
+        $this->caseRepository = $this->casesEntityManager->getRepository(Claim::class);
         $this->fullCipher = $fullCipher;
     }
 
@@ -72,15 +72,15 @@ class DataMigration
 
     /**
      * @param Application $application
-     * @return RefundCase
+     * @return Claim
      */
-    public function getRefundCase(Application $application): RefundCase
+    public function getClaim(Application $application): Claim
     {
         $decryptedData = $this->getDecryptedData($application);
         $applicationData = json_decode($decryptedData, true);
         $donorName = "{$applicationData['donor']['name']['title']} {$applicationData['donor']['name']['first']} {$applicationData['donor']['name']['last']}";
-        $refundCase = new RefundCase($application->getId(), $application->getCreated(), $decryptedData, $donorName);
-        return $refundCase;
+        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName);
+        return $claim;
     }
 
     /**
@@ -92,11 +92,11 @@ class DataMigration
     {
         $application = $this->getNextApplication();
         if ($application !== null) {
-            $refundCase = $this->getRefundCase($application);
+            $claim = $this->getClaim($application);
 
-            if ($this->caseRepository->findOneBy(['id' => $refundCase->getId()]) === null) {
+            if ($this->caseRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
-                    $this->casesEntityManager->persist($refundCase);
+                    $this->casesEntityManager->persist($claim);
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);

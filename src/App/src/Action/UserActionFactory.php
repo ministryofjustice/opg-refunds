@@ -2,23 +2,23 @@
 
 namespace App\Action;
 
-use App\Service\Caseworker as CaseworkerService;
+use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class CaseworkerActionFactory
+ * Class UserActionFactory
  * @package App\Action
  */
-class CaseworkerActionFactory
+class UserActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return CaseworkerAction
+     * @return UserAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new CaseworkerAction(
-            $container->get(CaseworkerService::class)
+        return new UserAction(
+            $container->get(UserService::class)
         );
     }
 }

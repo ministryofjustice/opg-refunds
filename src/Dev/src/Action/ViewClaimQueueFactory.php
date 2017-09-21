@@ -5,11 +5,11 @@ use Applications\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 use Zend\Crypt\PublicKey\Rsa;
 
-class ViewCaseQueueFactory
+class ViewClaimQueueFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new ViewCaseQueueAction(
+        return new ViewClaimQueueAction(
             $container->get(DataMigration::class),
             $container->get(Rsa::class)
         );

@@ -32,18 +32,18 @@ class Log extends AbstractEntity
     protected $message;
 
     /**
-     * @var RefundCase
-     * @ORM\ManyToOne(targetEntity="RefundCase")
-     * @ORM\JoinColumn(name="case_id", referencedColumnName="id")
+     * @var Claim
+     * @ORM\ManyToOne(targetEntity="Claim")
+     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
-    protected $case;
+    protected $claim;
 
     /**
-     * @var Caseworker
-     * @ORM\ManyToOne(targetEntity="Caseworker")
-     * @ORM\JoinColumn(name="caseworker_id", referencedColumnName="id")
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
-    protected $caseworker;
+    protected $user;
 
     /**
      * @var Poa
@@ -93,35 +93,35 @@ class Log extends AbstractEntity
     }
 
     /**
-     * @return RefundCase
+     * @return Claim
      */
-    public function getCase(): RefundCase
+    public function getClaim(): Claim
     {
-        return $this->case;
+        return $this->claim;
     }
 
     /**
-     * @param RefundCase $case
+     * @param Claim $claim
      */
-    public function setCase(RefundCase $case)
+    public function setClaim(Claim $claim)
     {
-        $this->case = $case;
+        $this->claim = $claim;
     }
 
     /**
-     * @return Caseworker
+     * @return User
      */
-    public function getCaseworker(): Caseworker
+    public function getUser(): User
     {
-        return $this->caseworker;
+        return $this->user;
     }
 
     /**
-     * @param Caseworker $caseworker
+     * @param User $user
      */
-    public function setCaseworker(Caseworker $caseworker)
+    public function setUser(User $user)
     {
-        $this->caseworker = $caseworker;
+        $this->user = $user;
     }
 
     /**

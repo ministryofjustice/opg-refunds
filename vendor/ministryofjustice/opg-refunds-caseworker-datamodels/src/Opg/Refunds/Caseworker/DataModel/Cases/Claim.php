@@ -8,10 +8,10 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use DateTime;
 
 /**
- * Class RefundCase
+ * Class Claim
  * @package Opg\Refunds\Caseworker\DataModel\Cases
  */
-class RefundCase extends AbstractDataModel
+class Claim extends AbstractDataModel
 {
     const STATUS_NEW = 'new';
     const STATUS_ASSIGNED = 'assigned';

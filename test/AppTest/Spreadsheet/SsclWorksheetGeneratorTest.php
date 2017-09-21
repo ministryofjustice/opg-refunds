@@ -4,12 +4,12 @@ namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetRow;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
-use AppTest\DataModel\Cases\RefundCaseBuilder;
+use AppTest\DataModel\Cases\ClaimBuilder;
 use DateTime;
 use PHPUnit\Framework\TestCase;
 
@@ -21,9 +21,9 @@ class SsclWorksheetGeneratorTest extends TestCase
     private $generator;
 
     /**
-     * @var RefundCaseBuilder
+     * @var ClaimBuilder
      */
-    private $refundCaseBuilder;
+    private $claimBuilder;
 
     /**
      * @var ApplicationBuilder
@@ -31,14 +31,14 @@ class SsclWorksheetGeneratorTest extends TestCase
     private $applicationBuilder;
 
     /**
-     * @var RefundCase
+     * @var Claim
      */
-    private $case;
+    private $claim;
 
     public function setUp()
     {
         $this->generator = new SsclWorksheetGenerator();
-        $this->refundCaseBuilder = new RefundCaseBuilder();
+        $this->claimBuilder = new ClaimBuilder();
         $this->applicationBuilder = new ApplicationBuilder();
 
         $account = new Account();
@@ -52,7 +52,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         $payment = new Payment();
         $payment->setAmount(45);
 
-        $this->case = $this->refundCaseBuilder
+        $this->claim = $this->claimBuilder
             ->withApplication($application)
             ->withPayment($payment)
             ->build();
@@ -71,14 +71,14 @@ class SsclWorksheetGeneratorTest extends TestCase
         $this->assertEquals(0, count($rows));
     }
 
-    public function testSingleCase()
+    public function testSingleClaim()
     {
-        /** @var RefundCase[] $cases */
-        $cases = [
-            $this->case
+        /** @var Claim[] $claims */
+        $claims = [
+            $this->claim
         ];
 
-        $result = $this->generator->generate($cases);
+        $result = $this->generator->generate($claims);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -91,10 +91,10 @@ class SsclWorksheetGeneratorTest extends TestCase
         foreach ($rows as $idx => $row) {
             $cells = $row->getCells();
 
-            /** @var RefundCase $case */
-            $case = $cases[$idx];
-            $account = $case->getApplication()->getAccount();
-            $payment = $case->getPayment();
+            /** @var Claim $claim */
+            $claim = $claims[$idx];
+            $account = $claim->getApplication()->getAccount();
+            $payment = $claim->getPayment();
 
             //Verify all cells have the same, valid row number
             foreach ($cells as $cell) {
@@ -112,7 +112,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Unique Payee Reference
             $this->assertEquals(4, $cells[2]->getColumn());
-            $this->assertEquals($case->getReferenceNumber(), $cells[2]->getData());
+            $this->assertEquals($claim->getReferenceNumber(), $cells[2]->getData());
 
             //Payee Name
             $this->assertEquals(5, $cells[3]->getColumn());

@@ -3,11 +3,9 @@
 namespace App\Service;
 
 use App\Entity\AbstractEntity;
-use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
-use Opg\Refunds\Caseworker\DataModel\Cases\RefundCase as RefundCaseModel;
-use App\Entity\Cases\Caseworker as CaseworkerEntity;
-use App\Entity\Cases\RefundCase as RefundCaseEntity;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use App\Entity\Cases\Claim as ClaimEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Zend\Crypt\PublicKey\Rsa;
@@ -38,29 +36,29 @@ class Spreadsheet
     private $bankCipher;
 
     /**
-     * Case constructor
+     * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
      * @param Rsa $bankCipher
      */
     public function __construct(EntityManager $entityManager, Rsa $bankCipher)
     {
-        $this->repository = $entityManager->getRepository(RefundCaseEntity::class);
+        $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
         $this->bankCipher = $bankCipher;
     }
 
     /**
-     * Get all refundable cases
+     * Get all refundable claims
      *
-     * @return RefundCaseModel[]
+     * @return ClaimModel[]
      */
     public function getAllRefundable()
     {
         //  TODO: Return only those which can be refunded
-        $refundCases = $this->repository->findBy([]);
+        $claims = $this->repository->findBy([]);
 
-        return $this->translateToDataModelArray($refundCases);
+        return $this->translateToDataModelArray($claims);
     }
 
     /**
@@ -69,17 +67,17 @@ class Spreadsheet
      */
     public function translateToDataModel($entity)
     {
-        //  Get the case using the trait method
-        /** @var RefundCaseModel $refundCase */
-        $refundCase = $this->traitTranslateToDataModel($entity);
+        //  Get the claim using the trait method
+        /** @var ClaimModel $claim */
+        $claim = $this->traitTranslateToDataModel($entity);
 
         //  Deserialize the application from the JSON data
-        /** @var RefundCaseEntity $entity */
+        /** @var ClaimEntity $entity */
         $applicationArray = json_decode($entity->getJsonData(), true);
         $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
 
         //  Set the sort code and account numnber in the account
-        $account = $refundCase->getApplication()
+        $account = $claim->getApplication()
                               ->getAccount();
         $account->setAccountNumber($accountDetails['account-number'])
                 ->setSortCode($accountDetails['sort-code']);
@@ -87,8 +85,8 @@ class Spreadsheet
         //TODO: Remove once payment is populated
         $payment = new Payment();
         $payment->setAmount(10);
-        $refundCase->setPayment($payment);
+        $claim->setPayment($payment);
 
-        return $refundCase;
+        return $claim;
     }
 }

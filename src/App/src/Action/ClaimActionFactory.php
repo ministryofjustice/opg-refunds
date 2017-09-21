@@ -2,24 +2,24 @@
 
 namespace App\Action;
 
-use App\Service\RefundCase;
+use App\Service\Claim;
 use Applications\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class RefundCaseActionFactory
+ * Class ClaimActionFactory
  * @package App\Action
  */
-class RefundCaseActionFactory
+class ClaimActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return RefundCaseAction
+     * @return ClaimAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new RefundCaseAction(
-            $container->get(RefundCase::class),
+        return new ClaimAction(
+            $container->get(Claim::class),
             $container->get(DataMigration::class)
         );
     }
