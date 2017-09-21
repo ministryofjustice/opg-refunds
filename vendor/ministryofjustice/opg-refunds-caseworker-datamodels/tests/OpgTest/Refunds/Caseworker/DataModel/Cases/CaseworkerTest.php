@@ -26,7 +26,7 @@ class CaseworkerTest extends AbstractDataModelTestCase
         $this->assertEquals('abcdefghijklmnopqrstuvwxyz', $model->getToken());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'id' => 5,
@@ -39,6 +39,6 @@ class CaseworkerTest extends AbstractDataModelTestCase
 
         $model = new User($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }
