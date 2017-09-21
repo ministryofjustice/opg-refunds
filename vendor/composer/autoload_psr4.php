@@ -40,6 +40,7 @@ return array(
     'Opg\\Refunds\\Caseworker\\DataModel\\' => array($vendorDir . '/ministryofjustice/opg-refunds-caseworker-datamodels/src/Opg/Refunds/Caseworker/DataModel'),
     'Interop\\Http\\ServerMiddleware\\' => array($vendorDir . '/http-interop/http-middleware/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
+    'Ingestion\\' => array($baseDir . '/src/Ingestion/src'),
     'Fig\\Http\\Message\\' => array($vendorDir . '/fig/http-message-util/src'),
     'FastRoute\\' => array($vendorDir . '/nikic/fast-route/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),

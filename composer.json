@@ -45,7 +45,8 @@
             "App\\": "src/App/src/",
             "Applications\\": "src/Applications/src/",
             "Auth\\": "src/Auth/src/",
-            "Dev\\": "src/Dev/src/"
+            "Dev\\": "src/Dev/src/",
+            "Ingestion\\": "src/Ingestion/src/"
         }
     },
     "autoload-dev": {
