@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\RefundCase as RefundCaseService;
+use App\Service\Claim as ClaimService;
 use Applications\Service\DataMigration;
 use Fig\Http\Message\RequestMethodInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -19,18 +19,18 @@ use Zend\Diactoros\Response\JsonResponse;
 class CaseworkerClaimAction implements ServerMiddlewareInterface
 {
     /**
-     * @var RefundCaseService
+     * @var ClaimService
      */
-    private $refundCaseService;
+    private $claimService;
 
     /**
      * @var DataMigration
      */
     private $dataMigrationService;
 
-    public function __construct(RefundCaseService $refundCaseService, DataMigration $dataMigrationService)
+    public function __construct(ClaimService $claimService, DataMigration $dataMigrationService)
     {
-        $this->refundCaseService = $refundCaseService;
+        $this->claimService = $claimService;
         $this->dataMigrationService = $dataMigrationService;
     }
 
