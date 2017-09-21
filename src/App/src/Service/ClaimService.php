@@ -16,7 +16,7 @@ class ClaimService extends AbstractApiClientService
         //  GET on caseworker's case endpoint without an id means get next refund case
         $claimArray = $this->getApiClient()->httpGet('/v1/cases/caseworker/claim');
 
-        if ($claimArray === null) {
+        if ($claimArray === null || empty($claimArray)) {
             return null;
         }
 
