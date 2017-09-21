@@ -21,6 +21,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
+            'doctrine'     => include __DIR__ . '/../config/doctrine.php',
         ];
     }
 
@@ -35,6 +36,9 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
+                'doctrine.entity_manager.orm_applications_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications_migration'],
+                'doctrine.entity_manager.orm_applications' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications'],
+
                 //  Services
                 Service\DataMigration::class => Service\DataMigrationFactory::class
             ],
