@@ -4,7 +4,7 @@ namespace App\Middleware\Auth;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
@@ -60,7 +60,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $identity = $this->authService->getIdentity();
 
         //  Determine the roles of the user - if not logged in then they are a guest
-        $roles = ($identity instanceof Caseworker ? $identity->getRoles() : 'guest');
+        $roles = ($identity instanceof User ? $identity->getRoles() : 'guest');
         $roles = explode(',', $roles);
 
         //  Determine the route was are attempting to access

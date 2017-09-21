@@ -17,12 +17,12 @@ abstract class AbstractDataModel
     const DATE_TIME_STRING_FORMAT = 'Y-m-d\TH:i:s.uO';
 
     /**
-     * Builds and populates $this data model object.
+     * Builds and updates $this data model object.
      *
      * If $data is:
      *  - null: Nothing is populated.
-     *  - string: We attempt to JSON decode the string and populate the object.
-     *  - string: We populate the object from the array.
+     *  - string: We attempt to JSON decode the string and update the object.
+     *  - string: We update the object from the array.
      *
      * @param null|string|array $data
      */
@@ -41,12 +41,13 @@ abstract class AbstractDataModel
 
         // If it's [now] an array...
         if (is_array($data)) {
-            $this->populate($data);
+            $this->update($data);
         } elseif (!is_null($data)) {
             // else if it's not null (or array) now, it was an invalid data type...
             throw new InvalidArgumentException('Invalid argument passed to constructor');
         }
     }
+
 
     /**
      * Populates the concrete class' properties with the array.
@@ -54,7 +55,7 @@ abstract class AbstractDataModel
      * @param array $data
      * @return $this
      */
-    protected function populate(array $data)
+    public function update(array $data)
     {
         // Foreach each passed property...
         foreach ($data as $k => $v) {

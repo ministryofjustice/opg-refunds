@@ -4,7 +4,7 @@ namespace App\Service\Auth;
 
 use Api\Exception\ApiException;
 use Api\Service\Client as ApiClient;
-use Opg\Refunds\Caseworker\DataModel\Cases\Caseworker;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 
@@ -69,12 +69,12 @@ class AuthAdapter implements AdapterInterface
     public function authenticate()
     {
         try {
-            $caseworkerData = $this->client->authenticate($this->email, $this->password);
+            $userData = $this->client->authenticate($this->email, $this->password);
 
             //  If no exception has been thrown then this is OK - transfer the details to the success result
-            $caseworker = new Caseworker($caseworkerData);
+            $user = new User($userData);
 
-            return new Result(Result::SUCCESS, $caseworker);
+            return new Result(Result::SUCCESS, $user);
         } catch (ApiException $apiEx) {
             $response = $apiEx->getResponse();
 
