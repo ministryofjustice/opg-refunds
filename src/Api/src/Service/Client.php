@@ -70,7 +70,7 @@ class Client
     }
 
     /**
-     * Get all refund cases
+     * Get all claims
      *
      * @return array
      */
@@ -80,7 +80,7 @@ class Client
     }
 
     /**
-     * Get SSCL spreadsheet containing all refundable cases
+     * Get SSCL spreadsheet containing all refundable claims
      *
      * @return ResponseInterface
      */
