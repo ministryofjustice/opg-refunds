@@ -34,7 +34,10 @@ $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'pass
 //  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\HomeAction::class, 'home');
 $app->get('/admin', App\Action\AdminAction::class, 'admin');
-$app->get('/caseworker', App\Action\CaseworkerAction::class, 'caseworker');
+$app->get('/caseworker[/{id:\d+}]', App\Action\CaseworkerAction::class, 'caseworker');
+$app->route('/caseworker/{action:add}', App\Action\CaseworkerAction::class, ['GET', 'POST'], 'caseworker.add');
+$app->route('/caseworker/{action:edit}/{id:\d+}', App\Action\CaseworkerAction::class, ['GET', 'POST'], 'caseworker.edit');
+$app->post('/caseworker/{action:delete}/{id:\d+}', App\Action\CaseworkerAction::class, 'caseworker.delete');
 $app->get('/refund', App\Action\HomeRefundAction::class, 'refund.home');
 $app->get('/reporting', App\Action\HomeReportingAction::class, 'reporting.home');
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');

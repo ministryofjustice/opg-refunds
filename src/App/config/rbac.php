@@ -49,6 +49,10 @@ return [
         ],
         User::ROLE_ADMIN => [
             'admin',
+            'caseworker',
+            'caseworker.add',
+            'caseworker.edit',
+            'caseworker.delete',
         ],
     ],
 ];

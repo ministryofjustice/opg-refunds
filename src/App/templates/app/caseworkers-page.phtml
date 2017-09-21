@@ -1,0 +1,38 @@
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+
+<h1>Caseworkers</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php if (count($caseworkers)) { ?>
+        <?php foreach ($caseworkers as $caseworker) { ?>
+            <tr>
+                <td><?= $caseworker->getName() ?></td>
+                <td><?= $caseworker->getEmail() ?></td>
+                <td><?= $caseworker->getStatus() ?></td>
+                <td><?= $caseworker->getRoles() ?></td>
+                <td>
+                    <a href="/caseworker/<?= $caseworker->getId() ?>">View</a>
+                    <a href="/caseworker/edit/<?= $caseworker->getId() ?>">Edit</a>
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+        <?php } ?>
+    <?php } else { ?>
+        <tr>
+            <td colspan="5">No caseworkers</td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
+
+<p><a href="/admin">Back</a></p>
