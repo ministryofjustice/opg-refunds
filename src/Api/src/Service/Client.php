@@ -165,6 +165,31 @@ class Client
         }
     }
 
+    /**
+     * Performs a PUT against the API
+     *
+     * @param string $path
+     * @param array  $payload
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpPut($path, array $payload)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
+
+        $request = new Request('PUT', $url, $this->buildHeaders(), json_encode($payload));
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
+
     //  TODO - Create httpPatch function
 
     //  TODO - Create httpDelete function

@@ -66,7 +66,6 @@ class ConfigProvider
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
             ],
             'initializers' => [
-                Action\Initializers\ApiClientInitializer::class,
                 Action\Initializers\UrlHelperInitializer::class,
                 Action\Initializers\TemplatingSupportInitializer::class,
             ],

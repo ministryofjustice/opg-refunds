@@ -2,37 +2,14 @@
 
 namespace App\Action;
 
-use Api\Service\Client as ApiClient;
-use UnexpectedValueException;
+use Api\Service\Initializers\ApiClientInterface;
+use Api\Service\Initializers\ApiClientTrait;
 
 /**
  * Class AbstractApiClientAction
  * @package App\Action
  */
-abstract class AbstractApiClientAction extends AbstractAction
+abstract class AbstractApiClientAction extends AbstractAction implements ApiClientInterface
 {
-    /**
-     * @var ApiClient
-     */
-    private $client;
-
-    /**
-     * @param ApiClient $client
-     */
-    public function setApiClient(ApiClient $client)
-    {
-        $this->client = $client;
-    }
-
-    /**
-     * @return ApiClient
-     */
-    protected function getApiClient() : ApiClient
-    {
-        if (!$this->client instanceof ApiClient) {
-            throw new UnexpectedValueException('API client not set');
-        }
-
-        return $this->client;
-    }
+    use ApiClientTrait;
 }

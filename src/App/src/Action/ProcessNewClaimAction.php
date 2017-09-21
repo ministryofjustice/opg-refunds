@@ -4,6 +4,7 @@ namespace App\Action;
 
 use App\Service\ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -38,7 +39,10 @@ class ProcessNewClaimAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $claim = $this->claimService->getNextClaim();
+        /** @var User $identity */
+        $identity = $request->getAttribute('identity');
+
+        $claim = $this->claimService->assignNextClaim($identity->getId());
 
         return $this->redirectToRoute('home');
     }

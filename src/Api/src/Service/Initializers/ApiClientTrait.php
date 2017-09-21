@@ -1,15 +1,17 @@
 <?php
 
-namespace App\Service;
+namespace Api\Service\Initializers;
 
 use Api\Service\Client as ApiClient;
 use UnexpectedValueException;
 
 /**
- * Class AbstractApiClientService
- * @package App\Action
+ * Getter and Setter, implementing the ApiClientInterface.
+ *
+ * Trait ApiClientTrait
+ * @package App\Initializers
  */
-abstract class AbstractApiClientService
+trait ApiClientTrait
 {
     /**
      * @var ApiClient
@@ -27,7 +29,7 @@ abstract class AbstractApiClientService
     /**
      * @return ApiClient
      */
-    protected function getApiClient() : ApiClient
+    public function getApiClient() : ApiClient
     {
         if (!$this->client instanceof ApiClient) {
             throw new UnexpectedValueException('API client not set');
