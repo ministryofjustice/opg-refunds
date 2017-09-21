@@ -50,18 +50,18 @@ class DonorTest extends AbstractDataModelTestCase
         $this->assertEquals($dob, $model->getDob());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $dob = new DateTime('1969-02-11');
 
         $data = [
-            'name'     => $this->name->toArray(),
-            'poa-name' => $this->poaName->toArray(),
+            'name'     => $this->name->getArrayCopy(),
+            'poa-name' => $this->poaName->getArrayCopy(),
             'dob'      => $this->dateTimeToString($dob),
         ];
 
         $model = new Donor($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

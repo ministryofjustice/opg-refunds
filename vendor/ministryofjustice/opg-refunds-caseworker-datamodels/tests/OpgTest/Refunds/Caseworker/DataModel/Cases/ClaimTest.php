@@ -94,7 +94,7 @@ class ClaimTest extends AbstractDataModelTestCase
         $this->assertEquals($this->payment, $model->getPayment());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $now = new DateTime();
 
@@ -104,17 +104,17 @@ class ClaimTest extends AbstractDataModelTestCase
             'created-date-time'  => $this->dateTimeToString($now),
             'updated-date-time'  => $this->dateTimeToString($now),
             'received-date-time' => $this->dateTimeToString($now),
-            'application'        => $this->application->toArray(),
+            'application'        => $this->application->getArrayCopy(),
             'status'             => Claim::STATUS_NEW,
             'assigned-to-id'     => 123,
             'assigned-date-time' => $this->dateTimeToString($now),
             'finished-date-time' => $this->dateTimeToString($now),
             'donor-name'         => 'Joey Tribbiani',
-            'payment'            => $this->payment->toArray(),
+            'payment'            => $this->payment->getArrayCopy(),
         ];
 
         $model = new Claim($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

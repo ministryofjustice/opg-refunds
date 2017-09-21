@@ -1,5 +1,5 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
-THIS IS EDIT!!!
+
 <h1><?= $caseworker->getName() ?></h1>
 
 <table>
@@ -17,4 +17,39 @@ THIS IS EDIT!!!
     </tr>
 </table>
 
+<?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
+
+<?php if (isset($error)) { ?>
+    <h2><?= $error ?></h2>
+<?php } ?>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <fieldset>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('name'),
+            'formLabel' => 'Name',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('email'),
+            'formLabel' => 'Email',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+    </fieldset>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Save" />
+    </div>
+
+</form>
+
+<p><a href="/caseworker/<?= $caseworker->getId() ?>">Cancel</a></p>
 <p><a href="/caseworker">Back to Caseworkers</a></p>

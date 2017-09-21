@@ -3769,8 +3769,8 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "dev-REF-89-edit_caseworker_details",
+        "version_normalized": "dev-REF-89-edit_caseworker_details",
         "source": {
             "type": "git",
             "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",

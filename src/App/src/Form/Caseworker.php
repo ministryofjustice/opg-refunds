@@ -10,12 +10,12 @@ use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Form for signing in to the application
+ * Form for adding and editing caseworkers
  *
- * Class SignIn
+ * Class Caseworker
  * @package App\Form
  */
-class SignIn extends AbstractForm
+class Caseworker extends AbstractForm
 {
     /**
      * SignIn constructor
@@ -29,33 +29,48 @@ class SignIn extends AbstractForm
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
-        //  Username/email field
+        //  Name field
+        $field = new Element\Text('name');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+              ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+              ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Email field
         $field = new Element\Email('email');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter)
-            ->attach(new Filter\StringToLower);
+              ->attach(new StandardInputFilter)
+              ->attach(new Filter\StringToLower);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
+              ->attach(new Validator\NotEmpty());
 
         $input->setRequired(true);
 
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Password field
-        $field = new Element\Password('password');
-        $input = new Input($field->getName());
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
 
-        $input->setRequired(true);
 
-        $this->add($field);
-        $inputFilter->add($input);
+        //  Status field
+        //TODO
+
+        //  Roles field
+        //TODO
+
+
+
 
         //  Csrf field
         //  TODO - Add this in the constructor if the options contain 'csrf' value

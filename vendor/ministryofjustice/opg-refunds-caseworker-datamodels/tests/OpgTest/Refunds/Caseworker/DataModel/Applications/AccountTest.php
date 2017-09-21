@@ -20,7 +20,7 @@ class AccountTest extends AbstractDataModelTestCase
         $this->assertEquals('123456', $model->getSortCode());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'name'           => 'Phoebe Buffay',
@@ -30,6 +30,6 @@ class AccountTest extends AbstractDataModelTestCase
 
         $model = new Account($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }
