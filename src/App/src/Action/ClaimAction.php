@@ -46,7 +46,7 @@ class ClaimAction implements ServerMiddlewareInterface
         //TODO: Get proper migration running via cron job
         $this->dataMigrationService->migrateAll();
 
-        //  Get all of the refund cases
+        //  Get all of the claims
         $claims = $this->claimService->getAll();
         $claimsData = [];
 

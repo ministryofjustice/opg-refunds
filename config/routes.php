@@ -37,5 +37,5 @@ $app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
 
 //  Developer routes
-$app->get('/dev/view-case-queue', Dev\Action\ViewClaimQueueAction::class, 'dev.view-case-queue');
+$app->get('/dev/view-claim-queue', Dev\Action\ViewClaimQueueAction::class, 'dev.view-claim-queue');
 $app->get('/dev/migrate', Dev\Action\MigrateAction::class, 'dev.migrate');
