@@ -66,11 +66,13 @@ class CaseworkerClaimAction implements ServerMiddlewareInterface
             //TODO: Get proper migration running via cron job
             $this->dataMigrationService->migrateOne();
 
+
+
             //Retrieve next claim and return if found
-            return new JsonResponse(null);
+            return new JsonResponse([]);
         } else {
             //Retrieve specific claim
-            return new JsonResponse(null);
+            return new JsonResponse([]);
         }
     }
 }
