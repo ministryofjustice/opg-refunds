@@ -1,7 +1,7 @@
 <?php
 namespace Dev\Action;
 
-use Applications\Service\DataMigration;
+use Ingestion\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 use Zend\Crypt\PublicKey\Rsa;
 

@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim;
-use Applications\Service\DataMigration;
+use Ingestion\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 
 /**

@@ -92,7 +92,6 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'A' => 
         array (
             'Auth\\' => 5,
-            'Applications\\' => 13,
             'App\\' => 4,
             'AppTest\\' => 8,
         ),
@@ -289,10 +288,6 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'Auth\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Auth/src',
-        ),
-        'Applications\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/Applications/src',
         ),
         'App\\' => 
         array (

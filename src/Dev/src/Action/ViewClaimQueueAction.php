@@ -1,7 +1,7 @@
 <?php
 namespace Dev\Action;
 
-use Applications\Service\DataMigration;
+use Ingestion\Service\DataMigration;
 use Zend\Crypt\PublicKey\Rsa;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;

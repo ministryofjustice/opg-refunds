@@ -27,13 +27,13 @@ return [
         'orm_applications' => [
             'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
             'drivers' => [
-                'Applications\Entity' => 'applications_entities',
+                'Ingestion\Entity' => 'applications_entities',
             ],
         ],
         'orm_applications_migration' => [
             'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
             'drivers' => [
-                'Applications\Entity' => 'applications_entities',
+                'Ingestion\Entity' => 'applications_entities',
             ],
         ],
         'applications_entities' => [

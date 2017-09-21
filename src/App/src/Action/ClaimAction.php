@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Applications\Service\DataMigration;
+use Ingestion\Service\DataMigration;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;

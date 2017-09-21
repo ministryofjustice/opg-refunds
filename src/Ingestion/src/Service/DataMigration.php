@@ -1,10 +1,10 @@
 <?php
 
-namespace Applications\Service;
+namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
-use Applications\Entity\Application;
+use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;

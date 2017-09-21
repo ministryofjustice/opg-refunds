@@ -21,7 +21,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
-            'templates'    => $this->getTemplates(),
+            'doctrine'     => include __DIR__ . '/../config/doctrine.php',
         ];
     }
 
@@ -36,22 +36,11 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
-            ],
-        ];
-    }
+                'doctrine.entity_manager.orm_applications_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications_migration'],
+                'doctrine.entity_manager.orm_applications' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications'],
 
-    /**
-     * Returns the templates configuration
-     *
-     * @return array
-     */
-    public function getTemplates()
-    {
-        return [
-            'paths' => [
-                'app'    => [__DIR__ . '/../templates/app'],
-                'error'  => [__DIR__ . '/../templates/error'],
-                'layout' => [__DIR__ . '/../templates/layout'],
+                //  Services
+                Service\DataMigration::class => Service\DataMigrationFactory::class
             ],
         ];
     }

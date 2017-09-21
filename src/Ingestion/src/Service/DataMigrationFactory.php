@@ -1,6 +1,6 @@
 <?php
 
-namespace Applications\Service;
+namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use Interop\Container\ContainerInterface;
