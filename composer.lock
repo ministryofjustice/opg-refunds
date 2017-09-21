@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "66c040c2c9112d7bcbb7cf73abe38c2a",
+    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -854,16 +854,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-refundcase-to-claim",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "86f2a26b752e0e82ff10e94ac3157df80e369c43"
+                "reference": "9aaff44d9d171277466bed6462b848fc69a35846"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/86f2a26b752e0e82ff10e94ac3157df80e369c43",
-                "reference": "86f2a26b752e0e82ff10e94ac3157df80e369c43",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9aaff44d9d171277466bed6462b848fc69a35846",
+                "reference": "9aaff44d9d171277466bed6462b848fc69a35846",
                 "shasum": ""
             },
             "require": {
@@ -882,7 +882,7 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
-            "time": "2017-09-20T15:47:54+00:00"
+            "time": "2017-09-21T09:22:38+00:00"
         },
         {
             "name": "nikic/fast-route",
