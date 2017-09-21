@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\RefundCaseService;
+use App\Service\ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -18,7 +18,7 @@ class ProcessNewClaimActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new ProcessNewClaimAction(
-            $container->get(RefundCaseService::class)
+            $container->get(ClaimService::class)
         );
     }
 }

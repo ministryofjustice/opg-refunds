@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\RefundCaseService;
+use App\Service\ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,17 +14,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class ProcessNewClaimAction extends AbstractAction
 {
     /**
-     * @var RefundCaseService
+     * @var ClaimService
      */
-    private $refundCaseService;
+    private $claimService;
 
     /**
      * ProcessNewClaimAction constructor.
-     * @param RefundCaseService $refundCaseService
+     * @param ClaimService $claimService
      */
-    public function __construct(RefundCaseService $refundCaseService)
+    public function __construct(ClaimService $claimService)
     {
-        $this->refundCaseService = $refundCaseService;
+        $this->claimService = $claimService;
     }
 
     /**
@@ -38,7 +38,7 @@ class ProcessNewClaimAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $refundCase = $this->refundCaseService->getNextRefundCase();
+        $claim = $this->claimService->getNextClaim();
 
         return $this->redirectToRoute('home');
     }
