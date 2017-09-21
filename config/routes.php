@@ -32,12 +32,12 @@ $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
-$app->get('/', App\Action\HomeAction::class, 'home');
+$app->get('/', App\Action\HomePageAction::class, 'home');
 $app->get('/admin', App\Action\AdminAction::class, 'admin');
-$app->get('/caseworker[/{id:\d+}]', App\Action\CaseworkerAction::class, 'caseworker');
-$app->route('/caseworker/{action:add}', App\Action\CaseworkerAction::class, ['GET', 'POST'], 'caseworker.add');
-$app->route('/caseworker/{action:edit}/{id:\d+}', App\Action\CaseworkerAction::class, ['GET', 'POST'], 'caseworker.edit');
-$app->post('/caseworker/{action:delete}/{id:\d+}', App\Action\CaseworkerAction::class, 'caseworker.delete');
+$app->get('/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
+$app->route('/user/{action:add}', App\Action\UserAction::class, ['GET', 'POST'], 'user.add');
+$app->route('/user/{action:edit}/{id:\d+}', App\Action\UserAction::class, ['GET', 'POST'], 'user.edit');
+$app->post('/user/{action:delete}/{id:\d+}', App\Action\UserAction::class, 'user.delete');
 $app->get('/refund', App\Action\HomeRefundAction::class, 'refund.home');
 $app->get('/reporting', App\Action\HomeReportingAction::class, 'reporting.home');
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');

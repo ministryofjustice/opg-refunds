@@ -10,12 +10,12 @@ use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Form for adding and editing caseworkers
+ * Form for adding and editing users
  *
- * Class Caseworker
+ * Class User
  * @package App\Form
  */
-class Caseworker extends AbstractForm
+class User extends AbstractForm
 {
     /**
      * SignIn constructor

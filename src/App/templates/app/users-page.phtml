@@ -1,0 +1,38 @@
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+
+<h1>Users</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Roles</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    <?php if (count($users)) { ?>
+        <?php foreach ($users as $user) { ?>
+            <tr>
+                <td><?= $user->getName() ?></td>
+                <td><?= $user->getEmail() ?></td>
+                <td><?= $user->getStatus() ?></td>
+                <td><?= $user->getRoles() ?></td>
+                <td>
+                    <a href="/user/<?= $user->getId() ?>">View</a>
+                    <a href="/user/edit/<?= $user->getId() ?>">Edit</a>
+                    <a href="#">Delete</a>
+                </td>
+            </tr>
+        <?php } ?>
+    <?php } else { ?>
+        <tr>
+            <td colspan="5">No users</td>
+        </tr>
+    <?php } ?>
+    </tbody>
+</table>
+
+<p><a href="/admin">Back</a></p>

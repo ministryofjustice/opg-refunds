@@ -1,19 +1,19 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<h1><?= $caseworker->getName() ?></h1>
+<h1><?= $user->getName() ?></h1>
 
 <table>
     <tr>
         <th>Email</th>
-        <td><?= $caseworker->getEmail() ?></td>
+        <td><?= $user->getEmail() ?></td>
     </tr>
     <tr>
         <th>Status</th>
-        <td><?= $caseworker->getStatus() ?></td>
+        <td><?= $user->getStatus() ?></td>
     </tr>
     <tr>
         <th>Roles</th>
-        <td><?= $caseworker->getRoles() ?></td>
+        <td><?= $user->getRoles() ?></td>
     </tr>
 </table>
 
@@ -51,5 +51,5 @@
 
 </form>
 
-<p><a href="/caseworker/<?= $caseworker->getId() ?>">Cancel</a></p>
-<p><a href="/caseworker">Back to Caseworkers</a></p>
+<p><a href="/user/<?= $user->getId() ?>">Cancel</a></p>
+<p><a href="/user">Back to Users</a></p>

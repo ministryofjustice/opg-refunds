@@ -1,0 +1,22 @@
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+
+<h1><?= $user->getName() ?></h1>
+
+<table>
+    <tr>
+        <th>Email</th>
+        <td><?= $user->getEmail() ?></td>
+    </tr>
+    <tr>
+        <th>Status</th>
+        <td><?= $user->getStatus() ?></td>
+    </tr>
+    <tr>
+        <th>Roles</th>
+        <td><?= $user->getRoles() ?></td>
+    </tr>
+</table>
+
+<p><a href="/user/edit/<?= $user->getId() ?>">Edit</a></p>
+<p><a href="#">Delete</a></p>
+<p><a href="/user">Back to users</a></p>

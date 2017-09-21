@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class HomeAction
+ * Class HomePageAction
  * @package App\Action
  */
 class HomePageAction extends AbstractAction implements ApiClientInterface

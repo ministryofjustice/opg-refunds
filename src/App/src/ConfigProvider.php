@@ -39,16 +39,14 @@ class ConfigProvider
         return [
             'invokables' => [
                 Action\AdminAction::class => Action\AdminAction::class,
-                Action\CaseworkerAction::class => Action\CaseworkerAction::class,
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
+                Action\UserAction::class => Action\UserAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
-                Action\HomeAction::class => Action\HomeAction::class,
+                Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\HomeRefundAction::class => Action\HomeRefundAction::class,
                 Action\HomeReportingAction::class => Action\HomeReportingAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
-                Action\RefundAction::class => Action\RefundAction::class,
-                Action\ReportingAction::class => Action\ReportingAction::class,
 
                 Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
                 Service\Details\DetailsFormatter::class => Service\Details\DetailsFormatter::class,
