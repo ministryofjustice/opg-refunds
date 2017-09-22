@@ -14,7 +14,7 @@ use DateTime;
 class Claim extends AbstractDataModel
 {
     const STATUS_NEW = 'new';
-    const STATUS_ASSIGNED = 'assigned';
+    const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
