@@ -7,7 +7,6 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Exception;
-use Zend\Expressive\Router\RouteResult;
 
 /**
  * Class AbstractRestfulAction

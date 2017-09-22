@@ -107,8 +107,8 @@ class Authentication
             'token' => $token,
         ]);
 
-        if ($user === null) {
-            throw new UnauthorizedException('User not found');
+        if (is_null($user)) {
+            throw new UnauthorizedException('Bad token');
         }
 
         //  Confirm that the user is active

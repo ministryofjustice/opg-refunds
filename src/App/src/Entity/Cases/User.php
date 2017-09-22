@@ -168,7 +168,7 @@ class User extends AbstractEntity
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken()
     {
         return $this->token;
     }

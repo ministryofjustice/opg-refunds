@@ -92,6 +92,7 @@ abstract class AbstractEntity
                     $collection = [];
 
                     foreach ($value as $i => $thisValue) {
+                        //  TODO - Come up with a way to pass down $modelToEntityMappings if required at this stage
                         $collection[] = $thisValue->getAsDataModel();
                     }
 

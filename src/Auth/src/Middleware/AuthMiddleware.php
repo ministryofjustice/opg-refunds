@@ -41,7 +41,7 @@ class AuthMiddleware implements ServerMiddlewareInterface
         $token = $request->getHeaderLine('token');
 
         try {
-            $caseworker = $this->authService->validateToken($token);
+            $user = $this->authService->validateToken($token);
         } catch (InvalidInputException $ignore) {
             //  If the token validation failed then throw as not authorised
             throw new UnauthorizedException('Not authorized');

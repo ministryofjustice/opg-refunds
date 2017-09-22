@@ -4,7 +4,6 @@ namespace App\Action;
 
 use App\Service\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -12,7 +11,7 @@ use Zend\Diactoros\Response\JsonResponse;
  * Class UserAction
  * @package App\Action
  */
-class UserAction implements ServerMiddlewareInterface
+class UserAction extends AbstractRestfulAction
 {
     /**
      * @var UserService
@@ -34,14 +33,14 @@ class UserAction implements ServerMiddlewareInterface
      * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $userId = $request->getAttribute('id');
 
         if (is_numeric($userId)) {
             $user = $this->userService->getById($userId);
 
-            return new JsonResponse($user->toArray());
+            return new JsonResponse($user->getArrayCopy());
         }
 
         //  Get all of the users
@@ -49,7 +48,9 @@ class UserAction implements ServerMiddlewareInterface
         $usersData = [];
 
         foreach ($users as $user) {
-            $usersData[] = $user->toArray();
+            $usersData[] = $user->getArrayCopy([
+                'token',
+            ]);
         }
 
         return new JsonResponse($usersData);

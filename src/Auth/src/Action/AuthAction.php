@@ -47,7 +47,7 @@ class AuthAction implements ServerMiddlewareInterface
 
                 //  Get the user details excluding the claims
                 $userData = $user->getArrayCopy([
-                    'claim',
+                    'claims',
                 ]);
 
                 return new JsonResponse($userData);
