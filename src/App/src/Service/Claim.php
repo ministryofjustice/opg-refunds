@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Cases\Log;
 use Exception;
 use Ingestion\Service\DataMigration;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use App\Entity\Cases\Claim as ClaimEntity;
+use App\Entity\Cases\User as UserEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -20,7 +22,12 @@ class Claim
     /**
      * @var EntityRepository
      */
-    private $repository;
+    private $claimRepository;
+
+    /**
+     * @var EntityRepository
+     */
+    private $userRepository;
 
     /**
      * @var EntityManager
@@ -40,7 +47,9 @@ class Claim
      */
     public function __construct(EntityManager $entityManager, DataMigration $dataMigrationService)
     {
-        $this->repository = $entityManager->getRepository(ClaimEntity::class);
+        $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
+        $this->userRepository = $entityManager->getRepository(UserEntity::class);
+        $this->entityManager = $entityManager;
         $this->entityManager = $entityManager;
         $this->dataMigrationService = $dataMigrationService;
     }
@@ -56,7 +65,7 @@ class Claim
         $this->dataMigrationService->migrateAll();
 
         /** @var ClaimEntity[] $claims */
-        $claims = $this->repository->findBy([]);
+        $claims = $this->claimRepository->findBy([]);
 
         return $this->translateToDataModelArray($claims);
     }
@@ -70,7 +79,7 @@ class Claim
     public function get($claimId)
     {
         /** @var ClaimEntity $claim */
-        $claim = $this->repository->findOneBy([
+        $claim = $this->claimRepository->findOneBy([
             'id' => $claimId,
         ]);
 
@@ -89,9 +98,17 @@ class Claim
         //TODO: Get proper migration running via cron job
         $this->dataMigrationService->migrateOne();
 
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+
         //Using SQL directly to update claim in single atomic call to prevent race conditions
-        $sql = 'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW(), status = ? WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL AND status = ? ORDER BY received_datetime ASC LIMIT 1) RETURNING id';
-        $statement = $this->entityManager->getConnection()->executeQuery($sql, [$userId, ClaimModel::STATUS_IN_PROGRESS, ClaimModel::STATUS_NEW]);
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW(), status = ? WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL AND status = ? ORDER BY received_datetime ASC LIMIT 1) RETURNING id',
+            [$user->getId(), ClaimModel::STATUS_IN_PROGRESS, ClaimModel::STATUS_NEW]
+        );
+
         $result = $statement->fetchAll();
         $updateCount = count($result);
 
@@ -99,10 +116,23 @@ class Claim
             throw new Exception("Assigning next claim updated $updateCount rows! It should only update one or zero rows");
         }
 
+        $assignedClaimId = 0;
+
         if ($updateCount === 1) {
-            return ['assignedClaimId' => $result[0]['id']];
+            $assignedClaimId = $result[0]['id'];
+
+            /** @var ClaimEntity $claim */
+            $claim = $this->claimRepository->findOneBy([
+                'id' => $assignedClaimId,
+            ]);
+
+            $log = new Log('Claim started by caseworker', "Caseworker '{$user->getName()}' has begun to process this claim", $claim, $user);
+            $claim->addLog($log);
+
+            //$this->casesEntityManager->persist($claim);
+            $this->entityManager->flush();
         }
 
-        return ['assignedClaimId' => 0];
+        return ['assignedClaimId' => $assignedClaimId];
     }
 }

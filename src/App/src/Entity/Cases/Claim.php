@@ -353,7 +353,7 @@ class Claim extends AbstractEntity
     /**
      * @return Log[]
      */
-    public function getLogs(): array
+    public function getLogs()
     {
         return $this->logs;
     }
@@ -361,7 +361,7 @@ class Claim extends AbstractEntity
     /**
      * @param Log[] $logs
      */
-    public function setLogs(array $logs)
+    public function setLogs($logs)
     {
         $this->logs = $logs;
     }
