@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "99f5b880c7d1a1766efb7a57eca0566d",
+    "content-hash": "2384b7547fba8f0909b5edf318d4b8c1",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -509,16 +509,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-master",
+            "version": "dev-process-new-claim",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "9aaff44d9d171277466bed6462b848fc69a35846"
+                "reference": "1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9aaff44d9d171277466bed6462b848fc69a35846",
-                "reference": "9aaff44d9d171277466bed6462b848fc69a35846",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce",
+                "reference": "1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +537,11 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
-            "time": "2017-09-21T09:22:38+00:00"
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/process-new-claim",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
+            "time": "2017-09-22T12:04:13+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

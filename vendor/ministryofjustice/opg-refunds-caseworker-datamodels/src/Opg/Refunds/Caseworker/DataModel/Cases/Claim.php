@@ -14,7 +14,7 @@ use DateTime;
 class Claim extends AbstractDataModel
 {
     const STATUS_NEW = 'new';
-    const STATUS_ASSIGNED = 'assigned';
+    const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
@@ -77,6 +77,11 @@ class Claim extends AbstractDataModel
      * @var Payment
      */
     protected $payment;
+
+    /**
+     * @var Log[]
+     */
+    protected $logs;
 
     /**
      * @return int
@@ -300,6 +305,25 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return Log[]
+     */
+    public function getLogs(): array
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param Log[] $logs
+     * @return Claim
+     */
+    public function setLogs(array $logs): Claim
+    {
+        $this->logs = $logs;
+        
+        return $this;
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property
@@ -313,6 +337,10 @@ class Claim extends AbstractDataModel
                 return (($value instanceof Application || is_null($value)) ? $value : new Application($value));
             case 'payment':
                 return (($value instanceof Payment || is_null($value)) ? $value : new Payment($value));
+            case 'logs':
+                return array_map(function ($value) {
+                    return ($value instanceof Log ? $value : new Log($value));
+                }, $value);
             case 'createdDateTime':
             case 'updatedDateTime':
             case 'receivedDateTime':

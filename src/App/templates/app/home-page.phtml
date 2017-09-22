@@ -8,7 +8,7 @@
 
 <a href="/process-new-claim">Process new claim</a>
 
-<h2>Your outstanding claims</h2>
+<h2>Claims in progress</h2>
 
 <table>
     <thead>
@@ -24,7 +24,7 @@
         <?php if (count($user->getClaims())) { ?>
             <?php foreach ($user->getClaims() as $claim) { ?>
                 <tr>
-                    <td><?= $claim->getReferenceNumber() ?></td>
+                    <td><a href="/claim/<?= $claim->getId() ?>"><?= $claim->getReferenceNumber() ?></a></td>
                     <td><?= $claim->getDonorName() ?></td>
                     <td><?= $claim->getReceivedDateTime()->format('d/m/Y') ?></td>
                     <td><?= ($claim->getUpdatedDateTime() ?: $claim->getReceivedDateTime())->format('d/m/Y') ?></td>

@@ -18,7 +18,7 @@
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-process-new-claim",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-authentication": "^2.5",
