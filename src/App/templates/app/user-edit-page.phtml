@@ -1,21 +1,6 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<h1><?= $user->getName() ?></h1>
-
-<table>
-    <tr>
-        <th>Email</th>
-        <td><?= $user->getEmail() ?></td>
-    </tr>
-    <tr>
-        <th>Status</th>
-        <td><?= $user->getStatus() ?></td>
-    </tr>
-    <tr>
-        <th>Roles</th>
-        <td><?= $user->getRoles() ?></td>
-    </tr>
-</table>
+<h1><?= (is_null($user) ? 'New user' : $user->getName()) ?></h1>
 
 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
@@ -51,5 +36,5 @@
 
 </form>
 
-<p><a href="/user/<?= $user->getId() ?>">Cancel</a></p>
+<p><a href="/user<?= (is_null($user) ? '' : '/' . $user->getId()) ?>">Cancel</a></p>
 <p><a href="/user">Back to Users</a></p>

@@ -52,7 +52,6 @@ return [
             'user',
             'user.add',
             'user.edit',
-            'user.delete',
         ],
     ],
 ];

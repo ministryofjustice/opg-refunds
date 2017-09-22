@@ -40,7 +40,8 @@ class ConfigProvider
             'invokables' => [
                 Action\AdminAction::class => Action\AdminAction::class,
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\UserAction::class => Action\UserAction::class,
+                Action\User\UserAction::class => Action\User\UserAction::class,
+                Action\User\UserUpdateAction::class => Action\User\UserUpdateAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\HomeRefundAction::class => Action\HomeRefundAction::class,
