@@ -1,5 +1,16 @@
 <?php $this->layout('layout::default', ['title' => 'Claim']) ?>
+<?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
 
-<h1>Claim</h1>
+<h2><strong><?= $claim->getReferenceNumber() ?></strong> <?= $claim->getDonorName() ?></h2>
+
+<h2>User log</h2>
+
+<?php foreach ($claim->getLogs() as $log) { ?>
+    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
+    <div>
+        <h3><strong><?= $log->getTitle() ?></strong> - <?= $log->getCreatedDateTime()->format('d M Y \a\t H.s') ?></h3>
+        <p><?= $log->getMessage() ?></p>
+    </div>
+<?php } ?>
 
 <p><a href="/">Back to home page</a></p>

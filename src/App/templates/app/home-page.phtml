@@ -1,4 +1,5 @@
 <?php $this->layout('layout::standard', ['title' => 'Home']) ?>
+<?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user */ ?>
 
 <p>Logged in as <?= $user->getName(); ?></p>
 
@@ -17,18 +18,17 @@
             <th>Donor name</th>
             <th>Received</th>
             <th>Modified</th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
         <?php if (count($user->getClaims())) { ?>
             <?php foreach ($user->getClaims() as $claim) { ?>
+                <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
                 <tr>
                     <td><a href="/claim/<?= $claim->getId() ?>"><?= $claim->getReferenceNumber() ?></a></td>
                     <td><?= $claim->getDonorName() ?></td>
                     <td><?= $claim->getReceivedDateTime()->format('d/m/Y') ?></td>
                     <td><?= ($claim->getUpdatedDateTime() ?: $claim->getReceivedDateTime())->format('d/m/Y') ?></td>
-                    <td>View</td>
                 </tr>
             <?php } ?>
         <?php } else { ?>
