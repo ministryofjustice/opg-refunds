@@ -4,15 +4,15 @@ namespace App\Action;
 
 use App\Service\ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class ProcessNewClaimAction
+ * Class ClaimAction
  * @package App\Action
  */
-class ProcessNewClaimAction extends AbstractAction
+class ClaimAction extends AbstractAction
 {
     /**
      * @var ClaimService
@@ -20,7 +20,7 @@ class ProcessNewClaimAction extends AbstractAction
     private $claimService;
 
     /**
-     * ProcessNewClaimAction constructor.
+     * ClaimAction constructor.
      * @param ClaimService $claimService
      */
     public function __construct(ClaimService $claimService)
@@ -39,14 +39,13 @@ class ProcessNewClaimAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $claimId = $request->getAttribute('id');
         $userId = $request->getAttribute('identity')->getId();
-        $assignedClaimId = $this->claimService->assignNextClaim($userId);
 
-        if ($assignedClaimId === 0) {
-            //No available claims
-            return $this->redirectToRoute('home');
-        }
+        $claim = $this->claimService->getClaim($claimId, $userId);
 
-        return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-page', [
+            'claim'  => $claim
+        ]));
     }
 }

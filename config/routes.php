@@ -41,3 +41,4 @@ $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set
 $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
 $app->get('/process-new-claim', App\Action\ProcessNewClaimAction::class, 'process.new.claim');
+$app->get('/claim/{id:\d+}', App\Action\ClaimAction::class, 'claim');

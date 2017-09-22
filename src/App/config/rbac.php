@@ -31,6 +31,7 @@ return [
         User::ROLE_CASEWORKER => [
             'caseworker',
             'process.new.claim',
+            'claim',
         ],
         User::ROLE_REPORTING => [
             'reporting',

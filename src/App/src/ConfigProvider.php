@@ -55,6 +55,7 @@ class ConfigProvider
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\ProcessNewClaimAction::class => Action\ProcessNewClaimActionFactory::class,
+                Action\ClaimAction::class => Action\ClaimActionFactory::class,
 
                 // Middleware
                 Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
