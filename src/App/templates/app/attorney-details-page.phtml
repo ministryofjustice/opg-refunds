@@ -12,6 +12,10 @@ $this->fetch('snippet::actor-errors', [
 
 ?>
 
+<?php if ($applicant == 'donor'): ?>
+<p>Please give the details of one of your attorneys.</p>
+<?php endif ?>
+
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
@@ -91,7 +95,7 @@ $this->fetch('snippet::actor-errors', [
     </div>
 
     <?php $this->insert('snippet::input-dob', [
-        'formLabel' => ($applicant == 'donor') ? 'Attorney date of birth (optional)' : 'Date of birth',
+        'formLabel' => ($applicant == 'donor') ? 'Attorney date of birth' : 'Date of birth',
         'formElement' => $form->get('dob'),
     ]) ?>
 

@@ -13,8 +13,8 @@ $this->layout('layout::standard', [
 </ul>
 
 <div class="panel panel-border-wide">
-    <p>You only need to submit one claim, even if you made 2 LPAs or paid twice because of a mistake. Records 
-    will be checked for all the fees you paid.</p>
+    <p>Make one claim per donor even if you made more than one power of 
+    attorney or paid repeat fees. Records will be checked for all the fees that were paid.</p>
 </div>
 
 <h2 class="heading-medium">Who can claim a refund</h2>
@@ -70,8 +70,10 @@ $this->layout('layout::standard', [
     <li>About 10 minutes to complete the claim</li>
     <li>Name and date of birth of the donor</li>
     <li>Name and date of birth of one attorney</li>
-    <li>Donor's bank details - <a href="#">how bank details are protected</a></li>
+    <li>Donor's UK bank account number and sort code</li>
 </ul>
+
+<p>Find out <a href="/terms">how we keep your information safe</a>.</p>
 
 <p>You don't need power of attorney documents with you but it might be helpful.</p>
 
@@ -97,7 +99,7 @@ $this->layout('layout::standard', [
     Fee refunds <a href="/terms">terms and conditions</a>.
 </p>
 
-<?php $this->start('sidebar') ?>
+<?php $this->start('sidebar-out') ?>
     <aside class="govuk-related-items" role="complementary">
         <h2 class="heading-medium" id="subsection-title">Lasting power of attorney, being 
         in care and your financial affairs</h2>
