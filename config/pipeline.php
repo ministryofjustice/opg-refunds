@@ -1,5 +1,6 @@
 <?php
 
+use App\Middleware;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
@@ -39,12 +40,11 @@ $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
-// Add more middleware here that needs to introspect the routing results; this
-// might include:
-//
-// - route-based authentication
-// - route-based validation
-// - etc.
+$app->pipe(Middleware\Session\SessionMiddleware::class);
+$app->pipe(Middleware\Session\CsrfMiddleware::class);
+
+// Authorization middleware to detemine if the user can access the requested route
+$app->pipe(Middleware\Auth\AuthorizationMiddleware::class);
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();

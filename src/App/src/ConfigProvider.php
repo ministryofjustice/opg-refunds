@@ -2,6 +2,9 @@
 
 namespace App;
 
+use Zend\Authentication\AuthenticationService;
+use Zend\Session\SessionManager;
+
 /**
  * The configuration provider for the App module
  *
@@ -22,6 +25,7 @@ class ConfigProvider
         return [
             'dependencies' => $this->getDependencies(),
             'templates'    => $this->getTemplates(),
+            'rbac'         => include __DIR__ . '/../config/rbac.php',
         ];
     }
 
@@ -34,10 +38,33 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\PingAction::class => Action\PingAction::class,
+                Action\AdminAction::class => Action\AdminAction::class,
+                Action\CaseworkerAction::class => Action\CaseworkerAction::class,
+                Action\DownloadAction::class => Action\DownloadAction::class,
+                Action\HomePageAction::class => Action\HomePageAction::class,
+                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
+                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
+                Action\RefundAction::class => Action\RefundAction::class,
+                Action\ReportingAction::class => Action\ReportingAction::class,
             ],
             'factories'  => [
-                Action\HomePageAction::class => Action\HomePageFactory::class,
+                //  Actions
+                Action\SignInAction::class => Action\SignInActionFactory::class,
+                Action\SignOutAction::class => Action\SignOutActionFactory::class,
+
+                // Middleware
+                Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
+                Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+
+                // Services
+                Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
+                AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
+                SessionManager::class => Service\Session\SessionManagerFactory::class,
+            ],
+            'initializers' => [
+                Action\Initializers\ApiClientInitializer::class,
+                Action\Initializers\UrlHelperInitializer::class,
+                Action\Initializers\TemplatingSupportInitializer::class,
             ],
         ];
     }
@@ -54,6 +81,7 @@ class ConfigProvider
                 'app'    => [__DIR__ . '/../templates/app'],
                 'error'  => [__DIR__ . '/../templates/error'],
                 'layout' => [__DIR__ . '/../templates/layout'],
+                'snippet' => [__DIR__ . '/../templates/snippet'],
             ],
         ];
     }

@@ -26,5 +26,16 @@
  * );
  */
 
+//  Unauthenticated routes
+$app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
+$app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
+$app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
+
+//  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\HomePageAction::class, 'home');
-$app->get('/api/ping', App\Action\PingAction::class, 'api.ping');
+$app->get('/admin', App\Action\AdminAction::class, 'admin');
+$app->get('/caseworker', App\Action\CaseworkerAction::class, 'caseworker');
+$app->get('/refund', App\Action\RefundAction::class, 'refund');
+$app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
+$app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+$app->get('/download', App\Action\DownloadAction::class, 'download');
