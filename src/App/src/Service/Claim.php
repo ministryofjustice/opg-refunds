@@ -90,8 +90,8 @@ class Claim
         $this->dataMigrationService->migrateOne();
 
         //Using SQL directly to update claim in single atomic call to prevent race conditions
-        $sql = 'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW() WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL ORDER BY received_datetime ASC LIMIT 1) RETURNING id';
-        $statement = $this->entityManager->getConnection()->executeQuery($sql, [$userId]);
+        $sql = 'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW(), status = ? WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL AND status = ? ORDER BY received_datetime ASC LIMIT 1) RETURNING id';
+        $statement = $this->entityManager->getConnection()->executeQuery($sql, [$userId, ClaimModel::STATUS_IN_PROGRESS, ClaimModel::STATUS_NEW]);
         $result = $statement->fetchAll();
         $updateCount = count($result);
 

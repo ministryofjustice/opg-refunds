@@ -29,6 +29,12 @@ class Log extends AbstractEntity
      * @var string
      * @ORM\Column(type="string")
      */
+    protected $title;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text")
+     */
     protected $message;
 
     /**
@@ -52,6 +58,17 @@ class Log extends AbstractEntity
      */
     protected $poa;
 
+    public function __construct(string $title, string $message, Claim $claim, User $user = null, Poa $poa = null)
+    {
+        $this->title = $title;
+        $this->message = $message;
+        $this->claim = $claim;
+        $this->user = $user;
+        $this->poa = $poa;
+
+        $this->createdDateTime = new DateTime();
+    }
+
     /**
      * @return int
      */
@@ -74,6 +91,22 @@ class Log extends AbstractEntity
     public function setCreatedDateTime(DateTime $createdDateTime)
     {
         $this->createdDateTime = $createdDateTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     */
+    public function setTitle(string $title)
+    {
+        $this->title = $title;
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
+use App\Entity\Cases\Log;
 use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
@@ -72,6 +73,17 @@ class DataMigration
 
     /**
      * @param Application $application
+     * @return array
+     */
+    public function getApplicationData(Application $application): array
+    {
+        $decryptedData = $this->getDecryptedData($application);
+        $applicationData = json_decode($decryptedData, true);
+        return $applicationData;
+    }
+
+    /**
+     * @param Application $application
      * @return Claim
      */
     public function getClaim(Application $application): Claim
@@ -96,6 +108,18 @@ class DataMigration
 
             if ($this->caseRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
+                    $applicationData = $this->getApplicationData($application);
+
+                    $applicantName = '';
+                    if ($applicationData['applicant'] === 'donor') {
+                        $applicantName = $claim->getDonorName() . ' (Donor)';
+                    } elseif ($applicationData['applicant'] === 'attorney') {
+                        $applicantName = "{$applicationData['attorney']['name']['title']} {$applicationData['attorney']['name']['first']} {$applicationData['attorney']['name']['last']} (Attorney)";
+                    }
+
+                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on {$claim->getReceivedDateTime()->format(DATE_ISO8601)}", $claim);
+                    $claim->addLog($log);
+
                     $this->casesEntityManager->persist($claim);
                     $this->casesEntityManager->flush();
 

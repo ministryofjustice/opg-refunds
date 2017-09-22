@@ -91,21 +91,27 @@ class Claim extends AbstractEntity
 
     /**
      * @var Poa[]
-     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim")
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $poas;
 
     /**
      * @var Verification
-     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim")
+     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $verification;
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim")
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $payment;
+
+    /**
+     * @var Log[]
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
+     */
+    protected $logs;
 
     public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
     {
@@ -342,6 +348,30 @@ class Claim extends AbstractEntity
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * @return Log[]
+     */
+    public function getLogs(): array
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param Log[] $logs
+     */
+    public function setLogs(array $logs)
+    {
+        $this->logs = $logs;
+    }
+
+    /**
+     * @param Log $log
+     */
+    public function addLog(Log $log)
+    {
+        $this->logs[] = $log;
     }
 
     /**
