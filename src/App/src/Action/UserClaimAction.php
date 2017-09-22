@@ -13,10 +13,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class CaseworkerClaimAction
+ * Class UserClaimAction
  * @package App\Action
  */
-class CaseworkerClaimAction implements ServerMiddlewareInterface
+class UserClaimAction implements ServerMiddlewareInterface
 {
     /**
      * @var ClaimService
@@ -45,34 +45,27 @@ class CaseworkerClaimAction implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $claimId = $request->getAttribute('id');
+        $userId = $request->getAttribute('id');
 
         $method = $request->getMethod();
         switch ($method) {
-            case RequestMethodInterface::METHOD_GET:
-                return $this->getClaim($claimId);
+            case RequestMethodInterface::METHOD_PUT:
+                return $this->assignNextClaim($userId);
             default:
                 throw new InvalidArgumentException("Request method $method is not valid for this endpoint");
         }
     }
 
     /**
-     * @param $claimId if supplied, return corresponding claim, if null attempt to reserve and return claim for logged in user
+     * @param int $userId user id to assign claim to
      * @return JsonResponse
      */
-    private function getClaim($claimId)
+    private function assignNextClaim(int $userId)
     {
-        if ($claimId == null) {
-            //TODO: Get proper migration running via cron job
-            $this->dataMigrationService->migrateOne();
+        //TODO: Get proper migration running via cron job
+        $this->dataMigrationService->migrateOne();
 
-
-
-            //Retrieve next claim and return if found
-            return new JsonResponse([]);
-        } else {
-            //Retrieve specific claim
-            return new JsonResponse([]);
-        }
+        //Retrieve next claim and return if found
+        return new JsonResponse([]);
     }
 }

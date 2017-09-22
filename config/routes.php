@@ -34,10 +34,17 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 $prefix = '/v1/cases';
 $app->get($prefix . '/claim', App\Action\ClaimAction::class, 'claim');
 $app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
-$app->get($prefix . '/caseworker/claim[/{id:\d+}]', App\Action\CaseworkerClaimAction::class, 'caseworker.claim');
+$app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
+
+//Example routes
+/*'/claim[/{id:\d+}]'
+'/claim/{id:\d+}/poa[/{id:\d+}]'
+'/claim/{id:\d+}/verfication[/{id:\d+}]'
+'/claim/{id:\d+}/log[/{id:\d+}]'
+'/user'
+'/user/{id:\d+}/claim' //GET PUT*/
 
 //  Developer routes
 $app->get('/dev/applications', Dev\Action\ApplicationsAction::class, 'dev.applications');
 $app->get('/dev/view-claim-queue', Dev\Action\ViewClaimQueueAction::class, 'dev.view-claim-queue');
-$app->get('/dev/migrate', Dev\Action\MigrateAction::class, 'dev.migrate');

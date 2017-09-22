@@ -28,7 +28,12 @@ class SpreadsheetCell
         $this->column = $column;
         $this->row = $row;
         if (is_string($data)) {
-            $this->data = $data ?: 'NOT SUPPLIED';
+            //Only set 'NOT SUPPLIED' if data is explicitly null
+            if ($data === null) {
+                $this->data = 'NOT SUPPLIED';
+            } else {
+                $this->data = $data;
+            }
         } else {
             $this->data = $data;
         }

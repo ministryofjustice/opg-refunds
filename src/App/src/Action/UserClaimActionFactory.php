@@ -7,18 +7,18 @@ use Ingestion\Service\DataMigration;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class CaseworkerClaimActionFactory
+ * Class UserClaimActionFactory
  * @package App\Action
  */
-class CaseworkerClaimActionFactory
+class UserClaimActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return CaseworkerClaimAction
+     * @return UserClaimAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new CaseworkerClaimAction(
+        return new UserClaimAction(
             $container->get(Claim::class),
             $container->get(DataMigration::class)
         );

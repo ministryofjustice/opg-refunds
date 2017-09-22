@@ -19,6 +19,18 @@ class PhpSpreadsheetGeneratorTest extends TestCase
     private $sourceFolder = __DIR__ . '/../../../assets';
     private $tempFolder = __DIR__ . '/../output';
     /**
+     * @var array
+     */
+    private $ssclConfig = [
+        'entity' => '0123',
+        'cost_centre' => '99999999',
+        'account' => '123450000',
+        'objective' => '0',
+        'analysis' => '12345678',
+        'completer_id' => 'completer@localhost.com',
+        'approver_id' => 'approver@localhost.com',
+    ];
+    /**
      * @var ISpreadsheetGenerator
      */
     private $spreadsheetGenerator;
@@ -62,7 +74,7 @@ class PhpSpreadsheetGeneratorTest extends TestCase
             ->withPayment($payment)
             ->build();
 
-        $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator();
+        $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator($this->ssclConfig);
         $this->worksheet = $spreadsheetWorksheetGenerator->generate([$claim]);
     }
 

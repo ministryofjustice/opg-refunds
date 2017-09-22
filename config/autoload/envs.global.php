@@ -45,7 +45,16 @@ return [
 
     'spreadsheet' => [
         'source_folder' => __DIR__.'/../../assets',
-        'temp_folder' => '/tmp'
+        'temp_folder' => '/tmp',
+        'sscl' => [
+            'entity' => getenv('OPG_REFUNDS_SSCL_ENTITY') ?: '0123',
+            'cost_centre' => getenv('OPG_REFUNDS_SSCL_COST_CENTRE') ?: '99999999',
+            'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '123450000',
+            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '0',
+            'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '12345678',
+            'completer_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'completer@localhost.com',
+            'approver_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'approver@localhost.com',
+        ]
     ]
 
 ];
