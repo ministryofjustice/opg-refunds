@@ -1,0 +1,18 @@
+<div>
+    <dt class="cya-question">
+        <?= $this->e($title) ?>
+    </dt>
+    <dd class="cya-answer">
+        <?php foreach($fields as $field): ?>
+            <?php if( !isset($field['label']) && !isset($field['value']) ){ continue; } ?>
+            <?= (isset($field['label'])) ? $this->e($field['label'].': ') : '' ?>
+            <?= (isset($field['value'])) ? $this->e($field['value'].'') : '' ?>
+            <br>
+        <?php endforeach ?>
+    </dd>
+    <dd class="cya-change">
+        <a href="<?= $this->e($changeURL) ?>">
+            Change<span class="visually-hidden"> <?= $this->e($title) ?></span>
+        </a>
+    </dd>
+</div>

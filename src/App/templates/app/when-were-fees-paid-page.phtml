@@ -1,0 +1,52 @@
+<?php
+$title = 'Did you pay fees between April 2013 and March 2017?';
+$this->layout('layout::standard', [
+        'title' => $title,
+        'form' => $form
+    ]);
+
+$form->setAttribute('method', 'get');
+$form->setAttribute('action', $this->url('eligibility.when.answer'));
+
+$this->addErrorMap([
+    'fees-in-range' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Select yes if you think you paid between April 2013 and March 2017'
+        ]
+    ]
+]);
+
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('fees-in-range'),
+        'question' => $title,
+        'options' => [
+            'yes' => [
+                'optionLabel' => 'Yes, I think so',
+            ],
+            'no' => [
+                'optionLabel' => 'No',
+            ]
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>
+
+<?php $this->insert('snippet::help-text', [
+        'title' => 'If you\'re not sure when a fee was paid',
+        'markup' => '
+            <p>You can make a claim even if you\'re not sure exactly when the fees were paid.</p>
+            <p>We will check the information you give against our records and confirm if you are entitled to a refund.</p>
+        '
+]);

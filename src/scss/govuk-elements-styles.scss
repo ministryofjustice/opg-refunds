@@ -1,0 +1,17 @@
+// Path to assets for use with the file-url function
+// in the govuk frontend toolkit's url-helpers partial
+$path: "/assets/images/";
+
+// Import all the govuk-elements partials listed in _govuk-elements.scss
+@import "govuk-elements";
+
+@import 'patterns/check-your-answers';
+@import 'patterns/related-items';
+@import 'patterns/address';
+
+.text-after-table {
+  margin-top: em(20, 16);
+  @include media(tablet) {
+    margin-top: em(20);
+  }
+}

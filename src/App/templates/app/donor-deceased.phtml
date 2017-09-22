@@ -1,0 +1,48 @@
+<?php
+$title = 'About the donor';
+$this->layout('layout::standard', [
+    'title' => $title,
+    'form' => $form
+]);
+
+$form->setAttribute('method', 'get');
+$form->setAttribute('action', $this->url('eligibility.deceased.answer'));
+
+$this->addErrorMap([
+    'donor-deceased' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Confirm if the donor is alive or has died'
+        ]
+    ]
+]);
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<p>We need to know if the donor is still alive.</p>
+<p>This is because a refund can only be paid to the donor or to their estate.</p>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('donor-deceased'),
+        'question' => $title,
+        'options' => [
+            'no' => [
+                'optionLabel' => 'The donor is alive',
+            ],
+            'yes' => [
+                'optionLabel' => 'The donor has died',
+            ],
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>
+
+

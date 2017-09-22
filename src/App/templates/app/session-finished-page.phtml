@@ -1,0 +1,14 @@
+<?php
+    $title = "Sorry, you'll have to start again";
+    $this->layout('layout::standard', [
+        'title' => $title,
+    ]);
+?>
+
+<p>Your session automatically ends if you don’t use this service for 1 hour.</p>
+
+<p>We do this for your security. We haven't saved any information you entered.</p>
+
+<p>
+    <a class="button" href="<?= $this->url('home') ?>">Start a refund claim</a>
+</p>

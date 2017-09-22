@@ -1,0 +1,23 @@
+{
+  "name": "opg-refunds-public-front",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:ministryofjustice/opg-refunds-public-front.git",
+  "author": "Nick Rowlands <nick.rowlands@digital.justice.gov.uk>",
+  "license": "MIT",
+  "devDependencies": {
+    "govuk-elements-sass": "^3.1.1",
+    "govuk_frontend_toolkit": "^7.0.1",
+    "govuk_template_jinja": "^0.22.3",
+    "jquery": "~1.12.4",
+    "node-sass": "^4.5.3",
+    "uglify-js": "2.8.11"
+  },
+  "scripts": {
+    "build": "yarn run build:js && yarn run build:css && yarn run copy:govuk_template && yarn run copy:govuk_frontend_toolkit:images",
+    "build:js": "node src/js/uglify",
+    "build:css": "node-sass -o public/assets/ --include-path node_modules --output-style compressed src/scss/",
+    "copy:govuk_frontend_toolkit:images": "cp -rp node_modules/govuk_frontend_toolkit/images public/assets",
+    "copy:govuk_template": "cp -r node_modules/govuk_template_jinja/assets/ public/assets/govuk_template"
+  }
+}

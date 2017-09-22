@@ -1,0 +1,53 @@
+<?php
+$title = 'About you';
+$this->layout('layout::standard', [
+        'title' => $title,
+        'form' => $form
+    ]);
+
+$form->setAttribute('method', 'get');
+$form->setAttribute('action', $this->url('eligibility.who.answer'));
+
+$this->addErrorMap([
+    'who' => [
+        'required' => [
+            'summary'   => 'You must answer this question',
+            'field'     => 'Confirm if you are the donor or an attorney'
+        ]
+    ]
+]);
+?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<p>You can only claim a refund if you are the donor or one of their attorneys.</p>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('who'),
+        'question' => $title,
+        'options' => [
+            'donor' => [
+                'optionLabel' => "I am the 'donor'",
+                'optionLabelSuffix' => "The person who made the power of attorney.",
+            ],
+            'attorney' => [
+                'optionLabel' => "I am an 'attorney'",
+                'optionLabelSuffix' => "Trusted and chosen by the donor to make decisions on their behalf.",
+                'dataTarget' => 'attorney-info',
+                'dataTargetMarkup' => "
+                    <p>You should check that any other attorneys haven’t already claimed the refund.</p>
+                "
+            ]
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+</form>
+
+
