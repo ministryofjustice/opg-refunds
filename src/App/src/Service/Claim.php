@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use Exception;
+use Ingestion\Service\DataMigration;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use Doctrine\ORM\EntityManager;
@@ -26,14 +28,21 @@ class Claim
     private $entityManager;
 
     /**
+     * @var DataMigration
+     */
+    private $dataMigrationService;
+
+    /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
+     * @param DataMigration $dataMigrationService
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, DataMigration $dataMigrationService)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
+        $this->dataMigrationService = $dataMigrationService;
     }
 
     /**
@@ -43,9 +52,39 @@ class Claim
      */
     public function getAll()
     {
+        //TODO: Get proper migration running via cron job
+        $this->dataMigrationService->migrateAll();
+
         /** @var ClaimEntity[] $claims */
         $claims = $this->repository->findBy([]);
 
         return $this->translateToDataModelArray($claims);
+    }
+
+    /**
+     * @param int $userId
+     * @return array with one element, 'assignedClaimId' which will be the assigned claim id if one was successfully assigned to the user or zero if not
+     * @throws Exception
+     */
+    public function assignNextClaim(int $userId)
+    {
+        //TODO: Get proper migration running via cron job
+        $this->dataMigrationService->migrateOne();
+
+        //Using SQL directly to update claim in single atomic call to prevent race conditions
+        $sql = 'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW() WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL ORDER BY received_datetime ASC LIMIT 1) RETURNING id';
+        $statement = $this->entityManager->getConnection()->executeQuery($sql, [$userId]);
+        $result = $statement->fetchAll();
+        $updateCount = count($result);
+
+        if ($updateCount > 1) {
+            throw new Exception("Assigning next claim updated $updateCount rows! It should only update one or zero rows");
+        }
+
+        if ($updateCount === 1) {
+            return ['assignedClaimId' => $result[0]['id']];
+        }
+
+        return ['assignedClaimId' => 0];
     }
 }

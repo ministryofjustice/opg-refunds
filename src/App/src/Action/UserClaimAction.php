@@ -23,15 +23,9 @@ class UserClaimAction implements ServerMiddlewareInterface
      */
     private $claimService;
 
-    /**
-     * @var DataMigration
-     */
-    private $dataMigrationService;
-
-    public function __construct(ClaimService $claimService, DataMigration $dataMigrationService)
+    public function __construct(ClaimService $claimService)
     {
         $this->claimService = $claimService;
-        $this->dataMigrationService = $dataMigrationService;
     }
 
     /**
@@ -62,10 +56,8 @@ class UserClaimAction implements ServerMiddlewareInterface
      */
     private function assignNextClaim(int $userId)
     {
-        //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->migrateOne();
+        $result = $this->claimService->assignNextClaim($userId);
 
-        //Retrieve next claim and return if found
-        return new JsonResponse([]);
+        return new JsonResponse($result);
     }
 }

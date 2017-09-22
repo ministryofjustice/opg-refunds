@@ -19,8 +19,7 @@ class UserClaimActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new UserClaimAction(
-            $container->get(Claim::class),
-            $container->get(DataMigration::class)
+            $container->get(Claim::class)
         );
     }
 }

@@ -21,15 +21,9 @@ class ClaimAction implements ServerMiddlewareInterface
      */
     private $claimService;
 
-    /**
-     * @var DataMigration
-     */
-    private $dataMigrationService;
-
-    public function __construct(ClaimService $claimService, DataMigration $dataMigrationService)
+    public function __construct(ClaimService $claimService)
     {
         $this->claimService = $claimService;
-        $this->dataMigrationService = $dataMigrationService;
     }
 
     /**
@@ -43,9 +37,6 @@ class ClaimAction implements ServerMiddlewareInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->migrateAll();
-
         //  Get all of the claims
         $claims = $this->claimService->getAll();
         $claimsData = [];
