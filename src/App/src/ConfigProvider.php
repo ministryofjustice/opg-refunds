@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Zend\Crypt\PublicKey\Rsa;
+
 /**
  * The configuration provider for the App module
  *
@@ -21,7 +23,6 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
-            'templates'    => $this->getTemplates(),
         ];
     }
 
@@ -34,27 +35,26 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\PingAction::class => Action\PingAction::class,
             ],
             'factories'  => [
-                Action\HomePageAction::class => Action\HomePageFactory::class,
+                //  Actions
+                Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\UserAction::class => Action\UserActionFactory::class,
+                Action\PingAction::class => Action\PingActionFactory::class,
+                Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
+
+                // Middleware
+
+                //  Services
+                Service\Claim::class => Service\ClaimFactory::class,
+                Service\User::class => Service\UserFactory::class,
+                Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
+
+                //Crypt
+                Crypt\Hybrid::class => Crypt\HybridFactory::class,
+                Rsa::class => Crypt\RsaFactory::class,
             ],
         ];
     }
 
-    /**
-     * Returns the templates configuration
-     *
-     * @return array
-     */
-    public function getTemplates()
-    {
-        return [
-            'paths' => [
-                'app'    => [__DIR__ . '/../templates/app'],
-                'error'  => [__DIR__ . '/../templates/error'],
-                'layout' => [__DIR__ . '/../templates/layout'],
-            ],
-        ];
-    }
 }

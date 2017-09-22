@@ -4,19 +4,34 @@
     "type": "project",
     "homepage": "https://github.com/ministryofjustice/opg-refunds-caseworker-api",
     "license": "MIT",
+    "minimum-stability": "beta",
+    "prefer-stable": true,
     "config": {
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+        }
+    ],
     "require": {
         "php": "^7.0",
+        "dasprid/container-interop-doctrine": "^1.0",
+        "doctrine/migrations": "^1.5",
+        "doctrine/orm": "^2.5",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
+        "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
+        "symfony/yaml": "^3.3",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
+        "zendframework/zend-crypt": "^3.2",
         "zendframework/zend-expressive": "^2.0.2",
+        "zendframework/zend-expressive-fastroute": "^2.0",
         "zendframework/zend-expressive-helpers": "^4.0",
-        "zendframework/zend-stdlib": "^3.1",
         "zendframework/zend-servicemanager": "^3.3",
-        "zendframework/zend-expressive-fastroute": "^2.0"
+        "zendframework/zend-stdlib": "^3.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0.8 || ^5.7.15",
@@ -27,7 +42,10 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/App/src/"
+            "App\\": "src/App/src/",
+            "Applications\\": "src/Applications/src/",
+            "Auth\\": "src/Auth/src/",
+            "Dev\\": "src/Dev/src/"
         }
     },
     "autoload-dev": {
