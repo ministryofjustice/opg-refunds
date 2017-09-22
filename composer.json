@@ -21,6 +21,7 @@
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-process-new-claim",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
+        "slim/flash": "^0.2.0",
         "zendframework/zend-authentication": "^2.5",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",

@@ -63,6 +63,7 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
+            'Slim\\Flash\\' => 11,
         ),
         'P' => 
         array (
@@ -254,6 +255,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Slim\\Flash\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/flash/src',
         ),
         'Psr\\Log\\' => 
         array (

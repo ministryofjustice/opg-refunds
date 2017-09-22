@@ -28,8 +28,12 @@ class HomePageAction extends AbstractApiClientAction
         $userData = $this->getApiClient()->getUser($identity->getId());
         $user = new User($userData);
 
+        $flash = $request->getAttribute('flash');
+        $messages = $flash->getMessages();
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'user'  => $user
+            'user'     => $user,
+            'messages' => $messages
         ]));
     }
 }

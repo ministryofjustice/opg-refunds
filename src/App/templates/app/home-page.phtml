@@ -1,15 +1,39 @@
 <?php $this->layout('layout::standard', ['title' => 'Home']) ?>
 <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user */ ?>
 
-<p>Logged in as <?= $user->getName(); ?></p>
+<?php $this->start('sidebar') ?>
 
-<h2>Process a claim</h2>
+<h2 class="heading-medium">Process a claim</h2>
 
 <p>Add a new power of attorney refund</p>
 
-<a href="/process-new-claim">Process new claim</a>
+<a class="button button-start" href="/process-new-claim">Process new claim</a>
 
-<h2>Claims in progress</h2>
+<h2 class="heading-medium">Role test links</h2>
+
+<p><a href="/caseworker">Case worker user page</a></p>
+<p><a href="/reporting">Reporting user page</a></p>
+<p><a href="/refund">Refund manager user page</a></p>
+<p><a href="/admin">Admin user page</a></p>
+
+<h3 class="heading-small">Logged in as <?= $user->getName(); ?></h3>
+<p><a href="sign-out">Sign out</a></p>
+
+<?php $this->stop() ?>
+
+<h2 class="heading-medium">Claims in progress</h2>
+
+<?php foreach ($messages as $messageKey => $messageValues) { ?>
+    <?php if ($messageKey === 'info') { ?>
+        <div class="error-summary" style="border-color: #005EA5">
+            <ul>
+                <?php foreach ($messageValues as $messageValue) { ?>
+                    <li><?= $messageValue ?></li>
+                <?php } ?>
+            </ul>
+        </div>
+    <?php } ?>
+<?php } ?>
 
 <table>
     <thead>
@@ -38,12 +62,3 @@
         <?php } ?>
     </tbody>
 </table>
-
-<h2>Role test links</h2>
-
-<p><a href="/caseworker">Case worker user page</a></p>
-<p><a href="/reporting">Reporting user page</a></p>
-<p><a href="/refund">Refund manager user page</a></p>
-<p><a href="/admin">Admin user page</a></p>
-
-<p><a href="sign-out">Sign out</a></p>

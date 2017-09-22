@@ -7,6 +7,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Slim\Flash\Messages;
 
 /**
  * Class ProcessNewClaimAction
@@ -44,6 +45,11 @@ class ProcessNewClaimAction extends AbstractAction
 
         if ($assignedClaimId === 0) {
             //No available claims
+
+            /** @var Messages $flash */
+            $flash = $request->getAttribute('flash');
+            $flash->addMessage('info', 'There are no more claims to process');
+
             return $this->redirectToRoute('home');
         }
 

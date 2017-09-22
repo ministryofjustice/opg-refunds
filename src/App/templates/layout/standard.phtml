@@ -3,17 +3,15 @@
 ]) ?>
 
 <div class="grid-row">
-  <div class="column-two-thirds">
-    
-    <h1 class="heading-xlarge">
-        <?=$this->e($title)?>
-    </h1>
+    <div class="column-third">
+        <?=$this->section('sidebar')?>
+    </div>
 
-    <?=$this->section('content')?>
-    
-  </div>
+    <div class="column-two-thirds">
+        <?php if (isset($infoMessage)) { ?>
+            <?= $infoMessage ?>
+        <?php } ?>
 
-  <div class="column-third">
-    <?=$this->section('sidebar')?>
-  </div>
+        <?=$this->section('content')?>
+    </div>
 </div>
