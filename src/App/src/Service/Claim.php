@@ -62,6 +62,24 @@ class Claim
     }
 
     /**
+     * Get one claim
+     *
+     * @param $claimId
+     * @return ClaimModel
+     */
+    public function get($claimId)
+    {
+        /** @var ClaimEntity $claim */
+        $claim = $this->repository->findOneBy([
+            'id' => $claimId,
+        ]);
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
+    }
+
+    /**
      * @param int $userId
      * @return array with one element, 'assignedClaimId' which will be the assigned claim id if one was successfully assigned to the user or zero if not
      * @throws Exception

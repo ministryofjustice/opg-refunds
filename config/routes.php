@@ -32,7 +32,7 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
 $prefix = '/v1/cases';
-$app->get($prefix . '/claim', App\Action\ClaimAction::class, 'claim');
+$app->route($prefix . '/claim[/{id:\d+}]', App\Action\ClaimAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim');
 $app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
 $app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');

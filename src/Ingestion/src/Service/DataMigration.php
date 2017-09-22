@@ -79,7 +79,7 @@ class DataMigration
         $decryptedData = $this->getDecryptedData($application);
         $applicationData = json_decode($decryptedData, true);
         $donorName = "{$applicationData['donor']['name']['title']} {$applicationData['donor']['name']['first']} {$applicationData['donor']['name']['last']}";
-        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName);
+        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName, $applicationData['account']['hash']);
         return $claim;
     }
 

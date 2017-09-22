@@ -84,6 +84,12 @@ class Claim extends AbstractEntity
     protected $donorName;
 
     /**
+     * @var string
+     * @ORM\Column(name="account_hash", type="string")
+     */
+    protected $accountHash;
+
+    /**
      * @var Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim")
      */
@@ -101,12 +107,13 @@ class Claim extends AbstractEntity
      */
     protected $payment;
 
-    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName)
+    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
         $this->jsonData = $jsonData;
         $this->donorName = $donorName;
+        $this->accountHash = $accountHash;
 
         $this->createdDateTime = new DateTime();
         $this->status = ClaimModel::STATUS_NEW;
@@ -271,6 +278,22 @@ class Claim extends AbstractEntity
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountHash(): string
+    {
+        return $this->accountHash;
+    }
+
+    /**
+     * @param string $accountHash
+     */
+    public function setAccountHash(string $accountHash)
+    {
+        $this->accountHash = $accountHash;
     }
 
     /**

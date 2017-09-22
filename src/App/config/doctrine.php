@@ -59,7 +59,7 @@ return [
         'cases_entities' => [
             'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
             'cache' => 'array',
-            'paths' => __DIR__ . '/../../src/App/src/Entity/Cases',
+            'paths' => __DIR__ . '/../src/Entity/Cases',
         ],
         'orm_sirius' => [
             'class' => \Doctrine\Common\Persistence\Mapping\Driver\MappingDriverChain::class,
@@ -76,7 +76,7 @@ return [
         'sirius_entities' => [
             'class' => \Doctrine\ORM\Mapping\Driver\AnnotationDriver::class,
             'cache' => 'array',
-            'paths' => __DIR__ . '/../../src/App/src/Entity/Sirius',
+            'paths' => __DIR__ . '/../src/Entity/Sirius',
         ],
     ],
     'configuration' => [
