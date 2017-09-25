@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -15,6 +16,11 @@ use Zend\InputFilter\InputFilter;
 class Poa extends AbstractForm
 {
     /**
+     * @var string
+     */
+    protected $source;
+
+    /**
      * Poa constructor.
      * @param array $options
      */
@@ -22,8 +28,13 @@ class Poa extends AbstractForm
     {
         parent::__construct(self::class, $options);
 
+        $this->source = $options['source'];
+
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
+
+        //  Csrf field
+        $this->addCsrfElement($inputFilter);
 
         //  Case number field
         $field = new Element\Textarea('caseNumber');
@@ -53,7 +64,7 @@ class Poa extends AbstractForm
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
 
         $field->setValueOptions([
-            'orMore' => 'orMore',
+            'orMore'   => 'orMore',
             'lessThan' => 'lessThan',
             'noRefund' => 'noRefund',
         ]);
@@ -61,8 +72,57 @@ class Poa extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Csrf field
-        $this->addCsrfElement($inputFilter);
+        //  Validation
+        //  Attorney details (always present)
+        $field = new Element\Radio('attorney');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $field->setValueOptions([
+            'yes' => 'yes',
+            'no'  => 'no',
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        if (isset($options['claim'])) {
+            /** @var ClaimModel $claim */
+            $claim = $options['claim'];
+
+            //  Donor postcode
+            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
+                $field = new Element\Radio('donor-postcode');
+                $input = new Input($field->getName());
+
+                $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+                $field->setValueOptions([
+                    'yes' => 'yes',
+                    'no' => 'no',
+                ]);
+
+                $this->add($field);
+                $inputFilter->add($input);
+            }
+
+            //  Donor postcode
+            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
+                $field = new Element\Radio('attorney-postcode');
+                $input = new Input($field->getName());
+
+                $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+                $field->setValueOptions([
+                    'yes' => 'yes',
+                    'no' => 'no',
+                ]);
+
+                $this->add($field);
+                $inputFilter->add($input);
+            }
+        }
     }
 
     /**
@@ -83,6 +143,28 @@ class Poa extends AbstractForm
             }
             $formData['receivedDate'] = $receivedDateDateStr;
         }
+
+        $verifications = [];
+        if (array_key_exists('attorney', $formData)) {
+            $verifications[] = [
+                'type'   => 'attorney',
+                'passes' => $formData['attorney'] === 'yes',
+            ];
+        }
+        if (array_key_exists('donor-postcode', $formData)) {
+            $verifications[] = [
+                'type'   => 'donor-postcode',
+                'passes' => $formData['donor-postcode'] === 'yes',
+            ];
+        }
+        if (array_key_exists('attorney-postcode', $formData)) {
+            $verifications[] = [
+                'type'   => 'attorney-postcode',
+                'passes' => $formData['attorney-postcode'] === 'yes',
+            ];
+        }
+
+        $formData['verifications'] = $verifications;
 
         return $formData;
     }

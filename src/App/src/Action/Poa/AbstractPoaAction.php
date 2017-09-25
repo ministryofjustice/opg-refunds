@@ -8,6 +8,7 @@ use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 
 abstract class AbstractPoaAction extends AbstractClaimAction
@@ -24,11 +25,13 @@ abstract class AbstractPoaAction extends AbstractClaimAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $form = $this->getForm($request);
+        $claim = $this->getClaim($request);
+
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render($this->templateName, [
             'form'  => $form,
-            'claim' => $this->getClaim($request)
+            'claim' => $claim
         ]));
     }
 
@@ -44,7 +47,7 @@ abstract class AbstractPoaAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $claim);
 
         if ($request->getMethod() == 'POST') {
             /** @var Poa $form */
@@ -52,13 +55,12 @@ abstract class AbstractPoaAction extends AbstractClaimAction
 
             if ($form->isValid()) {
                 $poa = new PoaModel($form->getModelData());
-                //$message = $form->get('message')->getValue();
 
-                /*$log = $this->claimService->addLog($this->modelId, 'Caseworker note', $message);
+                $poa = $this->claimService->addPoa($claim, $poa);
 
-                if ($log === null) {
-                    throw new RuntimeException('Failed to add new log to claim with id: ' . $this->modelId);
-                }*/
+                if ($poa === null) {
+                    throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
+                }
 
                 return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
             }

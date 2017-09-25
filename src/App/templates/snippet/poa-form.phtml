@@ -9,6 +9,10 @@ Mandatory: claim
  * @var \App\Form\Poa $form
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  */
+
+$attorney = $claim->getApplication()->getAttorney();
+$attorneyName = $attorney->getPoaName() !== null ? $this->getFormattedName($attorney->getPoaName()) : $this->getFormattedName($attorney->getName());
+$postcodes = $claim->getApplication()->getPostcodes();
 ?>
 
 <form method="post" class="form">
@@ -48,6 +52,54 @@ Mandatory: claim
             ],
         ],
     ])
+    ?>
+
+    <h3 class="heading-small">Check verification details</h3>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('attorney'),
+        'question' => "Does {$attorneyName} and {$this->getDateOfBirthString($attorney->getDob())} match one attorney's details on the POA?",
+        'options' => [
+            'yes' => [
+                'optionLabel' => 'Yes'
+            ],
+            'no' => [
+                'optionLabel' => 'No'
+            ],
+        ],
+    ])
+    ?>
+
+    <?php if ($postcodes->getDonorPostcode() !== null) {
+        $this->insert('snippet::input-radio', [
+            'formElement' => $form->get('donor-postcode'),
+            'question' => "Does {$postcodes->getDonorPostcode()} match the donor's address on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
+    ?>
+
+    <?php if ($postcodes->getAttorneyPostcode() !== null) {
+        $this->insert('snippet::input-radio', [
+            'formElement' => $form->get('attorney-postcode'),
+            'question' => "Does {$postcodes->getAttorneyPostcode()} match any of the attorney addresses on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
     ?>
 
     <div class="form-group">

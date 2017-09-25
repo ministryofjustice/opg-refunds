@@ -4,6 +4,7 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -24,7 +25,7 @@ class ClaimAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-page', [
             'claim' => $claim,
@@ -38,7 +39,7 @@ class ClaimAction extends AbstractClaimAction
         //we are technically editing the claim by adding a log message to it
         $claim = $this->getClaim($request);
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $claim);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
@@ -64,13 +65,15 @@ class ClaimAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
+     * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request): AbstractForm
+    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
         $form = new Log([
-            'csrf' => $session['meta']['csrf']
+            'claim' => $claim,
+            'csrf'  => $session['meta']['csrf'],
         ]);
         return $form;
     }

@@ -2,10 +2,10 @@
 
 namespace App\Action\Poa;
 
-use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\PoaSirius;
 use App\Service\Claim as ClaimService;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 
 class PoaSiriusAction extends AbstractPoaAction
@@ -19,13 +19,16 @@ class PoaSiriusAction extends AbstractPoaAction
 
     /**
      * @param ServerRequestInterface $request
+     * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request): AbstractForm
+    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
         $form = new PoaSirius([
-            'csrf' => $session['meta']['csrf']
+            'claim'  => $claim,
+            'source' => 'sirius',
+            'csrf'   => $session['meta']['csrf'],
         ]);
         return $form;
     }

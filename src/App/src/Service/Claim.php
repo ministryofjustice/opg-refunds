@@ -7,6 +7,8 @@ use Api\Service\Initializers\ApiClientTrait;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 
 class Claim implements ApiClientInterface
 {
@@ -93,6 +95,33 @@ class Claim implements ApiClientInterface
         $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
             'noMerisPoas' => $noMerisPoas
         ]);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
+    /**
+     * @param ClaimModel $claim
+     * @param PoaModel $poa
+     * @return null|ClaimModel
+     */
+    public function addPoa(ClaimModel $claim, PoaModel $poa)
+    {
+        $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
+        if ($poaCaseNumber !== null) {
+            if ($poaCaseNumber === $poa->getCaseNumber()) {
+                $poa->getVerifications()[] = new VerificationModel([
+                    'type'   => 'case-number',
+                    'passes' => 'yes'
+                ]);
+            }
+        }
+
+        $poaArray = $poa->toArray();
+        $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poaArray);
 
         if (empty($claimArray)) {
             return null;
