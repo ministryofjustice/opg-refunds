@@ -2,8 +2,8 @@
 
 namespace App\Action;
 
-use App\Service\Claim;
-use Applications\Service\DataMigration;
+use App\Service\Claim as ClaimService;
+use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -19,7 +19,8 @@ class ClaimActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new ClaimAction(
-            $container->get(Claim::class)
+            $container->get(ClaimService::class),
+            $container->get(UserService::class)
         );
     }
 }

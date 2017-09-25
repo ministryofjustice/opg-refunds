@@ -79,10 +79,7 @@ class Claim
      */
     public function get($claimId)
     {
-        /** @var ClaimEntity $claim */
-        $claim = $this->claimRepository->findOneBy([
-            'id' => $claimId,
-        ]);
+        $claim = $this->getClaimEntity($claimId);
 
         $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
         $accountHashCount = $this->entityManager->createQuery($dql)
@@ -135,11 +132,57 @@ class Claim
                 $assignedClaimId,
                 $userId,
                 'Claim started by caseworker',
-                "Caseworker '{$user->getName()}' has begun to process this claim"
+                "Caseworker has begun to process this claim"
             );
         }
 
         return ['assignedClaimId' => $assignedClaimId];
+    }
+
+    public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $claim->setNoSiriusPoas($noSiriusPoas);
+
+        if ($noSiriusPoas) {
+            $this->addLog(
+                $claimId,
+                $userId,
+                'No Sirius POAs',
+                "Caseworker confirmed that they could not find any Sirius POAs for this claim"
+            );
+        } else {
+            $this->addLog(
+                $claimId,
+                $userId,
+                'Sirius POA found',
+                "Caseworker has found a Sirius POA for this claim"
+            );
+        }
+    }
+
+    public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $claim->setNoMerisPoas($noMerisPoas);
+
+        if ($noMerisPoas) {
+            $this->addLog(
+                $claimId,
+                $userId,
+                'No Meris POAs',
+                "Caseworker confirmed that they could not find any Meris POAs for this claim"
+            );
+        } else {
+            $this->addLog(
+                $claimId,
+                $userId,
+                'Meris POA found',
+                "Caseworker has found a Meris POA for this claim"
+            );
+        }
     }
 
     /**
@@ -151,10 +194,7 @@ class Claim
      */
     public function addLog($claimId, $userId, $title, $message)
     {
-        /** @var ClaimEntity $claim */
-        $claim = $this->claimRepository->findOneBy([
-            'id' => $claimId,
-        ]);
+        $claim = $this->getClaimEntity($claimId);
 
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([
@@ -169,5 +209,18 @@ class Claim
         /** @var LogModel $logModel */
         $logModel = $this->translateToDataModel($log);
         return $logModel;
+    }
+
+    /**
+     * @param $claimId
+     * @return ClaimEntity
+     */
+    private function getClaimEntity($claimId): ClaimEntity
+    {
+        /** @var ClaimEntity $claim */
+        $claim = $this->claimRepository->findOneBy([
+            'id' => $claimId,
+        ]);
+        return $claim;
     }
 }

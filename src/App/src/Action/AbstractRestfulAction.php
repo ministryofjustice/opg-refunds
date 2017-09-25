@@ -30,6 +30,7 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
             RequestMethodInterface::METHOD_GET    => 'index',
             RequestMethodInterface::METHOD_POST   => 'add',
             RequestMethodInterface::METHOD_PUT    => 'edit',
+            RequestMethodInterface::METHOD_PATCH  => 'modify',
             RequestMethodInterface::METHOD_DELETE => 'delete',
         ];
 
@@ -74,6 +75,18 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         throw new Exception('Edit action not implemented on ' . get_class($this), 404);
+    }
+
+    /**
+     * MODIFY/PATCH modify action - override in subclass if required
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @throws Exception
+     */
+    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        throw new Exception('Modify action not implemented on ' . get_class($this), 404);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
+use App\Service\User as UserService;
+use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,9 +21,15 @@ class ClaimAction extends AbstractRestfulAction
      */
     private $claimService;
 
-    public function __construct(ClaimService $claimService)
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(ClaimService $claimService, UserService $userService)
     {
         $this->claimService = $claimService;
+        $this->userService = $userService;
     }
 
     /**
@@ -52,5 +60,35 @@ class ClaimAction extends AbstractRestfulAction
 
             return new JsonResponse($claim->toArray());
         }
+    }
+
+    /**
+     * MODIFY/PATCH modify action
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface
+     * @throws Exception
+     */
+    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $claimId = $request->getAttribute('id');
+
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
+
+        $requestBody = $request->getParsedBody();
+
+        if (isset($requestBody['noSiriusPoas'])) {
+            $this->claimService->setNoSiriusPoas($claimId, $user->getId(), $requestBody['noSiriusPoas']);
+        }
+
+        if (isset($requestBody['noMerisPoas'])) {
+            $this->claimService->setNoMerisPoas($claimId, $user->getId(), $requestBody['noMerisPoas']);
+        }
+
+        $claim = $this->claimService->get($claimId);
+
+        return new JsonResponse($claim->toArray());
     }
 }
