@@ -56,6 +56,15 @@ class Application extends AbstractDataModel
      */
     protected $expected;
 
+    public function __construct($data = null)
+    {
+        //Make sure caseNumber and postcode objects are not null;
+        $this->caseNumber = new CaseNumber();
+        $this->postcodes = new Postcodes();
+
+        parent::__construct($data);
+    }
+
     /**
      * @return string
      */

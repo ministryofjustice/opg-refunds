@@ -1,4 +1,4 @@
-<?php $this->layout('layout::default', ['title' => 'Claim']);
+<?php $this->layout('layout::standard', ['title' => 'Claim']);
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
@@ -14,6 +14,84 @@ $this->addErrorMap([
     ]
 ]);
 ?>
+
+<?php $this->start('left-sidebar');
+
+$application = $claim->getApplication();
+$donor = $application->getDonor();
+$attorney = $application->getAttorney();
+$postcodes = $application->getPostcodes();
+$contact = $application->getContact()
+?>
+
+<h2 class="heading-medium">Donor details</h2>
+
+<h3 class="heading-small">Name:</h3>
+<p><?= $this->getFormattedName($donor->getName()) ?></p>
+
+<h3 class="heading-small">Date of birth:</h3>
+<p><?= $this->getDateOfBirthString($donor->getDob()) ?></p>
+
+<?php if ($donor->getPoaName() !== null) { ?>
+    <h3 class="heading-small">Name on power attorney documents:</h3>
+    <p><?= $this->getFormattedName($donor->getPoaName()) ?></p>
+<?php } ?>
+
+<h2 class="heading-medium">Attorney details</h2>
+
+<h3 class="heading-small">Name:</h3>
+<p><?= $this->getFormattedName($attorney->getName()) ?></p>
+
+<h3 class="heading-small">Date of birth:</h3>
+<p><?= $this->getDateOfBirthString($attorney->getDob()) ?></p>
+
+<?php if ($attorney->getPoaName() !== null) { ?>
+    <h3 class="heading-small">Name on power attorney documents:</h3>
+    <p><?= $this->getFormattedName($attorney->getPoaName()) ?></p>
+<?php } ?>
+
+<h2 class="heading-medium">Verification details</h2>
+
+<h3 class="heading-small">
+    <i class="icon icon-important">
+        <span class="visually-hidden">Warning</span>
+    </i>
+    Claim unverified
+</h3>
+
+<h3 class="heading-small">Attorney details</h3>
+
+<?php if ($application->getCaseNumber()->getPoaCaseNumber() !== null) { ?>
+    <h3 class="heading-small">Case number:</h3>
+    <p><?= $application->getCaseNumber()->getPoaCaseNumber() ?></p>
+<?php } ?>
+
+<?php if ($postcodes->getDonorPostcode() !== null) { ?>
+    <h3 class="heading-small">Donor postcode:</h3>
+    <p><?= $postcodes->getDonorPostcode() ?></p>
+<?php } ?>
+
+<?php if ($postcodes->getAttorneyPostcode() !== null) { ?>
+    <h3 class="heading-small">Attorney postcode:</h3>
+    <p><?= $postcodes->getAttorneyPostcode() ?></p>
+<?php } ?>
+
+<h2 class="heading-medium">Contact details</h2>
+
+<h3 class="heading-small">Applicant:</h3>
+<p><?= $this->getApplicantName($application) ?></p>
+
+<?php if ($contact->getEmail() !== null) { ?>
+    <h3 class="heading-small">Email:</h3>
+    <p><?= $contact->getEmail() ?></p>
+<?php } ?>
+
+<?php if ($contact->getPhone() !== null) { ?>
+    <h3 class="heading-small">Telephone:</h3>
+    <p><?= $contact->getPhone() ?></p>
+<?php } ?>
+
+<?php $this->stop() ?>
 
 <h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
 

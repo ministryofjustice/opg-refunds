@@ -69,4 +69,13 @@ class DateFormatter
     {
         return date('H.i', $dateTime->getTimestamp());
     }
+
+    /**
+     * @param DateTime $dateTime
+     * @return false|string
+     */
+    public function getDateOfBirthString($dateTime)
+    {
+        return date('d/m/Y', $dateTime->getTimestamp());
+    }
 }
