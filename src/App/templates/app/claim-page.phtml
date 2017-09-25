@@ -45,7 +45,7 @@ $this->addErrorMap([
 <?php foreach ($claim->getLogs() as $log) { ?>
     <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
     <div>
-        <h3 class="heading-small"><?= $log->getTitle() ?> - <?= $log->getCreatedDateTime()->format('d M Y \a\t H.s') ?></h3>
+        <h3 class="heading-small"><?= $log->getTitle() ?> - <?= $this->getLogTimestamp($log->getCreatedDateTime()) ?></h3>
         <p><?= $log->getMessage() ?></p>
     </div>
 <?php } ?>

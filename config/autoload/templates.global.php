@@ -16,6 +16,7 @@ return [
 
     'plates' => [
         'extensions' => [
+            App\Service\Date\DateFormatterPlatesExtension::class,
             App\Service\ErrorMapper\ErrorMapperPlatesExtension::class
         ],
     ],

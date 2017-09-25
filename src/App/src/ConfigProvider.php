@@ -48,6 +48,7 @@ class ConfigProvider
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
 
+                Service\Date\DateFormatter::class => Service\Date\DateFormatter::class,
                 Service\Claim::class => Service\Claim::class,
             ],
             'factories'  => [
@@ -68,6 +69,7 @@ class ConfigProvider
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
+                Service\Date\DateFormatterPlatesExtension::class => Service\Date\DateFormatterPlatesExtensionFactory::class,
                 Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
             ],
             'initializers' => [

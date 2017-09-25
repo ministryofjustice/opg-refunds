@@ -58,6 +58,10 @@ class Claim implements ApiClientInterface
             'message' => $message,
         ]);
 
+        if (empty($logArray)) {
+            return null;
+        }
+
         return new LogModel($logArray);
     }
 }
