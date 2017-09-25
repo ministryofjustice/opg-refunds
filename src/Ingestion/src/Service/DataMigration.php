@@ -117,7 +117,8 @@ class DataMigration
                         $applicantName = "{$applicationData['attorney']['name']['title']} {$applicationData['attorney']['name']['first']} {$applicationData['attorney']['name']['last']} (Attorney)";
                     }
 
-                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on {$claim->getReceivedDateTime()->format('d M Y \a\t H.s')}", $claim);
+                    $receivedDateString = date('d M Y \a\t H.i', $claim->getReceivedDateTime()->getTimestamp());
+                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
                     $claim->addLog($log);
 
                     $this->casesEntityManager->persist($claim);

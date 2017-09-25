@@ -2,12 +2,13 @@
 
 namespace App\Service;
 
-use App\Entity\Cases\Log;
 use Exception;
 use Ingestion\Service\DataMigration;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\User as UserEntity;
+use App\Entity\Cases\Log as LogEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -90,7 +91,8 @@ class Claim
 
     /**
      * @param int $userId
-     * @return array with one element, 'assignedClaimId' which will be the assigned claim id if one was successfully assigned to the user or zero if not
+     * @return array with one element, 'assignedClaimId'
+     * which will be the assigned claim id if one was successfully assigned to the user or zero if not
      * @throws Exception
      */
     public function assignNextClaim(int $userId)
@@ -113,7 +115,9 @@ class Claim
         $updateCount = count($result);
 
         if ($updateCount > 1) {
-            throw new Exception("Assigning next claim updated $updateCount rows! It should only update one or zero rows");
+            throw new Exception(
+                "Assigning next claim updated $updateCount rows! It should only update one or zero rows"
+            );
         }
 
         $assignedClaimId = 0;
@@ -121,18 +125,43 @@ class Claim
         if ($updateCount === 1) {
             $assignedClaimId = $result[0]['id'];
 
-            /** @var ClaimEntity $claim */
-            $claim = $this->claimRepository->findOneBy([
-                'id' => $assignedClaimId,
-            ]);
-
-            $log = new Log('Claim started by caseworker', "Caseworker '{$user->getName()}' has begun to process this claim", $claim, $user);
-            $claim->addLog($log);
-
-            //$this->casesEntityManager->persist($claim);
-            $this->entityManager->flush();
+            $this->addLog(
+                $assignedClaimId,
+                $userId,
+                'Claim started by caseworker',
+                "Caseworker '{$user->getName()}' has begun to process this claim"
+            );
         }
 
         return ['assignedClaimId' => $assignedClaimId];
+    }
+
+    /**
+     * @param $claimId
+     * @param $userId
+     * @param $title
+     * @param $message
+     * @return LogModel
+     */
+    public function addLog($claimId, $userId, $title, $message)
+    {
+        /** @var ClaimEntity $claim */
+        $claim = $this->claimRepository->findOneBy([
+            'id' => $claimId,
+        ]);
+
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+
+        $log = new LogEntity($title, $message, $claim, $user);
+        $claim->addLog($log);
+
+        $this->entityManager->flush();
+
+        /** @var LogModel $logModel */
+        $logModel = $this->translateToDataModel($log);
+        return $logModel;
     }
 }

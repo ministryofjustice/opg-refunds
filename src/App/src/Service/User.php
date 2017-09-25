@@ -64,4 +64,20 @@ class User
 
         return $this->translateToDataModel($user);
     }
+
+    /**
+     * Get a specific user
+     *
+     * @param string $token
+     * @return UserModel
+     */
+    public function getByToken(string $token)
+    {
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
+            'token' => $token,
+        ]);
+
+        return $this->translateToDataModel($user);
+    }
 }
