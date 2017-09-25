@@ -25,7 +25,7 @@ final class Versions
   'doctrine/orm' => 'v2.5.10@c78afd51721804f4f76ff30d9b6f6159eb046161',
   'fig/http-message-util' => '1.1.2@20b2c280cb6914b7b83089720df44e490f4b42f0',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-process-new-claim@d4ade011fc1610f613d11d974edbe2bec70e3f3e',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-process-new-claim@465195c20901489dc28cfd468c377f52ca7164b1',
   'nikic/fast-route' => 'v1.2.0@b5f95749071c82a8e0f58586987627054400cdf6',
   'ocramius/package-versions' => '1.1.3@72b226d2957e9e6a9ed09aeaa29cabd840d1a3b7',
   'ocramius/proxy-manager' => '2.0.4@a55d08229f4f614bf335759ed0cf63378feeb2e6',
@@ -88,7 +88,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-process-new-claim@cd7a6d731d9c76c3fb516b157fee3f22abc7f51d',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-process-new-claim@62f8869134c7e5e764308eef78983466a9467ad4',
 );
 
     private function __construct()
