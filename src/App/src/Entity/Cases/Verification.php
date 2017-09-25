@@ -39,7 +39,7 @@ class Verification extends AbstractEntity
 
     /**
      * @var Poa
-     * @ORM\OneToOne(targetEntity="Poa")
+     * @ORM\ManyToOne(targetEntity="Claim", inversedBy="verifications")
      * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
      */
     protected $poa;

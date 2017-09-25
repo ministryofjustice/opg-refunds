@@ -20,28 +20,28 @@ class Poa extends AbstractEntity
     protected $id;
 
     /**
+     * @var string
+     * @ORM\Column(type="string")
+     */
+    protected $system;
+
+    /**
+     * @var string
+     * @ORM\Column(name="case_number", type="string")
+     */
+    protected $caseNumber;
+
+    /**
      * @var DateTime
-     * @ORM\Column(name="received_datetime", type="datetimetz")
+     * @ORM\Column(name="received_datetime", type="date")
      */
     protected $receivedDateTime;
 
     /**
-     * @var float
-     * @ORM\Column(name="net_amount_paid", type="decimal")
-     */
-    protected $netAmountPaid;
-
-    /**
      * @var string
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="original_payment_amount", type="string")
      */
-    protected $status;
-
-    /**
-     * @var float
-     * @ORM\Column(name="amount_to_refund", type="decimal")
-     */
-    protected $amountToRefund;
+    protected $originalPaymentAmount;
 
     /**
      * @var Claim
@@ -51,11 +51,49 @@ class Poa extends AbstractEntity
     protected $claim;
 
     /**
+     * @var Verification[]
+     * @ORM\OneToMany(targetEntity="Verification", mappedBy="poa", cascade={"persist", "remove"})
+     */
+    protected $verifications;
+
+    /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystem(): string
+    {
+        return $this->system;
+    }
+
+    /**
+     * @param string $system
+     */
+    public function setSystem(string $system)
+    {
+        $this->system = $system;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCaseNumber(): string
+    {
+        return $this->caseNumber;
+    }
+
+    /**
+     * @param string $caseNumber
+     */
+    public function setCaseNumber(string $caseNumber)
+    {
+        $this->caseNumber = $caseNumber;
     }
 
     /**
@@ -75,51 +113,19 @@ class Poa extends AbstractEntity
     }
 
     /**
-     * @return float
-     */
-    public function getNetAmountPaid(): float
-    {
-        return $this->netAmountPaid;
-    }
-
-    /**
-     * @param float $netAmountPaid
-     */
-    public function setNetAmountPaid(float $netAmountPaid)
-    {
-        $this->netAmountPaid = $netAmountPaid;
-    }
-
-    /**
      * @return string
      */
-    public function getStatus(): string
+    public function getOriginalPaymentAmount(): string
     {
-        return $this->status;
+        return $this->originalPaymentAmount;
     }
 
     /**
-     * @param string $status
+     * @param string $originalPaymentAmount
      */
-    public function setStatus(string $status)
+    public function setOriginalPaymentAmount(string $originalPaymentAmount)
     {
-        $this->status = $status;
-    }
-
-    /**
-     * @return float
-     */
-    public function getAmountToRefund(): float
-    {
-        return $this->amountToRefund;
-    }
-
-    /**
-     * @param float $amountToRefund
-     */
-    public function setAmountToRefund(float $amountToRefund)
-    {
-        $this->amountToRefund = $amountToRefund;
+        $this->originalPaymentAmount = $originalPaymentAmount;
     }
 
     /**
