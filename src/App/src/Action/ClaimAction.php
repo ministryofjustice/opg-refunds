@@ -4,9 +4,8 @@ namespace App\Action;
 
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use App\Form\Log;
-use App\Service\ClaimService;
+use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 

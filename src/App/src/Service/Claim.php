@@ -5,9 +5,9 @@ namespace App\Service;
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 
-class ClaimService implements ApiClientInterface
+class Claim implements ApiClientInterface
 {
     use ApiClientTrait;
 
@@ -28,13 +28,13 @@ class ClaimService implements ApiClientInterface
     /**
      * @param int $claimId
      * @param int $userId
-     * @return Claim
+     * @return ClaimModel
      * @throws Exception
      */
     public function getClaim(int $claimId, int $userId)
     {
         $claimArray = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
-        $claim = new Claim($claimArray);
+        $claim = new ClaimModel($claimArray);
 
         if ($claim->getAssignedToId() !== $userId) {
             //User is not assigned to chosen claim

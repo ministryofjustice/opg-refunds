@@ -2,9 +2,8 @@
 
 namespace App\Action;
 
-use App\Service\ClaimService;
+use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
