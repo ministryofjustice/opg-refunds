@@ -74,6 +74,11 @@ class Claim extends AbstractDataModel
     protected $donorName;
 
     /**
+     * @var Poa[]
+     */
+    protected $poas;
+
+    /**
      * @var bool
      */
     protected $noSiriusPoas;
@@ -301,6 +306,24 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return Poa[]
+     */
+    public function getPoas(): array
+    {
+        return $this->poas;
+    }
+
+    /**
+     * @param Poa[] $poas
+     * @return Claim
+     */
+    public function setPoas(array $poas): Claim
+    {
+        $this->poas = $poas;
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isNoSiriusPoas(): bool
@@ -407,6 +430,10 @@ class Claim extends AbstractDataModel
         switch ($property) {
             case 'application':
                 return (($value instanceof Application || is_null($value)) ? $value : new Application($value));
+            case 'poas':
+                return array_map(function ($value) {
+                    return ($value instanceof Poa ? $value : new Poa($value));
+                }, $value);
             case 'payment':
                 return (($value instanceof Payment || is_null($value)) ? $value : new Payment($value));
             case 'logs':
