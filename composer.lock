@@ -513,12 +513,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce"
+                "reference": "d4ade011fc1610f613d11d974edbe2bec70e3f3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce",
-                "reference": "1aca1cbbee00cd5e590ddd1e7cecdd3e923bc5ce",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/d4ade011fc1610f613d11d974edbe2bec70e3f3e",
+                "reference": "d4ade011fc1610f613d11d974edbe2bec70e3f3e",
                 "shasum": ""
             },
             "require": {
@@ -541,7 +541,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/process-new-claim",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-09-22T12:04:13+00:00"
+            "time": "2017-09-25T09:58:43+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

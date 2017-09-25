@@ -56,8 +56,17 @@ class DateFormatter
      * @param DateTime $dateTime
      * @return false|string
      */
-    public function getLogTimestamp($dateTime)
+    public function getLogDateString($dateTime)
     {
-        return date('d M Y \a\t H.i', $dateTime->getTimestamp());
+        return date('d M Y', $dateTime->getTimestamp());
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * @return false|string
+     */
+    public function getLogTimeString($dateTime)
+    {
+        return date('H.i', $dateTime->getTimestamp());
     }
 }

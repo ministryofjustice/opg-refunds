@@ -60,10 +60,17 @@ class DateFormatterTest extends TestCase
         $this->assertEquals('2 days ago', $formatted);
     }
 
-    public function testGetLogTimestamp()
+    public function testGetLogDateString()
     {
-        $formatted = $this->dateFormatter->getLogTimestamp(new DateTime('2017-09-25T09:19:37.000000+0000'));
+        $formatted = $this->dateFormatter->getLogDateString(new DateTime('2017-09-25T09:19:37.000000+0000'));
 
-        $this->assertEquals('25 Sep 2017 at 09.19', $formatted);
+        $this->assertEquals('25 Sep 2017', $formatted);
+    }
+
+    public function testGetLogTimeString()
+    {
+        $formatted = $this->dateFormatter->getLogTimeString(new DateTime('2017-09-25T09:19:37.000000+0000'));
+
+        $this->assertEquals('09.19', $formatted);
     }
 }

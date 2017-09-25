@@ -33,6 +33,11 @@ class Log extends AbstractDataModel
     protected $userId;
 
     /**
+     * @var string
+     */
+    protected $userName;
+
+    /**
      * @var int
      */
     protected $poaId;
@@ -117,6 +122,22 @@ class Log extends AbstractDataModel
     public function setUserId(int $userId)
     {
         $this->userId = $userId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserName()
+    {
+        return $this->userName;
+    }
+
+    /**
+     * @param string $userName
+     */
+    public function setUserName(string $userName)
+    {
+        $this->userName = $userName;
     }
 
     /**
