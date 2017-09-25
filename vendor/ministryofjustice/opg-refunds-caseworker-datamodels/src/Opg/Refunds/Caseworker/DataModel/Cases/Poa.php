@@ -29,7 +29,7 @@ class Poa extends AbstractDataModel
     /**
      * @var DateTime
      */
-    protected $receivedDateTime;
+    protected $receivedDate;
 
     /**
      * @var string
@@ -98,18 +98,18 @@ class Poa extends AbstractDataModel
     /**
      * @return DateTime
      */
-    public function getReceivedDateTime(): DateTime
+    public function getReceivedDate(): DateTime
     {
-        return $this->receivedDateTime;
+        return $this->receivedDate;
     }
 
     /**
-     * @param DateTime $receivedDateTime
+     * @param DateTime $receivedDate
      * @return Poa
      */
-    public function setReceivedDateTime(DateTime $receivedDateTime): Poa
+    public function setReceivedDate(DateTime $receivedDate): Poa
     {
-        $this->receivedDateTime = $receivedDateTime;
+        $this->receivedDate = $receivedDate;
         return $this;
     }
 
@@ -159,7 +159,7 @@ class Poa extends AbstractDataModel
     protected function map($property, $value)
     {
         switch ($property) {
-            case 'receivedDateTime':
+            case 'receivedDate':
                 return (($value instanceof DateTime || is_null($value)) ? $value : new DateTime($value));
             case 'verifications':
                 return array_map(function ($value) {

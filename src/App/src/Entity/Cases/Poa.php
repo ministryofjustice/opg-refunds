@@ -33,9 +33,9 @@ class Poa extends AbstractEntity
 
     /**
      * @var DateTime
-     * @ORM\Column(name="received_datetime", type="date")
+     * @ORM\Column(name="received_date", type="date")
      */
-    protected $receivedDateTime;
+    protected $receivedDate;
 
     /**
      * @var string
@@ -99,17 +99,17 @@ class Poa extends AbstractEntity
     /**
      * @return DateTime
      */
-    public function getReceivedDateTime(): DateTime
+    public function getReceivedDate(): DateTime
     {
-        return $this->receivedDateTime;
+        return $this->receivedDate;
     }
 
     /**
-     * @param DateTime $receivedDateTime
+     * @param DateTime $receivedDate
      */
-    public function setReceivedDateTime(DateTime $receivedDateTime)
+    public function setReceivedDate(DateTime $receivedDate)
     {
-        $this->receivedDateTime = $receivedDateTime;
+        $this->receivedDate = $receivedDate;
     }
 
     /**
