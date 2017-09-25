@@ -8,6 +8,15 @@ Optional: formType (default: text)
 Optional: formSizeClass
 */
 
+/**
+ * @var \Zend\Form\ElementInterface $formElement
+ * @var string $formLabel
+ * @var string $formHint
+ * @var bool $formLabelBold
+ * @var string $formType
+ * @var string $formSizeClass
+ */
+
 $formId = "id-{$formElement->getName()}";
 $formName = $formElement->getName();
 
@@ -47,5 +56,10 @@ $formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormCont
         <?php endif ?>
 
     </label>
-    <input class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?= (strtolower($formType) == 'password' ? '' : $this->e( $formElement->getValue() )) ?>">
+
+    <?php if ($formType === 'textarea') { ?>
+        <textarea class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>"><?= $this->e( $formElement->getValue() ) ?></textarea>
+    <?php } else { ?>
+        <input class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" type="<?= $this->e($formType) ?>" id="<?= $formId ?>" value="<?= (strtolower($formType) == 'password' ? '' : $this->e( $formElement->getValue() )) ?>">
+    <?php } ?>
 </div>

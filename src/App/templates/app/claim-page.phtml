@@ -1,9 +1,34 @@
 <?php $this->layout('layout::default', ['title' => 'Claim']) ?>
-<?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
+<?php
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\AbstractForm $form
+ */ ?>
 
 <h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
 
 <h2 class="heading-medium">User log</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <fieldset>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('message'),
+            'formLabel' => 'Add a user log',
+            'formType' => 'textarea',
+            'formLabelBold' => false
+        ]) ?>
+
+    </fieldset>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Submit log" />
+    </div>
+
+</form>
 
 <?php foreach ($claim->getLogs() as $log) { ?>
     <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>

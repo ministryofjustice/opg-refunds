@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Form\Log;
 use App\Service\ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -44,8 +45,14 @@ class ClaimAction extends AbstractAction
 
         $claim = $this->claimService->getClaim($claimId, $userId);
 
+        $session = $request->getAttribute('session');
+        $form = new Log([
+            'csrf' => $session['meta']['csrf']
+        ]);
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-page', [
-            'claim'  => $claim
+            'claim' => $claim,
+            'form'  => $form
         ]));
     }
 }
