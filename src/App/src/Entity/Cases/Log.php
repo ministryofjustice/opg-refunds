@@ -199,6 +199,9 @@ class Log extends AbstractEntity
             'UserId' => function () {
                 return ($this->getUser() instanceof User ? $this->getUser()->getId() : null);
             },
+            'UserName' => function () {
+                return ($this->getUser() instanceof User ? $this->getUser()->getName() : null);
+            },
             'PoaId' => function () {
                 return ($this->getPoa() instanceof Poa ? $this->getPoa()->getId() : null);
             },
