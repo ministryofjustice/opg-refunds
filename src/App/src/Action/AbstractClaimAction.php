@@ -30,7 +30,8 @@ abstract class AbstractClaimAction extends AbstractModelAction
     public function getClaim(ServerRequestInterface $request): ClaimModel
     {
         //Retrieve claim to verify it exists and the user has access to it
-        $claim = $this->claimService->getClaim($this->modelId, $request->getAttribute('identity')->getId());
+        $claimId = $request->getAttribute('claimId') ?: $this->modelId;
+        $claim = $this->claimService->getClaim($claimId, $request->getAttribute('identity')->getId());
         return $claim;
     }
 

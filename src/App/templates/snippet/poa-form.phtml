@@ -1,0 +1,60 @@
+<?php
+/*
+Without error
+Mandatory: form
+Mandatory: claim
+*/
+
+/**
+ * @var \App\Form\Poa $form
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <div>
+        <h3 class="heading-small">Add power of attorney details</h3>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('caseNumber'),
+            'formLabel' => 'Case number',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+        <h3 class="heading-small">Received date - TBC?</h3>
+
+        <?php $this->insert('snippet::input-received-date', [
+            'formLabel' => 'Received date',
+            'formElement' => $form->get('receivedDate'),
+        ]) ?>
+    </div>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('originalPaymentAmount'),
+        'question' => 'Original payment amount',
+        'options' => [
+            'orMore' => [
+                'optionLabel' => '£110 or more'
+            ],
+            'lessThan' => [
+                'optionLabel' => 'Less than £110'
+            ],
+            'noRefund' => [
+                'optionLabel' => 'No refund amount'
+            ],
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Save and return to claim" />
+        <input type="submit" class="button" value="Save and add another" />
+    </div>
+
+    <a href="/claim/<?= $claim->getId() ?>">Cancel</a>
+
+</form>

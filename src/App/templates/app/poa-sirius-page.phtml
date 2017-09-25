@@ -27,15 +27,7 @@ $this->addErrorMap([
 
 <h2 class="heading-medium">Sirius power of attorney details</h2>
 
-<form method="post" class="form">
-
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
-
-    <div class="form-group">
-        <input type="submit" class="button" value="Save and return to claim" />
-        <input type="submit" class="button" value="Save and add another" />
-    </div>
-
-    <a href="/claim/<?= $claim->getId() ?>">Cancel</a>
-
-</form>
+<?php $this->insert('snippet::poa-form', [
+    'form'  => $form,
+    'claim' => $claim
+]) ?>

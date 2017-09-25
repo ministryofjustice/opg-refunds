@@ -1,0 +1,58 @@
+<?php
+
+$elementId = "id-{$formElement->getName()}";
+
+$hasErrors = !empty($formElement->getMessages());
+
+$value = $formElement->getValue();
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+
+    <fieldset>
+
+        <legend class="form-label"><?= $this->e($question) ?></legend>
+
+        <?php foreach($formElement->getMessages() as $message): ?>
+            <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
+        <?php endforeach ?>
+
+        <?php foreach($options as $name => $option): ?>
+
+            <div class="multiple-choice" <?php if (isset($option['dataTargetMarkup'])): ?>data-target="<?= "{$elementId}-{$name}-info" ?>"<?php endif ?>>
+
+                <input
+                    id="<?= "{$elementId}-{$name}" ?>"
+                    type="radio"
+                    name="<?= $this->e($formElement->getName()) ?>"
+                    value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
+                    <?= ($value == $formElement->getValueOptions()[$name])?' checked':'' ?>
+                >
+
+                <label class="form-label" for="<?= "{$elementId}-{$name}" ?>">
+
+                    <?php if (isset($option['optionLabelSuffix']) && $option['optionLabelSuffix']): ?><span class="bold-small"><?php endif ?>
+                        <?= $option['optionLabel'] ?>
+                    <?php if (isset($option['optionLabelSuffix']) && $option['optionLabelSuffix']): ?></span><?php endif ?>
+
+                    <?php if (isset($option['optionLabelSuffix'])): ?>
+                        <br>
+                        <?= $option['optionLabelSuffix'] ?>
+                    <?php endif ?>
+
+                </label>
+
+            </div>
+
+            <?php if (isset($option['dataTargetMarkup']) && $option['dataTargetMarkup']): ?>
+                <div class="panel panel-border-narrow js-hidden" id="<?= "{$elementId}-{$name}-info" ?>">
+                    <?= $option['dataTargetMarkup'] ?>
+                </div>
+            <?php endif ?>
+
+        <?php endforeach ?>
+
+    </fieldset>
+
+</div>

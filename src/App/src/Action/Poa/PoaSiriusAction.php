@@ -5,25 +5,16 @@ namespace App\Action\Poa;
 use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\PoaSirius;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use App\Service\Claim as ClaimService;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
 
-class PoaSiriusAction extends AbstractClaimAction
+class PoaSiriusAction extends AbstractPoaAction
 {
-    /**
-     * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return HtmlResponse
-     */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function __construct(ClaimService $claimService)
     {
-        $form = $this->getForm($request);
+        $this->templateName = 'app::poa-sirius-page';
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-sirius-page', [
-            'form'  => $form,
-            'claim' => $this->getClaim($request)
-        ]));
+        parent::__construct($claimService);
     }
 
     /**

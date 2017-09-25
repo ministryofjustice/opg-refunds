@@ -25,8 +25,8 @@ class Poa extends AbstractForm
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
-        //  Message field
-        $field = new Element\Textarea('message');
+        //  Case number field
+        $field = new Element\Textarea('caseNumber');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -36,6 +36,27 @@ class Poa extends AbstractForm
             ->attach(new Validator\NotEmpty());
 
         $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Received Date
+        $receivedDate = new Fieldset\ReceivedDate();
+
+        $this->add($receivedDate);
+        $inputFilter->add($receivedDate->getInputFilter(), 'receivedDate');
+
+        //  Original payment amount
+        $field = new Element\Radio('originalPaymentAmount');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $field->setValueOptions([
+            'orMore' => 'orMore',
+            'lessThan' => 'lessThan',
+            'noRefund' => 'noRefund',
+        ]);
 
         $this->add($field);
         $inputFilter->add($input);
