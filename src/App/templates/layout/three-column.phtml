@@ -2,6 +2,8 @@
     'title' => ($title) ?? null
 ]) ?>
 
+<h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
+
 <div class="grid-row">
     <div class="column-third" style="width: 25%">
         <?=$this->section('left-sidebar')?>

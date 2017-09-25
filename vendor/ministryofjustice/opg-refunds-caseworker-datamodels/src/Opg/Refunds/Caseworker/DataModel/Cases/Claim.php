@@ -74,6 +74,16 @@ class Claim extends AbstractDataModel
     protected $donorName;
 
     /**
+     * @var bool
+     */
+    protected $noSiriusPoas;
+
+    /**
+     * @var bool
+     */
+    protected $noMerisPoas;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -286,6 +296,44 @@ class Claim extends AbstractDataModel
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoSiriusPoas(): bool
+    {
+        return $this->noSiriusPoas;
+    }
+
+    /**
+     * @param bool $noSiriusPoas
+     * @return Claim
+     */
+    public function setNoSiriusPoas(bool $noSiriusPoas): Claim
+    {
+        $this->noSiriusPoas = $noSiriusPoas;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoMerisPoas(): bool
+    {
+        return $this->noMerisPoas;
+    }
+
+    /**
+     * @param bool $noMerisPoas
+     * @return Claim
+     */
+    public function setNoMerisPoas(bool $noMerisPoas): Claim
+    {
+        $this->noMerisPoas = $noMerisPoas;
 
         return $this;
     }

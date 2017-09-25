@@ -1,4 +1,4 @@
-<?php $this->layout('layout::three-column', ['title' => 'Claim']);
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
@@ -93,8 +93,6 @@ $contact = $application->getContact();
 
 <?php $this->stop() ?>
 
-
-
 <?php $this->start('right-sidebar');
 
 $payment = $claim->getPayment();
@@ -119,9 +117,29 @@ $payment = $claim->getPayment();
 
 <?php $this->stop() ?>
 
-<h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
-
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<div>
+    <h2 class="heading-medium">Sirius power of attorneys</h2>
+
+    <?php if ($claim->isNoSiriusPoas()) { ?>
+        <a class="button" href="">Cancel and return to add Sirius POA</a>
+    <?php } else { ?>
+        <a class="button" href="">Add Sirius POA</a>
+        <a class="button" href="">No Sirius POAs found</a>
+    <?php } ?>
+</div>
+
+<div>
+    <h2 class="heading-medium">Meris power of attorneys</h2>
+
+    <?php if ($claim->isNoMerisPoas()) { ?>
+        <a class="button" href="">Cancel and return to add Meris POA</a>
+    <?php } else { ?>
+        <a class="button" href="">Add Meris POA</a>
+        <a class="button" href="">No Meris POAs found</a>
+    <?php } ?>
+</div>
 
 <h2 class="heading-medium">User log</h2>
 
@@ -157,5 +175,3 @@ $payment = $claim->getPayment();
         <?php } ?>
     </div>
 <?php } ?>
-
-<p><a href="/">Back to home page</a></p>
