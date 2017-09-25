@@ -3,15 +3,18 @@
 ]) ?>
 
 <div class="grid-row">
-    <div class="column-third">
-        <?=$this->section('sidebar')?>
+    <div class="column-third" style="width: 25%">
+        <?=$this->section('left-sidebar')?>
     </div>
 
-    <div class="column-two-thirds">
+    <div class="column-two-thirds" style="width: 50%">
         <?php if (isset($infoMessage)) { ?>
             <?= $infoMessage ?>
         <?php } ?>
 
         <?=$this->section('content')?>
+    </div>
+    <div class="column-third" style="width: 25%">
+        <?=$this->section('right-sidebar')?>
     </div>
 </div>

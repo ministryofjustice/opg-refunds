@@ -1,4 +1,4 @@
-<?php $this->layout('layout::standard', ['title' => 'Claim']);
+<?php $this->layout('layout::three-column', ['title' => 'Claim']);
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
@@ -21,7 +21,7 @@ $application = $claim->getApplication();
 $donor = $application->getDonor();
 $attorney = $application->getAttorney();
 $postcodes = $application->getPostcodes();
-$contact = $application->getContact()
+$contact = $application->getContact();
 ?>
 
 <h2 class="heading-medium">Donor details</h2>
@@ -90,6 +90,32 @@ $contact = $application->getContact()
     <h3 class="heading-small">Telephone:</h3>
     <p><?= $contact->getPhone() ?></p>
 <?php } ?>
+
+<?php $this->stop() ?>
+
+
+
+<?php $this->start('right-sidebar');
+
+$payment = $claim->getPayment();
+?>
+
+<h2 class="heading-medium">Payment details</h2>
+
+<h3 class="heading-small">Refund made via:</h3>
+<p>Bank transfer</p>
+
+<h3 class="heading-small">Total refund amount:</h3>
+<p>£0.00</p>
+
+<h3 class="heading-small">
+    <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+        <i class="icon icon-important">
+            <span class="visually-hidden">Warning</span>
+        </i>
+    <?php } ?>
+    <?= $this->getPaymentDetailsUsedText($claim->getAccountHashCount()) ?>
+</h3>
 
 <?php $this->stop() ?>
 

@@ -22,5 +22,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     {
         $engine->registerFunction('getFormattedName', [$this->formatter, 'getFormattedName']);
         $engine->registerFunction('getApplicantName', [$this->formatter, 'getApplicantName']);
+        $engine->registerFunction('getPaymentDetailsUsedText', [$this->formatter, 'getPaymentDetailsUsedText']);
+        $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this->formatter, 'shouldShowPaymentDetailsUsedCountWarning']);
     }
 }

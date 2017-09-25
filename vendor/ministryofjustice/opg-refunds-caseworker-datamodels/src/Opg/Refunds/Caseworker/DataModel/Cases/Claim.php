@@ -84,6 +84,11 @@ class Claim extends AbstractDataModel
     protected $logs;
 
     /**
+     * @var int
+     */
+    protected $accountHashCount;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -320,6 +325,25 @@ class Claim extends AbstractDataModel
     {
         $this->logs = $logs;
         
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountHashCount()
+    {
+        return $this->accountHashCount;
+    }
+
+    /**
+     * @param int $accountHashCount
+     * @return Claim
+     */
+    public function setAccountHashCount(int $accountHashCount): Claim
+    {
+        $this->accountHashCount = $accountHashCount;
+
         return $this;
     }
 
