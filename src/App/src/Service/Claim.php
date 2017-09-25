@@ -6,9 +6,12 @@ use Exception;
 use Ingestion\Service\DataMigration;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\User as UserEntity;
 use App\Entity\Cases\Log as LogEntity;
+use App\Entity\Cases\Poa as PoaEntity;
+use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -186,13 +189,13 @@ class Claim
     }
 
     /**
-     * @param $claimId
-     * @param $userId
-     * @param $title
-     * @param $message
+     * @param int $claimId
+     * @param int $userId
+     * @param string $title
+     * @param string $message
      * @return LogModel
      */
-    public function addLog($claimId, $userId, $title, $message)
+    public function addLog(int $claimId, int $userId, string $title, string $message)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -209,6 +212,30 @@ class Claim
         /** @var LogModel $logModel */
         $logModel = $this->translateToDataModel($log);
         return $logModel;
+    }
+
+    public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
+        $this->entityManager->persist($poa);
+
+        foreach ($poaModel->getVerifications() as $verificationModel) {
+            $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+            $poa->addVerification($verification);
+            $this->entityManager->persist($verification);
+        }
+
+        $claim->addPoa($poa);
+
+        $this->entityManager->flush();
+
+        $claim = $this->getClaimEntity($claimId);
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
     }
 
     /**

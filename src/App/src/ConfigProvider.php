@@ -46,6 +46,7 @@ class ConfigProvider
                 //  Actions
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
                 Action\ClaimLogAction::class => Action\ClaimLogActionFactory::class,
+                Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,

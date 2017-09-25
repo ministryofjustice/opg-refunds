@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Poa extends AbstractEntity
 {
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = PoaModel::class;
+
     /**
      * @var int
      * @ORM\Id
@@ -45,7 +53,7 @@ class Poa extends AbstractEntity
 
     /**
      * @var Claim
-     * @ORM\ManyToOne(targetEntity="Claim", inversedBy="poas")
+     * @ORM\ManyToOne(targetEntity="Claim")
      * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
     protected $claim;
@@ -55,6 +63,15 @@ class Poa extends AbstractEntity
      * @ORM\OneToMany(targetEntity="Verification", mappedBy="poa", cascade={"persist", "remove"})
      */
     protected $verifications;
+
+    public function __construct(string $system, string $caseNumber, DateTime $receivedDate, string $originalPaymentAmount, Claim $claim)
+    {
+        $this->system = $system;
+        $this->caseNumber = $caseNumber;
+        $this->receivedDate = $receivedDate;
+        $this->originalPaymentAmount = $originalPaymentAmount;
+        $this->claim = $claim;
+    }
 
     /**
      * @return int
@@ -142,5 +159,29 @@ class Poa extends AbstractEntity
     public function setClaim(Claim $claim)
     {
         $this->claim = $claim;
+    }
+
+    /**
+     * @return Verification[]
+     */
+    public function getVerifications()
+    {
+        return $this->verifications;
+    }
+
+    /**
+     * @param Verification[] $verifications
+     */
+    public function setVerifications(array $verifications)
+    {
+        $this->verifications = $verifications;
+    }
+
+    /**
+     * @param Verification $verification
+     */
+    public function addVerification(Verification $verification)
+    {
+        $this->verifications[] = $verification;
     }
 }

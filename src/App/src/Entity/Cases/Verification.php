@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -10,6 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Verification extends AbstractEntity
 {
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = VerificationModel::class;
+
     /**
      * @var int
      * @ORM\Id
@@ -31,18 +39,18 @@ class Verification extends AbstractEntity
     protected $passes;
 
     /**
-     * @var Claim
-     * @ORM\OneToOne(targetEntity="Claim", inversedBy="verification")
-     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
-     */
-    protected $claim;
-
-    /**
      * @var Poa
-     * @ORM\ManyToOne(targetEntity="Claim", inversedBy="verifications")
+     * @ORM\ManyToOne(targetEntity="Poa", inversedBy="verifications")
      * @ORM\JoinColumn(name="poa_id", referencedColumnName="id")
      */
     protected $poa;
+
+    public function __construct(string $type, bool $passes, Poa $poa)
+    {
+        $this->type = $type;
+        $this->passes = $passes;
+        $this->poa = $poa;
+    }
 
     /**
      * @return int
@@ -90,22 +98,6 @@ class Verification extends AbstractEntity
     public function setPasses(bool $passes)
     {
         $this->passes = $passes;
-    }
-
-    /**
-     * @return Claim
-     */
-    public function getClaim(): Claim
-    {
-        return $this->claim;
-    }
-
-    /**
-     * @param Claim $claim
-     */
-    public function setClaim(Claim $claim)
-    {
-        $this->claim = $claim;
     }
 
     /**

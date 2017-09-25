@@ -108,12 +108,6 @@ class Claim extends AbstractEntity
     protected $noMerisPoas;
 
     /**
-     * @var Verification
-     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim", cascade={"persist", "remove"})
-     */
-    protected $verification;
-
-    /**
      * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
      */
@@ -338,6 +332,14 @@ class Claim extends AbstractEntity
     }
 
     /**
+     * @param Poa $poa
+     */
+    public function addPoa(Poa $poa)
+    {
+        $this->poas[] = $poa;
+    }
+
+    /**
      * @return bool
      */
     public function isNoSiriusPoas(): bool
@@ -367,22 +369,6 @@ class Claim extends AbstractEntity
     public function setNoMerisPoas(bool $noMerisPoas)
     {
         $this->noMerisPoas = $noMerisPoas;
-    }
-
-    /**
-     * @return Verification
-     */
-    public function getVerification()
-    {
-        return $this->verification;
-    }
-
-    /**
-     * @param Verification $verification
-     */
-    public function setVerification(Verification $verification)
-    {
-        $this->verification = $verification;
     }
 
     /**
