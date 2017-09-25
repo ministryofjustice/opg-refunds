@@ -27,7 +27,6 @@ class PoaSiriusAction extends AbstractPoaAction
         $session = $request->getAttribute('session');
         $form = new PoaSirius([
             'claim'  => $claim,
-            'source' => 'sirius',
             'csrf'   => $session['meta']['csrf'],
         ]);
         return $form;

@@ -18,7 +18,7 @@ class Poa extends AbstractForm
     /**
      * @var string
      */
-    protected $source;
+    protected $system;
 
     /**
      * Poa constructor.
@@ -27,8 +27,6 @@ class Poa extends AbstractForm
     public function __construct(array $options = [])
     {
         parent::__construct(self::class, $options);
-
-        $this->source = $options['source'];
 
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
@@ -133,6 +131,8 @@ class Poa extends AbstractForm
     public function getModelData()
     {
         $formData = $this->getData();
+
+        $formData['system'] = $this->system;
 
         //  If it exists transfer the received date array into a string
         if (array_key_exists('receivedDate', $formData)) {

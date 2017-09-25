@@ -27,7 +27,6 @@ class PoaMerisAction extends AbstractPoaAction
         $session = $request->getAttribute('session');
         $form = new PoaMeris([
             'claim'  => $claim,
-            'source' => 'meris',
             'csrf'   => $session['meta']['csrf'],
         ]);
         return $form;
