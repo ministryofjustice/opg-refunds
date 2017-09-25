@@ -1,11 +1,23 @@
-<?php $this->layout('layout::default', ['title' => 'Claim']) ?>
-<?php
+<?php $this->layout('layout::default', ['title' => 'Claim']);
+
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  * @var \App\Form\AbstractForm $form
- */ ?>
+ */
+
+$this->addErrorMap([
+    'message' => [
+        'required' => [
+            'summary'   => 'Please enter a user log message',
+            'field'     => 'Enter a user log message'
+        ]
+    ]
+]);
+?>
 
 <h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <h2 class="heading-medium">User log</h2>
 

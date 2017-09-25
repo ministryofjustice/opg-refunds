@@ -65,6 +65,10 @@ class ConfigProvider
                 Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
                 AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
+
+                // View Helper
+                Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

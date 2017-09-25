@@ -51,7 +51,7 @@ $formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormCont
 
         <?php if (!$hasParentErrors): ?>
             <?php foreach($formElement->getMessages() as $message): ?>
-                <span class="error-message"><?= $this->e($message) ?></span>
+                <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
             <?php endforeach ?>
         <?php endif ?>
 
