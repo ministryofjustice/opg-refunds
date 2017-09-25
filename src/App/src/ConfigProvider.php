@@ -58,8 +58,10 @@ class ConfigProvider
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\ProcessNewClaimAction::class => Action\ProcessNewClaimActionFactory::class,
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\Poa\PoaSiriusAction::class => Action\Poa\PoaSiriusActionFactory::class,
                 Action\Poa\PoaSiriusNoneFoundAction::class => Action\Poa\PoaSiriusNoneFoundActionFactory::class,
                 Action\Poa\PoaSiriusCancelNoneFoundAction::class => Action\Poa\PoaSiriusCancelNoneFoundActionFactory::class,
+                Action\Poa\PoaMerisAction::class => Action\Poa\PoaMerisActionFactory::class,
                 Action\Poa\PoaMerisNoneFoundAction::class => Action\Poa\PoaMerisNoneFoundActionFactory::class,
                 Action\Poa\PoaMerisCancelNoneFoundAction::class => Action\Poa\PoaMerisCancelNoneFoundActionFactory::class,
 

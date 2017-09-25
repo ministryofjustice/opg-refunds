@@ -1,0 +1,23 @@
+<?php
+/*
+Without error
+Mandatory: donor
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\Donor $donor
+ */
+?>
+
+<h2 class="heading-medium">Donor details</h2>
+
+<h3 class="heading-small">Name:</h3>
+<p><?= $this->getFormattedName($donor->getName()) ?></p>
+
+<h3 class="heading-small">Date of birth:</h3>
+<p><?= $this->getDateOfBirthString($donor->getDob()) ?></p>
+
+<?php if ($donor->getPoaName() !== null) { ?>
+    <h3 class="heading-small">Name on power attorney documents:</h3>
+    <p><?= $this->getFormattedName($donor->getPoaName()) ?></p>
+<?php } ?>

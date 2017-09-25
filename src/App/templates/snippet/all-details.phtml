@@ -1,0 +1,21 @@
+<?php
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<?php $this->insert('snippet::donor-details', ['donor' => $claim->getApplication()->getDonor()]) ?>
+
+<?php $this->insert('snippet::attorney-details', ['attorney' => $claim->getApplication()->getAttorney()]) ?>
+
+<?php $this->insert('snippet::verification-details', [
+    'caseNumber' => $claim->getApplication()->getCaseNumber(),
+    'postcodes'  => $claim->getApplication()->getPostcodes()
+]) ?>
+
+<?php $this->insert('snippet::contact-details', ['application' => $claim->getApplication()]) ?>

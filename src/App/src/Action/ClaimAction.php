@@ -2,9 +2,8 @@
 
 namespace App\Action;
 
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use App\Form\AbstractForm;
 use App\Form\Log;
-use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -14,22 +13,8 @@ use Zend\Diactoros\Response\HtmlResponse;
  * Class ClaimAction
  * @package App\Action
  */
-class ClaimAction extends AbstractModelAction
+class ClaimAction extends AbstractClaimAction
 {
-    /**
-     * @var ClaimService
-     */
-    private $claimService;
-
-    /**
-     * ClaimAction constructor.
-     * @param ClaimService $claimService
-     */
-    public function __construct(ClaimService $claimService)
-    {
-        $this->claimService = $claimService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -79,20 +64,9 @@ class ClaimAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return \Opg\Refunds\Caseworker\DataModel\Cases\Claim
+     * @return AbstractForm
      */
-    public function getClaim(ServerRequestInterface $request): ClaimModel
-    {
-        //Retrieve claim to verify it exists and the user has access to it
-        $claim = $this->claimService->getClaim($this->modelId, $request->getAttribute('identity')->getId());
-        return $claim;
-    }
-
-    /**
-     * @param ServerRequestInterface $request
-     * @return Log
-     */
-    public function getForm(ServerRequestInterface $request): Log
+    public function getForm(ServerRequestInterface $request): AbstractForm
     {
         $session = $request->getAttribute('session');
         $form = new Log([

@@ -1,0 +1,25 @@
+<?php
+/*
+Without error
+Mandatory: application
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\Application $application
+ */
+?>
+
+<h2 class="heading-medium">Contact details</h2>
+
+<h3 class="heading-small">Applicant:</h3>
+<p><?= $this->getApplicantName($application) ?></p>
+
+<?php if ($application->getContact()->getEmail() !== null) { ?>
+    <h3 class="heading-small">Email:</h3>
+    <p><?= $application->getContact()->getEmail() ?></p>
+<?php } ?>
+
+<?php if ($application->getContact()->getPhone() !== null) { ?>
+    <h3 class="heading-small">Telephone:</h3>
+    <p><?= $application->getContact()->getPhone() ?></p>
+<?php } ?>

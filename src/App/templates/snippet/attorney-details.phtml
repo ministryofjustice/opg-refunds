@@ -1,0 +1,23 @@
+<?php
+/*
+Without error
+Mandatory: attorney
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\Attorney $attorney
+ */
+?>
+
+<h2 class="heading-medium">Attorney details</h2>
+
+<h3 class="heading-small">Name:</h3>
+<p><?= $this->getFormattedName($attorney->getName()) ?></p>
+
+<h3 class="heading-small">Date of birth:</h3>
+<p><?= $this->getDateOfBirthString($attorney->getDob()) ?></p>
+
+<?php if ($attorney->getPoaName() !== null) { ?>
+    <h3 class="heading-small">Name on power attorney documents:</h3>
+    <p><?= $this->getFormattedName($attorney->getPoaName()) ?></p>
+<?php } ?>

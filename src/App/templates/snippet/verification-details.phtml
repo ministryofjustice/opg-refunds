@@ -1,0 +1,38 @@
+<?php
+/*
+Without error
+Mandatory: caseNumber
+Mandatory: postcodes
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\CaseNumber $caseNumber
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\Postcodes $postcodes
+ */
+?>
+
+<h2 class="heading-medium">Verification details</h2>
+
+<h3 class="heading-small">
+    <i class="icon icon-important">
+        <span class="visually-hidden">Warning</span>
+    </i>
+    Claim unverified
+</h3>
+
+<h3 class="heading-small">Attorney details</h3>
+
+<?php if ($caseNumber->getPoaCaseNumber() !== null) { ?>
+    <h3 class="heading-small">Case number:</h3>
+    <p><?= $caseNumber->getPoaCaseNumber() ?></p>
+<?php } ?>
+
+<?php if ($postcodes->getDonorPostcode() !== null) { ?>
+    <h3 class="heading-small">Donor postcode:</h3>
+    <p><?= $postcodes->getDonorPostcode() ?></p>
+<?php } ?>
+
+<?php if ($postcodes->getAttorneyPostcode() !== null) { ?>
+    <h3 class="heading-small">Attorney postcode:</h3>
+    <p><?= $postcodes->getAttorneyPostcode() ?></p>
+<?php } ?>
