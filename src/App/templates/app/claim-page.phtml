@@ -123,10 +123,10 @@ $payment = $claim->getPayment();
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
     <?php if ($claim->isNoSiriusPoas()) { ?>
-        <a class="button" href="">Cancel and return to add Sirius POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
     <?php } else { ?>
-        <a class="button" href="">Add Sirius POA</a>
-        <a class="button" href="">No Sirius POAs found</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/add">Add Sirius POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Sirius POAs found</a>
     <?php } ?>
 </div>
 
@@ -134,10 +134,10 @@ $payment = $claim->getPayment();
     <h2 class="heading-medium">Meris power of attorneys</h2>
 
     <?php if ($claim->isNoMerisPoas()) { ?>
-        <a class="button" href="">Cancel and return to add Meris POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
     <?php } else { ?>
-        <a class="button" href="">Add Meris POA</a>
-        <a class="button" href="">No Meris POAs found</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/add">Add Meris POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">No Meris POAs found</a>
     <?php } ?>
 </div>
 

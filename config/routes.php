@@ -42,3 +42,7 @@ $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
 $app->get('/process-new-claim', App\Action\ProcessNewClaimAction::class, 'process.new.claim');
 $app->route('/claim/{id:\d+}', App\Action\ClaimAction::class, ['GET', 'POST'], 'claim');
+$app->get('/claim/{id:\d+}/poa/sirius/none-found', App\Action\Poa\PoaSiriusNoneFoundAction::class, 'claim.poa.sirius.none.found');
+$app->get('/claim/{id:\d+}/poa/sirius/cancel-none-found', App\Action\Poa\PoaSiriusCancelNoneFoundAction::class, 'claim.poa.sirius.cancel.none.found');
+$app->get('/claim/{id:\d+}/poa/meris/none-found', App\Action\Poa\PoaMerisNoneFoundAction::class, 'claim.poa.meris.none.found');
+$app->get('/claim/{id:\d+}/poa/meris/cancel-none-found', App\Action\Poa\PoaMerisCancelNoneFoundAction::class, 'claim.poa.meris.cancel.none.found');

@@ -64,4 +64,40 @@ class Claim implements ApiClientInterface
 
         return new LogModel($logArray);
     }
+
+    /**
+     * @param int $claimId
+     * @param bool $noSiriusPoas
+     * @return null|ClaimModel
+     */
+    public function setNoSiriusPoas(int $claimId, bool $noSiriusPoas)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+            'noSiriusPoas' => $noSiriusPoas
+        ]);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
+    /**
+     * @param int $claimId
+     * @param bool $noMerisPoas
+     * @return null|ClaimModel
+     */
+    public function setNoMerisPoas(int $claimId, bool $noMerisPoas)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+            'noMerisPoas' => $noMerisPoas
+        ]);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
 }
