@@ -6,6 +6,7 @@ use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
 
 class Claim implements ApiClientInterface
 {
@@ -42,5 +43,21 @@ class Claim implements ApiClientInterface
         }
 
         return $claim;
+    }
+
+    /**
+     * @param int $claimId
+     * @param string $title the new log's title
+     * @param string $message the new log's message
+     * @return LogModel the newly created log
+     */
+    public function addLog(int $claimId, string $title, string $message)
+    {
+        $logArray = $this->getApiClient()->httpPost("/v1/cases/claim/$claimId/log", [
+            'title'   => $title,
+            'message' => $message,
+        ]);
+
+        return new LogModel($logArray);
     }
 }

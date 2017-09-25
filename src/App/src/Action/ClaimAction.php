@@ -7,6 +7,7 @@ use App\Form\Log;
 use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
@@ -58,19 +59,15 @@ class ClaimAction extends AbstractModelAction
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-                //  Set the session as the authentication storage and the credentials
-                /*$this->authService->getAdapter()
-                    ->setEmail($form->get('email')->getValue())
-                    ->setPassword($form->get('password')->getValue());
+                $message = $form->get('message')->getValue();
 
-                $result = $this->authService->authenticate();
+                $log = $this->claimService->addLog($this->modelId, 'Caseworker note', $message);
 
-                if ($result->isValid()) {
-                    return $this->redirectToRoute('home');
-                } else {
-                    //  There should be only one error
-                    $authenticationError = $result->getMessages()[0];
-                }*/
+                if ($log === null) {
+                    throw new RuntimeException('Failed to add new log to claim with id: ' . $this->modelId);
+                }
+
+                return $this->redirectToRoute('claim', ['id' => $this->modelId]);
             }
         }
 
