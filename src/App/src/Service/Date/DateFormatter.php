@@ -11,6 +11,16 @@ use DateTime;
 class DateFormatter
 {
     /**
+     * @var IDateProvider
+     */
+    private $dateProvider;
+
+    public function __construct(IDateProvider $dateProvider)
+    {
+        $this->dateProvider = $dateProvider;
+    }
+
+    /**
      * @param DateTime $dateTime
      * @return false|string
      */
@@ -29,13 +39,13 @@ class DateFormatter
             return '';
         }
 
-        $now = time();
+        $now = $this->dateProvider->getTimeNow();
         $diff = $now - $dateTime->getTimestamp();
         $diffInDays = floor($diff / 86400);
 
-        if ($diffInDays === 0) {
+        if ($diffInDays === 0.0) {
             return 'Today';
-        } elseif ($diffInDays === 1) {
+        } elseif ($diffInDays === 1.0) {
             return '1 day ago';
         }
 

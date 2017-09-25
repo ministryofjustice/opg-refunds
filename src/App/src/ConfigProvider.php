@@ -48,7 +48,7 @@ class ConfigProvider
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
 
-                Service\Date\DateFormatter::class => Service\Date\DateFormatter::class,
+                Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
                 Service\Claim::class => Service\Claim::class,
             ],
             'factories'  => [
@@ -66,6 +66,7 @@ class ConfigProvider
                 Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
                 AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\Date\DateFormatter::class => Service\Date\DateFormatterFactory::class,
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
