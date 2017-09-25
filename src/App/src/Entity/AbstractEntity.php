@@ -61,13 +61,15 @@ abstract class AbstractEntity
         $entityMethods = get_class_methods($this);
 
         foreach ($entityMethods as $entityMethod) {
-            //  Must be a get method to continue
-            if (strpos($entityMethod, 'get') !== 0) {
+            //  Must be a get or is method to continue
+            $isGet = strpos($entityMethod, 'get') === 0;
+            $isIs = strpos($entityMethod, 'is') === 0;
+            if (!$isGet && !$isIs) {
                 continue;
             }
 
             //  Get the field name (by default it will be the same for entity and model
-            $entityFieldName = $modelFieldName = substr($entityMethod, 3);
+            $entityFieldName = $modelFieldName = substr($entityMethod, $isIs ? 2 : 3);
 
             //  If there is a mapping for the model field name then swap that in
             if (in_array($entityFieldName, $modelToEntityMappings)) {

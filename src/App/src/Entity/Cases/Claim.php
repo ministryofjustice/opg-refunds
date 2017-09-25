@@ -96,6 +96,18 @@ class Claim extends AbstractEntity
     protected $poas;
 
     /**
+     * @var bool
+     * @ORM\Column(name="no_sirius_poas", type="boolean")
+     */
+    protected $noSiriusPoas;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="no_meris_poas", type="boolean")
+     */
+    protected $noMerisPoas;
+
+    /**
      * @var Verification
      * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim", cascade={"persist", "remove"})
      */
@@ -128,6 +140,8 @@ class Claim extends AbstractEntity
 
         $this->createdDateTime = new DateTime();
         $this->status = ClaimModel::STATUS_NEW;
+        $this->noSiriusPoas = false;
+        $this->noMerisPoas = false;
     }
 
     /**
@@ -321,6 +335,38 @@ class Claim extends AbstractEntity
     public function setPoas(array $poas)
     {
         $this->poas = $poas;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoSiriusPoas(): bool
+    {
+        return $this->noSiriusPoas;
+    }
+
+    /**
+     * @param bool $noSiriusPoas
+     */
+    public function setNoSiriusPoas(bool $noSiriusPoas)
+    {
+        $this->noSiriusPoas = $noSiriusPoas;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoMerisPoas(): bool
+    {
+        return $this->noMerisPoas;
+    }
+
+    /**
+     * @param bool $noMerisPoas
+     */
+    public function setNoMerisPoas(bool $noMerisPoas)
+    {
+        $this->noMerisPoas = $noMerisPoas;
     }
 
     /**
