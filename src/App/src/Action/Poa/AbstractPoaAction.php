@@ -3,8 +3,10 @@
 namespace App\Action\Poa;
 
 use App\Action\AbstractClaimAction;
+use App\Form\Poa;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -45,11 +47,11 @@ abstract class AbstractPoaAction extends AbstractClaimAction
         $form = $this->getForm($request);
 
         if ($request->getMethod() == 'POST') {
+            /** @var Poa $form */
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-
-                //$poa = new PoaModel()
+                $poa = new PoaModel($form->getModelData());
                 //$message = $form->get('message')->getValue();
 
                 /*$log = $this->claimService->addLog($this->modelId, 'Caseworker note', $message);

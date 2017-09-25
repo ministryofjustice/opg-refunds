@@ -64,4 +64,26 @@ class Poa extends AbstractForm
         //  Csrf field
         $this->addCsrfElement($inputFilter);
     }
+
+    /**
+     * Get form data for creating model object
+     *
+     * @return array
+     */
+    public function getModelData()
+    {
+        $formData = $this->getData();
+
+        //  If it exists transfer the received date array into a string
+        if (array_key_exists('receivedDate', $formData)) {
+            $receivedDateDateArr = $formData['receivedDate'];
+            $receivedDateDateStr = null;
+            if (!empty($receivedDateDateArr['year']) && !empty($receivedDateDateArr['month']) && !empty($receivedDateDateArr['day'])) {
+                $receivedDateDateStr = $receivedDateDateArr['year'] . '-' . $receivedDateDateArr['month'] . '-' . $receivedDateDateArr['day'];
+            }
+            $formData['receivedDate'] = $receivedDateDateStr;
+        }
+
+        return $formData;
+    }
 }
