@@ -58,6 +58,50 @@ class PoaFormatter
         }
     }
 
+    public function isAttorneyVerified(ClaimModel $claim): bool
+    {
+        return $this->isVerified($claim, 'attorney');
+    }
+
+    public function isCaseNumberVerified(ClaimModel $claim): bool
+    {
+        return $this->isVerified($claim, 'case-number');
+    }
+
+    public function isDonorPostcodeVerified(ClaimModel $claim): bool
+    {
+        return $this->isVerified($claim, 'donor-postcode');
+    }
+
+    public function isAttorneyPostcodeVerified(ClaimModel $claim): bool
+    {
+        return $this->isVerified($claim, 'attorney-postcode');
+    }
+
+    public function isClaimVerified(ClaimModel $claim)
+    {
+        $verificationCount = 0;
+
+        if ($this->isAttorneyVerified($claim)) {
+            //Means that both the attorney's name and dob have been verified so counts for 2
+            $verificationCount+=2;
+        }
+
+        if ($this->isCaseNumberVerified($claim)) {
+            $verificationCount++;
+        }
+
+        if ($this->isDonorPostcodeVerified($claim)) {
+            $verificationCount++;
+        }
+
+        if ($this->isAttorneyPostcodeVerified($claim)) {
+            $verificationCount++;
+        }
+
+        return $verificationCount >= 3;
+    }
+
     public function getFormattedVerificationMatches(PoaModel $poa)
     {
         $verificationStrings = [];
@@ -73,22 +117,6 @@ class PoaFormatter
         }
 
         return join(', ', $verificationStrings);
-    }
-
-    private function getFormattedVerificationMatch(VerificationModel $verification)
-    {
-        switch ($verification->getType()) {
-            case 'attorney':
-                return 'Attorney details';
-            case 'case-number':
-                return 'Case number';
-            case 'donor-postcode':
-                return 'Donor postcode' ;
-            case 'attorney-postcode':
-                return 'Attorney postcode';
-            default:
-                return '';
-        }
     }
 
     private function hasSystemPoas(ClaimModel $claim, string $system)
@@ -121,5 +149,38 @@ class PoaFormatter
         }
 
         return $poas;
+    }
+
+    private function getFormattedVerificationMatch(VerificationModel $verification)
+    {
+        switch ($verification->getType()) {
+            case 'attorney':
+                return 'Attorney details';
+            case 'case-number':
+                return 'Case number';
+            case 'donor-postcode':
+                return 'Donor postcode' ;
+            case 'attorney-postcode':
+                return 'Attorney postcode';
+            default:
+                return '';
+        }
+    }
+
+    private function isVerified(ClaimModel $claim, string $verificationType): bool
+    {
+        if ($claim->getPoas() === null) {
+            return false;
+        }
+
+        foreach ($claim->getPoas() as $poa) {
+            foreach ($poa->getVerifications() as $verification) {
+                if ($verification->getType() === $verificationType && $verification->isPasses()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

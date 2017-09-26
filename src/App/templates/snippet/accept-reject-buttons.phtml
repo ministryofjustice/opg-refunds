@@ -1,0 +1,18 @@
+<?php
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<?php if(($claim->isNoSiriusPoas() || $this->hasSiriusPoas($claim)) && ($claim->isNoMerisPoas() || $this->hasMerisPoas($claim))) { ?>
+    <?php if($this->isClaimVerified($claim)) { ?>
+        <a class="button" href="">Accept claim</a>
+    <?php } else { ?>
+        <a class="button" href="" style="background-color: red">Reject claim</a>
+    <?php } ?>
+<?php } ?>

@@ -21,6 +21,7 @@ $this->addErrorMap([
 
 <?php $this->start('right-sidebar') ?>
 <?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->insert('snippet::accept-reject-buttons', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
@@ -30,7 +31,7 @@ $this->addErrorMap([
 
     <?php foreach ($this->getSiriusPoas($claim) as $poa) {
         /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
-        <div>
+        <div style="border: 1px solid lightgrey; padding: 10px; margin: 10px">
             <ul>
                 <li>Case number: <?= $this->getFormattedCaseNumber($poa) ?></li>
                 <li>Received date: <?= $this->getReceivedDateString($poa->getReceivedDate()) ?></li>
@@ -60,7 +61,7 @@ $this->addErrorMap([
     <?php } else { ?>
         <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
         <?php if (!$this->hasMerisPoas($claim)) { ?>
-            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Meris POAs found</a>
+            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">No Meris POAs found</a>
         <?php } ?>
     <?php } ?>
 </div>
