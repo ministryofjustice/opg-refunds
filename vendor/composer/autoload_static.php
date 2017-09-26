@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
+class ComposerStaticInit6fd892b5f8e7cd6be9d679017007f777
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -15,8 +15,8 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
-        '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
         'f8b0b5f351aa0dc2d4b9c3b8f451115f' => __DIR__ . '/..' . '/league/json-guard/src/functions.php',
+        '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -124,8 +124,8 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'Zend\\Validator\\' => 
@@ -1160,10 +1160,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit6fd892b5f8e7cd6be9d679017007f777::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit6fd892b5f8e7cd6be9d679017007f777::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit6fd892b5f8e7cd6be9d679017007f777::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit6fd892b5f8e7cd6be9d679017007f777::$classMap;
 
         }, null, ClassLoader::class);
     }
