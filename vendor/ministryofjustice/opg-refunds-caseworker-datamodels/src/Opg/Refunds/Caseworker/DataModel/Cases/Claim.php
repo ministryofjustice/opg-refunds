@@ -308,7 +308,7 @@ class Claim extends AbstractDataModel
     /**
      * @return Poa[]
      */
-    public function getPoas(): array
+    public function getPoas()
     {
         return $this->poas;
     }
