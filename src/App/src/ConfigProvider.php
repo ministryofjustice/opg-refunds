@@ -77,6 +77,10 @@ class ConfigProvider
                 Service\Refund\Beta\BetaLinkChecker::class => Service\Refund\Beta\BetaLinkCheckerFactory::class,
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
+                // Logging
+                //\Zend\Log\Logger::class => Log\LoggerFactory::class,
+                //\Opg\Refunds\Log\ErrorListener::class => Log\ErrorListenerFactory::class,
+
                 // View Helper
                 Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
             ],
@@ -84,6 +88,13 @@ class ConfigProvider
                 Action\Initializers\UrlHelperInitializer::class,
                 Action\Initializers\TemplatingSupportInitializer::class,
             ],
+            /*
+            'delegators' => [
+                \Zend\Stratigility\Middleware\ErrorHandler::class => [
+                    Log\LoggingErrorListenerDelegatorFactory::class
+                ],
+            ],
+            */
         ];
     }
 

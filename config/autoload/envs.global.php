@@ -1,5 +1,7 @@
 <?php
 
+use \Zend\Log\Logger;
+
 return [
 
     'refunds' => [
@@ -106,17 +108,38 @@ return [
 
     'log' => [
 
-        'path' => '/var/log/app/application.log',
+        'logstash' => [
+            'path' => '/var/log/app/application.log',
+        ],
+
+        'priorities' => [
+            // The priority we class 500 exceptions as
+            '500' => Logger::CRIT,
+        ],
 
         'sns' => [
             'client' => [
                 'version' => '2010-03-31',
                 'region' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_REGION') ?: null,
+                'endpoint' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINT') ?: null,
             ],
             'endpoints' => [
-                'major' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR') ?: null,
-                'minor' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR') ?: null,
-                'info' =>  getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO') ?: null,
+
+                'major' => [
+                    'priorities' => [ Logger::EMERG, Logger::ALERT ],
+                    'arn' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR') ?: null,
+                ],
+
+                'minor' => [
+                    'priorities' => [ Logger::CRIT ],
+                    'arn' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR') ?: null,
+                ],
+
+                'info' => [
+                    'priorities' => [ /* Currently unused */ ],
+                    'arn' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO') ?: null,
+                ],
+
             ],
         ], // sns
 
