@@ -5,36 +5,47 @@ $this->layout('layout::standard', [
     ]);
 ?>
 
-<p>You're entitled to a partial refund if you paid any application fees from April 2013 to March 2017 for your: 
+<p>People who made powers of attorney from April 2013 to March 2017 are entitled to a partial refund 
+of any application fees paid.</p>
+
+<p>To claim a refund, you must be either:</p>
 
 <ul class="list list-bullet">
-    <li>lasting power of attorney (LPA) for property and financial affairs, or LPA for health and welfare</li>
-    <li>enduring power of attorney (EPA) - an earlier type of power of attorney</li> 
+    <li>the donor - the person who made the powers of attorney</li>
+    <li>an attorney - appointed by the donor and claiming on their behalf</li> 
 </ul>
+
+<p>The refund is for the donor, even if someone else paid the fees at the time.</p>
 
 <div class="panel panel-border-wide">
-    <p>Make one claim per donor even if you made more than one power of 
-    attorney or paid repeat fees. Records will be checked for all the fees that were paid.</p>
+    <p>Make one claim per donor even if you made more than one power of attorney or 
+    paid repeat fees. Records will be checked for all fees paid.</p>
 </div>
 
-<h2 class="heading-medium">Who can claim a refund</h2>
+<h2 class="heading-medium">What you'll need</h2>
 
 <ul class="list list-bullet">
-    <li>The 'donor' - the person who made the LPA or EPA</li>
-    <li>An 'attorney' - trusted by the donor and claiming on their behalf</li>
+    <li>About 10 minutes to complete the claim</li>
+    <li>Donor's UK bank account number and sort code</li>
 </ul>
 
-<p>The refund is for the donor, even if someone else paid the fees for them.</P> 
+<p><a href="/terms">How we keep your information safe</a>.</p>
+
+<p>You don't need power of attorney documents with you but it might be helpful.</p>
+
+<p>
+    <a class="button button-start" href="<?= $this->url('eligibility.when') ?>" role="button">Start now</a>
+</p>
 
 <h2 class="heading-medium">How much you'll get</h2>
 
-<p>This table shows what refund you could get, but you don't need to know exact dates to claim.</p> 
+<p>You don’t need to know exact dates to claim a refund. You'll also get 0.5% interest on your refund amount.</p> 
 
 <table>
     <thead>
         <tr>
             <th scope="col">When you paid a fee</th>
-            <th class="numeric" scope="col">Refund for each LPA or EPA</th>
+            <th class="numeric" scope="col">Refund for each power of attorney</th>
         </tr>
     </thead>
     <tbody>
@@ -64,40 +75,30 @@ $this->layout('layout::standard', [
 
 <p class="text-after-table">You'll get half the refund amount if you paid a reduced fee ('remission').</p>
 
-<h2 class="heading-medium">What you'll need</h2>
+<h2 class="heading-medium">LPAs and EPAs</h2>
+
+<p>Refunds apply to:</p>
 
 <ul class="list list-bullet">
-    <li>About 10 minutes to complete the claim</li>
-    <li>Name and date of birth of the donor</li>
-    <li>Name and date of birth of one attorney</li>
-    <li>Donor's UK bank account number and sort code</li>
+    <li>lasting powers of attorney (LPAs) for financial affairs, and for health and welfare</li>
+    <li>enduring powers of attorney (EPAs) - an earlier type of power of attorney</li>
 </ul>
 
-<p>Find out <a href="/terms">how we keep your information safe</a>.</p>
+<p>All eligible fees for a donor will be refunded in one go - so you only need to make a single 
+refund claim, even if you made an EPA and an LPA, for example.</P> 
 
-<p>You don't need power of attorney documents with you but it might be helpful.</p>
+<h2 class="heading-medium">If the donor doesn’t have a UK bank account</h2>
+<p>Contact the Helpline to find out how to get a refund if the donor doesn't have a UK bank account.</p>
+   
+<h2 class="heading-medium">If the donor has died</h2>
+<p>Contact the Helpline if the donor has died. They will discuss your situation and let you know 
+who is entitled to claim the refund.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>
 
 <div class="panel panel-border-wide">
     <p>It takes up to 12 weeks for a refund to be processed.</p>
 </div>
-
-<p>
-    <a class="button button-start" href="<?= $this->url('eligibility.when') ?>" role="button">Start now</a>
-</p>
-
-<h2 class="heading-medium">If the donor doesn't have a bank account</h2>
-<p>Contact the Helpline to find out how to get a refund if the donor doesn't have an account.</p>
-   
-<h2 class="heading-medium">If the donor has died</h2>
-<p>You might be able to claim a refund if the donor's estate is still in probate. Contact the Helpline to find out.</p>
-
-<?php $this->insert('snippet::refunds-helpline');?>
-
-<?php $this->insert('snippet::claim-deadline');?>
-
-<p>
-    Fee refunds <a href="/terms">terms and conditions</a>.
-</p>
 
 <?php $this->start('sidebar-out') ?>
     <aside class="govuk-related-items" role="complementary">
