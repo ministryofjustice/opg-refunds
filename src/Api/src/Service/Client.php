@@ -100,6 +100,16 @@ class Client
     }
 
     /**
+     * Get all applications
+     *
+     * @return array
+     */
+    public function getApplications()
+    {
+        return $this->httpGet('/dev/applications');
+    }
+
+    /**
      * Performs a GET against the API
      *
      * @param string $path
