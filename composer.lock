@@ -60,16 +60,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.13",
+            "version": "3.36.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "aadad22574042e76f5ae3d995cd94b5673dc9b80"
+                "reference": "4ceceb6f1584574497da727b961676db29cbf9a1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/aadad22574042e76f5ae3d995cd94b5673dc9b80",
-                "reference": "aadad22574042e76f5ae3d995cd94b5673dc9b80",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4ceceb6f1584574497da727b961676db29cbf9a1",
+                "reference": "4ceceb6f1584574497da727b961676db29cbf9a1",
                 "shasum": ""
             },
             "require": {
@@ -136,7 +136,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-09-21T19:39:57+00:00"
+            "time": "2017-09-22T19:41:14+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -667,12 +667,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
-                "reference": "d2f22db221072514944d0af8002655baa26cf6c1"
+                "reference": "b773c2fc7606d9263df7660fe9e4b4a7acf764c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/d2f22db221072514944d0af8002655baa26cf6c1",
-                "reference": "d2f22db221072514944d0af8002655baa26cf6c1",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/b773c2fc7606d9263df7660fe9e4b4a7acf764c3",
+                "reference": "b773c2fc7606d9263df7660fe9e4b4a7acf764c3",
                 "shasum": ""
             },
             "require": {
@@ -704,7 +704,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
             },
-            "time": "2017-09-22 10:41:05"
+            "time": "2017-09-26 09:57:48"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -3299,16 +3299,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.3.0",
+            "version": "6.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9501bab711403a1ab5b8378a8adb4ec3db3debdb"
+                "reference": "c0ff817b36a827e64bf5f57bc72278150cf30a77"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9501bab711403a1ab5b8378a8adb4ec3db3debdb",
-                "reference": "9501bab711403a1ab5b8378a8adb4ec3db3debdb",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c0ff817b36a827e64bf5f57bc72278150cf30a77",
+                "reference": "c0ff817b36a827e64bf5f57bc72278150cf30a77",
                 "shasum": ""
             },
             "require": {
@@ -3379,7 +3379,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-08-04T05:20:39+00:00"
+            "time": "2017-09-24T07:25:54+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
