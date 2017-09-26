@@ -78,4 +78,13 @@ class DateFormatter
     {
         return date('d/m/Y', $dateTime->getTimestamp());
     }
+
+    /**
+     * @param DateTime $dateTime
+     * @return false|string
+     */
+    public function getReceivedDateString($dateTime)
+    {
+        return date('d/m/Y', $dateTime->getTimestamp());
+    }
 }

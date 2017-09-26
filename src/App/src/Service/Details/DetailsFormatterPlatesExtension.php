@@ -11,6 +11,9 @@ use League\Plates\Extension\ExtensionInterface;
  */
 class DetailsFormatterPlatesExtension implements ExtensionInterface
 {
+    /**
+     * @var DetailsFormatter
+     */
     private $formatter;
 
     public function __construct(DetailsFormatter $formatter)

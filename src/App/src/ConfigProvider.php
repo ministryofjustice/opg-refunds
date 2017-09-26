@@ -50,6 +50,7 @@ class ConfigProvider
 
                 Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
                 Service\Details\DetailsFormatter::class => Service\Details\DetailsFormatter::class,
+                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
                 Service\Claim::class => Service\Claim::class,
             ],
             'factories'  => [
@@ -80,6 +81,7 @@ class ConfigProvider
                 Service\Date\DateFormatterPlatesExtension::class => Service\Date\DateFormatterPlatesExtensionFactory::class,
                 Service\Details\DetailsFormatterPlatesExtension::class => Service\Details\DetailsFormatterPlatesExtensionFactory::class,
                 Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
+                Service\Poa\PoaFormatterPlatesExtension::class => Service\Poa\PoaFormatterPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

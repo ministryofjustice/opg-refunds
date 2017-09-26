@@ -28,11 +28,27 @@ $this->addErrorMap([
 <div>
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
+    <?php foreach ($this->getSiriusPoas($claim) as $poa) {
+        /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
+        <div>
+            <ul>
+                <li>Case number: <?= $this->getFormattedCaseNumber($poa) ?></li>
+                <li>Received date: <?= $this->getReceivedDateString($poa->getReceivedDate()) ?></li>
+                <li>Original paid amount: <?= $this->getOriginalPaymentAmountString($poa) ?></li>
+                <li>Refund amount: £TBD</li>
+                <li>Total amount: £TBD</li>
+                <li>Verification matches: <?= $this->getFormattedVerificationMatches($poa) ?></li>
+            </ul>
+        </div>
+    <?php } ?>
+
     <?php if ($claim->isNoSiriusPoas()) { ?>
         <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
     <?php } else { ?>
         <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Sirius POAs found</a>
+        <?php if (!$this->hasSiriusPoas($claim)) { ?>
+            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Sirius POAs found</a>
+        <?php } ?>
     <?php } ?>
 </div>
 
@@ -43,7 +59,9 @@ $this->addErrorMap([
         <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
     <?php } else { ?>
         <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">No Meris POAs found</a>
+        <?php if (!$this->hasMerisPoas($claim)) { ?>
+            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Meris POAs found</a>
+        <?php } ?>
     <?php } ?>
 </div>
 

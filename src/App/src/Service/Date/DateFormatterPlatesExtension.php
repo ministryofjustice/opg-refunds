@@ -25,5 +25,6 @@ class DateFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getLogDateString', [$this->formatter, 'getLogDateString']);
         $engine->registerFunction('getLogTimeString', [$this->formatter, 'getLogTimeString']);
         $engine->registerFunction('getDateOfBirthString', [$this->formatter, 'getDateOfBirthString']);
+        $engine->registerFunction('getReceivedDateString', [$this->formatter, 'getReceivedDateString']);
     }
 }
