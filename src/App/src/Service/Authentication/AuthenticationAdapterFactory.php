@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Service\Auth;
+namespace App\Service\Authentication;
 
 use Api\Service\Client as ApiClient;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class AuthAdapterFactory
+ * Class AuthenticationAdapterFactory
  * @package App\Service\Auth
  */
-class AuthAdapterFactory
+class AuthenticationAdapterFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return AuthAdapter
+     * @return AuthenticationAdapter
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new AuthAdapter(
+        return new AuthenticationAdapter(
             $container->get(ApiClient::class)
         );
     }

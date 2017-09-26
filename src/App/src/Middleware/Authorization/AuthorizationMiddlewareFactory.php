@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware\Auth;
+namespace App\Middleware\Authorization;
 
 use Interop\Container\ContainerInterface;
 use Zend\Authentication\AuthenticationService;

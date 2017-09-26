@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Auth;
+namespace App\Service\Authentication;
 
 use Api\Exception\ApiException;
 use Api\Service\Client as ApiClient;
@@ -9,10 +9,10 @@ use Zend\Authentication\Adapter\AdapterInterface;
 use Zend\Authentication\Result;
 
 /**
- * Class AuthAdapter
+ * Class AuthenticationAdapter
  * @package App\Service\Auth
  */
-class AuthAdapter implements AdapterInterface
+class AuthenticationAdapter implements AdapterInterface
 {
     /**
      * @var ApiClient
@@ -30,7 +30,7 @@ class AuthAdapter implements AdapterInterface
     private $password;
 
     /**
-     * AuthAdapter constructor
+     * AuthenticationAdapter constructor
      *
      * @param ApiClient $client
      */

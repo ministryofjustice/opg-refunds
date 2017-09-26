@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Auth;
+namespace App\Service\Authentication;
 
 use Interop\Container\ContainerInterface;
 use Zend\Authentication\AuthenticationService;
@@ -11,7 +11,7 @@ class AuthenticationServiceFactory
     {
         return new AuthenticationService(
             null,   //  Use default storage
-            $container->get(AuthAdapter::class)
+            $container->get(AuthenticationAdapter::class)
         );
     }
 }

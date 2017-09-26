@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Middleware\Auth;
+namespace App\Middleware\Authorization;
 
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;

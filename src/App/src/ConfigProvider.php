@@ -66,12 +66,12 @@ class ConfigProvider
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
 
                 // Middleware
-                Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
+                Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
-                Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
-                AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
+                Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
+                AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Service\Date\DateFormatter::class => Service\Date\DateFormatterFactory::class,
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
