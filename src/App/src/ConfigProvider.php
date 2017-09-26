@@ -40,6 +40,7 @@ class ConfigProvider
             'invokables' => [
                 Action\AdminAction::class => Action\AdminAction::class,
                 Action\CaseworkerAction::class => Action\CaseworkerAction::class,
+                Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
