@@ -1,22 +1,16 @@
 <?php
-$title = 'Cookies disabled ';
-$this->layout('layout::default', [
+$title = 'Cookies disabled';
+$this->layout('layout::standard', [
     'title' => $title,
 ]);
 
 ?>
-<div class="grid-row">
-    <div class="column-two-thirds">
 
-        <h1 class="heading-xlarge">
-            <?= $this->e($title) ?>
-        </h1>
+<p>To access the power of attorney refund service you'll need to 
+    <a href="http://www.aboutcookies.org/default.aspx?page=1:" target="_blank">enable cookies on your device (opens new window)</a>.</p>
 
-        <p>You can't currently access the Claim a power of attorney refund service because your cookies have been disabled.</p>
+<p>You'll then be able to <a href="/">start a refund claim</a>.</p>
 
-        <p><a href="http://www.aboutcookies.org/default.aspx?page=1:" target="_blank">Find out how to enable cookies</a></p>
+<p>If you can't enable cookies you can call the Refunds Helpline for help.</p>
 
-        <p>Once you've enabled your cookies, please <a href="/">continue to home page</a> and you should have access to the service.</p>
-
-    </div>
-</div>
+<?php $this->insert('snippet::refunds-helpline');?>
