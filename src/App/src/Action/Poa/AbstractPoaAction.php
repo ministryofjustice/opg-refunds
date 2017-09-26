@@ -56,10 +56,15 @@ abstract class AbstractPoaAction extends AbstractClaimAction
             if ($form->isValid()) {
                 $poa = new PoaModel($form->getModelData());
 
-                $poa = $this->claimService->addPoa($claim, $poa);
+                $claim = $this->claimService->addPoa($claim, $poa);
 
-                if ($poa === null) {
+                if ($claim === null) {
                     throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
+                }
+
+                //TODO: Find a better way
+                if ($_POST['submit'] === 'Save and add another') {
+                    return $this->redirectToRoute('claim.poa.' . $poa->getSystem(), ['id' => $request->getAttribute('claimId')]);
                 }
 
                 return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);

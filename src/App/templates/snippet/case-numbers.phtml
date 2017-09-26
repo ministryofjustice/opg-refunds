@@ -10,3 +10,10 @@ Mandatory: claim
 ?>
 
 <h2 class="heading-medium">Case numbers added</h2>
+
+<?php if ($claim->getPoas() !== null) {
+    foreach ($claim->getPoas() as $poa) { ?>
+        <h3 class="heading-small">Case number:</h3>
+        <p><?= $this->getFormattedCaseNumber($poa) ?></p>
+    <?php }
+} ?>

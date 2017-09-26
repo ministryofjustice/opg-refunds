@@ -103,8 +103,8 @@ $postcodes = $claim->getApplication()->getPostcodes();
     ?>
 
     <div class="form-group">
-        <input type="submit" class="button" value="Save and return to claim" />
-        <input type="submit" class="button" value="Save and add another" />
+        <input id='return-submit' type='submit' class="button" name='submit' value='Save and return to claim'>
+        <input id='add-submit' type='submit' class="button" name='submit' value='Save and add another'>
     </div>
 
     <a href="/claim/<?= $claim->getId() ?>">Cancel</a>
