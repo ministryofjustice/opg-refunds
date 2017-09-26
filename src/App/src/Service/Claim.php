@@ -113,10 +113,13 @@ class Claim implements ApiClientInterface
         $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
         if ($poaCaseNumber !== null) {
             if ($poaCaseNumber === $poa->getCaseNumber()) {
-                $poa->getVerifications()[] = new VerificationModel([
+                //Add verification for case number
+                $verifications = $poa->getVerifications();
+                $verifications[] = new VerificationModel([
                     'type'   => 'case-number',
                     'passes' => 'yes'
                 ]);
+                $poa->setVerifications($verifications);
             }
         }
 
