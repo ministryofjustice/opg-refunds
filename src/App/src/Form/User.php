@@ -60,17 +60,11 @@ class User extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-
-
-
         //  Status field
         //TODO
 
         //  Roles field
         //TODO
-
-
-
 
         //  Csrf field
         //  TODO - Add this in the constructor if the options contain 'csrf' value

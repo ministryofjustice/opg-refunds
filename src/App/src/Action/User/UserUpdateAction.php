@@ -2,7 +2,6 @@
 
 namespace App\Action\User;
 
-use App\Action\AbstractModelAction;
 use App\Form\User;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
@@ -15,7 +14,7 @@ use Zend\Form\FormInterface;
  * Class UserUpdateAction
  * @package App\Action
  */
-class UserUpdateAction extends AbstractModelAction
+class UserUpdateAction extends AbstractUserAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -70,24 +69,6 @@ class UserUpdateAction extends AbstractModelAction
     }
 
     //  TODO - deleteAction
-
-    /**
-     * Get the model concerned
-     *
-     * @return null|UserModel
-     */
-    private function getUser()
-    {
-        $user = null;
-
-        if (is_numeric($this->modelId)) {
-            $userData = $this->getApiClient()->getUser($this->modelId);
-
-            $user = new UserModel($userData);
-        }
-
-        return $user;
-    }
 
     /**
      * Get the form for the model concerned
