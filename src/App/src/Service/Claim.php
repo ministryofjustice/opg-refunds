@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateTime;
 use Exception;
 use Ingestion\Service\DataMigration;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -147,6 +148,7 @@ class Claim
         $claim = $this->getClaimEntity($claimId);
 
         $claim->setNoSiriusPoas($noSiriusPoas);
+        $claim->setUpdatedDateTime(new DateTime());
 
         if ($noSiriusPoas) {
             $this->addLog(
@@ -170,6 +172,7 @@ class Claim
         $claim = $this->getClaimEntity($claimId);
 
         $claim->setNoMerisPoas($noMerisPoas);
+        $claim->setUpdatedDateTime(new DateTime());
 
         if ($noMerisPoas) {
             $this->addLog(
@@ -206,6 +209,7 @@ class Claim
 
         $log = new LogEntity($title, $message, $claim, $user);
         $claim->addLog($log);
+        $claim->setUpdatedDateTime(new DateTime());
 
         $this->entityManager->flush();
 
@@ -228,6 +232,7 @@ class Claim
         }
 
         $claim->addPoa($poa);
+        $claim->setUpdatedDateTime(new DateTime());
 
         $this->entityManager->flush();
 
