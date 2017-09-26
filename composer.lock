@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0a47779df1bff94024e293ff6ec0c8d8",
+    "content-hash": "6fc6a60891d8e7d4c3d2f9fe72c4421f",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -667,19 +667,20 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
-                "reference": "b773c2fc7606d9263df7660fe9e4b4a7acf764c3"
+                "reference": "9c2cd749a6ac5c0cf1f378566fe024e51c49655d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/b773c2fc7606d9263df7660fe9e4b4a7acf764c3",
-                "reference": "b773c2fc7606d9263df7660fe9e4b4a7acf764c3",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/9c2cd749a6ac5c0cf1f378566fe024e51c49655d",
+                "reference": "9c2cd749a6ac5c0cf1f378566fe024e51c49655d",
                 "shasum": ""
             },
             "require": {
-                "aws/aws-sdk-php": "^3.3",
+                "aws/aws-sdk-php": "^3.36",
                 "php": "^7.0",
                 "psr/http-message": "^1.0",
-                "zendframework/zend-log": "^2.9"
+                "zendframework/zend-log": "^2.9",
+                "zendframework/zend-stratigility": "^2.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "^6.3",
@@ -704,7 +705,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
             },
-            "time": "2017-09-26 09:57:48"
+            "time": "2017-09-26 12:47:44"
         },
         {
             "name": "mtdowling/jmespath.php",
