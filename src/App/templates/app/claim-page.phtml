@@ -29,26 +29,38 @@ $this->addErrorMap([
 <div>
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
-    <?php foreach ($this->getSiriusPoas($claim) as $poa) {
-        /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
-        <div style="border: 1px solid lightgrey; padding: 10px; margin: 10px">
-            <ul>
-                <li>Case number: <?= $this->getFormattedCaseNumber($poa) ?></li>
-                <li>Received date: <?= $this->getReceivedDateString($poa->getReceivedDate()) ?></li>
-                <li>Original paid amount: <?= $this->getOriginalPaymentAmountString($poa) ?></li>
-                <li>Refund amount: £TBD</li>
-                <li>Total amount: £TBD</li>
-                <li>Verification matches: <?= $this->getFormattedVerificationMatches($poa) ?></li>
-            </ul>
-        </div>
+    <?php if ($this->hasSiriusPoas($claim)) { ?>
+        <table class="poa-table">
+            <thead>
+            <tr>
+                <th>Case reference</th>
+                <th>Received date</th>
+                <th>Refund amount</th>
+                <th>Interest amount</th>
+                <th>Verification matches</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getSiriusPoas($claim) as $poa) {
+                /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
+                <tr>
+                    <td><a href="#"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
+                    <td>£TBD</td>
+                    <td>£TBD</td>
+                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
     <?php } ?>
 
     <?php if ($claim->isNoSiriusPoas()) { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
+        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
     <?php } else { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
+        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
         <?php if (!$this->hasSiriusPoas($claim)) { ?>
-            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">No Sirius POAs found</a>
+            <a class="button button-link" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">I cannot find any Sirius POAs</a>
         <?php } ?>
     <?php } ?>
 </div>
@@ -56,47 +68,72 @@ $this->addErrorMap([
 <div>
     <h2 class="heading-medium">Meris power of attorneys</h2>
 
+    <?php if ($this->hasMerisPoas($claim)) { ?>
+        <table class="poa-table">
+            <thead>
+            <tr>
+                <th>Case reference</th>
+                <th>Received date</th>
+                <th>Refund amount</th>
+                <th>Interest amount</th>
+                <th>Verification matches</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getMerisPoas($claim) as $poa) {
+                /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
+                <tr>
+                    <td><a href="#"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
+                    <td>£TBD</td>
+                    <td>£TBD</td>
+                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    <?php } ?>
+
     <?php if ($claim->isNoMerisPoas()) { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
+        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
     <?php } else { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
+        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
         <?php if (!$this->hasMerisPoas($claim)) { ?>
-            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">No Meris POAs found</a>
+            <a class="button button-link" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">I cannot find any Meris POAs</a>
         <?php } ?>
     <?php } ?>
 </div>
 
-<h2 class="heading-medium">User log</h2>
-
+<h2 class="heading-medium heading-refunds">User log</h2>
 <form method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
-    <fieldset>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('message'),
+        'formLabel' => 'Add a user log',
+        'formType' => 'textarea',
+        'formLabelBold' => false,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('message'),
-            'formLabel' => 'Add a user log',
-            'formType' => 'textarea',
-            'formLabelBold' => false
-        ]) ?>
-
-    </fieldset>
-
-    <div class="form-group">
-        <input type="submit" class="button" value="Submit log" />
-    </div>
-
+    <input class="button button-secondary" type="submit" value="Submit log">
 </form>
 
-<?php foreach ($claim->getLogs() as $log) { ?>
-    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
-    <div>
-        <h3 class="heading-small"><?= $this->getLogDateString($log->getCreatedDateTime()) ?> <?= $this->getLogTimeString($log->getCreatedDateTime()) ?></h3>
-        <h4 class="heading-small"><?= $log->getTitle() ?></h4>
-        <p><?= $log->getMessage() ?></p>
-        <?php if ($log->getUserName() !== null) { ?>
-            <p>by <?= $log->getUserName() ?></p>
+<h2 class="heading-medium heading-refunds">Timeline</h2>
+
+<div class="timeline">
+    <ul>
+        <?php foreach ($claim->getLogs() as $log) { ?>
+            <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
+            <li>
+                <p class="timeline-reference"><?= $this->getLogDateString($log->getCreatedDateTime()) ?> <span class="time"><?= $this->getLogTimeString($log->getCreatedDateTime()) ?></span></p>
+                <h2><?= $log->getTitle() ?></h2>
+                <p><?= $log->getMessage() ?></p>
+                <?php if ($log->getUserName() !== null) { ?>
+                    <p>by <?= $log->getUserName() ?></p>
+                <?php } ?>
+            </li>
         <?php } ?>
-    </div>
-<?php } ?>
+    </ul>
+</div>

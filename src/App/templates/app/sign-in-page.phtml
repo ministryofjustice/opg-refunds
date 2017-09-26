@@ -1,37 +1,43 @@
-<?php $this->layout('layout::standard', ['title' => 'Home']) ?>
+<?php $this->layout('layout::default', ['title' => 'Sign in']) ?>
 
-<h1>Sign in</h1>
+<div class="grid-row">
+    <div class="column-full">
 
-<?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
+        <form action="/sign-in" method="post" class="form">
 
-<?php if (isset($error)) { ?>
-    <h2><?= $error ?></h2>
-<?php } ?>
+            <fieldset>
 
-<form action="/sign-in" method="post" class="form">
+                <legend>
+                    <h1 class="heading-xlarge">Sign in</h1>
+                </legend>
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+                <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
+                <?php if (isset($error)) { ?>
+                    <h2><?= $error ?></h2>
+                <?php } ?>
 
-    <fieldset>
+                <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('email'),
-            'formLabel' => 'Email address',
-            'formType' => 'text',
-            'formLabelBold' => false
-        ]) ?>
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('email'),
+                    'formLabel' => 'Email address',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('password'),
-            'formLabel' => 'Password',
-            'formType' => 'password',
-            'formLabelBold' => false
-        ]) ?>
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('password'),
+                    'formLabel' => 'Password',
+                    'formType' => 'password',
+                    'formLabelBold' => false
+                ]) ?>
 
-    </fieldset>
+            </fieldset>
 
-    <div class="form-group">
-        <input type="submit" class="button" value="Continue" />
+            <div class="form-group">
+                <input class="button" type="submit" value="Continue">
+            </div>
+
+        </form>
     </div>
-
-</form>
+</div>

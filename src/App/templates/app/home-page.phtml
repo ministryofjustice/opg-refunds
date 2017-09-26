@@ -1,51 +1,33 @@
-<?php $this->layout('layout::standard', ['title' => 'Home']) ?>
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
 <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user */ ?>
 
-<?php $this->start('sidebar') ?>
+<div class="grid-row">
+    <div class="column-one-fifth">
+        <h2 class="heading-medium heading-refunds">Process a claim</h2>
+        <p>Add a new power of attorney refund</p>
+        <a class="button" href="/process-new-claim">
+            Process new claim
+        </a>
+    </div>
+    <div class="column-four-fifths">
 
-<h2 class="heading-medium">Process a claim</h2>
+        <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
-<p>Add a new power of attorney refund</p>
+        <h2 class="heading-medium heading-refunds">My claims</h2>
 
-<a class="button button-start" href="/process-new-claim">Process new claim</a>
+        <?php if (count($user->getClaims()) > 0) { ?>
 
-<h2 class="heading-medium">Role test links</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>Claim code</th>
+                <th>Donor name</th>
+                <th>Received</th>
+                <th>Modified</th>
+            </tr>
+            </thead>
+            <tbody>
 
-<p><a href="/caseworker">Case worker user page</a></p>
-<p><a href="/reporting">Reporting user page</a></p>
-<p><a href="/refund">Refund manager user page</a></p>
-<p><a href="/admin">Admin user page</a></p>
-
-<h3 class="heading-small">Logged in as <?= $user->getName(); ?></h3>
-<p><a href="sign-out">Sign out</a></p>
-
-<?php $this->stop() ?>
-
-<h2 class="heading-medium">My claims</h2>
-
-<?php foreach ($messages as $messageKey => $messageValues) { ?>
-    <?php if ($messageKey === 'info') { ?>
-        <div class="error-summary" style="border-color: #005EA5">
-            <ul>
-                <?php foreach ($messageValues as $messageValue) { ?>
-                    <li><?= $messageValue ?></li>
-                <?php } ?>
-            </ul>
-        </div>
-    <?php } ?>
-<?php } ?>
-
-<table>
-    <thead>
-        <tr>
-            <th>Claim number</th>
-            <th>Donor name</th>
-            <th>Received</th>
-            <th>Modified</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php if (count($user->getClaims())) { ?>
             <?php foreach ($user->getClaims() as $claim) { ?>
                 <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
                 <tr>
@@ -55,10 +37,18 @@
                     <td><?= $this->getDaysAgo($claim->getUpdatedDateTime()) ?></td>
                 </tr>
             <?php } ?>
+
+            </tbody>
+        </table>
+
         <?php } else { ?>
-            <tr>
-                <td colspan="5">No claims</td>
-            </tr>
+            <table>
+                <tr>
+                    <td colspan="4">You have no claims in progress</td>
+                </tr>
+            </table>
         <?php } ?>
-    </tbody>
-</table>
+
+    </div>
+</div>
+

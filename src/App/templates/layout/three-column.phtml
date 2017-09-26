@@ -5,18 +5,13 @@
 <h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
 
 <div class="grid-row">
-    <div class="column-third" style="width: 25%">
+    <div class="column-one-fifth">
         <?=$this->section('left-sidebar')?>
     </div>
-
-    <div class="column-two-thirds" style="width: 50%">
-        <?php if (isset($infoMessage)) { ?>
-            <?= $infoMessage ?>
-        <?php } ?>
-
+    <div class="column-three-fifths">
         <?=$this->section('content')?>
     </div>
-    <div class="column-third" style="width: 25%">
+    <div class="column-one-fifth">
         <?=$this->section('right-sidebar')?>
     </div>
 </div>

@@ -9,11 +9,16 @@ Mandatory: claim
  */
 ?>
 
-<h2 class="heading-medium">Case numbers added</h2>
+<h2 class="heading-medium heading-refunds">Case numbers added</h2>
+<dl class="details">
 
-<?php if ($claim->getPoas() !== null) {
-    foreach ($claim->getPoas() as $poa) { ?>
-        <h3 class="heading-small">Case number:</h3>
-        <p><?= $this->getFormattedCaseNumber($poa) ?></p>
-    <?php }
-} ?>
+    <?php if ($claim->getPoas() !== null) {
+        foreach ($claim->getPoas() as $poa) { ?>
+            <div class="">
+                <dt class="details-term">Case number:</dt>
+                <dd class="detail-definition"><?= $this->getFormattedCaseNumber($poa) ?></dd>
+            </div>
+        <?php }
+    } ?>
+
+</dl>

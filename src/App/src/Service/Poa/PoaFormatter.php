@@ -116,7 +116,7 @@ class PoaFormatter
             return 'None';
         }
 
-        return join(', ', $verificationStrings);
+        return join('<br/>', $verificationStrings);
     }
 
     private function hasSystemPoas(ClaimModel $claim, string $system)

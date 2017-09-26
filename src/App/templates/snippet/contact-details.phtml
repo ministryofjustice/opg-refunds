@@ -9,17 +9,22 @@ Mandatory: application
  */
 ?>
 
-<h2 class="heading-medium">Contact details</h2>
-
-<h3 class="heading-small">Applicant:</h3>
-<p><?= $this->getApplicantName($application) ?></p>
-
-<?php if ($application->getContact()->getEmail() !== null) { ?>
-    <h3 class="heading-small">Email:</h3>
-    <p><?= $application->getContact()->getEmail() ?></p>
-<?php } ?>
-
-<?php if ($application->getContact()->getPhone() !== null) { ?>
-    <h3 class="heading-small">Telephone:</h3>
-    <p><?= $application->getContact()->getPhone() ?></p>
-<?php } ?>
+<h2 class="heading-medium heading-refunds">Contact details</h2>
+<dl class="details">
+    <div class="">
+        <dt class="details-term">Applicant:</dt>
+        <dd class="detail-definition"><?= $this->getApplicantName($application) ?></dd>
+    </div>
+    <?php if ($application->getContact()->getEmail() !== null) { ?>
+        <div class="">
+            <dt class="details-term">Email:</dt>
+            <dd class="detail-definition"><?= $application->getContact()->getEmail() ?></dd>
+        </div>
+    <?php } ?>
+    <?php if ($application->getContact()->getPhone() !== null) { ?>
+        <div class="">
+            <dt class="details-term">Telephone:</dt>
+            <dd class="detail-definition"><?= $application->getContact()->getPhone() ?></dd>
+        </div>
+    <?php } ?>
+</dl>

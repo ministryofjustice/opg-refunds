@@ -13,11 +13,10 @@ Mandatory: postcodes
  */
 ?>
 
-<h2 class="heading-medium">Verification details</h2>
-
-<h3 class="heading-small">
+<h2 class="heading-medium heading-refunds">Verification details</h2>
+<h2 class="notice notice-heading">
     <?php if ($this->isClaimVerified($claim)) { ?>
-        Claim verified
+        <strong class="bold-small">Claim verified</strong>
         <i class="icon icon-information" title="Verified">
             <span class="visually-hidden">Verified</span>
         </i>
@@ -25,51 +24,60 @@ Mandatory: postcodes
         <i class="icon icon-important">
             <span class="visually-hidden">Warning</span>
         </i>
-        Claim unverified
+        <strong class="bold-small">Claim unverified</strong>
     <?php } ?>
-</h3>
+</h2>
+<dl class="details">
+    <div class="">
+        <dt class="details-term">
+            Attorney details
+            <?php if ($this->isAttorneyVerified($claim)) { ?>
+                <i class="icon icon-information" title="Verified">
+                    <span>Verified</span>
+                </i>
+            <?php } ?>
+        </dt>
+    </div>
 
-<h3 class="heading-small">
-    Attorney details
-    <?php if ($this->isAttorneyVerified($claim)) { ?>
-        <i class="icon icon-information" title="Verified">
-            <span class="visually-hidden">Verified</span>
-        </i>
+    <?php if ($caseNumber->getPoaCaseNumber() !== null) { ?>
+    <div class="">
+        <dt class="details-term">
+            Case number:
+            <?php if ($this->isCaseNumberVerified($claim)) { ?>
+                <i class="icon icon-information" title="Verified">
+                    <span>Verified</span>
+                </i>
+            <?php } ?>
+        </dt>
+        <dd class="detail-definition"><?= $caseNumber->getPoaCaseNumber() ?></dd>
+    </div>
     <?php } ?>
-</h3>
 
-<?php if ($caseNumber->getPoaCaseNumber() !== null) { ?>
-    <h3 class="heading-small">
-        Case number:
-        <?php if ($this->isCaseNumberVerified($claim)) { ?>
-            <i class="icon icon-information" title="Verified">
-                <span class="visually-hidden">Verified</span>
-            </i>
-        <?php } ?>
-    </h3>
-    <p><?= $caseNumber->getPoaCaseNumber() ?></p>
-<?php } ?>
+    <?php if ($postcodes->getDonorPostcode() !== null) { ?>
+    <div class="">
+        <dt class="heading-small">
+            Donor postcode:
+            <?php if ($this->isDonorPostcodeVerified($claim)) { ?>
+                <i class="icon icon-information" title="Verified">
+                    <span>Verified</span>
+                </i>
+            <?php } ?>
+        </dt>
+        <dd><?= $postcodes->getDonorPostcode() ?></dd>
+    </div>
+    <?php } ?>
 
-<?php if ($postcodes->getDonorPostcode() !== null) { ?>
-    <h3 class="heading-small">
-        Donor postcode:
-        <?php if ($this->isDonorPostcodeVerified($claim)) { ?>
-            <i class="icon icon-information" title="Verified">
-                <span class="visually-hidden">Verified</span>
-            </i>
-        <?php } ?>
-    </h3>
-    <p><?= $postcodes->getDonorPostcode() ?></p>
-<?php } ?>
-
-<?php if ($postcodes->getAttorneyPostcode() !== null) { ?>
-    <h3 class="heading-small">
-        Attorney postcode:
-        <?php if ($this->isAttorneyPostcodeVerified($claim)) { ?>
-            <i class="icon icon-information" title="Verified">
-                <span class="visually-hidden">Verified</span>
-            </i>
-        <?php } ?>
-    </h3>
-    <p><?= $postcodes->getAttorneyPostcode() ?></p>
-<?php } ?>
+    <?php if ($postcodes->getAttorneyPostcode() !== null) { ?>
+    <div class="">
+        <dt class="heading-small">
+            Attorney postcode:
+            <?php if ($this->isAttorneyPostcodeVerified($claim)) { ?>
+                <i class="icon icon-information" title="Verified">
+                    <span>Verified</span>
+                </i>
+            <?php } ?>
+        </dt>
+        <dd><?= $postcodes->getAttorneyPostcode() ?></dd>
+    </div>
+    <?php } ?>
+</dl>

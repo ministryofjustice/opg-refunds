@@ -9,15 +9,20 @@ Mandatory: attorney
  */
 ?>
 
-<h2 class="heading-medium">Attorney details</h2>
-
-<h3 class="heading-small">Name:</h3>
-<p><?= $this->getFormattedName($attorney->getName()) ?></p>
-
-<h3 class="heading-small">Date of birth:</h3>
-<p><?= $this->getDateOfBirthString($attorney->getDob()) ?></p>
-
-<?php if ($attorney->getPoaName() !== null) { ?>
-    <h3 class="heading-small">Name on power attorney documents:</h3>
-    <p><?= $this->getFormattedName($attorney->getPoaName()) ?></p>
-<?php } ?>
+<h2 class="heading-medium heading-refunds">Attorney details</h2>
+<dl class="details">
+    <div class="">
+        <dt class="details-term">Name:</dt>
+        <dd class="detail-definition"><?= $this->getFormattedName($attorney->getName()) ?></dd>
+    </div>
+    <div class="">
+        <dt class="details-term">Date of birth:</dt>
+        <dd class="detail-definition"><?= $this->getDateOfBirthString($attorney->getDob()) ?></dd>
+    </div>
+    <?php if ($attorney->getPoaName() !== null) { ?>
+        <div class="">
+            <dt class="details-term">Name on power attorney documents:</dt>
+            <dd class="detail-definition"><?= $this->getFormattedName($attorney->getPoaName()) ?></dd>
+        </div>
+    <?php } ?>
+</dl>
