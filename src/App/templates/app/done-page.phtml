@@ -29,15 +29,21 @@ $this->layout('layout::default', [
     
         <h2 class="heading-medium">Just claim once</h2>
 
-        <p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
-        So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
+        <p>We know lots of people pay for more than one power of attorney. So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
+
+        <p>
+            Please tell <?= ($applicant == 'donor') ? "your attorneys" : "any other attorneys" ?> 
+            you have claimed a refund. It could slow things down if we get more than one claim.
+        </p>
 
         <h2 class="heading-medium">What happens next</h2>
         
         <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
         <p>We will contact you if we need more information.</p>
 
-        <?php $this->insert('snippet::refunds-helpline');?>
-
+        <br><br>
+        <p><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a> (takes 30 seconds)</p>
+        <p><a href="#">Print this page</a>.</p>
+        
     </div>
 </div>
