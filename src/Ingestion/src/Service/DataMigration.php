@@ -117,7 +117,7 @@ class DataMigration
                         $applicantName = "{$applicationData['attorney']['name']['title']} {$applicationData['attorney']['name']['first']} {$applicationData['attorney']['name']['last']} (Attorney)";
                     }
 
-                    $receivedDateString = date('d M Y \a\t H.i', $claim->getReceivedDateTime()->getTimestamp());
+                    $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
                     $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
                     $claim->addLog($log);
 
