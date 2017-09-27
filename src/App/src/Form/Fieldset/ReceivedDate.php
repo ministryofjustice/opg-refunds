@@ -19,7 +19,7 @@ class ReceivedDate extends Fieldset
 
     public function __construct()
     {
-        parent::__construct('receivedDate');
+        parent::__construct('received-date');
 
         $inputFilter = $this->inputFilter = new InputFilter;
 

@@ -23,7 +23,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
         <h3 class="heading-small">Add power of attorney details</h3>
 
         <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('caseNumber'),
+            'formElement' => $form->get('case-number'),
             'formLabel' => 'Case number',
             'formType' => 'text',
             'formLabelBold' => false
@@ -33,12 +33,12 @@ $postcodes = $claim->getApplication()->getPostcodes();
 
         <?php $this->insert('snippet::input-received-date', [
             'formLabel' => 'Received date',
-            'formElement' => $form->get('receivedDate'),
+            'formElement' => $form->get('received-date'),
         ]) ?>
     </div>
 
     <?php $this->insert('snippet::input-radio', [
-        'formElement' => $form->get('originalPaymentAmount'),
+        'formElement' => $form->get('original-payment-amount'),
         'question' => 'Original payment amount',
         'options' => [
             'orMore' => [

@@ -4,7 +4,10 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
+use ArrayObject;
+use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -35,7 +38,7 @@ class Poa extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  Case number field
-        $field = new Element\Textarea('caseNumber');
+        $field = new Element\Textarea('case-number');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -53,10 +56,10 @@ class Poa extends AbstractForm
         $receivedDate = new Fieldset\ReceivedDate();
 
         $this->add($receivedDate);
-        $inputFilter->add($receivedDate->getInputFilter(), 'receivedDate');
+        $inputFilter->add($receivedDate->getInputFilter(), 'received-date');
 
         //  Original payment amount
-        $field = new Element\Radio('originalPaymentAmount');
+        $field = new Element\Radio('original-payment-amount');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -135,13 +138,13 @@ class Poa extends AbstractForm
         $formData['system'] = $this->system;
 
         //  If it exists transfer the received date array into a string
-        if (array_key_exists('receivedDate', $formData)) {
-            $receivedDateDateArr = $formData['receivedDate'];
+        if (array_key_exists('received-date', $formData)) {
+            $receivedDateDateArr = $formData['received-date'];
             $receivedDateDateStr = null;
             if (!empty($receivedDateDateArr['year']) && !empty($receivedDateDateArr['month']) && !empty($receivedDateDateArr['day'])) {
                 $receivedDateDateStr = $receivedDateDateArr['year'] . '-' . $receivedDateDateArr['month'] . '-' . $receivedDateDateArr['day'];
             }
-            $formData['receivedDate'] = $receivedDateDateStr;
+            $formData['received-date'] = $receivedDateDateStr;
         }
 
         $verifications = [];
@@ -167,5 +170,23 @@ class Poa extends AbstractForm
         $formData['verifications'] = $verifications;
 
         return $formData;
+    }
+
+    public function bindModelData(PoaModel $poa)
+    {
+        $poaArray = $poa->toArray();
+
+        $receivedDate = $poa->getReceivedDate();
+        $poaArray['received-date'] = [
+            'day' => $receivedDate->format('d'),
+            'month' => $receivedDate->format('m'),
+            'year' => $receivedDate->format('Y')
+        ];
+
+        foreach ($poa->getVerifications() as $verification) {
+            $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+        }
+
+        parent::bind(new ArrayObject($poaArray));
     }
 }

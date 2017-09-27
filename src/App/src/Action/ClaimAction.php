@@ -4,6 +4,7 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
+use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,10 +21,15 @@ class ClaimAction extends AbstractClaimAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse
+     * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
+
+        if ($claim === null) {
+            throw new Exception('Claim not found', 404);
+        }
 
         $form = $this->getForm($request, $claim);
 

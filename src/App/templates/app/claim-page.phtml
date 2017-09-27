@@ -44,7 +44,7 @@ $this->addErrorMap([
             <?php foreach ($this->getSiriusPoas($claim) as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
-                    <td><a href="#"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><a href="/claim/<?= $claim->getId() ?>/poa/sirius/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
                     <td>£TBD</td>
                     <td>£TBD</td>
@@ -83,7 +83,7 @@ $this->addErrorMap([
             <?php foreach ($this->getMerisPoas($claim) as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
-                    <td><a href="#"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><a href="/claim/<?= $claim->getId() ?>/poa/meris/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
                     <td>£TBD</td>
                     <td>£TBD</td>

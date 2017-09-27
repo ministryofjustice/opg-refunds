@@ -6,6 +6,7 @@ use App\Action\AbstractClaimAction;
 use App\Form\Poa;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -22,12 +23,23 @@ abstract class AbstractPoaAction extends AbstractClaimAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse
+     * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
 
+        /** @var Poa $form */
         $form = $this->getForm($request, $claim);
+
+        if ($this->modelId !== null) {
+            //Edit page
+            $poa = $this->getPoa($claim);
+            if ($poa === null) {
+                throw new Exception('POA not found', 404);
+            }
+            $form->bindModelData($poa);
+        }
 
         return new HtmlResponse($this->getTemplateRenderer()->render($this->templateName, [
             'form'  => $form,
@@ -75,5 +87,18 @@ abstract class AbstractPoaAction extends AbstractClaimAction
             'claim' => $claim,
             'form'  => $form
         ]));
+    }
+
+    protected function getPoa(ClaimModel $claim)
+    {
+        if ($claim->getPoas() !== null) {
+            foreach ($claim->getPoas() as $poa) {
+                if ($poa->getId() == $this->modelId) {
+                    return $poa;
+                }
+            }
+        }
+
+        return null;
     }
 }
