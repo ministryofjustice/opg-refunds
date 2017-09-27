@@ -51,6 +51,7 @@ class ConfigProvider
                 Action\PostcodeAction::class => Action\PostcodeAction::class,
                 Action\TermsPageAction::class => Action\TermsPageAction::class,
                 Action\CookiesPageAction::class => Action\CookiesPageAction::class,
+                Action\ExceptionAction::class => Action\ExceptionAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
