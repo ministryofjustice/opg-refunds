@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -90,7 +91,7 @@ class Claim extends AbstractEntity
     protected $accountHash;
 
     /**
-     * @var Poa[]
+     * @var Collection|Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $poas;
@@ -114,7 +115,7 @@ class Claim extends AbstractEntity
     protected $payment;
 
     /**
-     * @var Log[]
+     * @var Collection|Log[]
      * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $logs;
@@ -316,7 +317,7 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Poa[]
+     * @return Collection|Poa[]
      */
     public function getPoas()
     {
@@ -324,19 +325,11 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @param Poa[] $poas
+     * @param Collection|Poa[] $poas
      */
     public function setPoas(array $poas)
     {
         $this->poas = $poas;
-    }
-
-    /**
-     * @param Poa $poa
-     */
-    public function addPoa(Poa $poa)
-    {
-        $this->poas[] = $poa;
     }
 
     /**
@@ -388,7 +381,7 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Log[]
+     * @return Collection|Log[]
      */
     public function getLogs()
     {
@@ -396,19 +389,11 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @param Log[] $logs
+     * @param Collection|Log[] $logs
      */
     public function setLogs($logs)
     {
         $this->logs = $logs;
-    }
-
-    /**
-     * @param Log $log
-     */
-    public function addLog(Log $log)
-    {
-        $this->logs[] = $log;
     }
 
     /**

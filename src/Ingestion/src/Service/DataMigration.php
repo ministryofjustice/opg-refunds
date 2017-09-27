@@ -105,6 +105,7 @@ class DataMigration
         $application = $this->getNextApplication();
         if ($application !== null) {
             $claim = $this->getClaim($application);
+            $this->casesEntityManager->persist($claim);
 
             if ($this->caseRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
@@ -119,9 +120,8 @@ class DataMigration
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
                     $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
-                    $claim->addLog($log);
 
-                    $this->casesEntityManager->persist($claim);
+                    $this->casesEntityManager->persist($log);
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);

@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -59,7 +60,7 @@ class Poa extends AbstractEntity
     protected $claim;
 
     /**
-     * @var Verification[]
+     * @var Collection|Verification[]
      * @ORM\OneToMany(targetEntity="Verification", mappedBy="poa", cascade={"persist", "remove"})
      */
     protected $verifications;
@@ -162,7 +163,7 @@ class Poa extends AbstractEntity
     }
 
     /**
-     * @return Verification[]
+     * @return Collection|Verification[]
      */
     public function getVerifications()
     {
@@ -170,18 +171,10 @@ class Poa extends AbstractEntity
     }
 
     /**
-     * @param Verification[] $verifications
+     * @param Collection|Verification[] $verifications
      */
-    public function setVerifications(array $verifications)
+    public function setVerifications($verifications)
     {
         $this->verifications = $verifications;
-    }
-
-    /**
-     * @param Verification $verification
-     */
-    public function addVerification(Verification $verification)
-    {
-        $this->verifications[] = $verification;
     }
 }

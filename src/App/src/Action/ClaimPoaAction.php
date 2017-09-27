@@ -90,4 +90,27 @@ class ClaimPoaAction extends AbstractRestfulAction
 
         return new JsonResponse($poa->toArray());
     }
+
+    /**
+     * UPDATE/PUT edit action
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @throws Exception
+     */
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $requestBody = $request->getParsedBody();
+        $poaModel = new PoaModel($requestBody);
+
+        $claimId = $request->getAttribute('claimId');
+        $poaId = $request->getAttribute('id');
+
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
+
+        $poa = $this->claimService->editPoa($claimId, $poaId, $user->getId(), $poaModel);
+
+        return new JsonResponse($poa->toArray());
+    }
 }

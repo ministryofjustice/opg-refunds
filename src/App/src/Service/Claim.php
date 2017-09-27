@@ -32,6 +32,11 @@ class Claim
     /**
      * @var EntityRepository
      */
+    private $poaRepository;
+
+    /**
+     * @var EntityRepository
+     */
     private $userRepository;
 
     /**
@@ -53,6 +58,7 @@ class Claim
     public function __construct(EntityManager $entityManager, DataMigration $dataMigrationService)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
+        $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->entityManager = $entityManager;
@@ -208,9 +214,8 @@ class Claim
         ]);
 
         $log = new LogEntity($title, $message, $claim, $user);
-        $claim->addLog($log);
-        $claim->setUpdatedDateTime(new DateTime());
 
+        $this->entityManager->persist($log);
         $this->entityManager->flush();
 
         /** @var LogModel $logModel */
@@ -221,18 +226,73 @@ class Claim
     public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claim->setUpdatedDateTime(new DateTime());
 
         $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
         $this->entityManager->persist($poa);
 
         foreach ($poaModel->getVerifications() as $verificationModel) {
             $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-            $poa->addVerification($verification);
             $this->entityManager->persist($verification);
         }
 
-        $claim->addPoa($poa);
+        $this->entityManager->flush();
+
+        $claim = $this->getClaimEntity($claimId);
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
+    }
+
+    public function editPoa(int $claimId, int $poaId, int $userId, PoaModel $poaModel)
+    {
+        $claim = $this->getClaimEntity($claimId);
         $claim->setUpdatedDateTime(new DateTime());
+
+        /** @var PoaEntity $poa */
+        $poa = $this->poaRepository->findOneBy([
+            'id' => $poaId,
+        ]);
+
+        $poa->setCaseNumber($poaModel->getCaseNumber());
+        $poa->setReceivedDate($poaModel->getReceivedDate());
+        $poa->setOriginalPaymentAmount($poaModel->getOriginalPaymentAmount());
+
+        //Remove any that are no longer present on supplied document
+        foreach ($poa->getVerifications() as $verificationEntity) {
+            $remove = true;
+
+            foreach ($poaModel->getVerifications() as $verificationModel) {
+                if ($verificationEntity->getType() === $verificationModel->getType()) {
+                    $remove = false;
+                    break;
+                }
+            }
+
+            if ($remove) {
+                $this->entityManager->remove($verificationEntity);
+            }
+        }
+
+        //Update existing verifications
+        foreach ($poaModel->getVerifications() as $verificationModel) {
+            //Default id to 0 so this can be detected as a new verification later
+            $verificationModel->setId(0);
+
+            foreach ($poa->getVerifications() as $verificationEntity) {
+                if ($verificationModel->getType() === $verificationEntity->getType()) {
+                    $verificationEntity->setPasses($verificationModel->isPasses());
+                    $verificationModel->setId($verificationEntity->getId());
+                }
+            }
+
+            if ($verificationModel->getId() === 0) {
+                //New verification so add
+                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                $this->entityManager->persist($verification);
+            }
+        }
 
         $this->entityManager->flush();
 
