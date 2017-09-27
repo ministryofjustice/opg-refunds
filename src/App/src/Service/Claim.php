@@ -238,7 +238,7 @@ class Claim
 
         $this->entityManager->flush();
 
-        $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim");
+        $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -299,6 +299,28 @@ class Claim
         $this->entityManager->flush();
 
         $this->addLog($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
+
+        $claim = $this->getClaimEntity($claimId);
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
+    }
+
+    public function deletePoa($claimId, $poaId, $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claim->setUpdatedDateTime(new DateTime());
+
+        /** @var PoaEntity $poa */
+        $poa = $this->poaRepository->findOneBy([
+            'id' => $poaId,
+        ]);
+
+        $this->entityManager->remove($poa);
+        $this->entityManager->flush();
+
+        $this->addLog($claimId, $userId, 'POA delete', "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
