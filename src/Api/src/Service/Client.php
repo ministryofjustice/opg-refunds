@@ -215,7 +215,29 @@ class Client
         }
     }
 
-    //  TODO - Create httpDelete function
+    /**
+     * Performs a DELETE against the API
+     *
+     * @param string $path
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpDelete($path)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
+
+        $request = new Request('DELETE', $url, $this->buildHeaders());
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
 
     /**
      * Generates the standard set of HTTP headers expected by the API

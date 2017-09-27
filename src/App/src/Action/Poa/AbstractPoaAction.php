@@ -6,7 +6,6 @@ use App\Action\AbstractClaimAction;
 use App\Form\Poa;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -33,6 +32,11 @@ abstract class AbstractPoaAction extends AbstractClaimAction
         /** @var Poa $form */
         $form = $this->getForm($request, $claim);
 
+        $viewModel = [
+            'form' => $form,
+            'claim' => $claim
+        ];
+
         if ($this->modelId !== null) {
             //Edit page
             $poa = $this->getPoa($claim);
@@ -40,12 +44,14 @@ abstract class AbstractPoaAction extends AbstractClaimAction
                 throw new Exception('POA not found', 404);
             }
             $form->bindModelData($poa);
+
+            $viewModel['deleteUrl'] = $this->getUrlHelper()->generate('claim.poa.delete', [
+                'claimId' => $request->getAttribute('claimId'),
+                'id' => $this->modelId
+            ]);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render($this->templateName, [
-            'form'  => $form,
-            'claim' => $claim
-        ]));
+        return new HtmlResponse($this->getTemplateRenderer()->render($this->templateName, $viewModel));
     }
 
     /**
@@ -134,18 +140,5 @@ abstract class AbstractPoaAction extends AbstractClaimAction
             'form'  => $form,
             'claim' => $claim
         ]));
-    }
-
-    protected function getPoa(ClaimModel $claim)
-    {
-        if ($claim->getPoas() !== null) {
-            foreach ($claim->getPoas() as $poa) {
-                if ($poa->getId() == $this->modelId) {
-                    return $poa;
-                }
-            }
-        }
-
-        return null;
     }
 }

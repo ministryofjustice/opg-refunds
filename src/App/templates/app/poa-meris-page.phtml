@@ -28,6 +28,7 @@ $this->addErrorMap([
 <h2 class="heading-medium">Meris power of attorney details</h2>
 
 <?php $this->insert('snippet::poa-form', [
-    'form'  => $form,
-    'claim' => $claim
+    'form'      => $form,
+    'claim'     => $claim,
+    'deleteUrl' => isset($deleteUrl) ? $deleteUrl : null
 ]) ?>

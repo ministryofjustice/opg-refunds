@@ -46,7 +46,11 @@ abstract class AbstractModelAction extends AbstractApiClientAction
         $actionName = $actionMappings[$method];
 
         if ($method == RequestMethodInterface::METHOD_POST && !is_null($this->modelId)) {
-            $actionName = 'edit';
+            if (strpos($request->getUri(), 'delete')) {
+                $actionName = 'delete';
+            } else {
+                $actionName = 'edit';
+            }
         }
 
         return $this->{$actionName . 'Action'}($request, $delegate);

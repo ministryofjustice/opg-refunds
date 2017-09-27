@@ -48,3 +48,4 @@ $app->get('/claim/{id:\d+}/poa/sirius/cancel-none-found', App\Action\Poa\PoaSiri
 $app->route('/claim/{claimId:\d+}/poa/meris[/{id:\d+}]', App\Action\Poa\PoaMerisAction::class, ['GET', 'POST'], 'claim.poa.meris');
 $app->get('/claim/{id:\d+}/poa/meris/none-found', App\Action\Poa\PoaMerisNoneFoundAction::class, 'claim.poa.meris.none.found');
 $app->get('/claim/{id:\d+}/poa/meris/cancel-none-found', App\Action\Poa\PoaMerisCancelNoneFoundAction::class, 'claim.poa.meris.cancel.none.found');
+$app->route('/claim/{claimId:\d+}/poa/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');

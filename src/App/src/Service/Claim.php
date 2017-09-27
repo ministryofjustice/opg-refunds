@@ -136,11 +136,22 @@ class Claim implements ApiClientInterface
         return new ClaimModel($claimArray);
     }
 
+    public function deletePoa($claimId, $poaId)
+    {
+        $claimArray = $this->getApiClient()->httpDelete("/v1/cases/claim/{$claimId}/poa/{$poaId}");
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
     /**
      * @param ClaimModel $claim
      * @param PoaModel $poa
      */
-    public function updatePoaCaseNumberVerification(ClaimModel $claim, PoaModel $poa)
+    private function updatePoaCaseNumberVerification(ClaimModel $claim, PoaModel $poa)
     {
         $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
         if ($poaCaseNumber !== null) {

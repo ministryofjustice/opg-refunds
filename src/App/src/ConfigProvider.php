@@ -65,6 +65,7 @@ class ConfigProvider
                 Action\Poa\PoaMerisAction::class => Action\Poa\PoaMerisActionFactory::class,
                 Action\Poa\PoaMerisNoneFoundAction::class => Action\Poa\PoaMerisNoneFoundActionFactory::class,
                 Action\Poa\PoaMerisCancelNoneFoundAction::class => Action\Poa\PoaMerisCancelNoneFoundActionFactory::class,
+                Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
 
                 // Middleware
                 Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,

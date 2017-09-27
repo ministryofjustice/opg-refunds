@@ -27,12 +27,25 @@ abstract class AbstractClaimAction extends AbstractModelAction
      * @param ServerRequestInterface $request
      * @return \Opg\Refunds\Caseworker\DataModel\Cases\Claim
      */
-    public function getClaim(ServerRequestInterface $request): ClaimModel
+    protected function getClaim(ServerRequestInterface $request): ClaimModel
     {
         //Retrieve claim to verify it exists and the user has access to it
         $claimId = $request->getAttribute('claimId') ?: $this->modelId;
         $claim = $this->claimService->getClaim($claimId, $request->getAttribute('identity')->getId());
         return $claim;
+    }
+
+    protected function getPoa(ClaimModel $claim)
+    {
+        if ($claim->getPoas() !== null) {
+            foreach ($claim->getPoas() as $poa) {
+                if ($poa->getId() == $this->modelId) {
+                    return $poa;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
