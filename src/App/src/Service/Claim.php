@@ -238,6 +238,8 @@ class Claim
 
         $this->entityManager->flush();
 
+        $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim");
+
         $claim = $this->getClaimEntity($claimId);
 
         /** @var ClaimModel $claimModel */
@@ -295,6 +297,8 @@ class Claim
         }
 
         $this->entityManager->flush();
+
+        $this->addLog($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
