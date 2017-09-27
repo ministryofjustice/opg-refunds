@@ -50,7 +50,6 @@ class Log extends AbstractEntity
      * @var Claim
      * @ORM\ManyToOne(targetEntity="Claim")
      * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
-     * @ORM\OrderBy({"created_datetime" = "ASC"})
      */
     protected $claim;
 

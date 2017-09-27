@@ -93,6 +93,7 @@ class Claim extends AbstractEntity
     /**
      * @var Collection|Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"receivedDate" = "DESC"})
      */
     protected $poas;
 
@@ -117,6 +118,7 @@ class Claim extends AbstractEntity
     /**
      * @var Collection|Log[]
      * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"createdDateTime" = "DESC"})
      */
     protected $logs;
 

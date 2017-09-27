@@ -73,6 +73,7 @@ class User extends AbstractEntity
     /**
      * @var Collection|Claim[]
      * @ORM\OneToMany(targetEntity="Claim", mappedBy="assignedTo")
+     * @ORM\OrderBy({"updatedDateTime" = "ASC"})
      */
     protected $assignedClaims;
 
