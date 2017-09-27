@@ -56,20 +56,20 @@
                 }
             ],
             "description": "PHP client for GOV.UK Notifications",
-            "time": "2017-05-12T15:02:38+00:00"
+            "time": "2017-05-24T10:02:18+00:00"
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.14",
+            "version": "3.36.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "4ceceb6f1584574497da727b961676db29cbf9a1"
+                "reference": "abab17a29e4fb1947b6951b5e0afc5b5e9e9de27"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/4ceceb6f1584574497da727b961676db29cbf9a1",
-                "reference": "4ceceb6f1584574497da727b961676db29cbf9a1",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/abab17a29e4fb1947b6951b5e0afc5b5e9e9de27",
+                "reference": "abab17a29e4fb1947b6951b5e0afc5b5e9e9de27",
                 "shasum": ""
             },
             "require": {
@@ -136,7 +136,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-09-22T19:41:14+00:00"
+            "time": "2017-09-26T18:18:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -666,7 +666,7 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
+                "url": "https://github.com/ministryofjustice/opg-refunds-logger.git",
                 "reference": "9c2cd749a6ac5c0cf1f378566fe024e51c49655d"
             },
             "dist": {
@@ -705,7 +705,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
             },
-            "time": "2017-09-26 12:47:44"
+            "time": "2017-09-26T12:47:44+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
