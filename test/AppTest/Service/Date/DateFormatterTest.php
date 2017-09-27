@@ -33,29 +33,74 @@ class DateFormatterTest extends TestCase
         $this->assertEquals('25 September', $formatted);
     }
 
-    public function testGetDaysAgoToday()
+    public function testGetTimeIntervalAgoJustNow()
     {
-        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25'))->getTimestamp());
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
 
-        $formatted = $this->dateFormatter->getDaysAgo(new DateTime('2017-09-25'));
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T09:18:38.000000+0000'));
 
-        $this->assertEquals('Today', $formatted);
+        $this->assertEquals('Just now', $formatted);
     }
 
-    public function testGetDaysAgoOneDay()
+    public function testGetTimeIntervalAgo1MinuteAgo()
     {
-        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25'))->getTimestamp());
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
 
-        $formatted = $this->dateFormatter->getDaysAgo(new DateTime('2017-09-24'));
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T09:18:37.000000+0000'));
 
-        $this->assertEquals('1 day ago', $formatted);
+        $this->assertEquals('1 minute ago', $formatted);
     }
 
-    public function testGetDaysAgoTwoDays()
+    public function testGetTimeIntervalAgo2MinutesAgo()
     {
-        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25'))->getTimestamp());
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
 
-        $formatted = $this->dateFormatter->getDaysAgo(new DateTime('2017-09-23'));
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T09:17:37.000000+0000'));
+
+        $this->assertEquals('2 minutes ago', $formatted);
+    }
+
+    public function testGetTimeIntervalAgo59MinutesAgo()
+    {
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T08:19:38.000000+0000'));
+
+        $this->assertEquals('59 minutes ago', $formatted);
+    }
+
+    public function testGetTimeIntervalAgo1HourAgo()
+    {
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T08:19:36.000000+0000'));
+
+        $this->assertEquals('1 hour ago', $formatted);
+    }
+
+    public function testGetTimeIntervalAgo2HoursAgo()
+    {
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-25T07:19:36.000000+0000'));
+
+        $this->assertEquals('2 hours ago', $formatted);
+    }
+
+    public function testGetTimeIntervalYesterday()
+    {
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-24T17:19:36.000000+0000'));
+
+        $this->assertEquals('Yesterday', $formatted);
+    }
+
+    public function testGetTimeIntervalAgoTwoDays()
+    {
+        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->dateFormatter->getTimeIntervalAgo(new DateTime('2017-09-23T12:19:36.000000+0000'));
 
         $this->assertEquals('2 days ago', $formatted);
     }
@@ -71,6 +116,6 @@ class DateFormatterTest extends TestCase
     {
         $formatted = $this->dateFormatter->getLogTimeString(new DateTime('2017-09-25T09:19:37.000000+0000'));
 
-        $this->assertEquals('09.19', $formatted);
+        $this->assertEquals('09:19', $formatted);
     }
 }

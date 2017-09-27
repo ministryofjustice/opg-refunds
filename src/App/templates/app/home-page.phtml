@@ -34,7 +34,7 @@
                     <td><a href="/claim/<?= $claim->getId() ?>"><?= $claim->getReferenceNumber() ?></a></td>
                     <td><?= $claim->getDonorName() ?></td>
                     <td><?= $this->getDayAndFullTextMonth($claim->getReceivedDateTime()) ?></td>
-                    <td><?= $this->getDaysAgo($claim->getUpdatedDateTime()) ?></td>
+                    <td><?= $this->getTimeIntervalAgo($claim->getUpdatedDateTime()) ?></td>
                 </tr>
             <?php } ?>
 

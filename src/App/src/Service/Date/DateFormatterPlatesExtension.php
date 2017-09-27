@@ -21,7 +21,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
     public function register(Engine $engine)
     {
         $engine->registerFunction('getDayAndFullTextMonth', [$this->formatter, 'getDayAndFullTextMonth']);
-        $engine->registerFunction('getDaysAgo', [$this->formatter, 'getDaysAgo']);
+        $engine->registerFunction('getTimeIntervalAgo', [$this->formatter, 'getTimeIntervalAgo']);
         $engine->registerFunction('getLogDateString', [$this->formatter, 'getLogDateString']);
         $engine->registerFunction('getLogTimeString', [$this->formatter, 'getLogTimeString']);
         $engine->registerFunction('getDateOfBirthString', [$this->formatter, 'getDateOfBirthString']);
