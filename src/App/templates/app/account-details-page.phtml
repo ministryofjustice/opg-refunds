@@ -59,12 +59,21 @@ $this->addErrorMap([
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <p>
-    If a refund is approved it will be paid to this account. Our terms and 
-    conditions explain <a href="#">how we keep bank details safe</a>.
+    If a refund is approved it will be paid to this account.
 </p>
 
-<p>We can only pay refunds to UK personal bank accounts.</p>
+<p>We can only pay refunds to UK bank accounts.</p>
 
+<?php $this->insert('snippet::help-text', [
+        'title' => 'How we keep your information safe',
+        'markup' => '
+        <p>We encrypt this bank account information to keep it safe. Only specially 
+        authorised people can see bank details, which are only ever used to process a refund.</p>
+        <p>Find out more about <a href="/terms">how we keep your information safe</a>.</p>
+        '
+]);
+?>
+<br>
 <form action="" method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
