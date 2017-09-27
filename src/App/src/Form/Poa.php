@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use ArrayObject;
-use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Zend\Form\Element;
@@ -175,6 +174,9 @@ class Poa extends AbstractForm
     public function bindModelData(PoaModel $poa)
     {
         $poaArray = $poa->toArray();
+        unset($poaArray['id']);
+        unset($poaArray['system']);
+        unset($poaArray['verifications']);
 
         $receivedDate = $poa->getReceivedDate();
         $poaArray['received-date'] = [
@@ -184,7 +186,10 @@ class Poa extends AbstractForm
         ];
 
         foreach ($poa->getVerifications() as $verification) {
-            $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+            //Case number verification is automatic and is not displayed on the page so do not include it
+            if ($verification->getType() !== 'case-number') {
+                $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+            }
         }
 
         parent::bind(new ArrayObject($poaArray));

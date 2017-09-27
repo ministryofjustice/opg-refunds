@@ -110,18 +110,7 @@ class Claim implements ApiClientInterface
      */
     public function addPoa(ClaimModel $claim, PoaModel $poa)
     {
-        $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
-        if ($poaCaseNumber !== null) {
-            if ($poaCaseNumber === $poa->getCaseNumber()) {
-                //Add verification for case number
-                $verifications = $poa->getVerifications();
-                $verifications[] = new VerificationModel([
-                    'type'   => 'case-number',
-                    'passes' => 'yes'
-                ]);
-                $poa->setVerifications($verifications);
-            }
-        }
+        $this->updatePoaCaseNumberVerification($claim, $poa);
 
         $poaArray = $poa->toArray();
         $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poaArray);
@@ -131,5 +120,39 @@ class Claim implements ApiClientInterface
         }
 
         return new ClaimModel($claimArray);
+    }
+
+    public function editPoa(ClaimModel $claim, PoaModel $poa, int $poaId)
+    {
+        $this->updatePoaCaseNumberVerification($claim, $poa);
+
+        $poaArray = $poa->toArray();
+        $claimArray = $this->getApiClient()->httpPut("/v1/cases/claim/{$claim->getId()}/poa/{$poaId}", $poaArray);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
+    /**
+     * @param ClaimModel $claim
+     * @param PoaModel $poa
+     */
+    public function updatePoaCaseNumberVerification(ClaimModel $claim, PoaModel $poa)
+    {
+        $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
+        if ($poaCaseNumber !== null) {
+            if ($poaCaseNumber === $poa->getCaseNumber()) {
+                //Add verification for case number
+                $verifications = $poa->getVerifications();
+                $verifications[] = new VerificationModel([
+                    'type' => 'case-number',
+                    'passes' => 'yes'
+                ]);
+                $poa->setVerifications($verifications);
+            }
+        }
     }
 }
