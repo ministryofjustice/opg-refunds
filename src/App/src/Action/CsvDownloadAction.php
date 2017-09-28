@@ -2,6 +2,8 @@
 
 namespace App\Action;
 
+use Api\Service\Initializers\ApiClientInterface;
+use Api\Service\Initializers\ApiClientTrait;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -12,8 +14,9 @@ use Zend\Diactoros\Stream;
  * Class CsvDownloadAction
  * @package App\Action
  */
-class CsvDownloadAction extends AbstractApiClientAction
+class CsvDownloadAction extends AbstractAction implements ApiClientInterface
 {
+    use ApiClientTrait;
 
     /**
      * Process an incoming server request and return a response, optionally delegating

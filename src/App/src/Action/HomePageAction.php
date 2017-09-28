@@ -2,9 +2,10 @@
 
 namespace App\Action;
 
+use Api\Service\Initializers\ApiClientInterface;
+use Api\Service\Initializers\ApiClientTrait;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -12,8 +13,10 @@ use Zend\Diactoros\Response\HtmlResponse;
  * Class HomePageAction
  * @package App\Action
  */
-class HomePageAction extends AbstractApiClientAction
+class HomePageAction extends AbstractAction implements ApiClientInterface
 {
+    use ApiClientTrait;
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
