@@ -6,6 +6,7 @@ use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -85,6 +86,18 @@ class ClaimAction extends AbstractRestfulAction
 
         if (isset($requestBody['noMerisPoas'])) {
             $this->claimService->setNoMerisPoas($claimId, $user->getId(), $requestBody['noMerisPoas']);
+        }
+
+        if (isset($requestBody['status'])) {
+            if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
+                $this->claimService->setStatusAccepted($claimId, $user->getId());
+            }
+            if ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
+                if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
+                    throw new Exception('Rejection reason and description are required', 400);
+                }
+                $this->claimService->setStatusRejected($claimId, $user->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
+            }
         }
 
         $claim = $this->claimService->get($claimId);

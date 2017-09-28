@@ -110,6 +110,18 @@ class Claim extends AbstractEntity
     protected $noMerisPoas;
 
     /**
+     * @var string
+     * @ORM\Column(name="rejection_reason", type="string", nullable=true)
+     */
+    protected $rejectionReason;
+
+    /**
+     * @var string
+     * @ORM\Column(name="rejection_reason_description", type="string", nullable=true)
+     */
+    protected $rejectionReasonDescription;
+
+    /**
      * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
      */
@@ -364,6 +376,38 @@ class Claim extends AbstractEntity
     public function setNoMerisPoas(bool $noMerisPoas)
     {
         $this->noMerisPoas = $noMerisPoas;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReason()
+    {
+        return $this->rejectionReason;
+    }
+
+    /**
+     * @param string $rejectionReason
+     */
+    public function setRejectionReason(string $rejectionReason)
+    {
+        $this->rejectionReason = $rejectionReason;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReasonDescription()
+    {
+        return $this->rejectionReasonDescription;
+    }
+
+    /**
+     * @param string $rejectionReasonDescription
+     */
+    public function setRejectionReasonDescription(string $rejectionReasonDescription)
+    {
+        $this->rejectionReasonDescription = $rejectionReasonDescription;
     }
 
     /**

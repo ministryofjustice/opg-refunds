@@ -329,6 +329,40 @@ class Claim
         return $claimModel;
     }
 
+    public function setStatusAccepted($claimId, $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedDateTime(new DateTime());
+
+        $this->addLog(
+            $claimId,
+            $userId,
+            'Claim accepted',
+            "Caseworker accepted the claim and it will be processed in the next refund run"
+        );
+    }
+
+    public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $claim->setStatus(ClaimModel::STATUS_REJECTED);
+        $claim->setRejectionReason($rejectionReason);
+        $claim->setRejectionReasonDescription($rejectionReasonDescription);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedDateTime(new DateTime());
+
+        $this->addLog(
+            $claimId,
+            $userId,
+            'Claim rejected',
+            "Caseworker rejected the claim due to {$rejectionReason}"
+        );
+    }
+
     /**
      * @param $claimId
      * @return ClaimEntity
