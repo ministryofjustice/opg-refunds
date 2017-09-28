@@ -1,0 +1,18 @@
+<?php
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<?php if($this->isClaimComplete($claim)) { ?>
+    <?php if($this->isClaimVerified($claim)) { ?>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/approve">Approve claim</a>
+    <?php } else { ?>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/reject" style="background-color: red">Reject claim</a>
+    <?php } ?>
+<?php } ?>

@@ -2,9 +2,11 @@
 
 namespace App\Action;
 
+use Api\Service\Initializers\ApiClientInterface;
+use Api\Service\Initializers\ApiClientTrait;
+use App\Form\ProcessNewClaim;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -12,8 +14,10 @@ use Zend\Diactoros\Response\HtmlResponse;
  * Class HomePageAction
  * @package App\Action
  */
-class HomePageAction extends AbstractApiClientAction
+class HomePageAction extends AbstractAction implements ApiClientInterface
 {
+    use ApiClientTrait;
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -28,17 +32,18 @@ class HomePageAction extends AbstractApiClientAction
         $userData = $this->getApiClient()->getUser($identity->getId());
         $user = new User($userData);
 
-        $claims = [];
+        $flash = $request->getAttribute('flash');
+        $messages = $flash->getMessages();
 
-        $claimsData = $this->getApiClient()->getClaims();
-
-        foreach ($claimsData as $claimData) {
-            $claims[] = new Claim($claimData);
-        }
+        $session = $request->getAttribute('session');
+        $form = new ProcessNewClaim([
+            'csrf' => $session['meta']['csrf'],
+        ]);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-            'user'  => $user,
-            'claims' => $claims,
+            'form'     => $form,
+            'user'     => $user,
+            'messages' => $messages
         ]));
     }
 }

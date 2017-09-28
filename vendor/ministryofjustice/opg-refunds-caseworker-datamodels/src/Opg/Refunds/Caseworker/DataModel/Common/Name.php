@@ -37,7 +37,7 @@ class Name extends AbstractDataModel
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): Name
     {
         $this->title = $title;
 
@@ -56,7 +56,7 @@ class Name extends AbstractDataModel
      * @param string $first
      * @return $this
      */
-    public function setFirst(string $first)
+    public function setFirst(string $first): Name
     {
         $this->first = $first;
 
@@ -75,7 +75,7 @@ class Name extends AbstractDataModel
      * @param string $last
      * @return $this
      */
-    public function setLast(string $last)
+    public function setLast(string $last): Name
     {
         $this->last = $last;
 

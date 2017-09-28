@@ -21,6 +21,7 @@
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
+        "slim/flash": "^0.2.0",
         "zendframework/zend-authentication": "^2.5",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
@@ -40,11 +41,12 @@
         "zendframework/zend-validator": "^2.10"
     },
     "require-dev": {
+        "filp/whoops": "^2.1.7",
+        "mockery/mockery": "^0.9.9",
         "phpunit/phpunit": "^6.0.8 || ^5.7.15",
         "squizlabs/php_codesniffer": "^2.8.1",
-        "zfcampus/zf-development-mode": "^3.1",
         "zendframework/zend-expressive-tooling": "^0.4.1",
-        "filp/whoops": "^2.1.7"
+        "zfcampus/zf-development-mode": "^3.1"
     },
     "autoload": {
         "psr-4": {

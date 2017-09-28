@@ -1,0 +1,63 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimReject $form
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium">Rejection reasons</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('rejection-reason'),
+        'question' => '',
+        'options' => [
+            'notInDateRange' => [
+                'optionLabel' => 'Not in date range'
+            ],
+            'noDonorLpaFound' => [
+                'optionLabel' => 'LPA for associated donor could not be found'
+            ],
+            'previouslyRefunded' => [
+                'optionLabel' => 'Refund already given'
+            ],
+            'noFeesPaid' => [
+                'optionLabel' => 'No fees paid'
+            ],
+            'claimNotVerified' => [
+                'optionLabel' => 'Claim isn’t verified'
+            ],
+            'other' => [
+                'optionLabel' => 'Other'
+            ],
+        ],
+    ])
+    ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('rejection-reason-description'),
+        'formLabel' => 'Description',
+        'formType' => 'textarea',
+        'formLabelBold' => false
+    ]) ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Reject claim'>
+        <a class="button button-link" href="/claim/<?= $claim->getId() ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

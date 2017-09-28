@@ -1,0 +1,30 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimAccept $form
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<h2 class="heading-medium">Approve claim</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <p>Are you sure you want to approve the claim with claim code: <?= $claim->getReferenceNumber() ?>?</p>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Approve claim'>
+        <a class="button button-link" href="/claim/<?= $claim->getId() ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

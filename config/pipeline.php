@@ -42,6 +42,7 @@ $app->pipe(UrlHelperMiddleware::class);
 
 $app->pipe(Middleware\Session\SessionMiddleware::class);
 $app->pipe(Middleware\Session\CsrfMiddleware::class);
+$app->pipe(Middleware\Session\SlimFlashMiddleware::class);
 
 // Authorization middleware to detemine if the user can access the requested route
 $app->pipe(Middleware\Auth\AuthorizationMiddleware::class);

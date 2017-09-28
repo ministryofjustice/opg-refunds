@@ -1,0 +1,119 @@
+<?php
+/*
+Without error
+Mandatory: form
+Mandatory: claim
+Mandatory: system
+*/
+
+/**
+ * @var \App\Form\Poa $form
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var string $system
+ */
+
+$attorney = $claim->getApplication()->getAttorney();
+$attorneyName = $attorney->getPoaName() !== null ? $this->getFormattedName($attorney->getPoaName()) : $this->getFormattedName($attorney->getName());
+$postcodes = $claim->getApplication()->getPostcodes();
+?>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <input type="hidden" name="system" value="<?= $system ?>">
+
+    <div>
+        <h3 class="heading-small">Add power of attorney details</h3>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('case-number'),
+            'formLabel' => 'Case number',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+        <h3 class="heading-small">Received date - TBC?</h3>
+
+        <?php $this->insert('snippet::input-received-date', [
+            'formLabel' => 'Received date',
+            'formElement' => $form->get('received-date'),
+        ]) ?>
+    </div>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('original-payment-amount'),
+        'question' => 'Original payment amount',
+        'options' => [
+            'orMore' => [
+                'optionLabel' => '£110 or more'
+            ],
+            'lessThan' => [
+                'optionLabel' => 'Less than £110'
+            ],
+            'noRefund' => [
+                'optionLabel' => 'No refund amount'
+            ],
+        ],
+    ])
+    ?>
+
+    <h3 class="heading-small">Check verification details</h3>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('attorney'),
+        'question' => "Does {$attorneyName} and {$this->getDateOfBirthString($attorney->getDob())} match one attorney's details on the POA?",
+        'options' => [
+            'yes' => [
+                'optionLabel' => 'Yes'
+            ],
+            'no' => [
+                'optionLabel' => 'No'
+            ],
+        ],
+    ])
+    ?>
+
+    <?php if ($postcodes->getDonorPostcode() !== null) {
+        $this->insert('snippet::input-radio', [
+            'formElement' => $form->get('donor-postcode'),
+            'question' => "Does {$postcodes->getDonorPostcode()} match the donor's address on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
+    ?>
+
+    <?php if ($postcodes->getAttorneyPostcode() !== null) {
+        $this->insert('snippet::input-radio', [
+            'formElement' => $form->get('attorney-postcode'),
+            'question' => "Does {$postcodes->getAttorneyPostcode()} match any of the attorney addresses on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
+    ?>
+
+    <div class="form-group">
+        <input id='return-submit' type='submit' class="button" name='submit' value='Save and return to claim'>
+        <input id='add-submit' type='submit' class="button button-secondary" name='submit' value='Save and add another'>
+        <?php if (isset($deleteUrl)) { ?>
+            <a class="button button-link" href="<?= $deleteUrl ?>">Delete</a>
+        <?php } ?>
+    </div>
+
+    <a class="button button-link" href="/claim/<?= $claim->getId() ?>">Cancel</a>
+
+</form>

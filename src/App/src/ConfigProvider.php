@@ -47,11 +47,22 @@ class ConfigProvider
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
+
+                Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
+                Service\Details\DetailsFormatter::class => Service\Details\DetailsFormatter::class,
+                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
+                Service\Claim::class => Service\Claim::class,
             ],
             'factories'  => [
                 //  Actions
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
+                Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
+                Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
+                Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
+                Action\Claim\ClaimAcceptAction::class => Action\Claim\ClaimAcceptActionFactory::class,
+                Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
 
                 // Middleware
                 Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
@@ -61,9 +72,16 @@ class ConfigProvider
                 Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
                 AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\Date\DateFormatter::class => Service\Date\DateFormatterFactory::class,
+                Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
+
+                // View Helper
+                Service\Date\DateFormatterPlatesExtension::class => Service\Date\DateFormatterPlatesExtensionFactory::class,
+                Service\Details\DetailsFormatterPlatesExtension::class => Service\Details\DetailsFormatterPlatesExtensionFactory::class,
+                Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
+                Service\Poa\PoaFormatterPlatesExtension::class => Service\Poa\PoaFormatterPlatesExtensionFactory::class,
             ],
             'initializers' => [
-                Action\Initializers\ApiClientInitializer::class,
                 Action\Initializers\UrlHelperInitializer::class,
                 Action\Initializers\TemplatingSupportInitializer::class,
             ],

@@ -13,4 +13,13 @@ return [
     'templates' => [
         'extension' => 'phtml',
     ],
+
+    'plates' => [
+        'extensions' => [
+            App\Service\Date\DateFormatterPlatesExtension::class,
+            App\Service\Details\DetailsFormatterPlatesExtension::class,
+            App\Service\ErrorMapper\ErrorMapperPlatesExtension::class,
+            App\Service\Poa\PoaFormatterPlatesExtension::class
+        ],
+    ],
 ];

@@ -56,6 +56,15 @@ class Application extends AbstractDataModel
      */
     protected $expected;
 
+    public function __construct($data = null)
+    {
+        //Make sure caseNumber and postcode objects are not null;
+        $this->caseNumber = new CaseNumber();
+        $this->postcodes = new Postcodes();
+
+        parent::__construct($data);
+    }
+
     /**
      * @return string
      */
@@ -142,11 +151,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param CaseNumber $caseNumber
-     * @return Application
+     * @return $this
      */
     public function setCaseNumber(CaseNumber $caseNumber): Application
     {
         $this->caseNumber = $caseNumber;
+
         return $this;
     }
 
@@ -160,11 +170,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Postcodes $postcodes
-     * @return Application
+     * @return $this
      */
     public function setPostcodes(Postcodes $postcodes): Application
     {
         $this->postcodes = $postcodes;
+
         return $this;
     }
 
