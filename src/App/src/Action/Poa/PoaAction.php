@@ -46,7 +46,8 @@ class PoaAction extends AbstractClaimAction
 
             $viewModel['deleteUrl'] = $this->getUrlHelper()->generate('claim.poa.delete', [
                 'claimId' => $request->getAttribute('claimId'),
-                'id' => $this->modelId
+                'system'  => $system,
+                'id'      => $this->modelId
             ]);
         }
 

@@ -25,6 +25,9 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getMerisPoas', [$this->formatter, 'getMerisPoas']);
         $engine->registerFunction('getFormattedCaseNumber', [$this->formatter, 'getFormattedCaseNumber']);
         $engine->registerFunction('getOriginalPaymentAmountString', [$this->formatter, 'getOriginalPaymentAmountString']);
+        $engine->registerFunction('getRefundAmountString', [$this->formatter, 'getRefundAmountString']);
+        $engine->registerFunction('getInterestAmountString', [$this->formatter, 'getInterestAmountString']);
+        $engine->registerFunction('getRefundTotalAmountString', [$this->formatter, 'getRefundTotalAmountString']);
         $engine->registerFunction('getFormattedVerificationMatches', [$this->formatter, 'getFormattedVerificationMatches']);
         $engine->registerFunction('isAttorneyVerified', [$this->formatter, 'isAttorneyVerified']);
         $engine->registerFunction('isCaseNumberVerified', [$this->formatter, 'isCaseNumberVerified']);

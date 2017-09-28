@@ -46,8 +46,8 @@ $this->addErrorMap([
                 <tr>
                     <td><a href="/claim/<?= $claim->getId() ?>/poa/sirius/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td>£TBD</td>
-                    <td>£TBD</td>
+                    <td><?= $this->getRefundAmountString($poa) ?></td>
+                    <td><?= $this->getInterestAmountString($poa) ?></td>
                     <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
                 </tr>
             <?php } ?>
@@ -88,8 +88,8 @@ $this->addErrorMap([
                 <tr>
                     <td><a href="/claim/<?= $claim->getId() ?>/poa/meris/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td>£TBD</td>
-                    <td>£TBD</td>
+                    <td><?= $this->getRefundAmountString($poa) ?></td>
+                    <td><?= $this->getInterestAmountString($poa) ?></td>
                     <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
                 </tr>
             <?php } ?>

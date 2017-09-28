@@ -17,7 +17,7 @@ Mandatory: claim
     </div>
     <div class="">
         <dt class="details-term">Total refund amount:</dt>
-        <dd class="detail-definition">£TBD</dd>
+        <dd class="detail-definition"><?= $this->getRefundTotalAmountString($claim) ?></dd>
     </div>
 
     <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>

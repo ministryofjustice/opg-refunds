@@ -16,6 +16,7 @@ class PoaDeleteAction extends AbstractClaimAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
+        $system = $request->getAttribute('system');
 
         $poa = $this->getPoa($claim);
         if ($poa === null) {
@@ -25,9 +26,10 @@ class PoaDeleteAction extends AbstractClaimAction
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-delete-page', [
             'claim'     => $claim,
             'poa'       => $poa,
-            'cancelUrl' => $this->getUrlHelper()->generate('claim.poa.' . $poa->getSystem(), [
+            'cancelUrl' => $this->getUrlHelper()->generate('claim.poa', [
                 'claimId' => $request->getAttribute('claimId'),
-                'id' => $this->modelId
+                'system'  => $system,
+                'id'      => $this->modelId
             ])
         ]));
     }
