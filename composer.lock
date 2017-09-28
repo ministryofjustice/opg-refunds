@@ -858,12 +858,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "9aaff44d9d171277466bed6462b848fc69a35846"
+                "reference": "3355df1b70b21b90eebe94fc62a95c66b281ed63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9aaff44d9d171277466bed6462b848fc69a35846",
-                "reference": "9aaff44d9d171277466bed6462b848fc69a35846",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/3355df1b70b21b90eebe94fc62a95c66b281ed63",
+                "reference": "3355df1b70b21b90eebe94fc62a95c66b281ed63",
                 "shasum": ""
             },
             "require": {
@@ -882,7 +882,11 @@
                 "MIT"
             ],
             "description": "PHP data models for the LPA Refunds project",
-            "time": "2017-09-21T09:22:38+00:00"
+            "support": {
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+            },
+            "time": "2017-09-28T11:35:59+00:00"
         },
         {
             "name": "nikic/fast-route",

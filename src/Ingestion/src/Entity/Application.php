@@ -1,6 +1,6 @@
 <?php
 
-namespace Applications\Entity;
+namespace Ingestion\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;

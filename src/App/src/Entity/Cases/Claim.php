@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -84,32 +85,72 @@ class Claim extends AbstractEntity
     protected $donorName;
 
     /**
-     * @var Poa[]
-     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim")
+     * @var string
+     * @ORM\Column(name="account_hash", type="string")
+     */
+    protected $accountHash;
+
+    /**
+     * @var Collection|Poa[]
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"receivedDate" = "DESC"})
      */
     protected $poas;
 
     /**
-     * @var Verification
-     * @ORM\OneToOne(targetEntity="Verification", mappedBy="claim")
+     * @var bool
+     * @ORM\Column(name="no_sirius_poas", type="boolean")
      */
-    protected $verification;
+    protected $noSiriusPoas;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="no_meris_poas", type="boolean")
+     */
+    protected $noMerisPoas;
+
+    /**
+     * @var string
+     * @ORM\Column(name="rejection_reason", type="string", nullable=true)
+     */
+    protected $rejectionReason;
+
+    /**
+     * @var string
+     * @ORM\Column(name="rejection_reason_description", type="string", nullable=true)
+     */
+    protected $rejectionReasonDescription;
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim")
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $payment;
 
-    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName)
+    /**
+     * @var Collection|Log[]
+     * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OrderBy({"createdDateTime" = "DESC"})
+     */
+    protected $logs;
+
+    /**
+     * @var int
+     */
+    protected $accountHashCount;
+
+    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
         $this->jsonData = $jsonData;
         $this->donorName = $donorName;
+        $this->accountHash = $accountHash;
 
         $this->createdDateTime = new DateTime();
         $this->status = ClaimModel::STATUS_NEW;
+        $this->noSiriusPoas = false;
+        $this->noMerisPoas = false;
     }
 
     /**
@@ -220,7 +261,7 @@ class Claim extends AbstractEntity
     /**
      * @param User $assignedTo
      */
-    public function setAssignedTo(User $assignedTo)
+    public function setAssignedTo($assignedTo)
     {
         $this->assignedTo = $assignedTo;
     }
@@ -236,7 +277,7 @@ class Claim extends AbstractEntity
     /**
      * @param DateTime $assignedDateTime
      */
-    public function setAssignedDateTime(DateTime $assignedDateTime)
+    public function setAssignedDateTime($assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
     }
@@ -274,7 +315,23 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Poa[]
+     * @return string
+     */
+    public function getAccountHash(): string
+    {
+        return $this->accountHash;
+    }
+
+    /**
+     * @param string $accountHash
+     */
+    public function setAccountHash(string $accountHash)
+    {
+        $this->accountHash = $accountHash;
+    }
+
+    /**
+     * @return Collection|Poa[]
      */
     public function getPoas()
     {
@@ -282,7 +339,7 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @param Poa[] $poas
+     * @param Collection|Poa[] $poas
      */
     public function setPoas(array $poas)
     {
@@ -290,19 +347,67 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Verification
+     * @return bool
      */
-    public function getVerification()
+    public function isNoSiriusPoas(): bool
     {
-        return $this->verification;
+        return $this->noSiriusPoas;
     }
 
     /**
-     * @param Verification $verification
+     * @param bool $noSiriusPoas
      */
-    public function setVerification(Verification $verification)
+    public function setNoSiriusPoas(bool $noSiriusPoas)
     {
-        $this->verification = $verification;
+        $this->noSiriusPoas = $noSiriusPoas;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoMerisPoas(): bool
+    {
+        return $this->noMerisPoas;
+    }
+
+    /**
+     * @param bool $noMerisPoas
+     */
+    public function setNoMerisPoas(bool $noMerisPoas)
+    {
+        $this->noMerisPoas = $noMerisPoas;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReason()
+    {
+        return $this->rejectionReason;
+    }
+
+    /**
+     * @param string $rejectionReason
+     */
+    public function setRejectionReason(string $rejectionReason)
+    {
+        $this->rejectionReason = $rejectionReason;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReasonDescription()
+    {
+        return $this->rejectionReasonDescription;
+    }
+
+    /**
+     * @param string $rejectionReasonDescription
+     */
+    public function setRejectionReasonDescription(string $rejectionReasonDescription)
+    {
+        $this->rejectionReasonDescription = $rejectionReasonDescription;
     }
 
     /**
@@ -319,6 +424,38 @@ class Claim extends AbstractEntity
     public function setPayment(Payment $payment)
     {
         $this->payment = $payment;
+    }
+
+    /**
+     * @return Collection|Log[]
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param Collection|Log[] $logs
+     */
+    public function setLogs($logs)
+    {
+        $this->logs = $logs;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAccountHashCount()
+    {
+        return $this->accountHashCount;
+    }
+
+    /**
+     * @param int $accountHashCount
+     */
+    public function setAccountHashCount(int $accountHashCount)
+    {
+        $this->accountHashCount = $accountHashCount;
     }
 
     /**

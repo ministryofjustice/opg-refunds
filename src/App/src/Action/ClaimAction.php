@@ -3,9 +3,10 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Applications\Service\DataMigration;
+use App\Service\User as UserService;
+use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -14,7 +15,7 @@ use Zend\Diactoros\Response\JsonResponse;
  * Class ClaimAction
  * @package App\Action
  */
-class ClaimAction implements ServerMiddlewareInterface
+class ClaimAction extends AbstractRestfulAction
 {
     /**
      * @var ClaimService
@@ -22,38 +23,85 @@ class ClaimAction implements ServerMiddlewareInterface
     private $claimService;
 
     /**
-     * @var DataMigration
+     * @var UserService
      */
-    private $dataMigrationService;
+    private $userService;
 
-    public function __construct(ClaimService $claimService, DataMigration $dataMigrationService)
+    public function __construct(ClaimService $claimService, UserService $userService)
     {
         $this->claimService = $claimService;
-        $this->dataMigrationService = $dataMigrationService;
+        $this->userService = $userService;
     }
 
     /**
-     * Process an incoming server request and return a response, optionally delegating
-     * to the next middleware component to create the response.
+     * READ/GET index action
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->migrateAll();
+        $claimId = $request->getAttribute('id');
 
-        //  Get all of the claims
-        $claims = $this->claimService->getAll();
-        $claimsData = [];
+        if ($claimId === null) {
+            //  Get all of the claims
+            $claims = $this->claimService->getAll();
+            $claimsData = [];
 
-        foreach ($claims as $claim) {
-            $claimsData[] = $claim->toArray();
+            foreach ($claims as $claim) {
+                $claimsData[] = $claim->toArray();
+            }
+
+            return new JsonResponse($claimsData);
+        } else {
+            //  Return a specific claim
+            $claim = $this->claimService->get($claimId);
+
+            return new JsonResponse($claim->toArray());
+        }
+    }
+
+    /**
+     * MODIFY/PATCH modify action
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface
+     * @throws Exception
+     */
+    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $claimId = $request->getAttribute('id');
+
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
+
+        $requestBody = $request->getParsedBody();
+
+        if (isset($requestBody['noSiriusPoas'])) {
+            $this->claimService->setNoSiriusPoas($claimId, $user->getId(), $requestBody['noSiriusPoas']);
         }
 
-        return new JsonResponse($claimsData);
+        if (isset($requestBody['noMerisPoas'])) {
+            $this->claimService->setNoMerisPoas($claimId, $user->getId(), $requestBody['noMerisPoas']);
+        }
+
+        if (isset($requestBody['status'])) {
+            if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
+                $this->claimService->setStatusAccepted($claimId, $user->getId());
+            }
+            if ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
+                if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
+                    throw new Exception('Rejection reason and description are required', 400);
+                }
+                $this->claimService->setStatusRejected($claimId, $user->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
+            }
+        }
+
+        $claim = $this->claimService->get($claimId);
+
+        return new JsonResponse($claim->toArray());
     }
 }

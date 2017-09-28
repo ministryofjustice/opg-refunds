@@ -25,7 +25,7 @@ class CaseNumber extends AbstractDataModel
 
     /**
      * @param string $poaCaseNumber
-     * @return CaseNumber
+     * @return $this
      */
     public function setPoaCaseNumber(string $poaCaseNumber): CaseNumber
     {

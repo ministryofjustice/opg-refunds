@@ -67,6 +67,7 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         array (
             'Interop\\Http\\ServerMiddleware\\' => 30,
             'Interop\\Container\\' => 18,
+            'Ingestion\\' => 10,
         ),
         'F' => 
         array (
@@ -91,7 +92,6 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'A' => 
         array (
             'Auth\\' => 5,
-            'Applications\\' => 13,
             'App\\' => 4,
             'AppTest\\' => 8,
         ),
@@ -237,6 +237,10 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'Ingestion\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/src/Ingestion/src',
+        ),
         'Fig\\Http\\Message\\' => 
         array (
             0 => __DIR__ . '/..' . '/fig/http-message-util/src',
@@ -284,10 +288,6 @@ class ComposerStaticInita3007bd0555234e29421224fb6ed80de
         'Auth\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src/Auth/src',
-        ),
-        'Applications\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/Applications/src',
         ),
         'App\\' => 
         array (

@@ -1,15 +1,16 @@
 <?php
 
-namespace Applications\Service;
+namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
-use Applications\Entity\Application;
+use App\Entity\Cases\Log;
+use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-class DataMigration
+class ApplicationIngestion
 {
     /**
      * @var EntityManager
@@ -72,6 +73,17 @@ class DataMigration
 
     /**
      * @param Application $application
+     * @return array
+     */
+    public function getApplicationData(Application $application): array
+    {
+        $decryptedData = $this->getDecryptedData($application);
+        $applicationData = json_decode($decryptedData, true);
+        return $applicationData;
+    }
+
+    /**
+     * @param Application $application
      * @return Claim
      */
     public function getClaim(Application $application): Claim
@@ -79,24 +91,37 @@ class DataMigration
         $decryptedData = $this->getDecryptedData($application);
         $applicationData = json_decode($decryptedData, true);
         $donorName = "{$applicationData['donor']['name']['title']} {$applicationData['donor']['name']['first']} {$applicationData['donor']['name']['last']}";
-        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName);
+        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName, $applicationData['account']['hash']);
         return $claim;
     }
 
     /**
-     * Migrate a single application to the cases database
+     * Ingest a single application and copy it to the cases database
      *
-     * @return bool true if migration was successful
+     * @return bool true if ingestion was successful
      */
-    public function migrateOne(): bool
+    public function ingestApplication(): bool
     {
         $application = $this->getNextApplication();
         if ($application !== null) {
             $claim = $this->getClaim($application);
+            $this->casesEntityManager->persist($claim);
 
             if ($this->caseRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
-                    $this->casesEntityManager->persist($claim);
+                    $applicationData = $this->getApplicationData($application);
+
+                    $applicantName = '';
+                    if ($applicationData['applicant'] === 'donor') {
+                        $applicantName = $claim->getDonorName() . ' (Donor)';
+                    } elseif ($applicationData['applicant'] === 'attorney') {
+                        $applicantName = "{$applicationData['attorney']['name']['title']} {$applicationData['attorney']['name']['first']} {$applicationData['attorney']['name']['last']} (Attorney)";
+                    }
+
+                    $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
+                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
+
+                    $this->casesEntityManager->persist($log);
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);
@@ -114,22 +139,13 @@ class DataMigration
         return false;
     }
 
-    public function migrateAll()
-    {
-        $migrationCounter = 0;
-
-        while ($this->migrateOne()) {
-            $migrationCounter++;
-        };
-
-        return $migrationCounter;
-    }
-
     /**
      * @param Application $application
      */
     private function setProcessed(Application $application)
     {
+        //Null data to make sure no data is left in database potentially accessible on the public internet
+        $application->setData(null);
         $application->setProcessed(true);
         $this->applicationsEntityManager->persist($application);
         $this->applicationsEntityManager->flush();

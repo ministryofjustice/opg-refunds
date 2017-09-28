@@ -107,6 +107,10 @@ class Authentication
             'token' => $token,
         ]);
 
+        if ($user === null) {
+            throw new UnauthorizedException('User not found');
+        }
+
         //  Confirm that the user is active
         if ($user->getStatus() !== User::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');

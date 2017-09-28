@@ -32,11 +32,21 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
 $prefix = '/v1/cases';
-$app->get($prefix . '/claim', App\Action\ClaimAction::class, 'claim');
+$app->route($prefix . '/claim[/{id:\d+}]', App\Action\ClaimAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'claim');
+$app->route($prefix . '/claim/{claimId:\d+}/log[/{id:\d+}]', App\Action\ClaimLogAction::class, ['GET', 'POST'], 'claim.log');
+$app->route($prefix . '/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
 $app->get($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, 'user');
+$app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
 $app->get($prefix . '/spreadsheet', App\Action\SpreadsheetAction::class, 'spreadsheet');
+
+//Example routes
+/*'/claim[/{id:\d+}]'
+'/claim/{id:\d+}/poa[/{id:\d+}]'
+'/claim/{id:\d+}/verfication[/{id:\d+}]'
+'/claim/{id:\d+}/log[/{id:\d+}]'
+'/user'
+'/user/{id:\d+}/claim' //GET PUT*/
 
 //  Developer routes
 $app->get('/dev/applications', Dev\Action\ApplicationsAction::class, 'dev.applications');
 $app->get('/dev/view-claim-queue', Dev\Action\ViewClaimQueueAction::class, 'dev.view-claim-queue');
-$app->get('/dev/migrate', Dev\Action\MigrateAction::class, 'dev.migrate');

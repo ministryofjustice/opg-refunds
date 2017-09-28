@@ -49,7 +49,7 @@ class Attorney extends AbstractDataModel
     /**
      * @return Name
      */
-    public function getPoaName(): Name
+    public function getPoaName()
     {
         return $this->poaName;
     }

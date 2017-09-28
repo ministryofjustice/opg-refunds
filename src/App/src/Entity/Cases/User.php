@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Doctrine\ORM\Mapping as ORM;
@@ -70,8 +71,9 @@ class User extends AbstractEntity
     protected $tokenExpires;
 
     /**
-     * @var Claim[]
+     * @var Collection|Claim[]
      * @ORM\OneToMany(targetEntity="Claim", mappedBy="assignedTo")
+     * @ORM\OrderBy({"updatedDateTime" = "ASC"})
      */
     protected $assignedClaims;
 
@@ -196,7 +198,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @return Claim[]
+     * @return Collection|Claim[]
      */
     public function getAssignedClaims()
     {
@@ -204,7 +206,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @param Claim[] $assignedClaims
+     * @param Collection|Claim[] $assignedClaims
      */
     public function setAssignedClaims($assignedClaims)
     {
