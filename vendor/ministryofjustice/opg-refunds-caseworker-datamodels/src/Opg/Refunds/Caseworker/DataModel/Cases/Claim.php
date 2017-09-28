@@ -89,6 +89,16 @@ class Claim extends AbstractDataModel
     protected $noMerisPoas;
 
     /**
+     * @var string
+     */
+    protected $rejectionReason;
+
+    /**
+     * @var string
+     */
+    protected $rejectionReasonDescription;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -315,11 +325,12 @@ class Claim extends AbstractDataModel
 
     /**
      * @param Poa[] $poas
-     * @return Claim
+     * @return $this
      */
     public function setPoas(array $poas): Claim
     {
         $this->poas = $poas;
+
         return $this;
     }
 
@@ -333,7 +344,7 @@ class Claim extends AbstractDataModel
 
     /**
      * @param bool $noSiriusPoas
-     * @return Claim
+     * @return $this
      */
     public function setNoSiriusPoas(bool $noSiriusPoas): Claim
     {
@@ -352,11 +363,49 @@ class Claim extends AbstractDataModel
 
     /**
      * @param bool $noMerisPoas
-     * @return Claim
+     * @return $this
      */
     public function setNoMerisPoas(bool $noMerisPoas): Claim
     {
         $this->noMerisPoas = $noMerisPoas;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReason(): string
+    {
+        return $this->rejectionReason;
+    }
+
+    /**
+     * @param string $rejectionReason
+     * @return $this
+     */
+    public function setRejectionReason(string $rejectionReason): Claim
+    {
+        $this->rejectionReason = $rejectionReason;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectionReasonDescription(): string
+    {
+        return $this->rejectionReasonDescription;
+    }
+
+    /**
+     * @param string $rejectionReasonDescription
+     * @return $this
+     */
+    public function setRejectionReasonDescription(string $rejectionReasonDescription): Claim
+    {
+        $this->rejectionReasonDescription = $rejectionReasonDescription;
 
         return $this;
     }
@@ -390,7 +439,7 @@ class Claim extends AbstractDataModel
 
     /**
      * @param Log[] $logs
-     * @return Claim
+     * @return $this
      */
     public function setLogs(array $logs): Claim
     {
@@ -409,7 +458,7 @@ class Claim extends AbstractDataModel
 
     /**
      * @param int $accountHashCount
-     * @return Claim
+     * @return $this
      */
     public function setAccountHashCount(int $accountHashCount): Claim
     {

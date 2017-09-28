@@ -51,11 +51,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param int $id
-     * @return Poa
+     * @return $this
      */
     public function setId(int $id): Poa
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -69,11 +70,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param string $system
-     * @return Poa
+     * @return $this
      */
     public function setSystem(string $system): Poa
     {
         $this->system = $system;
+
         return $this;
     }
 
@@ -87,11 +89,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param string $caseNumber
-     * @return Poa
+     * @return $this
      */
     public function setCaseNumber(string $caseNumber): Poa
     {
         $this->caseNumber = $caseNumber;
+
         return $this;
     }
 
@@ -105,11 +108,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param DateTime $receivedDate
-     * @return Poa
+     * @return $this
      */
     public function setReceivedDate(DateTime $receivedDate): Poa
     {
         $this->receivedDate = $receivedDate;
+
         return $this;
     }
 
@@ -123,11 +127,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param string $originalPaymentAmount
-     * @return Poa
+     * @return $this
      */
     public function setOriginalPaymentAmount(string $originalPaymentAmount): Poa
     {
         $this->originalPaymentAmount = $originalPaymentAmount;
+
         return $this;
     }
 
@@ -141,11 +146,12 @@ class Poa extends AbstractDataModel
 
     /**
      * @param Verification[] $verifications
-     * @return Poa
+     * @return $this
      */
     public function setVerifications(array $verifications): Poa
     {
         $this->verifications = $verifications;
+
         return $this;
     }
 

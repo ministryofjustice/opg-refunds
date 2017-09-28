@@ -30,7 +30,7 @@ class Postcodes extends AbstractDataModel
 
     /**
      * @param string $donorPostcode
-     * @return Postcodes
+     * @return $this
      */
     public function setDonorPostcode(string $donorPostcode): Postcodes
     {
@@ -49,7 +49,7 @@ class Postcodes extends AbstractDataModel
 
     /**
      * @param string $attorneyPostcode
-     * @return Postcodes
+     * @return $this
      */
     public function setAttorneyPostcode(string $attorneyPostcode): Postcodes
     {

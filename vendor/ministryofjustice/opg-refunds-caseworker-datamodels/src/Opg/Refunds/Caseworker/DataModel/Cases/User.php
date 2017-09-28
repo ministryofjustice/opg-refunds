@@ -65,7 +65,7 @@ class User extends AbstractDataModel
      * @param int $id
      * @return $this
      */
-    public function setId(int $id)
+    public function setId(int $id): User
     {
         $this->id = $id;
 
@@ -84,7 +84,7 @@ class User extends AbstractDataModel
      * @param string $name
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(string $name): User
     {
         $this->name = $name;
 
@@ -103,7 +103,7 @@ class User extends AbstractDataModel
      * @param string $email
      * @return $this
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): User
     {
         $this->email = $email;
 
@@ -122,7 +122,7 @@ class User extends AbstractDataModel
      * @param string $status
      * @return $this
      */
-    public function setStatus(string $status)
+    public function setStatus(string $status): User
     {
         $this->status = $status;
 
@@ -141,7 +141,7 @@ class User extends AbstractDataModel
      * @param string $roles
      * @return $this
      */
-    public function setRoles(string $roles)
+    public function setRoles(string $roles): User
     {
         $this->roles = $roles;
 
@@ -160,7 +160,7 @@ class User extends AbstractDataModel
      * @param string $token
      * @return $this
      */
-    public function setToken(string $token)
+    public function setToken(string $token): User
     {
         $this->token = $token;
 
@@ -179,7 +179,7 @@ class User extends AbstractDataModel
      * @param array $claims
      * @return $this
      */
-    public function setClaims(array $claims)
+    public function setClaims(array $claims): User
     {
         $this->claims = $claims;
 

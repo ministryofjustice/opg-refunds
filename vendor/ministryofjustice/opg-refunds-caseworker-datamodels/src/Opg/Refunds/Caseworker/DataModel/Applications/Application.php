@@ -151,11 +151,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param CaseNumber $caseNumber
-     * @return Application
+     * @return $this
      */
     public function setCaseNumber(CaseNumber $caseNumber): Application
     {
         $this->caseNumber = $caseNumber;
+
         return $this;
     }
 
@@ -169,11 +170,12 @@ class Application extends AbstractDataModel
 
     /**
      * @param Postcodes $postcodes
-     * @return Application
+     * @return $this
      */
     public function setPostcodes(Postcodes $postcodes): Application
     {
         $this->postcodes = $postcodes;
+
         return $this;
     }
 

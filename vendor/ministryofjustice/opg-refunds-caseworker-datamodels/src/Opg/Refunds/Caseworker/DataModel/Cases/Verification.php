@@ -35,11 +35,12 @@ class Verification extends AbstractDataModel
 
     /**
      * @param int $id
-     * @return Verification
+     * @return $this
      */
     public function setId(int $id): Verification
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -53,11 +54,12 @@ class Verification extends AbstractDataModel
 
     /**
      * @param string $type
-     * @return Verification
+     * @return $this
      */
     public function setType(string $type): Verification
     {
         $this->type = $type;
+
         return $this;
     }
 
@@ -71,11 +73,12 @@ class Verification extends AbstractDataModel
 
     /**
      * @param bool $passes
-     * @return Verification
+     * @return $this
      */
     public function setPasses(bool $passes): Verification
     {
         $this->passes = $passes;
+
         return $this;
     }
 }

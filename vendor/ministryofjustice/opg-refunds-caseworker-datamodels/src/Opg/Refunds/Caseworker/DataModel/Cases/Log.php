@@ -52,10 +52,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param int $id
+     * @return $this
      */
-    public function setId(int $id)
+    public function setId(int $id): Log
     {
         $this->id = $id;
+
+        return $this;
     }
 
     /**
@@ -68,10 +71,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param DateTime $createdDateTime
+     * @return $this
      */
-    public function setCreatedDateTime(DateTime $createdDateTime)
+    public function setCreatedDateTime(DateTime $createdDateTime): Log
     {
         $this->createdDateTime = $createdDateTime;
+
+        return $this;
     }
 
     /**
@@ -84,10 +90,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param string $title
+     * @return $this
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): Log
     {
         $this->title = $title;
+
+        return $this;
     }
 
     /**
@@ -105,6 +114,7 @@ class Log extends AbstractDataModel
     public function setMessage(string $message): Log
     {
         $this->message = $message;
+
         return $this;
     }
 
@@ -118,10 +128,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param int $userId
+     * @return $this
      */
-    public function setUserId(int $userId)
+    public function setUserId(int $userId): Log
     {
         $this->userId = $userId;
+
+        return $this;
     }
 
     /**
@@ -134,10 +147,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param string $userName
+     * @return $this
      */
-    public function setUserName(string $userName)
+    public function setUserName(string $userName): Log
     {
         $this->userName = $userName;
+
+        return $this;
     }
 
     /**
@@ -150,10 +166,13 @@ class Log extends AbstractDataModel
 
     /**
      * @param int $poaId
+     * @return $this
      */
-    public function setPoaId(int $poaId)
+    public function setPoaId(int $poaId): Log
     {
         $this->poaId = $poaId;
+
+        return $this;
     }
 
     /**
