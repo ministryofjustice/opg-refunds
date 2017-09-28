@@ -7,8 +7,11 @@ use League\JsonGuard\Validator as JsonValidator;
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
 
-class ProcessApplication
+use Opg\Refunds\Log\Initializer;
+
+class ProcessApplication implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
 
     private $notifyClient;
     private $dataHandler;
@@ -50,6 +53,12 @@ class ProcessApplication
 
         $reference = $this->dataHandler->store($data);
 
+        //---
+
+        $this->getLogger()->info('Application submitted', [ 'claim-code' => $reference ]);
+
+        //---
+
         $name = implode(' ', $data['donor']['name']);
         $contact = $data['contact'];
 
@@ -75,6 +84,13 @@ class ProcessApplication
                 ]);
             }
         } catch (ApiException $e) {
+            $this->getLogger()->alert(
+                'Unable to send email via Notify',
+                [
+                    'exception' => $e->getMessage(),
+                    'notify-message' => (string)$e->getResponse()->getBody()
+                ]
+            );
         }
 
         //---
@@ -96,6 +112,13 @@ class ProcessApplication
                 }
             }
         } catch (ApiException $e) {
+            $this->getLogger()->alert(
+                'Unable to send SMS via Notify',
+                [
+                    'exception' => $e->getMessage(),
+                    'notify-message' => (string)$e->getResponse()->getBody()
+                ]
+            );
         }
 
         //---
