@@ -1,6 +1,7 @@
 <?php
 namespace App\Service\Refund;
 
+use App\Service\Refund\Data\PhoneNumber;
 use League\JsonGuard\Validator as JsonValidator;
 
 use Alphagov\Notifications\Client as NotifyClient;
@@ -68,8 +69,8 @@ class ProcessApplication
             if (isset($contact['email']) && !empty($contact['email'])) {
                 // Send email...
                 $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
-                    'ref' => IdentFormatter::format($reference),
-                    'processed-by' => date('j F Y', strtotime($data['expected'])),
+                    'claim-code' => IdentFormatter::format($reference),
+                    'processed-by-date' => date('j F Y', strtotime($data['expected'])),
                     'donor-name' => $name,
                 ]);
             }
@@ -83,16 +84,14 @@ class ProcessApplication
              * If a mobile number was entered, we send a SMS message.
              */
             if (isset($contact['phone']) && !empty($contact['phone'])) {
-                // Strip off county codes for UK numbers.
-                $phone = preg_replace('/^[+]?[0]*44/', '0', $contact['phone']);
+                $phone = new PhoneNumber($contact['phone']);
 
-                // 070 numbers are personal, non-mobile, numbers.
-                $isMobile = (bool)preg_match('/^07/', $phone) && !preg_match('/^070/', $phone);
-
-                if ($isMobile) {
+                if ($phone->isMobile()) {
                     // Send SMS...
-                    $this->notifyClient->sendSms($phone, 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
-                        'ref' => IdentFormatter::format($reference),
+                    $this->notifyClient->sendSms($phone->get(), 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                        'claim-code' => IdentFormatter::format($reference),
+                        'processed-by-date' => date('j F Y', strtotime($data['expected'])),
+                        'donor-name' => $name,
                     ]);
                 }
             }

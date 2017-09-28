@@ -23,10 +23,17 @@ $this->layout('layout::default', [
         <?php if (!empty($contact['email'])): ?>
             <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
         <?php endif ?>
-        <?php if (!empty($contact['mobile'])): ?>
-            <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['mobile']) ?></span></p>
+
+        <?php if (!empty($contact['phone'])): ?>
+
+            <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
+
+            <?php if ($phone->isMobile()): ?>
+                <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+            <?php endif ?>
+
         <?php endif ?>
-    
+
         <h2 class="heading-medium">Just claim once</h2>
 
         <p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
