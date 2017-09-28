@@ -99,6 +99,11 @@ abstract class AbstractEntity
                     $value = $collection;
                 }
 
+                //  Transfer the value from the entity field to the model field
+                if ($value instanceof AbstractEntity) {
+                    $value = $value->getAsDataModel();
+                }
+
                 $model->$modelSetMethod($value);
             }
         }
