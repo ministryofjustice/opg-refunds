@@ -147,6 +147,34 @@ class Claim implements ApiClientInterface
         return new ClaimModel($claimArray);
     }
 
+    public function setRejectionReason(int $claimId, $rejectionReason, $rejectionReasonDescription)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+            'status'                     => ClaimModel::STATUS_ACCEPTED,
+            'rejectionReason'            => $rejectionReason,
+            'rejectionReasonDescription' => $rejectionReasonDescription
+        ]);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
+    public function setStatusAccepted(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+            'status' => ClaimModel::STATUS_ACCEPTED
+        ]);
+
+        if (empty($claimArray)) {
+            return null;
+        }
+
+        return new ClaimModel($claimArray);
+    }
+
     /**
      * @param ClaimModel $claim
      * @param PoaModel $poa
