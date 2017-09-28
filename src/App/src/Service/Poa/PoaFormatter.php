@@ -2,6 +2,7 @@
 
 namespace App\Service\Poa;
 
+use App\Form\Poa as PoaForm;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -14,30 +15,30 @@ class PoaFormatter
 {
     public function hasSiriusPoas(ClaimModel $claim)
     {
-        return $this->hasSystemPoas($claim, 'sirius');
+        return $this->hasSystemPoas($claim, PoaForm::SYSTEM_SIRIUS);
     }
 
     public function hasMerisPoas(ClaimModel $claim)
     {
-        return $this->hasSystemPoas($claim, 'meris');
+        return $this->hasSystemPoas($claim, PoaForm::SYSTEM_MERIS);
     }
 
     public function getSiriusPoas(ClaimModel $claim)
     {
-        return $this->getSystemPoas($claim, 'sirius');
+        return $this->getSystemPoas($claim, PoaForm::SYSTEM_SIRIUS);
     }
 
     public function getMerisPoas(ClaimModel $claim)
     {
-        return $this->getSystemPoas($claim, 'meris');
+        return $this->getSystemPoas($claim, PoaForm::SYSTEM_MERIS);
     }
 
     public function getFormattedCaseNumber(PoaModel $poa)
     {
         switch ($poa->getSystem()) {
-            case 'sirius':
+            case PoaForm::SYSTEM_SIRIUS:
                 return join('-', str_split($poa->getCaseNumber(), 4));
-            case 'meris':
+            case PoaForm::SYSTEM_MERIS:
                 return $poa->getCaseNumber();
             default:
                 return $poa->getCaseNumber();

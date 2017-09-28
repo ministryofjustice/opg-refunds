@@ -41,12 +41,9 @@ $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set
 $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
 $app->route('/claim[/{id:\d+}]', App\Action\ClaimAction::class, ['GET', 'POST'], 'claim');
-$app->route('/claim/{claimId:\d+}/poa/sirius[/{id:\d+}]', App\Action\Poa\PoaSiriusAction::class, ['GET', 'POST'], 'claim.poa.sirius');
-$app->get('/claim/{id:\d+}/poa/sirius/none-found', App\Action\Poa\PoaSiriusNoneFoundAction::class, 'claim.poa.sirius.none.found');
-$app->get('/claim/{id:\d+}/poa/sirius/cancel-none-found', App\Action\Poa\PoaSiriusCancelNoneFoundAction::class, 'claim.poa.sirius.cancel.none.found');
-$app->route('/claim/{claimId:\d+}/poa/meris[/{id:\d+}]', App\Action\Poa\PoaMerisAction::class, ['GET', 'POST'], 'claim.poa.meris');
-$app->get('/claim/{id:\d+}/poa/meris/none-found', App\Action\Poa\PoaMerisNoneFoundAction::class, 'claim.poa.meris.none.found');
-$app->get('/claim/{id:\d+}/poa/meris/cancel-none-found', App\Action\Poa\PoaMerisCancelNoneFoundAction::class, 'claim.poa.meris.cancel.none.found');
+$app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Action\Poa\PoaAction::class, ['GET', 'POST'], 'claim.poa');
+$app->get('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
+$app->get('/claim/{id:\d+}/poa/{system:sirius|meris}/cancel-none-found', App\Action\Poa\PoaCancelNoneFoundAction::class, 'claim.poa.cancel.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
 $app->route('/claim/{claimId:\d+}/approve', App\Action\Claim\ClaimAcceptAction::class, ['GET', 'POST'], 'claim.approve');
 $app->route('/claim/{claimId:\d+}/reject', App\Action\Claim\ClaimRejectAction::class, ['GET', 'POST'], 'claim.reject');

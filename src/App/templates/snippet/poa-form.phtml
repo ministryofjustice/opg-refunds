@@ -3,11 +3,13 @@
 Without error
 Mandatory: form
 Mandatory: claim
+Mandatory: system
 */
 
 /**
  * @var \App\Form\Poa $form
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var string $system
  */
 
 $attorney = $claim->getApplication()->getAttorney();
@@ -18,6 +20,8 @@ $postcodes = $claim->getApplication()->getPostcodes();
 <form method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <input type="hidden" name="system" value="<?= $system ?>">
 
     <div>
         <h3 class="heading-small">Add power of attorney details</h3>

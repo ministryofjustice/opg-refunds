@@ -17,10 +17,8 @@ use Zend\InputFilter\InputFilter;
  */
 class Poa extends AbstractForm
 {
-    /**
-     * @var string
-     */
-    protected $system;
+    const SYSTEM_SIRIUS = 'sirius';
+    const SYSTEM_MERIS = 'meris';
 
     /**
      * Poa constructor.
@@ -35,6 +33,21 @@ class Poa extends AbstractForm
 
         //  Csrf field
         $this->addCsrfElement($inputFilter);
+
+        //  System field (hidden)
+        $field = new Element\Text('system');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
 
         //  Case number field
         $field = new Element\Text('case-number');
@@ -133,8 +146,6 @@ class Poa extends AbstractForm
     public function getModelData()
     {
         $formData = $this->getData();
-
-        $formData['system'] = $this->system;
 
         //  If it exists transfer the received date array into a string
         if (array_key_exists('received-date', $formData)) {

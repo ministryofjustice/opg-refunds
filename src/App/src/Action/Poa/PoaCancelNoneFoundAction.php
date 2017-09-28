@@ -3,6 +3,7 @@
 namespace App\Action\Poa;
 
 use App\Action\AbstractModelAction;
+use App\Form\Poa;
 use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -12,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class PoaSiriusCancelNoneFoundAction
  * @package App\Action\Poa
  */
-class PoaSiriusCancelNoneFoundAction extends AbstractModelAction
+class PoaCancelNoneFoundAction extends AbstractModelAction
 {
     /**
      * @var ClaimService
@@ -35,7 +36,16 @@ class PoaSiriusCancelNoneFoundAction extends AbstractModelAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $this->claimService->setNoSiriusPoas($this->modelId, false);
+        $system = $request->getAttribute('system');
+
+        switch ($system) {
+            case Poa::SYSTEM_SIRIUS:
+                $this->claimService->setNoSiriusPoas($this->modelId, false);
+                break;
+            case Poa::SYSTEM_MERIS:
+                $this->claimService->setNoMerisPoas($this->modelId, false);
+                break;
+        }
 
         return $this->redirectToRoute('claim', ['id' => $this->modelId]);
     }

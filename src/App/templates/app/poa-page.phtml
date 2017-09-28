@@ -2,17 +2,9 @@
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
- * @var \App\Form\AbstractForm $form
+ * @var \App\Form\Poa $form
+ * @var string $system
  */
-
-$this->addErrorMap([
-    'message' => [
-        'required' => [
-            'summary'   => 'Please enter a user log message',
-            'field'     => 'Enter a user log message'
-        ]
-    ]
-]);
 ?>
 
 <?php $this->start('left-sidebar') ?>
@@ -25,10 +17,15 @@ $this->addErrorMap([
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<h2 class="heading-medium">Sirius power of attorney details</h2>
+<?php if ($system === \App\Form\Poa::SYSTEM_SIRIUS) { ?>
+    <h2 class="heading-medium">Sirius power of attorney details</h2>
+<?php } elseif ($system === \App\Form\Poa::SYSTEM_MERIS) { ?>
+    <h2 class="heading-medium">Meris power of attorney details</h2>
+<?php } ?>
 
 <?php $this->insert('snippet::poa-form', [
     'form'      => $form,
     'claim'     => $claim,
+    'system'    => $system,
     'deleteUrl' => isset($deleteUrl) ? $deleteUrl : null
 ]) ?>

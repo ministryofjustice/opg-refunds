@@ -5,11 +5,11 @@ namespace App\Action\Poa;
 use App\Service\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
-class PoaMerisCancelNoneFoundActionFactory
+class PoaActionFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new PoaMerisCancelNoneFoundAction(
+        return new PoaAction(
             $container->get(ClaimService::class)
         );
     }
