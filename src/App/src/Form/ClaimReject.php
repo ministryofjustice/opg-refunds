@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;

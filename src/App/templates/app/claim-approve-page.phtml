@@ -2,6 +2,7 @@
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimAccept $form
  */
 ?>
 
@@ -16,6 +17,8 @@
 <h2 class="heading-medium">Approve claim</h2>
 
 <form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
     <p>Are you sure you want to approve the claim with claim code: <?= $claim->getReferenceNumber() ?>?</p>
 

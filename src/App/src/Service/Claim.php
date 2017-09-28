@@ -150,7 +150,7 @@ class Claim implements ApiClientInterface
     public function setRejectionReason(int $claimId, $rejectionReason, $rejectionReasonDescription)
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
-            'status'                     => ClaimModel::STATUS_ACCEPTED,
+            'status'                     => ClaimModel::STATUS_REJECTED,
             'rejectionReason'            => $rejectionReason,
             'rejectionReasonDescription' => $rejectionReasonDescription
         ]);
