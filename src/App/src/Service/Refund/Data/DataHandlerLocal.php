@@ -4,14 +4,17 @@ namespace App\Service\Refund\Data;
 use PDO;
 use App\Crypt\Hybrid as HybridCipher;
 
+use Opg\Refunds\Log\Initializer;
+
 /**
  * Data Handler for when the DB is directly accessible from the front service.
  *
  * Class DataHandlerLocal
  * @package App\Service\Refund\Data
  */
-class DataHandlerLocal implements DataHandlerInterface
+class DataHandlerLocal implements DataHandlerInterface, Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
 
     private $db;
     private $cipher;
@@ -63,8 +66,8 @@ class DataHandlerLocal implements DataHandlerInterface
                 }
 
                 // Else we can just try using a different ID.
-
                 $failed = true;
+                $this->getLogger()->notice('ID clash on database insert', ['id'=>$id]);
             }
         } while ($failed);
 
