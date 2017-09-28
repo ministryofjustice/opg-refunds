@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "6fc6a60891d8e7d4c3d2f9fe72c4421f",
+    "content-hash": "8016854cb3d6d6b78bfd5a52b03de08a",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -60,16 +60,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.15",
+            "version": "3.36.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "abab17a29e4fb1947b6951b5e0afc5b5e9e9de27"
+                "reference": "f8bb15a002e709cba85de3981b0ffac7968fffb5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/abab17a29e4fb1947b6951b5e0afc5b5e9e9de27",
-                "reference": "abab17a29e4fb1947b6951b5e0afc5b5e9e9de27",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f8bb15a002e709cba85de3981b0ffac7968fffb5",
+                "reference": "f8bb15a002e709cba85de3981b0ffac7968fffb5",
                 "shasum": ""
             },
             "require": {
@@ -136,7 +136,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-09-26T18:18:24+00:00"
+            "time": "2017-09-27T22:02:13+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -663,7 +663,7 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-logger.git",
@@ -807,16 +807,16 @@
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.10",
+            "version": "v2.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d"
+                "reference": "5da4d3c796c275c55f057af5a643ae297d96b4d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/634bae8e911eefa89c1abfbf1b66da679ac8f54d",
-                "reference": "634bae8e911eefa89c1abfbf1b66da679ac8f54d",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/5da4d3c796c275c55f057af5a643ae297d96b4d8",
+                "reference": "5da4d3c796c275c55f057af5a643ae297d96b4d8",
                 "shasum": ""
             },
             "require": {
@@ -851,7 +851,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2017-03-13T16:27:32+00:00"
+            "time": "2017-09-27T21:40:39+00:00"
         },
         {
             "name": "php-http/guzzle6-adapter",
@@ -4627,7 +4627,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ministryofjustice/opg-refunds-logger": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,

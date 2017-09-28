@@ -20,7 +20,7 @@
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.2",
         "league/json-guard": "^1.0",
-        "ministryofjustice/opg-refunds-logger": "dev-master",
+        "ministryofjustice/opg-refunds-logger": "^1.0",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "zendframework/zend-component-installer": "^1.0",
