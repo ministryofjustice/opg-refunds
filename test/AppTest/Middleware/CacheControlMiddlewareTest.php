@@ -36,7 +36,7 @@ class CacheControlMiddlewareTest extends TestCase
     /**
      * Check caching headers are added when expected.
      */
-    public function testNormalCase()
+    public function testOnEligibilityPage()
     {
         $middleware = new CacheControlMiddleware();
 
@@ -128,14 +128,12 @@ class CacheControlMiddlewareTest extends TestCase
 
         $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
 
-        $responseInterface = $this->prophesize(ResponseInterface::class);
-
-        // Ensures withHeader() is never called.
-        $responseInterface->withHeader( Argument::any() )->shouldNotBeCalled();
-        $responseInterface = $responseInterface->reveal();
-
         $this->delegateInterface->process( Argument::type(ServerRequestInterface::class) )->willReturn(
-            $responseInterface
+        /*
+         * We're using a real response here as the elaborate mocking
+         * required not to does not justify the risk of using a concrete object.
+         */
+            new RealResponse
         );
 
         $response = $middleware->process(
@@ -143,6 +141,38 @@ class CacheControlMiddlewareTest extends TestCase
             $this->delegateInterface->reveal()
         );
 
-        $this->assertSame($responseInterface, $response);
+        $this->assertInstanceOf(ResponseInterface::class, $response);
+
+        $headers = $response->getHeaders();
+
+        //---
+
+        // Checks we have a Cache-Control header, with one value, set to what we expect.
+
+        $this->assertArrayHasKey('Cache-Control', $headers);
+
+        $cacheControl = $headers['Cache-Control'];
+
+        $this->assertInternalType('array', $cacheControl);
+        $this->assertCount(1, $cacheControl);
+
+        $cacheControl = array_pop($cacheControl);
+
+        $this->assertEquals( 'no-store', $cacheControl );
+
+        //---
+
+        // Checks we have a Pragma header, with one value, set to what we expect.
+
+        $this->assertArrayHasKey('Pragma', $headers);
+
+        $pragma = $headers['Pragma'];
+
+        $this->assertInternalType('array', $pragma);
+        $this->assertCount(1, $pragma);
+
+        $pragma = array_pop($pragma);
+
+        $this->assertEquals( 'no-cache', $pragma );
     }
 }
