@@ -4,11 +4,13 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
+use App\Form\ProcessNewClaim;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Slim\Flash\Messages;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
@@ -37,6 +39,36 @@ class ClaimAction extends AbstractClaimAction
             'claim' => $claim,
             'form'  => $form
         ]));
+    }
+
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $session = $request->getAttribute('session');
+        $form = new ProcessNewClaim([
+            'csrf' => $session['meta']['csrf'],
+        ]);
+
+        $form->setData($request->getParsedBody());
+
+        if ($form->isValid()) {
+            $userId = $request->getAttribute('identity')->getId();
+            $assignedClaimId = $this->claimService->assignNextClaim($userId);
+
+            if ($assignedClaimId === 0) {
+                //No available claims
+
+                /** @var Messages $flash */
+                $flash = $request->getAttribute('flash');
+                $flash->addMessage('info', 'There are no more claims to process');
+
+                return $this->redirectToRoute('home');
+            }
+
+            return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
+        }
+
+        // The only reason the form can be invalid is a CSRF check fail so no need to recover gracefully
+        throw new Exception('CSRF failure', 500);
     }
 
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)

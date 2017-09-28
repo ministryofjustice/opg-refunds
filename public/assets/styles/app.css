@@ -1621,6 +1621,15 @@ input[type=number] {
     display: list-item;
     display: revert; } }
 
+.icon-tick {
+  width: 30px;
+  height: 31px;
+  background-image: url("/assets/images/icon-tick.png"); }
+  @media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 20 / 10), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
+    .icon-tick {
+      background-image: url("/assets/images/icon-tick-2x.png");
+      background-size: 100%; } }
+
 #global-header-bar,
 #content {
   max-width: inherit;
@@ -1688,6 +1697,12 @@ input[type=number] {
   margin-bottom: 0.63158em;
   border-bottom: 5px solid #005ea5;
   padding-bottom: 0.42105em; }
+
+.heading-claim {
+  margin-bottom: 0; }
+
+.heading-claim-name {
+  font-weight: 400; }
 
 .button-secondary {
   background-color: #dee0e2;
@@ -1848,6 +1863,12 @@ input[type=number] {
 
 .details .details-definition {
   padding-bottom: 0.47368em; }
+
+.details-verified {
+  text-align: right;
+  position: absolute;
+  top: 0;
+  right: 0; }
 
 .notice-heading {
   margin-bottom: 30px; }

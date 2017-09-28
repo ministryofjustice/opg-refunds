@@ -57,7 +57,6 @@ class ConfigProvider
                 //  Actions
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
-                Action\ProcessNewClaimAction::class => Action\ProcessNewClaimActionFactory::class,
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
                 Action\Poa\PoaSiriusAction::class => Action\Poa\PoaSiriusActionFactory::class,
                 Action\Poa\PoaSiriusNoneFoundAction::class => Action\Poa\PoaSiriusNoneFoundActionFactory::class,
