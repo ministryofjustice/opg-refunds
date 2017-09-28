@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ace83db3c0c9252a4a6722ef72c9710b",
+    "content-hash": "98d03b803c0e671045c4a9da4bedfa56",
     "packages": [
         {
             "name": "container-interop/container-interop",
@@ -854,16 +854,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-process-new-claim",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "ff2bc26166aa6aea6fe139fae753c74b67ed2578"
+                "reference": "3355df1b70b21b90eebe94fc62a95c66b281ed63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/ff2bc26166aa6aea6fe139fae753c74b67ed2578",
-                "reference": "ff2bc26166aa6aea6fe139fae753c74b67ed2578",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/3355df1b70b21b90eebe94fc62a95c66b281ed63",
+                "reference": "3355df1b70b21b90eebe94fc62a95c66b281ed63",
                 "shasum": ""
             },
             "require": {
@@ -883,10 +883,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/process-new-claim",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-09-26T05:25:32+00:00"
+            "time": "2017-09-28T11:35:59+00:00"
         },
         {
             "name": "nikic/fast-route",
