@@ -4,6 +4,11 @@ use \Zend\Log\Logger;
 
 return [
 
+    'version' => [
+        'tag' => getenv('OPG_DOCKER_TAG') ?: 'Unknown',
+        'cache' => ( getenv('OPG_DOCKER_TAG') ) ? abs( crc32( getenv('OPG_DOCKER_TAG') ) ) : time(),
+    ],
+
     'refunds' => [
         'processing-time' => '12 weeks'
     ],

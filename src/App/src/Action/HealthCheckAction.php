@@ -67,6 +67,10 @@ class HealthCheckAction implements ServerMiddlewareInterface
 
         //---
 
+        $result['version'] = $this->config['version'];
+
+        //---
+
         return new JsonResponse($result, ($ok) ? 200 : 500 );
     }
 
