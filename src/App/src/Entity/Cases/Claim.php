@@ -261,7 +261,7 @@ class Claim extends AbstractEntity
     /**
      * @param User $assignedTo
      */
-    public function setAssignedTo(User $assignedTo)
+    public function setAssignedTo($assignedTo)
     {
         $this->assignedTo = $assignedTo;
     }
@@ -277,7 +277,7 @@ class Claim extends AbstractEntity
     /**
      * @param DateTime $assignedDateTime
      */
-    public function setAssignedDateTime(DateTime $assignedDateTime)
+    public function setAssignedDateTime($assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
     }

@@ -336,6 +336,8 @@ class Claim
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
 
         $this->addLog(
             $claimId,
@@ -354,6 +356,8 @@ class Claim
         $claim->setRejectionReasonDescription($rejectionReasonDescription);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
 
         $this->addLog(
             $claimId,
