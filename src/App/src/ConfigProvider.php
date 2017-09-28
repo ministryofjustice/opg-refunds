@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Alphagov;
+
 /**
  * The configuration provider for the App module
  *
@@ -49,14 +51,14 @@ class ConfigProvider
                 Action\PostcodeAction::class => Action\PostcodeAction::class,
                 Action\TermsPageAction::class => Action\TermsPageAction::class,
                 Action\CookiesPageAction::class => Action\CookiesPageAction::class,
-
+                Action\ExceptionAction::class => Action\ExceptionAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,
             ],
             'factories'  => [
                 // 3rd Party
-                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
+                Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
 
                 // Actions
                 Action\AccountDetailsAction::class => Action\Factory\AccountDetailsFactory::class,
