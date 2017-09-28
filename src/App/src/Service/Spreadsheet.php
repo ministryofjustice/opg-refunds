@@ -55,8 +55,7 @@ class Spreadsheet
      */
     public function getAllRefundable()
     {
-        //  TODO: Return only those which can be refunded
-        $claims = $this->repository->findBy([]);
+        $claims = $this->repository->findBy(['status' => ClaimModel::STATUS_ACCEPTED]);
 
         return $this->translateToDataModelArray($claims);
     }
