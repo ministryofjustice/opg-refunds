@@ -4,7 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use Exception;
-use Ingestion\Service\DataMigration;
+use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -45,7 +45,7 @@ class Claim
     private $entityManager;
 
     /**
-     * @var DataMigration
+     * @var ApplicationIngestion
      */
     private $dataMigrationService;
 
@@ -53,9 +53,9 @@ class Claim
      * Claim constructor
      *
      * @param EntityManager $entityManager
-     * @param DataMigration $dataMigrationService
+     * @param ApplicationIngestion $dataMigrationService
      */
-    public function __construct(EntityManager $entityManager, DataMigration $dataMigrationService)
+    public function __construct(EntityManager $entityManager, ApplicationIngestion $dataMigrationService)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
@@ -72,9 +72,6 @@ class Claim
      */
     public function getAll()
     {
-        //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->migrateAll();
-
         /** @var ClaimEntity[] $claims */
         $claims = $this->claimRepository->findBy([]);
 
@@ -111,7 +108,7 @@ class Claim
     public function assignNextClaim(int $userId)
     {
         //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->migrateOne();
+        $this->dataMigrationService->ingestApplication();
 
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([

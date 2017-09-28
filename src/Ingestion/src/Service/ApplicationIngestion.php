@@ -10,7 +10,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-class DataMigration
+class ApplicationIngestion
 {
     /**
      * @var EntityManager
@@ -96,11 +96,11 @@ class DataMigration
     }
 
     /**
-     * Migrate a single application to the cases database
+     * Ingest a single application and copy it to the cases database
      *
-     * @return bool true if migration was successful
+     * @return bool true if ingestion was successful
      */
-    public function migrateOne(): bool
+    public function ingestApplication(): bool
     {
         $application = $this->getNextApplication();
         if ($application !== null) {
@@ -139,22 +139,13 @@ class DataMigration
         return false;
     }
 
-    public function migrateAll()
-    {
-        $migrationCounter = 0;
-
-        while ($this->migrateOne()) {
-            $migrationCounter++;
-        };
-
-        return $migrationCounter;
-    }
-
     /**
      * @param Application $application
      */
     private function setProcessed(Application $application)
     {
+        //Null data to make sure no data is left in database potentially accessible on the public internet
+        $application->setData(null);
         $application->setProcessed(true);
         $this->applicationsEntityManager->persist($application);
         $this->applicationsEntityManager->flush();

@@ -40,7 +40,7 @@ class ConfigProvider
                 'doctrine.entity_manager.orm_applications' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_applications'],
 
                 //  Services
-                Service\DataMigration::class => Service\DataMigrationFactory::class
+                Service\ApplicationIngestion::class => Service\ApplicationIngestionFactory::class
             ],
         ];
     }

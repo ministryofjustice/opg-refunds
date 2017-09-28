@@ -1,7 +1,7 @@
 <?php
 namespace Dev\Action;
 
-use Ingestion\Service\DataMigration;
+use Ingestion\Service\ApplicationIngestion;
 use Zend\Crypt\PublicKey\Rsa;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 class ViewClaimQueueAction implements ServerMiddlewareInterface
 {
     /**
-     * @var DataMigration
+     * @var ApplicationIngestion
      */
     private $dataMigrationService;
     /**
@@ -19,7 +19,7 @@ class ViewClaimQueueAction implements ServerMiddlewareInterface
      */
     private $bankCipher;
 
-    public function __construct(DataMigration $dataMigrationService, Rsa $bankCipher)
+    public function __construct(ApplicationIngestion $dataMigrationService, Rsa $bankCipher)
     {
         $this->bankCipher = $bankCipher;
         $this->dataMigrationService = $dataMigrationService;

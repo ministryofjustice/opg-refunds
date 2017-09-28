@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use Ingestion\Service\DataMigration;
+use Ingestion\Service\ApplicationIngestion;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -19,7 +19,7 @@ class ClaimFactory
     {
         return new Claim(
             $container->get('doctrine.entity_manager.orm_cases'),
-            $container->get(DataMigration::class)
+            $container->get(ApplicationIngestion::class)
         );
     }
 }
