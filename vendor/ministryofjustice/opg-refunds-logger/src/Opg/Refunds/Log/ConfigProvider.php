@@ -1,5 +1,4 @@
 <?php
-
 namespace Opg\Refunds\Log;
 
 use Zend;
@@ -23,6 +22,9 @@ class ConfigProvider
                     Zend\Stratigility\Middleware\ErrorHandler::class => [
                         Factory\LoggingErrorListenerDelegatorFactory::class
                     ],
+                ],
+                'initializers' => [
+                    Initializer\LogSupportInitializer::class,
                 ],
             ]
         ];
