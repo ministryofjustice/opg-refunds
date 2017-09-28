@@ -48,9 +48,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5,
-                'month' => 10,
-                'year' => 1995
+                'day' => '5',
+                'month' => '10',
+                'year' => '1995'
             ]
         ]);
 
@@ -80,9 +80,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 0,
-                'month' => 0,
-                'year' => 0
+                'day' => '0',
+                'month' => '0',
+                'year' => '0'
             ]
         ]);
 
@@ -100,7 +100,7 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5
+                'day' => '5'
             ]
         ]);
 
@@ -118,7 +118,7 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'month' => 5
+                'month' => '5'
             ]
         ]);
 
@@ -136,7 +136,7 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'year' => 1995
+                'year' => '1995'
             ]
         ]);
 
@@ -157,9 +157,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 0,
-                'month' => 10,
-                'year' => 1995
+                'day' => '0',
+                'month' => '10',
+                'year' => '1995'
             ]
         ]);
 
@@ -176,9 +176,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 32,
-                'month' => 10,
-                'year' => 1995
+                'day' => '32',
+                'month' => '10',
+                'year' => '1995'
             ]
         ]);
 
@@ -196,9 +196,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5,
-                'month' => 0,
-                'year' => 1995
+                'day' => '5',
+                'month' => '0',
+                'year' => '1995'
             ]
         ]);
 
@@ -215,9 +215,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5,
-                'month' => 13,
-                'year' => 1995
+                'day' => '5',
+                'month' => '13',
+                'year' => '1995'
             ]
         ]);
 
@@ -235,9 +235,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5,
-                'month' => 5,
-                'year' => 0
+                'day' => '5',
+                'month' => '5',
+                'year' => '0'
             ]
         ]);
 
@@ -312,8 +312,8 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 5,
-                'month' => 5,
+                'day' => '5',
+                'month' => '5',
                 'year' => (date('Y') + 1)
             ]
         ]);
@@ -368,9 +368,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 19
+                'day' => '1',
+                'month' => '1',
+                'year' => '19'
             ]
         ]);
 
@@ -388,9 +388,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 12
+                'day' => '1',
+                'month' => '1',
+                'year' => '12'
             ]
         ]);
 
@@ -408,9 +408,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 1
+                'day' => '1',
+                'month' => '1',
+                'year' => '1'
             ]
         ]);
 
@@ -428,9 +428,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 11111
+                'day' => '1',
+                'month' => '1',
+                'year' => '11111'
             ]
         ]);
 
@@ -448,9 +448,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 0001
+                'day' => '1',
+                'month' => '1',
+                'year' => '0001'
             ]
         ]);
 
@@ -467,9 +467,9 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
-                'day' => 1,
-                'month' => 1,
-                'year' => 00011
+                'day' => '1',
+                'month' => '1',
+                'year' => '00011'
             ]
         ]);
 
@@ -483,5 +483,18 @@ class DobTest extends TestCase
 
         //---
 
+        $form = $this->getDobWrappedInForm();
+
+        $form->setData([
+            'dob' => [
+                'day' => '001',
+                'month' => '2',
+                'year' => '1983'
+            ]
+        ]);
+
+        // This was throwing a PHP error.
+
+        $this->assertTrue( $form->isValid() );
     }
 }

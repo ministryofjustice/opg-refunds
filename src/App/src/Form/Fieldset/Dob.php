@@ -154,6 +154,10 @@ class Dob extends Fieldset
                 return true;
             }
 
+            $context = array_map(function ($v) {
+                return (is_numeric($v)) ? intval($v) : $v;
+            }, $context);
+
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
                 // Don't validate if date is invalid
                 return true;
@@ -174,6 +178,10 @@ class Dob extends Fieldset
                 // Don't validate unless all fields present.
                 return true;
             }
+
+            $context = array_map(function ($v) {
+                return (is_numeric($v)) ? intval($v) : $v;
+            }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
                 // Don't validate if date is invalid
@@ -196,6 +204,10 @@ class Dob extends Fieldset
                 // Don't validate unless all fields present.
                 return true;
             }
+
+            $context = array_map(function ($v) {
+                return (is_numeric($v)) ? intval($v) : $v;
+            }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
                 // Don't validate if date is invalid
