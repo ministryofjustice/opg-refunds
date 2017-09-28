@@ -37,7 +37,7 @@ class Poa extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  Case number field
-        $field = new Element\Textarea('case-number');
+        $field = new Element\Text('case-number');
         $input = new Input($field->getName());
 
         $input->getFilterChain()

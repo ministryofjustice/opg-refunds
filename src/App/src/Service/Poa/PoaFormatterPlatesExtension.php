@@ -31,5 +31,6 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('isDonorPostcodeVerified', [$this->formatter, 'isDonorPostcodeVerified']);
         $engine->registerFunction('isAttorneyPostcodeVerified', [$this->formatter, 'isAttorneyPostcodeVerified']);
         $engine->registerFunction('isClaimVerified', [$this->formatter, 'isClaimVerified']);
+        $engine->registerFunction('isClaimComplete', [$this->formatter, 'isClaimComplete']);
     }
 }

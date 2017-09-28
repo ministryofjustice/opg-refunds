@@ -119,6 +119,12 @@ class PoaFormatter
         return join('<br/>', $verificationStrings);
     }
 
+    public function isClaimComplete(ClaimModel $claim)
+    {
+        return ($claim->isNoSiriusPoas() || $this->hasSiriusPoas($claim))
+            && ($claim->isNoMerisPoas() || $this->hasMerisPoas($claim));
+    }
+
     private function hasSystemPoas(ClaimModel $claim, string $system)
     {
         if ($claim->getPoas() === null) {

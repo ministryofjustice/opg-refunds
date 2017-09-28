@@ -10,7 +10,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
 
 class PoaDeleteAction extends AbstractClaimAction
 {

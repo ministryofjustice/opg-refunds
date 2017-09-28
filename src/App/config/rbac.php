@@ -39,6 +39,8 @@ return [
             'claim.poa.meris.none.found',
             'claim.poa.meris.cancel.none.found',
             'claim.poa.delete',
+            'claim.approve',
+            'claim.reject',
         ],
         User::ROLE_REPORTING => [
             'reporting',
