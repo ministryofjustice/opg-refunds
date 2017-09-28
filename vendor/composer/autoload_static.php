@@ -12,11 +12,11 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         'f8b0b5f351aa0dc2d4b9c3b8f451115f' => __DIR__ . '/..' . '/league/json-guard/src/functions.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
+        '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -31,7 +31,6 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
             'Zend\\Stdlib\\' => 12,
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Math\\' => 10,
-            'Zend\\Log\\' => 9,
             'Zend\\InputFilter\\' => 17,
             'Zend\\I18n\\' => 10,
             'Zend\\Hydrator\\' => 14,
@@ -69,10 +68,6 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
-        ),
-        'O' => 
-        array (
-            'Opg\\Refunds\\Log\\' => 16,
         ),
         'L' => 
         array (
@@ -147,10 +142,6 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'Zend\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-math/src',
-        ),
-        'Zend\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-log/src',
         ),
         'Zend\\InputFilter\\' => 
         array (
@@ -264,10 +255,6 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
-        ),
-        'Opg\\Refunds\\Log\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ministryofjustice/opg-refunds-logger/src/Opg/Refunds/Log',
         ),
         'League\\Plates\\' => 
         array (
