@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version20170928144100 extends AbstractMigration
+class Version20170928180544 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -18,27 +18,27 @@ class Version20170928144100 extends AbstractMigration
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
-        $this->addSql('CREATE TABLE payment (id SERIAL NOT NULL, claim_id BIGINT DEFAULT NULL, amount NUMERIC(10, 0) NOT NULL, method VARCHAR(255) NOT NULL, added_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, processed_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_6D28840D7096A49F ON payment (claim_id)');
         $this->addSql('CREATE TABLE verification (id SERIAL NOT NULL, poa_id INT DEFAULT NULL, type VARCHAR(255) NOT NULL, passes BOOLEAN NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_5AF1C50BBB18C0BA ON verification (poa_id)');
-        $this->addSql('CREATE TABLE "user" (id SERIAL NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password_hash VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, roles VARCHAR(255) NOT NULL, token VARCHAR(255) DEFAULT NULL, token_expires INT DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
-        $this->addSql('CREATE TABLE claim (id BIGINT NOT NULL, assigned_to_id INT DEFAULT NULL, created_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, updated_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, received_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, json_data BYTEA NOT NULL, status VARCHAR(255) NOT NULL, assigned_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, finished_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, donor_name VARCHAR(255) NOT NULL, account_hash VARCHAR(255) NOT NULL, no_sirius_poas BOOLEAN NOT NULL, no_meris_poas BOOLEAN NOT NULL, rejection_reason VARCHAR(255) DEFAULT NULL, rejection_reason_description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_A769DE27F4BD7827 ON claim (assigned_to_id)');
-        $this->addSql('CREATE TABLE poa (id SERIAL NOT NULL, claim_id BIGINT DEFAULT NULL, system VARCHAR(255) NOT NULL, case_number VARCHAR(255) NOT NULL, received_date DATE NOT NULL, original_payment_amount VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE INDEX IDX_736097E47096A49F ON poa (claim_id)');
         $this->addSql('CREATE TABLE log (id SERIAL NOT NULL, claim_id BIGINT DEFAULT NULL, user_id INT DEFAULT NULL, poa_id INT DEFAULT NULL, created_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, title VARCHAR(255) NOT NULL, message TEXT NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE INDEX IDX_8F3F68C57096A49F ON log (claim_id)');
         $this->addSql('CREATE INDEX IDX_8F3F68C5A76ED395 ON log (user_id)');
         $this->addSql('CREATE INDEX IDX_8F3F68C5BB18C0BA ON log (poa_id)');
-        $this->addSql('ALTER TABLE payment ADD CONSTRAINT FK_6D28840D7096A49F FOREIGN KEY (claim_id) REFERENCES claim (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('CREATE TABLE "user" (id SERIAL NOT NULL, name VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, password_hash VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, roles VARCHAR(255) NOT NULL, token VARCHAR(255) DEFAULT NULL, token_expires INT DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
+        $this->addSql('CREATE TABLE payment (id SERIAL NOT NULL, claim_id BIGINT DEFAULT NULL, amount DOUBLE PRECISION NOT NULL, method VARCHAR(255) NOT NULL, added_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, processed_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_6D28840D7096A49F ON payment (claim_id)');
+        $this->addSql('CREATE TABLE poa (id SERIAL NOT NULL, claim_id BIGINT DEFAULT NULL, system VARCHAR(255) NOT NULL, case_number VARCHAR(255) NOT NULL, received_date DATE NOT NULL, original_payment_amount VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_736097E47096A49F ON poa (claim_id)');
+        $this->addSql('CREATE TABLE claim (id BIGINT NOT NULL, assigned_to_id INT DEFAULT NULL, created_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, updated_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, received_datetime TIMESTAMP(0) WITH TIME ZONE NOT NULL, json_data BYTEA NOT NULL, status VARCHAR(255) NOT NULL, assigned_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, finished_datetime TIMESTAMP(0) WITH TIME ZONE DEFAULT NULL, donor_name VARCHAR(255) NOT NULL, account_hash VARCHAR(255) NOT NULL, no_sirius_poas BOOLEAN NOT NULL, no_meris_poas BOOLEAN NOT NULL, rejection_reason VARCHAR(255) DEFAULT NULL, rejection_reason_description VARCHAR(255) DEFAULT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_A769DE27F4BD7827 ON claim (assigned_to_id)');
         $this->addSql('ALTER TABLE verification ADD CONSTRAINT FK_5AF1C50BBB18C0BA FOREIGN KEY (poa_id) REFERENCES poa (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE claim ADD CONSTRAINT FK_A769DE27F4BD7827 FOREIGN KEY (assigned_to_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
-        $this->addSql('ALTER TABLE poa ADD CONSTRAINT FK_736097E47096A49F FOREIGN KEY (claim_id) REFERENCES claim (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE log ADD CONSTRAINT FK_8F3F68C57096A49F FOREIGN KEY (claim_id) REFERENCES claim (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE log ADD CONSTRAINT FK_8F3F68C5A76ED395 FOREIGN KEY (user_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE log ADD CONSTRAINT FK_8F3F68C5BB18C0BA FOREIGN KEY (poa_id) REFERENCES poa (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE payment ADD CONSTRAINT FK_6D28840D7096A49F FOREIGN KEY (claim_id) REFERENCES claim (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE poa ADD CONSTRAINT FK_736097E47096A49F FOREIGN KEY (claim_id) REFERENCES claim (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE claim ADD CONSTRAINT FK_A769DE27F4BD7827 FOREIGN KEY (assigned_to_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
 
         // Grant access to users
         $fullUsername = getenv('OPG_REFUNDS_DB_CASES_FULL_USERNAME');
@@ -76,18 +76,18 @@ class Version20170928144100 extends AbstractMigration
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql', 'Migration can only be executed safely on \'postgresql\'.');
 
         $this->addSql('CREATE SCHEMA public');
-        $this->addSql('ALTER TABLE claim DROP CONSTRAINT FK_A769DE27F4BD7827');
         $this->addSql('ALTER TABLE log DROP CONSTRAINT FK_8F3F68C5A76ED395');
-        $this->addSql('ALTER TABLE payment DROP CONSTRAINT FK_6D28840D7096A49F');
-        $this->addSql('ALTER TABLE poa DROP CONSTRAINT FK_736097E47096A49F');
-        $this->addSql('ALTER TABLE log DROP CONSTRAINT FK_8F3F68C57096A49F');
+        $this->addSql('ALTER TABLE claim DROP CONSTRAINT FK_A769DE27F4BD7827');
         $this->addSql('ALTER TABLE verification DROP CONSTRAINT FK_5AF1C50BBB18C0BA');
         $this->addSql('ALTER TABLE log DROP CONSTRAINT FK_8F3F68C5BB18C0BA');
-        $this->addSql('DROP TABLE payment');
+        $this->addSql('ALTER TABLE log DROP CONSTRAINT FK_8F3F68C57096A49F');
+        $this->addSql('ALTER TABLE payment DROP CONSTRAINT FK_6D28840D7096A49F');
+        $this->addSql('ALTER TABLE poa DROP CONSTRAINT FK_736097E47096A49F');
         $this->addSql('DROP TABLE verification');
-        $this->addSql('DROP TABLE "user"');
-        $this->addSql('DROP TABLE claim');
-        $this->addSql('DROP TABLE poa');
         $this->addSql('DROP TABLE log');
+        $this->addSql('DROP TABLE "user"');
+        $this->addSql('DROP TABLE payment');
+        $this->addSql('DROP TABLE poa');
+        $this->addSql('DROP TABLE claim');
     }
 }
