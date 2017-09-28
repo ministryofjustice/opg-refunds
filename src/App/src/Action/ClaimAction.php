@@ -4,6 +4,8 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
+use App\Form\Poa;
+use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -35,10 +37,10 @@ class ClaimAction extends AbstractClaimAction
 
         $form = $this->getForm($request, $claim);
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-page', [
-            'claim' => $claim,
-            'form'  => $form
-        ]));
+        return new HtmlResponse($this->getTemplateRenderer()->render(
+            'app::claim-page',
+            $this->getViewModel($request, $claim, $form)
+        ));
     }
 
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -95,10 +97,10 @@ class ClaimAction extends AbstractClaimAction
             }
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-page', [
-            'claim' => $claim,
-            'form'  => $form
-        ]));
+        return new HtmlResponse($this->getTemplateRenderer()->render(
+            'app::claim-page',
+            $this->getViewModel($request, $claim, $form)
+        ));
     }
 
     /**
@@ -114,5 +116,33 @@ class ClaimAction extends AbstractClaimAction
             'csrf'  => $session['meta']['csrf'],
         ]);
         return $form;
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param $claim
+     * @param $form
+     * @return array
+     */
+    private function getViewModel($request, $claim, $form): array
+    {
+        $session = $request->getAttribute('session');
+        $poaNoneFoundForm = new PoaNoneFound([
+            'csrf' => $session['meta']['csrf'],
+        ]);
+
+        return [
+            'claim'                 => $claim,
+            'form'                  => $form,
+            'poaNoneFoundForm'      => $poaNoneFoundForm,
+            'poaSiriusNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
+                'id' => $this->modelId,
+                'system' => Poa::SYSTEM_SIRIUS
+            ]),
+            'poaMerisNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
+                'id' => $this->modelId,
+                'system' => Poa::SYSTEM_MERIS
+            ])
+        ];
     }
 }

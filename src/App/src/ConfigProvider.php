@@ -59,7 +59,6 @@ class ConfigProvider
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
-                Action\Poa\PoaCancelNoneFoundAction::class => Action\Poa\PoaCancelNoneFoundActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Claim\ClaimAcceptAction::class => Action\Claim\ClaimAcceptActionFactory::class,

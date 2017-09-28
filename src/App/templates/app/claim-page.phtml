@@ -55,14 +55,17 @@ $this->addErrorMap([
         </table>
     <?php } ?>
 
-    <?php if ($claim->isNoSiriusPoas()) { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
-    <?php } else { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
-        <?php if (!$this->hasSiriusPoas($claim)) { ?>
-            <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">I cannot find any Sirius POAs</a>
+    <form method="post" class="form" action="<?= $poaSiriusNoneFoundUrl ?>">
+        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php if ($claim->isNoSiriusPoas()) { ?>
+            <input class="button" type="submit" value="Cancel and return to add Sirius POA">
+        <?php } else { ?>
+            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
+            <?php if (!$this->hasSiriusPoas($claim)) { ?>
+                <input class="button-secondary" type="submit" value="I cannot find any Sirius POAs">
+            <?php } ?>
         <?php } ?>
-    <?php } ?>
+    </form>
 </div>
 
 <div>
@@ -94,14 +97,17 @@ $this->addErrorMap([
         </table>
     <?php } ?>
 
-    <?php if ($claim->isNoMerisPoas()) { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
-    <?php } else { ?>
-        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
-        <?php if (!$this->hasMerisPoas($claim)) { ?>
-            <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">I cannot find any Meris POAs</a>
+    <form method="post" class="form" action="<?= $poaMerisNoneFoundUrl ?>">
+        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php if ($claim->isNoMerisPoas()) { ?>
+            <input class="button" type="submit" value="Cancel and return to add Meris POA">
+        <?php } else { ?>
+            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
+            <?php if (!$this->hasMerisPoas($claim)) { ?>
+                <input class="button-secondary" type="submit" value="I cannot find any Meris POAs">
+            <?php } ?>
         <?php } ?>
-    <?php } ?>
+    </form>
 </div>
 
 <h2 class="heading-medium heading-refunds">User log</h2>
