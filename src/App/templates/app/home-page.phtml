@@ -1,13 +1,25 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
-<?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user */ ?>
+<?php
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user
+ * @var \App\Form\ProcessNewClaim $form
+ */
+?>
 
 <div class="grid-row">
     <div class="column-one-fifth">
         <h2 class="heading-medium heading-refunds">Process a claim</h2>
         <p>Add a new power of attorney refund</p>
-        <a class="button" href="/process-new-claim">
-            Process new claim
-        </a>
+
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+        <form method="post" class="form">
+
+            <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+            <input type='submit' class="button" name='submit' value='Process new claim'>
+
+        </form>
     </div>
     <div class="column-four-fifths">
 

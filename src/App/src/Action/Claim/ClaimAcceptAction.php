@@ -58,8 +58,6 @@ class ClaimAcceptAction extends AbstractClaimAction
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $formData = $form->getData();
-
             $claim = $this->claimService->setStatusAccepted($claim->getId());
 
             if ($claim === null) {

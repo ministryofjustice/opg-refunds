@@ -4,6 +4,7 @@ namespace App\Action;
 
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
+use App\Form\ProcessNewClaim;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,7 +35,13 @@ class HomePageAction extends AbstractAction implements ApiClientInterface
         $flash = $request->getAttribute('flash');
         $messages = $flash->getMessages();
 
+        $session = $request->getAttribute('session');
+        $form = new ProcessNewClaim([
+            'csrf' => $session['meta']['csrf'],
+        ]);
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
+            'form'     => $form,
             'user'     => $user,
             'messages' => $messages
         ]));
