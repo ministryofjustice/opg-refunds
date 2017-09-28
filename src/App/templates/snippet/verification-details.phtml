@@ -17,7 +17,7 @@ Mandatory: postcodes
 <h2 class="notice notice-heading">
     <?php if ($this->isClaimVerified($claim)) { ?>
         <strong class="bold-small">Claim verified</strong>
-        <i class="icon icon-information" title="Verified">
+        <i class="icon icon-tick" title="Verified">
             <span class="visually-hidden">Verified</span>
         </i>
     <?php } else { ?>
@@ -32,8 +32,8 @@ Mandatory: postcodes
         <dt class="details-term">
             Attorney details
             <?php if ($this->isAttorneyVerified($claim)) { ?>
-                <i class="icon icon-information" title="Verified">
-                    <span>Verified</span>
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
                 </i>
             <?php } ?>
         </dt>
@@ -44,8 +44,8 @@ Mandatory: postcodes
         <dt class="details-term">
             Case number:
             <?php if ($this->isCaseNumberVerified($claim)) { ?>
-                <i class="icon icon-information" title="Verified">
-                    <span>Verified</span>
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
                 </i>
             <?php } ?>
         </dt>
@@ -58,8 +58,8 @@ Mandatory: postcodes
         <dt class="heading-small">
             Donor postcode:
             <?php if ($this->isDonorPostcodeVerified($claim)) { ?>
-                <i class="icon icon-information" title="Verified">
-                    <span>Verified</span>
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
                 </i>
             <?php } ?>
         </dt>
@@ -72,8 +72,8 @@ Mandatory: postcodes
         <dt class="heading-small">
             Attorney postcode:
             <?php if ($this->isAttorneyPostcodeVerified($claim)) { ?>
-                <i class="icon icon-information" title="Verified">
-                    <span>Verified</span>
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
                 </i>
             <?php } ?>
         </dt>

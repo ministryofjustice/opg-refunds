@@ -56,11 +56,11 @@ $this->addErrorMap([
     <?php } ?>
 
     <?php if ($claim->isNoSiriusPoas()) { ?>
-        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius/cancel-none-found">Cancel and return to add Sirius POA</a>
     <?php } else { ?>
-        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
         <?php if (!$this->hasSiriusPoas($claim)) { ?>
-            <a class="button button-link" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">I cannot find any Sirius POAs</a>
+            <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/sirius/none-found">I cannot find any Sirius POAs</a>
         <?php } ?>
     <?php } ?>
 </div>
@@ -95,11 +95,11 @@ $this->addErrorMap([
     <?php } ?>
 
     <?php if ($claim->isNoMerisPoas()) { ?>
-        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris/cancel-none-found">Cancel and return to add Meris POA</a>
     <?php } else { ?>
-        <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
+        <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
         <?php if (!$this->hasMerisPoas($claim)) { ?>
-            <a class="button button-link" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">I cannot find any Meris POAs</a>
+            <a class="button button-secondary" href="/claim/<?= $claim->getId() ?>/poa/meris/none-found">I cannot find any Meris POAs</a>
         <?php } ?>
     <?php } ?>
 </div>
