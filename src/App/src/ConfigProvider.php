@@ -44,8 +44,8 @@ class ConfigProvider
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\HomePageAction::class => Action\HomePageAction::class,
-                Action\HomeRefundAction::class => Action\HomeRefundAction::class,
-                Action\HomeReportingAction::class => Action\HomeReportingAction::class,
+                Action\RefundAction::class => Action\RefundAction::class,
+                Action\ReportingAction::class => Action\ReportingAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
 

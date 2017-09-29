@@ -7,10 +7,10 @@ use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class HomeReportingAction
+ * Class RefundAction
  * @package App\Action
  */
-class HomeReportingAction extends AbstractAction
+class RefundAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -19,6 +19,6 @@ class HomeReportingAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::home-reporting-page'));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::refund-page'));
     }
 }

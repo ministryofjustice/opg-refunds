@@ -38,8 +38,8 @@ $app->get('/user[/{id:\d+}]', App\Action\User\UserAction::class, 'user');
 $app->route('/user/add', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.add');
 $app->route('/user/edit/{id:\d+}', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.edit');
 //  TODO - user.delete
-$app->get('/refund', App\Action\HomeRefundAction::class, 'refund.home');
-$app->get('/reporting', App\Action\HomeReportingAction::class, 'reporting.home');
+$app->get('/refund', App\Action\RefundAction::class, 'refund');
+$app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
 $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
