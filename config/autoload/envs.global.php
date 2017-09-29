@@ -1,5 +1,7 @@
 <?php
 
+use Zend\Log\Logger;
+
 return [
 
     'token_ttl' => 60 * 60 * 1, //  1 hour
@@ -55,6 +57,20 @@ return [
             'completer_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'completer@localhost.com',
             'approver_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'approver@localhost.com',
         ]
-    ]
+    ],
+
+
+    'log' => [
+
+        'logstash' => [
+            'path' => '/var/log/app/application.log',
+        ],
+
+        'priorities' => [
+            // The priority we class 500 exceptions as
+            '500' => Logger::CRIT,
+        ],
+
+    ], // log
 
 ];
