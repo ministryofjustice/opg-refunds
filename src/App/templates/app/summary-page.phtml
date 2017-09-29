@@ -23,6 +23,17 @@ $this->layout('layout::default', [
     ]) ?>
 
     <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Donor name on document',
+        'fields' => [
+            [ 'value' => (isset($details['donor']['poa']['name']['first'])) ?
+                "{$details['donor']['poa']['name']['title']} {$details['donor']['poa']['name']['first']} {$details['donor']['poa']['name']['last']}" :
+                "As per current name"
+            ],
+        ],
+        'changeURL' => $this->url('apply.donor.poa', ['who'=>$applicant])
+    ]) ?>
+
+    <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Attorney details',
         'fields' => [
             [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],

@@ -24,7 +24,7 @@ class DonorDetailsAction extends AbstractAction
             'csrf' => $session['meta']['csrf']
         ]);
 
-        $isUpdate = isset($session['donor']);
+        $isUpdate = isset($session['donor']['current']);
 
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
@@ -46,7 +46,7 @@ class DonorDetailsAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             // We are editing previously entered details.
-            $form->setFormattedData($session['donor']);
+            $form->setFormattedData($session['donor']['current']);
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [

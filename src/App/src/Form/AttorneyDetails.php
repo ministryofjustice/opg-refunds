@@ -8,7 +8,7 @@ use Zend\InputFilter\InputFilter;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 
-class ActorDetails extends AbstractForm
+class AttorneyDetails extends AbstractForm
 {
 
     public function __construct($options = [])

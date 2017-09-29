@@ -24,6 +24,10 @@ class FlowController
             'requires'  => 'apply.donor',
         ],
         [
+            'name'      => 'apply.donor.poa',
+            'requires'  => 'apply.donor.poa',
+        ],
+        [
             'name'      => 'apply.attorney',
             'requires'  => 'apply.attorney',
         ],
@@ -109,6 +113,10 @@ class FlowController
 
         if (!isset($session['donor']['current']) || !is_array($session['donor']['current'])) {
             return 'apply.donor';
+        }
+
+        if (!isset($session['donor']['poa']) || !is_array($session['donor']['poa'])) {
+            return 'apply.donor.poa';
         }
 
         if (!isset($session['attorney']) || !is_array($session['attorney'])) {

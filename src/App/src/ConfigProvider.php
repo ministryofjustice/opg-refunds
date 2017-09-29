@@ -42,6 +42,7 @@ class ConfigProvider
                 Action\WhoAction::class => Action\WhoAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,
+                Action\DonorPoaDetailsAction::class => Action\DonorPoaDetailsAction::class,
                 Action\AttorneyDetailsAction::class => Action\AttorneyDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,
                 Action\DoneAction::class => Action\DoneAction::class,

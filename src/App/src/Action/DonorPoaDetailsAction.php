@@ -8,7 +8,7 @@ use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
-class AttorneyDetailsAction extends AbstractAction
+class DonorPoaDetailsAction extends AbstractAction
 {
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -21,30 +21,34 @@ class AttorneyDetailsAction extends AbstractAction
 
         $session = $request->getAttribute('session');
 
-        $form = new Form\AttorneyDetails([
+        $form = new Form\DonorPoaDetails([
             'csrf' => $session['meta']['csrf']
         ]);
 
-        $isUpdate = isset($session['attorney']);
+        $isUpdate = isset($session['donor']['poa']);
 
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
             $form->setData($data);
 
             // If they have not checked to enter a second name, don't validate those fields.
-            if (!isset($data['poa-name-different'])) {
+            if (isset($data['different-name-on-poa']) && $data['different-name-on-poa'] === 'no') {
                 // Filter out the optional fields.
                 $fieldsToValidate = array_flip(array_diff_key(
                     array_flip(array_keys($form->getElements() + $form->getFieldsets())),
                     // Remove the fields below from the validator.
-                    array_flip(['poa-title', 'poa-first', 'poa-last'])
+                    array_flip(['title', 'first', 'last'])
                 ));
 
                 $form->setValidationGroup($fieldsToValidate);
             }
 
             if ($form->isValid()) {
-                $session['attorney'] = $form->getFormattedData();
+                if (!isset($session['donor'])) {
+                    $session['donor'] = [];
+                }
+
+                $session['donor']['poa'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -55,13 +59,14 @@ class AttorneyDetailsAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             // We are editing previously entered details.
-            $form->setFormattedData($session['attorney']);
+            $form->setFormattedData($session['donor']['poa']);
         }
 
-        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::attorney-details-page', [
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-poa-details-page', [
             'form' => $form,
             'who' => $request->getAttribute('who'),
-            'applicant' => $session['applicant']
+            'applicant' => $session['applicant'],
+            'name' => $session['donor']['current']['name']
         ]));
     }
 }

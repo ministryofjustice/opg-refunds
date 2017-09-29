@@ -56,6 +56,7 @@ $app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET
 $prefix = '/application/by-{who:donor|attorney}';
 
 $app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
+$app->route($prefix.'/donor-poa-details', App\Action\DonorPoaDetailsAction::class, ['GET', 'POST'], 'apply.donor.poa');
 $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
 $app->route($prefix.'/case-number', App\Action\CaseNumberAction::class, ['GET', 'POST'], 'apply.case');
 $app->route($prefix.'/postcode', App\Action\PostcodeAction::class, ['GET', 'POST'], 'apply.postcode');
