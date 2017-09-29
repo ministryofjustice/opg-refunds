@@ -184,7 +184,7 @@ class Poa extends AbstractForm
 
     public function bindModelData(PoaModel $poa)
     {
-        $poaArray = $poa->toArray();
+        $poaArray = $poa->getArrayCopy();
         unset($poaArray['id']);
         unset($poaArray['system']);
         unset($poaArray['verifications']);

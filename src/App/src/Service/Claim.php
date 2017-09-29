@@ -112,7 +112,7 @@ class Claim implements ApiClientInterface
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $poaArray = $poa->toArray();
+        $poaArray = $poa->getArrayCopy();
         $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poaArray);
 
         if (empty($claimArray)) {
@@ -126,7 +126,7 @@ class Claim implements ApiClientInterface
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $poaArray = $poa->toArray();
+        $poaArray = $poa->getArrayCopy();
         $claimArray = $this->getApiClient()->httpPut("/v1/cases/claim/{$claim->getId()}/poa/{$poaId}", $poaArray);
 
         if (empty($claimArray)) {
