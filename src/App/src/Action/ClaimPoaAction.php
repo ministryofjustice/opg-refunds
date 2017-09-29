@@ -52,7 +52,7 @@ class ClaimPoaAction extends AbstractRestfulAction
             $poasData = [];
 
             foreach ($claim->getPoas() as $poa) {
-                $poasData[] = $poa->toArray();
+                $poasData[] = $poa->getArrayCopy();
             }
 
             return new JsonResponse($poasData);
@@ -60,7 +60,7 @@ class ClaimPoaAction extends AbstractRestfulAction
             //  Return a specific poa
             foreach ($claim->getPoas() as $poa) {
                 if ($poa->getId() === $poaId) {
-                    return new JsonResponse($poa->toArray());
+                    return new JsonResponse($poa->getArrayCopy());
                 }
             }
 
@@ -88,7 +88,7 @@ class ClaimPoaAction extends AbstractRestfulAction
 
         $claimModel = $this->claimService->addPoa($claimId, $user->getId(), $poaModel);
 
-        return new JsonResponse($claimModel->toArray());
+        return new JsonResponse($claimModel->getArrayCopy());
     }
 
     /**
@@ -112,7 +112,7 @@ class ClaimPoaAction extends AbstractRestfulAction
 
         $claimModel = $this->claimService->editPoa($claimId, $poaId, $user->getId(), $poaModel);
 
-        return new JsonResponse($claimModel->toArray());
+        return new JsonResponse($claimModel->getArrayCopy());
     }
 
     /**
@@ -133,6 +133,6 @@ class ClaimPoaAction extends AbstractRestfulAction
 
         $claimModel = $this->claimService->deletePoa($claimId, $poaId, $user->getId());
 
-        return new JsonResponse($claimModel->toArray());
+        return new JsonResponse($claimModel->getArrayCopy());
     }
 }

@@ -50,7 +50,7 @@ class ClaimAction extends AbstractRestfulAction
             $claimsData = [];
 
             foreach ($claims as $claim) {
-                $claimsData[] = $claim->toArray();
+                $claimsData[] = $claim->getArrayCopy();
             }
 
             return new JsonResponse($claimsData);
@@ -58,7 +58,7 @@ class ClaimAction extends AbstractRestfulAction
             //  Return a specific claim
             $claim = $this->claimService->get($claimId);
 
-            return new JsonResponse($claim->toArray());
+            return new JsonResponse($claim->getArrayCopy());
         }
     }
 
@@ -101,6 +101,6 @@ class ClaimAction extends AbstractRestfulAction
 
         $claim = $this->claimService->get($claimId);
 
-        return new JsonResponse($claim->toArray());
+        return new JsonResponse($claim->getArrayCopy());
     }
 }
