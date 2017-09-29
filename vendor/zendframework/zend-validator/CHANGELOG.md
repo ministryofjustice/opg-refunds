@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.10.1 - 2017-08-22
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#194](https://github.com/zendframework/zend-validator/pull/194) modifies the
+  `EmailAddress` validator to omit the `INTL_IDNA_VARIANT_UTS46` flag to
+  `idn_to_utf8()` if the constant is not defined, fixing an issue on systems
+  using pre-2012 releases of libicu.
+
 ## 2.10.0 - 2017-08-14
 
 ### Added

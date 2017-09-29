@@ -12,8 +12,8 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
@@ -33,6 +33,7 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Permissions\\Rbac\\' => 22,
             'Zend\\Math\\' => 10,
+            'Zend\\Log\\' => 9,
             'Zend\\InputFilter\\' => 17,
             'Zend\\Hydrator\\' => 14,
             'Zend\\Form\\' => 10,
@@ -74,6 +75,7 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         ),
         'O' => 
         array (
+            'Opg\\Refunds\\Log\\' => 16,
             'Opg\\Refunds\\Caseworker\\DataModel\\' => 33,
         ),
         'L' => 
@@ -155,6 +157,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Zend\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-math/src',
+        ),
+        'Zend\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-log/src',
         ),
         'Zend\\InputFilter\\' => 
         array (
@@ -272,6 +278,10 @@ class ComposerStaticInitd1d29ee249614986f3c86cd750c780fc
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'Opg\\Refunds\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ministryofjustice/opg-refunds-logger/src/Opg/Refunds/Log',
         ),
         'Opg\\Refunds\\Caseworker\\DataModel\\' => 
         array (
