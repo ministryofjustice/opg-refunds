@@ -30,8 +30,14 @@ class ProcessApplication implements Initializer\LogSupportInterface
     public function process(array $data) : string
     {
 
-        // Remove metadata
+        // Remove unwanted data
         unset($data['meta']);
+        unset($data['case-number']['have-poa-case-number']);
+        unset($data['contact']['contact-options']);
+        unset($data['postcodes']['postcode-options']);
+        unset($data['donor']['poa']['different-name-on-poa']);
+
+        //---
 
         // Include the date submitted
         $data['submitted'] = gmdate(\DateTime::ISO8601);
