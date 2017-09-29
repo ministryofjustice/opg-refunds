@@ -33,7 +33,6 @@ class UserUpdateAction extends AbstractUserAction
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
-            'user' => $user,
             'form' => $form,
         ]));
     }
@@ -56,14 +55,9 @@ class UserUpdateAction extends AbstractUserAction
 
         $form = $this->getForm($request);
 
-        if ($request->getMethod() == 'POST') {
-            //  TODO - Handle form validation and post here
-        } else {
-            $form->bind($user);
-        }
+        //  TODO - Handle form validation and post here
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
-            'user' => $user,
             'form' => $form,
         ]));
     }
@@ -80,8 +74,14 @@ class UserUpdateAction extends AbstractUserAction
     {
         $session = $request->getAttribute('session');
 
-        return new User([
+        $form = new User([
             'csrf' => $session['meta']['csrf']
         ]);
+
+        if ($request->getMethod() == 'POST') {
+            $form->setData($request->getParsedBody());
+        }
+
+        return $form;
     }
 }

@@ -14,7 +14,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class PoaSiriusNoneFoundAction
+ * Class PoaNoneFoundAction
  * @package App\Action\Poa
  */
 class PoaNoneFoundAction extends AbstractClaimAction

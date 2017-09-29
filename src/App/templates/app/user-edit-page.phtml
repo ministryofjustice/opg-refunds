@@ -1,7 +1,5 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<h1><?= (is_null($user) ? 'New user' : $user->getName()) ?></h1>
-
 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
 <?php if (isset($error)) { ?>
@@ -36,5 +34,4 @@
 
 </form>
 
-<p><a href="/user<?= (is_null($user) ? '' : '/' . $user->getId()) ?>">Cancel</a></p>
 <p><a href="/user">Back to Users</a></p>
