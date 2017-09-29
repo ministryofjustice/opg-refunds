@@ -18,6 +18,10 @@ $this->layout('layout::default', [
         'fields' => [
             [ 'value' => "{$details['donor']['current']['name']['title']} {$details['donor']['current']['name']['first']} {$details['donor']['current']['name']['last']}" ],
             [ 'value' => date('j F Y', strtotime($details['donor']['current']['dob'])) ],
+            [ 'value' => ($details['donor']['current']['address']['address-1']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-2']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-3']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-postcode']) ?? null ],
         ],
         'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>

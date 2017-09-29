@@ -4,7 +4,7 @@
     </dt>
     <dd class="cya-answer">
         <?php foreach($fields as $field): ?>
-            <?php if( !isset($field['label']) && !isset($field['value']) ){ continue; } ?>
+            <?php if( empty($field['label']) && empty($field['value']) ){ continue; } ?>
             <?= (isset($field['label'])) ? $this->e($field['label'].': ') : '' ?>
             <?= (isset($field['value'])) ? $this->e($field['value'].'') : '' ?>
             <br>
