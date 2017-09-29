@@ -30,6 +30,7 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
             RequestMethodInterface::METHOD_GET    => 'index',
             RequestMethodInterface::METHOD_POST   => 'add',
             RequestMethodInterface::METHOD_PUT    => 'edit',
+            RequestMethodInterface::METHOD_PATCH  => 'modify',
             RequestMethodInterface::METHOD_DELETE => 'delete',
         ];
 
