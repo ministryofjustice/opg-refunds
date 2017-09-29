@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use App\Service\Claim as ClaimService;
+use App\Service\Claim\Claim as ClaimService;
 use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractClaimAction extends AbstractModelAction

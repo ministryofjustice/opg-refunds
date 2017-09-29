@@ -7,6 +7,7 @@ use App\Filter\StandardInput as StandardInputFilter;
 use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -17,9 +18,6 @@ use Zend\InputFilter\InputFilter;
  */
 class Poa extends AbstractForm
 {
-    const SYSTEM_SIRIUS = 'sirius';
-    const SYSTEM_MERIS = 'meris';
-
     /**
      * Poa constructor.
      * @param array $options
@@ -160,19 +158,19 @@ class Poa extends AbstractForm
         $verifications = [];
         if (array_key_exists('attorney', $formData)) {
             $verifications[] = [
-                'type'   => 'attorney',
+                'type'   => VerificationModel::TYPE_ATTORNEY,
                 'passes' => $formData['attorney'] === 'yes',
             ];
         }
         if (array_key_exists('donor-postcode', $formData)) {
             $verifications[] = [
-                'type'   => 'donor-postcode',
+                'type'   => VerificationModel::TYPE_DONOR_POSTCODE,
                 'passes' => $formData['donor-postcode'] === 'yes',
             ];
         }
         if (array_key_exists('attorney-postcode', $formData)) {
             $verifications[] = [
-                'type'   => 'attorney-postcode',
+                'type'   => VerificationModel::TYPE_ATTORNEY_POSTCODE,
                 'passes' => $formData['attorney-postcode'] === 'yes',
             ];
         }
@@ -198,7 +196,7 @@ class Poa extends AbstractForm
 
         foreach ($poa->getVerifications() as $verification) {
             //Case number verification is automatic and is not displayed on the page so do not include it
-            if ($verification->getType() !== 'case-number') {
+            if ($verification->getType() !== VerificationModel::TYPE_CASE_NUMBER) {
                 $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
             }
         }

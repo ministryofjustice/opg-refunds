@@ -5,8 +5,8 @@ namespace App\Action\Claim;
 use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\ClaimReject;
-use App\Service\Claim as ClaimService;
-use App\View\Poa\PoaFormatter;
+use App\Service\Claim\Claim as ClaimService;
+use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -17,14 +17,14 @@ use Zend\Diactoros\Response\HtmlResponse;
 class ClaimRejectAction extends AbstractClaimAction
 {
     /**
-     * @var PoaFormatter
+     * @var PoaFormatterService
      */
-    private $poaFormatter;
+    private $poaFormatterService;
 
-    public function __construct(ClaimService $claimService, PoaFormatter $poaFormatter)
+    public function __construct(ClaimService $claimService, PoaFormatterService $poaFormatterService)
     {
         parent::__construct($claimService);
-        $this->poaFormatter = $poaFormatter;
+        $this->poaFormatterService = $poaFormatterService;
     }
 
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -38,7 +38,7 @@ class ClaimRejectAction extends AbstractClaimAction
             throw new Exception('Claim not found', 404);
         }
 
-        if (!$this->poaFormatter->isClaimComplete($claim)) {
+        if (!$this->poaFormatterService->isClaimComplete($claim)) {
             throw new Exception('Claim is not complete', 400);
         }
 

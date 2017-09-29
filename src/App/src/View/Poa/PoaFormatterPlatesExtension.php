@@ -2,38 +2,39 @@
 
 namespace App\View\Poa;
 
+use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 
 class PoaFormatterPlatesExtension implements ExtensionInterface
 {
     /**
-     * @var PoaFormatter
+     * @var PoaFormatterService
      */
-    private $formatter;
+    private $formatterService;
 
-    public function __construct(PoaFormatter $formatter)
+    public function __construct(PoaFormatterService $formatterService)
     {
-        $this->formatter = $formatter;
+        $this->formatterService = $formatterService;
     }
 
     public function register(Engine $engine)
     {
-        $engine->registerFunction('hasSiriusPoas', [$this->formatter, 'hasSiriusPoas']);
-        $engine->registerFunction('hasMerisPoas', [$this->formatter, 'hasMerisPoas']);
-        $engine->registerFunction('getSiriusPoas', [$this->formatter, 'getSiriusPoas']);
-        $engine->registerFunction('getMerisPoas', [$this->formatter, 'getMerisPoas']);
-        $engine->registerFunction('getFormattedCaseNumber', [$this->formatter, 'getFormattedCaseNumber']);
-        $engine->registerFunction('getOriginalPaymentAmountString', [$this->formatter, 'getOriginalPaymentAmountString']);
-        $engine->registerFunction('getRefundAmountString', [$this->formatter, 'getRefundAmountString']);
-        $engine->registerFunction('getInterestAmountString', [$this->formatter, 'getInterestAmountString']);
-        $engine->registerFunction('getRefundTotalAmountString', [$this->formatter, 'getRefundTotalAmountString']);
-        $engine->registerFunction('getFormattedVerificationMatches', [$this->formatter, 'getFormattedVerificationMatches']);
-        $engine->registerFunction('isAttorneyVerified', [$this->formatter, 'isAttorneyVerified']);
-        $engine->registerFunction('isCaseNumberVerified', [$this->formatter, 'isCaseNumberVerified']);
-        $engine->registerFunction('isDonorPostcodeVerified', [$this->formatter, 'isDonorPostcodeVerified']);
-        $engine->registerFunction('isAttorneyPostcodeVerified', [$this->formatter, 'isAttorneyPostcodeVerified']);
-        $engine->registerFunction('isClaimVerified', [$this->formatter, 'isClaimVerified']);
-        $engine->registerFunction('isClaimComplete', [$this->formatter, 'isClaimComplete']);
+        $engine->registerFunction('hasSiriusPoas', [$this->formatterService, 'hasSiriusPoas']);
+        $engine->registerFunction('hasMerisPoas', [$this->formatterService, 'hasMerisPoas']);
+        $engine->registerFunction('getSiriusPoas', [$this->formatterService, 'getSiriusPoas']);
+        $engine->registerFunction('getMerisPoas', [$this->formatterService, 'getMerisPoas']);
+        $engine->registerFunction('getFormattedCaseNumber', [$this->formatterService, 'getFormattedCaseNumber']);
+        $engine->registerFunction('getOriginalPaymentAmountString', [$this->formatterService, 'getOriginalPaymentAmountString']);
+        $engine->registerFunction('getRefundAmountString', [$this->formatterService, 'getRefundAmountString']);
+        $engine->registerFunction('getInterestAmountString', [$this->formatterService, 'getInterestAmountString']);
+        $engine->registerFunction('getRefundTotalAmountString', [$this->formatterService, 'getRefundTotalAmountString']);
+        $engine->registerFunction('getFormattedVerificationMatches', [$this->formatterService, 'getFormattedVerificationMatches']);
+        $engine->registerFunction('isAttorneyVerified', [$this->formatterService, 'isAttorneyVerified']);
+        $engine->registerFunction('isCaseNumberVerified', [$this->formatterService, 'isCaseNumberVerified']);
+        $engine->registerFunction('isDonorPostcodeVerified', [$this->formatterService, 'isDonorPostcodeVerified']);
+        $engine->registerFunction('isAttorneyPostcodeVerified', [$this->formatterService, 'isAttorneyPostcodeVerified']);
+        $engine->registerFunction('isClaimVerified', [$this->formatterService, 'isClaimVerified']);
+        $engine->registerFunction('isClaimComplete', [$this->formatterService, 'isClaimComplete']);
     }
 }

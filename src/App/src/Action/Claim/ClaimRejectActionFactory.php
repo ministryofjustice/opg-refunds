@@ -2,8 +2,8 @@
 
 namespace App\Action\Claim;
 
-use App\Service\Claim as ClaimService;
-use App\View\Poa\PoaFormatter;
+use App\Service\Claim\Claim as ClaimService;
+use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use Interop\Container\ContainerInterface;
 
 class ClaimRejectActionFactory
@@ -12,7 +12,7 @@ class ClaimRejectActionFactory
     {
         return new ClaimRejectAction(
             $container->get(ClaimService::class),
-            $container->get(PoaFormatter::class)
+            $container->get(PoaFormatterService::class)
         );
     }
 }

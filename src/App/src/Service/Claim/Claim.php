@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Claim;
 
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
@@ -187,7 +187,7 @@ class Claim implements ApiClientInterface
                 //Add verification for case number
                 $verifications = $poa->getVerifications();
                 $verifications[] = new VerificationModel([
-                    'type' => 'case-number',
+                    'type' => VerificationModel::TYPE_CASE_NUMBER,
                     'passes' => 'yes'
                 ]);
                 $poa->setVerifications($verifications);

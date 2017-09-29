@@ -49,10 +49,8 @@ class ConfigProvider
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
 
-                View\Date\IDateProvider::class => View\Date\DateProvider::class,
-                View\Details\DetailsFormatter::class => View\Details\DetailsFormatter::class,
-                View\Poa\PoaFormatter::class => View\Poa\PoaFormatter::class,
-                Service\Claim::class => Service\Claim::class,
+                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
+                Service\Claim\Claim::class => Service\Claim\Claim::class,
             ],
             'factories'  => [
                 //  Actions
@@ -73,13 +71,8 @@ class ConfigProvider
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
-                View\Date\DateFormatter::class => View\Date\DateFormatterFactory::class,
-                View\ErrorMapper\ErrorMapper::class => View\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
-                View\Date\DateFormatterPlatesExtension::class => View\Date\DateFormatterPlatesExtensionFactory::class,
-                View\Details\DetailsFormatterPlatesExtension::class => View\Details\DetailsFormatterPlatesExtensionFactory::class,
-                View\ErrorMapper\ErrorMapperPlatesExtension::class => View\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
                 View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
             ],
             'initializers' => [

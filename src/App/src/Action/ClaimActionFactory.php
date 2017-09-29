@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use App\Service\Claim as ClaimService;
+use App\Service\Claim\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**

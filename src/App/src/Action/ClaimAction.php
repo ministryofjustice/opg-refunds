@@ -4,11 +4,11 @@ namespace App\Action;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
-use App\Form\Poa;
 use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -137,11 +137,11 @@ class ClaimAction extends AbstractClaimAction
             'poaNoneFoundForm'      => $poaNoneFoundForm,
             'poaSiriusNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
                 'id' => $this->modelId,
-                'system' => Poa::SYSTEM_SIRIUS
+                'system' => PoaModel::SYSTEM_SIRIUS
             ]),
             'poaMerisNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
                 'id' => $this->modelId,
-                'system' => Poa::SYSTEM_MERIS
+                'system' => PoaModel::SYSTEM_MERIS
             ])
         ];
     }
