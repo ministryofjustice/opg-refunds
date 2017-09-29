@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e845f70e905abdf99e0de676df5208e8",
+    "content-hash": "0d558f5f6d6fcf9c2add69093875c786",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -779,7 +779,7 @@
             ],
             "authors": [
                 {
-                    "name": "M??rk S??gi-Kaz??r",
+                    "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com"
                 },
                 {
@@ -839,7 +839,7 @@
                     "email": "geloen.eric@gmail.com"
                 },
                 {
-                    "name": "M??rk S??gi-Kaz??r",
+                    "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com"
                 }
             ],
@@ -886,7 +886,7 @@
             ],
             "authors": [
                 {
-                    "name": "M??rk S??gi-Kaz??r",
+                    "name": "Márk Sági-Kazár",
                     "email": "mark.sagikazar@gmail.com"
                 },
                 {
@@ -2869,7 +2869,7 @@
             ],
             "authors": [
                 {
-                    "name": "P??draic Brady",
+                    "name": "Pádraic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },
