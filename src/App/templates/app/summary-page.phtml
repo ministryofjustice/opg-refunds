@@ -16,13 +16,8 @@ $this->layout('layout::default', [
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
-            [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
-            [ 'value' => date('j F Y', strtotime($details['donor']['dob'])) ],
-            [
-                    'label' => (isset($details['donor']['poa-name']['first'])) ? 'Name on power of attorney' : null,
-                    'value' => (isset($details['donor']['poa-name']['first'])) ? "{$details['donor']['poa-name']['title']} {$details['donor']['poa-name']['first']} {$details['donor']['poa-name']['last']}" : null
-            ],
-
+            [ 'value' => "{$details['donor']['current']['name']['title']} {$details['donor']['current']['name']['first']} {$details['donor']['current']['name']['last']}" ],
+            [ 'value' => date('j F Y', strtotime($details['donor']['current']['dob'])) ],
         ],
         'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>
