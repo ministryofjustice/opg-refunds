@@ -13,6 +13,10 @@
         {
             "type": "vcs",
             "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git"
         }
     ],
     "require": {
@@ -21,6 +25,7 @@
         "doctrine/migrations": "^1.5",
         "doctrine/orm": "^2.5",
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
+        "ministryofjustice/opg-refunds-logger": "^1.1",
         "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
         "symfony/yaml": "^3.3",

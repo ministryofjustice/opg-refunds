@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.1.0 - 2017-08-11
+
+### Added
+
+- [#33](https://github.com/zendframework/zend-expressive-fastroute/pull/33)
+  adds PSR-11 Container Interface support.
+
+### Changed
+
+- [#32](https://github.com/zendframework/zend-expressive-fastroute/pull/32)
+  changes to the standard route parser from FastRoute.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.0.0 - 2017-01-11
 
 ### Added
