@@ -65,7 +65,7 @@ class Authentication
             'email' => $email,
         ]);
 
-        if (is_null($user) || $user->getPasswordHash() != hash('sha256', $password)) {
+        if (is_null($user) || !password_verify($password, $user->getPasswordHash())) {
             throw new InvalidInputException('User not found');
         }
 
