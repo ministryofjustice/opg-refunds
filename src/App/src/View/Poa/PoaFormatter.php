@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Poa;
+namespace App\View\Poa;
 
 use App\Form\Poa as PoaForm;
 use DateTime;
@@ -10,7 +10,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 
 /**
  * Class PoaFormatter
- * @package App\Service\Poa
+ * @package App\View\Poa
  */
 class PoaFormatter
 {

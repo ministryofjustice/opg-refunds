@@ -6,7 +6,7 @@ use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\ClaimAccept;
 use App\Service\Claim as ClaimService;
-use App\Service\Poa\PoaFormatter;
+use App\View\Poa\PoaFormatter;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;

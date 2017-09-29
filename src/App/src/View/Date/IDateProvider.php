@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Date;
+namespace App\View\Date;
 
 /**
  * Interface IDateProvider
- * @package App\Service\Date
+ * @package App\View\Date
  */
 interface IDateProvider
 {

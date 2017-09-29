@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Details;
+namespace App\View\Details;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 
 /**
  * Class DetailsFormatterPlatesExtension
- * @package App\Service\Details
+ * @package App\View\Details
  */
 class DetailsFormatterPlatesExtension implements ExtensionInterface
 {

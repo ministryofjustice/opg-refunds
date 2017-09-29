@@ -1,9 +1,9 @@
 <?php
 
-namespace AppTest\Service\Date;
+namespace AppTest\View\Date;
 
-use App\Service\Date\DateFormatter;
-use App\Service\Date\IDateProvider;
+use App\View\Date\DateFormatter;
+use App\View\Date\IDateProvider;
 use DateTime;
 use Mockery;
 use Mockery\MockInterface;
@@ -15,6 +15,7 @@ class DateFormatterTest extends TestCase
      * @var MockInterface|IDateProvider
      */
     private $dateProvider;
+
     /**
      * @var DateFormatter
      */

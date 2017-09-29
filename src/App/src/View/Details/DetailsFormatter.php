@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Details;
+namespace App\View\Details;
 
 use InvalidArgumentException;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
@@ -9,7 +9,7 @@ use Opg\Refunds\Caseworker\DataModel\Common\Name as NameModel;
 
 /**
  * Class DetailsFormatter
- * @package App\Service\Details
+ * @package App\View\Details
  */
 class DetailsFormatter
 {

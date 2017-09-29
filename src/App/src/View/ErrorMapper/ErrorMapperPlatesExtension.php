@@ -1,5 +1,6 @@
 <?php
-namespace App\Service\ErrorMapper;
+
+namespace App\View\ErrorMapper;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
@@ -8,7 +9,7 @@ use League\Plates\Extension\ExtensionInterface;
  * Plates Extension providing a View Helper for the ErrorMapper service.
  *
  * Class ErrorMapperPlatesExtension
- * @package App\Service\ErrorMapper
+ * @package App\View\ErrorMapper
  */
 class ErrorMapperPlatesExtension implements ExtensionInterface
 {

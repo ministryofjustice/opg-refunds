@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Details;
+namespace App\View\Details;
 
 use Interop\Container\ContainerInterface;
 
 /**
  * Class DetailsFormatterPlatesExtensionFactory
- * @package App\Service\Details
+ * @package App\View\Details
  */
 class DetailsFormatterPlatesExtensionFactory
 {

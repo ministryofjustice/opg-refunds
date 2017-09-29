@@ -3,7 +3,7 @@
 namespace App\Action\Claim;
 
 use App\Service\Claim as ClaimService;
-use App\Service\Poa\PoaFormatter;
+use App\View\Poa\PoaFormatter;
 use Interop\Container\ContainerInterface;
 
 class ClaimRejectActionFactory

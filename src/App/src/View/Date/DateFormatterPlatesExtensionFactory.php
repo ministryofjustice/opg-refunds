@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Date;
+namespace App\View\Date;
 
 use Interop\Container\ContainerInterface;
 
 /**
  * Class DateFormatterPlatesExtensionFactory
- * @package App\Service\Date
+ * @package App\View\Date
  */
 class DateFormatterPlatesExtensionFactory
 {

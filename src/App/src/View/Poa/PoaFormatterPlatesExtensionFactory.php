@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Poa;
+namespace App\View\Poa;
 
 use Interop\Container\ContainerInterface;
 
 /**
  * Class PoaFormatterPlatesExtensionFactory
- * @package App\Service\Poa
+ * @package App\View\Poa
  */
 class PoaFormatterPlatesExtensionFactory
 {

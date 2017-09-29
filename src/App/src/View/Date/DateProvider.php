@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Service\Date;
+namespace App\View\Date;
 
 /**
  * Class DateProvider
- * @package App\Service\Date
+ * @package App\View\Date
  */
 class DateProvider implements IDateProvider
 {

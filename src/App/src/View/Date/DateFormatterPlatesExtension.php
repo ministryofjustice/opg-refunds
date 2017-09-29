@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Date;
+namespace App\View\Date;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 
 /**
  * Class DateFormatterPlatesExtension
- * @package App\Service\Date
+ * @package App\View\Date
  */
 class DateFormatterPlatesExtension implements ExtensionInterface
 {

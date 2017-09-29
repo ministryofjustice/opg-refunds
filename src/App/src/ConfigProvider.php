@@ -49,9 +49,9 @@ class ConfigProvider
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
 
-                Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
-                Service\Details\DetailsFormatter::class => Service\Details\DetailsFormatter::class,
-                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
+                View\Date\IDateProvider::class => View\Date\DateProvider::class,
+                View\Details\DetailsFormatter::class => View\Details\DetailsFormatter::class,
+                View\Poa\PoaFormatter::class => View\Poa\PoaFormatter::class,
                 Service\Claim::class => Service\Claim::class,
             ],
             'factories'  => [
@@ -73,14 +73,14 @@ class ConfigProvider
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
-                Service\Date\DateFormatter::class => Service\Date\DateFormatterFactory::class,
-                Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
+                View\Date\DateFormatter::class => View\Date\DateFormatterFactory::class,
+                View\ErrorMapper\ErrorMapper::class => View\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
-                Service\Date\DateFormatterPlatesExtension::class => Service\Date\DateFormatterPlatesExtensionFactory::class,
-                Service\Details\DetailsFormatterPlatesExtension::class => Service\Details\DetailsFormatterPlatesExtensionFactory::class,
-                Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
-                Service\Poa\PoaFormatterPlatesExtension::class => Service\Poa\PoaFormatterPlatesExtensionFactory::class,
+                View\Date\DateFormatterPlatesExtension::class => View\Date\DateFormatterPlatesExtensionFactory::class,
+                View\Details\DetailsFormatterPlatesExtension::class => View\Details\DetailsFormatterPlatesExtensionFactory::class,
+                View\ErrorMapper\ErrorMapperPlatesExtension::class => View\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
+                View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

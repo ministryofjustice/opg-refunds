@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Service\Date;
+namespace App\View\Date;
 
 use DateTime;
 
 /**
  * Class DateFormatter
- * @package App\Service\Date
+ * @package App\View\Date
  */
 class DateFormatter
 {

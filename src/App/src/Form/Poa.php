@@ -34,8 +34,8 @@ class Poa extends AbstractForm
         //  Csrf field
         $this->addCsrfElement($inputFilter);
 
-        //  System field (hidden)
-        $field = new Element\Text('system');
+        //  System field
+        $field = new Element\Hidden('system');
         $input = new Input($field->getName());
 
         $input->getFilterChain()

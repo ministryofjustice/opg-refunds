@@ -1,5 +1,6 @@
 <?php
-namespace App\Service\ErrorMapper;
+
+namespace App\View\ErrorMapper;
 
 use Interop\Container\ContainerInterface;
 

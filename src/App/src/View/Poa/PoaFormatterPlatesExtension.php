@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Poa;
+namespace App\View\Poa;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
