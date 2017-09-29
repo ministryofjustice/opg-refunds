@@ -11,6 +11,10 @@
         {
             "type": "vcs",
             "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git"
         }
     ],
     "require": {
@@ -19,6 +23,7 @@
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
+        "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "slim/flash": "^0.2.0",

@@ -1,5 +1,7 @@
 <?php
 
+use Zend\Log\Logger;
+
 return [
 
     'api_base_uri' => 'https://' . (getenv('API_HOSTNAME') ?: 'api'),
@@ -56,5 +58,18 @@ return [
         ],
 
     ],
+
+    'log' => [
+
+        'logstash' => [
+            'path' => '/var/log/app/application.log',
+        ],
+
+        'priorities' => [
+            // The priority we class 500 exceptions as
+            '500' => Logger::CRIT,
+        ],
+
+    ], // log
 
 ];
