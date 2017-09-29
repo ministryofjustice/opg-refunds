@@ -69,7 +69,10 @@ class AuthenticationAdapter implements AdapterInterface
     public function authenticate()
     {
         try {
-            $userData = $this->client->authenticate($this->email, $this->password);
+            $userData = $this->client->httpPost('/v1/auth', [
+                'email'    => $this->email,
+                'password' => $this->password,
+            ]);
 
             //  If no exception has been thrown then this is OK - transfer the details to the success result
             $user = new User($userData);

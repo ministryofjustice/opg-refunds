@@ -28,7 +28,9 @@ class DownloadAction extends AbstractAction implements ApiClientInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        //  TODO - If keeping this action then move logic below into a dedicated service
         $response = $this->getApiClient()->getSpreadsheetResponse();
+
         $fileContents = $response->getBody();
         $contentDisposition = $response->getHeaderLine('Content-Disposition');
         $contentLength = $response->getHeaderLine('Content-Length');

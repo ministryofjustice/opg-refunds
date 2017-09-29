@@ -44,31 +44,6 @@ class Client
     }
 
     /**
-     * Send the authenticate API call
-     *
-     * @param string $email
-     * @param string $password
-     * @return array
-     */
-    public function authenticate(string $email, string $password)
-    {
-        return $this->httpPost('/v1/auth', [
-            'email'    => $email,
-            'password' => $password,
-        ]);
-    }
-
-    /**
-     * Get all claims
-     *
-     * @return array
-     */
-    public function getClaims()
-    {
-        return $this->httpGet('/v1/cases/claim');
-    }
-
-    /**
      * Get SSCL spreadsheet containing all refundable claims
      *
      * @return ResponseInterface
@@ -82,20 +57,7 @@ class Client
 
         $request = new Request('GET', $url, $this->buildHeaders());
 
-        //  Can throw RuntimeException if there is a problem
-        $response = $this->httpClient->sendRequest($request);
-
-        return $response;
-    }
-
-    /**
-     * Get all applications
-     *
-     * @return array
-     */
-    public function getApplications()
-    {
-        return $this->httpGet('/dev/applications');
+        return $this->httpClient->sendRequest($request);
     }
 
     /**

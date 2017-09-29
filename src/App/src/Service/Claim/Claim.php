@@ -36,15 +36,28 @@ class Claim implements ApiClientInterface
      */
     public function getClaim(int $claimId, int $userId)
     {
-        $claimArray = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
-        $claim = new ClaimModel($claimArray);
+        $claimData = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
 
-        if ($claim->getAssignedToId() !== $userId) {
+        $claim = $this->createDataModel($claimData);
+
+        if (!$claim instanceof ClaimModel || $claim->getAssignedToId() !== $userId) {
             //User is not assigned to chosen claim
             throw new Exception('Access forbidden', 403);
         }
 
         return $claim;
+    }
+
+    /**
+     * Get all claims
+     *
+     * @return array
+     */
+    public function getClaims()
+    {
+        $claimsData = $this->getApiClient()->httpGet('/v1/cases/claim');
+
+        return $this->createModelCollection($claimsData);
     }
 
     /**
@@ -78,11 +91,7 @@ class Claim implements ApiClientInterface
             'noSiriusPoas' => $noSiriusPoas
         ]);
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     /**
@@ -96,11 +105,7 @@ class Claim implements ApiClientInterface
             'noMerisPoas' => $noMerisPoas
         ]);
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     /**
@@ -112,39 +117,25 @@ class Claim implements ApiClientInterface
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $poaArray = $poa->getArrayCopy();
-        $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poaArray);
+        $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poa->getArrayCopy());
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     public function editPoa(ClaimModel $claim, PoaModel $poa, int $poaId)
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $poaArray = $poa->getArrayCopy();
-        $claimArray = $this->getApiClient()->httpPut("/v1/cases/claim/{$claim->getId()}/poa/{$poaId}", $poaArray);
+        $claimArray = $this->getApiClient()->httpPut("/v1/cases/claim/{$claim->getId()}/poa/{$poaId}", $poa->getArrayCopy());
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     public function deletePoa($claimId, $poaId)
     {
         $claimArray = $this->getApiClient()->httpDelete("/v1/cases/claim/{$claimId}/poa/{$poaId}");
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     public function setRejectionReason(int $claimId, $rejectionReason, $rejectionReasonDescription)
@@ -155,11 +146,7 @@ class Claim implements ApiClientInterface
             'rejectionReasonDescription' => $rejectionReasonDescription
         ]);
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     public function setStatusAccepted(int $claimId)
@@ -168,11 +155,7 @@ class Claim implements ApiClientInterface
             'status' => ClaimModel::STATUS_ACCEPTED
         ]);
 
-        if (empty($claimArray)) {
-            return null;
-        }
-
-        return new ClaimModel($claimArray);
+        return $this->createDataModel($claimArray);
     }
 
     /**
@@ -182,6 +165,7 @@ class Claim implements ApiClientInterface
     private function updatePoaCaseNumberVerification(ClaimModel $claim, PoaModel $poa)
     {
         $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
+
         if ($poaCaseNumber !== null) {
             if ($poaCaseNumber === $poa->getCaseNumber()) {
                 //Add verification for case number
@@ -193,5 +177,39 @@ class Claim implements ApiClientInterface
                 $poa->setVerifications($verifications);
             }
         }
+    }
+
+    /**
+     * Create model from array data
+     *
+     * @param array|null $data
+     * @return null|ClaimModel
+     */
+    private function createDataModel(array $data = null)
+    {
+        if (is_array($data) && !empty($data)) {
+            return new ClaimModel($data);
+        }
+
+        return null;
+    }
+
+    /**
+     * Create a collection (array) of models
+     *
+     * @param array|null $data
+     * @return array
+     */
+    private function createModelCollection(array $data = null)
+    {
+        $models = [];
+
+        if (is_array($data)) {
+            foreach ($data as $dataItem) {
+                $models[] = $this->createDataModel($dataItem);
+            }
+        };
+
+        return $models;
     }
 }

@@ -20,11 +20,7 @@ class User implements ApiClientInterface
     {
         $userData = $this->getApiClient()->httpGet('/v1/cases/user/' . $userId);
 
-        if (empty($userData)) {
-            return null;
-        }
-
-        return new UserModel($userData);
+        return $this->createDataModel($userData);
     }
 
     /**
@@ -34,20 +30,42 @@ class User implements ApiClientInterface
      */
     public function getUsers()
     {
-        //  Get all users
-        $users = [];
-
-        //  Even though the user details are in the session get them again with a GET call to the API
         $usersData = $this->getApiClient()->httpGet('/v1/cases/user');
 
-        if (empty($usersData)) {
-            return null;
+        return $this->createModelCollection($usersData);
+    }
+
+    /**
+     * Create model from array data
+     *
+     * @param array|null $data
+     * @return null|UserModel
+     */
+    private function createDataModel(array $data = null)
+    {
+        if (is_array($data) && !empty($data)) {
+            return new UserModel($data);
         }
 
-        foreach ($usersData as $userData) {
-            $users[] = new UserModel($userData);
-        }
+        return null;
+    }
 
-        return $users;
+    /**
+     * Create a collection (array) of models
+     *
+     * @param array|null $data
+     * @return array
+     */
+    private function createModelCollection(array $data = null)
+    {
+        $models = [];
+
+        if (is_array($data)) {
+            foreach ($data as $dataItem) {
+                $models[] = $this->createDataModel($dataItem);
+            }
+        };
+
+        return $models;
     }
 }
