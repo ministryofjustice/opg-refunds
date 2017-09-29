@@ -59,27 +59,6 @@ class Client
     }
 
     /**
-     * Get user details
-     *
-     * @param int $userId
-     * @return array
-     */
-    public function getUser(int $userId)
-    {
-        return $this->httpGet('/v1/cases/user/' . $userId);
-    }
-
-    /**
-     * Get all users
-     *
-     * @return array
-     */
-    public function getUsers()
-    {
-        return $this->httpGet('/v1/cases/user');
-    }
-
-    /**
      * Get all claims
      *
      * @return array

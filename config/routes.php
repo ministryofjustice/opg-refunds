@@ -32,7 +32,7 @@ $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
-$app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/', App\Action\Home\HomeAction::class, 'home');
 $app->get('/admin', App\Action\AdminAction::class, 'admin');
 $app->get('/user[/{id:\d+}]', App\Action\User\UserAction::class, 'user');
 $app->route('/user/add', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.add');

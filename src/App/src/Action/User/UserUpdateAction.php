@@ -2,20 +2,34 @@
 
 namespace App\Action\User;
 
+use App\Action\AbstractModelAction;
 use App\Form\User;
+use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
-use Zend\Form\FormInterface;
 
 /**
  * Class UserUpdateAction
  * @package App\Action
  */
-class UserUpdateAction extends AbstractUserAction
+class UserUpdateAction extends AbstractModelAction
 {
+    /**
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
+     * UserUpdateAction constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -23,7 +37,7 @@ class UserUpdateAction extends AbstractUserAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $user = $this->getUser();
+        $user = $this->userService->getUser($this->modelId);
 
         $form = $this->getForm($request);
 
@@ -47,7 +61,7 @@ class UserUpdateAction extends AbstractUserAction
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $user = $this->getUser();
+        $user = $this->userService->getUser($this->modelId);
 
         if (is_null($user)) {
             throw new Exception('Page not found', 404);

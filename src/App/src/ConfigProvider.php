@@ -38,30 +38,33 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                //  Actions
                 Action\AdminAction::class => Action\AdminAction::class,
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\User\UserAction::class => Action\User\UserAction::class,
-                Action\User\UserUpdateAction::class => Action\User\UserUpdateAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
-                Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
                 Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
                 Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
 
-                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
+                // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
+                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
+                Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
                 //  Actions
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Claim\ClaimAcceptAction::class => Action\Claim\ClaimAcceptActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\User\UserAction::class => Action\User\UserActionFactory::class,
+                Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
