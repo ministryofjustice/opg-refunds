@@ -47,22 +47,22 @@ class Claim
     /**
      * @var ApplicationIngestion
      */
-    private $dataMigrationService;
+    private $applicationIngestionService;
 
     /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
-     * @param ApplicationIngestion $dataMigrationService
+     * @param ApplicationIngestion $applicationIngestionService
      */
-    public function __construct(EntityManager $entityManager, ApplicationIngestion $dataMigrationService)
+    public function __construct(EntityManager $entityManager, ApplicationIngestion $applicationIngestionService)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->entityManager = $entityManager;
-        $this->dataMigrationService = $dataMigrationService;
+        $this->applicationIngestionService = $applicationIngestionService;
     }
 
     /**
@@ -108,7 +108,7 @@ class Claim
     public function assignNextClaim(int $userId)
     {
         //TODO: Get proper migration running via cron job
-        $this->dataMigrationService->ingestApplication();
+        $this->applicationIngestionService->ingestApplication();
 
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([
