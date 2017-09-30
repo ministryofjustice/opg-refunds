@@ -1,23 +1,22 @@
 <?php
 
-namespace App\Action;
+namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
 use App\Form\Log;
 use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
-use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response\HtmlResponse;
+use Exception;
+use RuntimeException;
 
 /**
  * Class ClaimAction
- * @package App\Action
+ * @package App\Action\Claim
  */
 class ClaimAction extends AbstractClaimAction
 {
@@ -43,6 +42,12 @@ class ClaimAction extends AbstractClaimAction
         ));
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @throws Exception
+     */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $session = $request->getAttribute('session');
@@ -73,6 +78,11 @@ class ClaimAction extends AbstractClaimAction
         throw new Exception('CSRF failure', 500);
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         //Even though we are adding a log message here,

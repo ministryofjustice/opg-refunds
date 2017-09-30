@@ -2,17 +2,27 @@
 
 namespace App\Action\Poa;
 
-use App\Action\AbstractClaimAction;
+use App\Action\Claim\AbstractClaimAction;
 use App\Form\AbstractForm;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
+use Exception;
+use RuntimeException;
 
+/**
+ * Class PoaDeleteAction
+ * @package App\Action\Poa
+ */
 class PoaDeleteAction extends AbstractClaimAction
 {
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse
+     * @throws Exception
+     */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
@@ -24,16 +34,17 @@ class PoaDeleteAction extends AbstractClaimAction
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-delete-page', [
-            'claim'     => $claim,
-            'poa'       => $poa,
-            'cancelUrl' => $this->getUrlHelper()->generate('claim.poa', [
-                'claimId' => $request->getAttribute('claimId'),
-                'system'  => $system,
-                'id'      => $this->modelId
-            ])
+            'claim'  => $claim,
+            'poa'    => $poa,
+            'system' => $system,
         ]));
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return \Zend\Diactoros\Response\RedirectResponse
+     */
     public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->claimService->deletePoa($request->getAttribute('claimId'), $this->modelId);

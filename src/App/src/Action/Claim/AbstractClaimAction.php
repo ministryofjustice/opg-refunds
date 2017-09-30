@@ -1,12 +1,18 @@
 <?php
 
-namespace App\Action;
+namespace App\Action\Claim;
 
+use App\Action\AbstractModelAction;
 use App\Form\AbstractForm;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use App\Service\Claim\Claim as ClaimService;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * Class AbstractClaimAction
+ * @package App\Action\Claim
+ */
 abstract class AbstractClaimAction extends AbstractModelAction
 {
     /**
@@ -15,7 +21,7 @@ abstract class AbstractClaimAction extends AbstractModelAction
     protected $claimService;
 
     /**
-     * ClaimAction constructor.
+     * AbstractClaimAction constructor
      * @param ClaimService $claimService
      */
     public function __construct(ClaimService $claimService)
@@ -25,16 +31,20 @@ abstract class AbstractClaimAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return \Opg\Refunds\Caseworker\DataModel\Cases\Claim
+     * @return ClaimModel
      */
     protected function getClaim(ServerRequestInterface $request): ClaimModel
     {
-        //Retrieve claim to verify it exists and the user has access to it
+        //  Retrieve claim to verify it exists and the user has access to it
         $claimId = $request->getAttribute('claimId') ?: $this->modelId;
-        $claim = $this->claimService->getClaim($claimId, $request->getAttribute('identity')->getId());
-        return $claim;
+
+        return $this->claimService->getClaim($claimId, $request->getAttribute('identity')->getId());
     }
 
+    /**
+     * @param ClaimModel $claim
+     * @return PoaModel
+     */
     protected function getPoa(ClaimModel $claim)
     {
         if ($claim->getPoas() !== null) {

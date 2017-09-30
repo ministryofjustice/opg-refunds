@@ -2,14 +2,14 @@
 
 namespace App\Action\Poa;
 
-use App\Action\AbstractClaimAction;
+use App\Action\Claim\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\PoaNoneFound;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
+use Exception;
 
 /**
  * Class PoaNoneFoundAction
@@ -17,6 +17,12 @@ use Psr\Http\Message\ServerRequestInterface;
  */
 class PoaNoneFoundAction extends AbstractClaimAction
 {
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @throws Exception
+     */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);

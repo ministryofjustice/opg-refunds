@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Action;
+namespace App\Action\Claim;
 
 use App\Service\Claim\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**
  * Class ClaimActionFactory
- * @package App\Action
+ * @package App\Action\Claim
  */
 class ClaimActionFactory
 {
