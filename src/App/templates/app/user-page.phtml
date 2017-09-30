@@ -17,5 +17,5 @@
     </tr>
 </table>
 
-<p><a href="/user/edit/<?= $user->getId() ?>">Edit</a></p>
-<p><a href="/user">Back to users</a></p>
+<p><a href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a></p>
+<p><a href="<?= $this->generateUrl('user') ?>">Back to users</a></p>

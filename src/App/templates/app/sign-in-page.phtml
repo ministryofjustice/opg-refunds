@@ -3,7 +3,7 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <form action="/sign-in" method="post" class="form">
+        <form method="post" class="form">
 
             <fieldset>
 
@@ -37,6 +37,8 @@
             <div class="form-group">
                 <input class="button" type="submit" value="Continue">
             </div>
+
+            <a class="button button-link" href="<?= $this->generateUrl('password.request.reset') ?>">Forgotten your password?</a>
 
         </form>
     </div>

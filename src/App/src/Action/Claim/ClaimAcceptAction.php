@@ -31,16 +31,14 @@ class ClaimAcceptAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimAccept $form */
-        $form = $this->getForm($request, $claim);
-
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        }
-
-        if (!$this->poaFormatterService->isClaimComplete($claim) || !$this->poaFormatterService->isClaimVerified($claim)) {
+        } elseif (!$this->poaFormatterService->isClaimComplete($claim) || !$this->poaFormatterService->isClaimVerified($claim)) {
             throw new Exception('Claim is not complete or verified', 400);
         }
+
+        /** @var ClaimAccept $form */
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-approve-page', [
             'form'  => $form,
@@ -81,10 +79,12 @@ class ClaimAcceptAction extends AbstractClaimAction
     public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new ClaimAccept([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);
+
         return $form;
     }
 }

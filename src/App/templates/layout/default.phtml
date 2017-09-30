@@ -50,16 +50,16 @@
             <div class="header-proposition">
                 <div class="content">
                     <nav id="proposition-menu">
-                        <a href="/" id="proposition-name">Claim a power of attorney refund</a>
+                        <a href="<?= $this->generateUrl('home') ?>" id="proposition-name">Claim a power of attorney refund</a>
                         <ul id="proposition-links">
                             <li>
-                                <a href="/" class="active">Your claims</a>
+                                <a href="<?= $this->generateUrl('home') ?>" class="active">Your claims</a>
                             </li>
                             <li>
-                                <a href="/refund" class="">Refunds</a>
+                                <a href="<?= $this->generateUrl('refund') ?>" class="">Refunds</a>
                             </li>
                             <li>
-                                <a href="/admin" class="">Admin</a>
+                                <a href="<?= $this->generateUrl('admin') ?>" class="">Admin</a>
                             </li>
                             <li>
                                 <a href="#" class="">FAQs</a>
@@ -73,7 +73,7 @@
             <div class="header-profile">
                 <p>
                     Logged in as <a href="">TODO</a><br/>
-                    <a href="/sign-out">Sign out</a>
+                    <a href="<?= $this->generateUrl('sign.out') ?>">Sign out</a>
                 </p>
             </div>
 

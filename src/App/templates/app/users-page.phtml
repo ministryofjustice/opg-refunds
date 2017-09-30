@@ -21,8 +21,8 @@
                 <td><?= $user->getStatus() ?></td>
                 <td><?= $user->getRoles() ?></td>
                 <td>
-                    <a href="/user/<?= $user->getId() ?>">View</a>
-                    <a href="/user/edit/<?= $user->getId() ?>">Edit</a>
+                    <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>">View</a>
+                    <a href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
                 </td>
             </tr>
         <?php } ?>
@@ -34,5 +34,5 @@
     </tbody>
 </table>
 
-<p><a href="/user/add">Add user</a></p>
-<p><a href="/admin">Back</a></p>
+<p><a href="<?= $this->generateUrl('user.add') ?>">Add user</a></p>
+<p><a href="<?= $this->generateUrl('admin') ?>">Back</a></p>

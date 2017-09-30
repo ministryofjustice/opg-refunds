@@ -77,6 +77,7 @@ class ConfigProvider
 
                 // View Helper
                 View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
+                View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

@@ -121,11 +121,11 @@ $postcodes = $claim->getApplication()->getPostcodes();
     <div class="form-group">
         <input id='return-submit' type='submit' class="button" name='submit' value='Save and return to claim'>
         <input id='add-submit' type='submit' class="button button-secondary" name='submit' value='Save and add another'>
-        <?php if (isset($deleteUrl)) { ?>
-            <a class="button button-link" href="<?= $deleteUrl ?>">Delete</a>
+        <?php if (isset($poaId)) { ?>
+            <a class="button button-link" href="<?= $this->generateUrl('claim.poa.delete', ['claimId' => $claim->getId(), 'system'  => $system, 'id' => $poaId]); ?>">Delete</a>
         <?php } ?>
     </div>
 
-    <a class="button button-link" href="/claim/<?= $claim->getId() ?>">Cancel</a>
+    <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel</a>
 
 </form>

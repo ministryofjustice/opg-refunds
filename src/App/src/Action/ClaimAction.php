@@ -127,22 +127,15 @@ class ClaimAction extends AbstractClaimAction
     private function getViewModel($request, $claim, $form): array
     {
         $session = $request->getAttribute('session');
+
         $poaNoneFoundForm = new PoaNoneFound([
             'csrf' => $session['meta']['csrf'],
         ]);
 
         return [
-            'claim'                 => $claim,
-            'form'                  => $form,
-            'poaNoneFoundForm'      => $poaNoneFoundForm,
-            'poaSiriusNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
-                'id' => $this->modelId,
-                'system' => PoaModel::SYSTEM_SIRIUS
-            ]),
-            'poaMerisNoneFoundUrl' => $this->getUrlHelper()->generate('claim.poa.none.found', [
-                'id' => $this->modelId,
-                'system' => PoaModel::SYSTEM_MERIS
-            ])
+            'claim'            => $claim,
+            'form'             => $form,
+            'poaNoneFoundForm' => $poaNoneFoundForm,
         ];
     }
 }

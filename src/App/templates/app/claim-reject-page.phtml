@@ -57,7 +57,7 @@
 
     <div class="form-group">
         <input type='submit' class="button" name='submit' value='Reject claim'>
-        <a class="button button-link" href="/claim/<?= $claim->getId() ?>">Cancel and return back to claim</a>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
     </div>
 
 </form>

@@ -30,28 +30,23 @@ class PoaAction extends AbstractClaimAction
         /** @var Poa $form */
         $form = $this->getForm($request, $claim);
 
-        $viewModel = [
-            'form'   => $form,
-            'claim'  => $claim,
-            'system' => $system
-        ];
-
         if ($this->modelId !== null) {
             //Edit page
             $poa = $this->getPoa($claim);
+
             if ($poa === null) {
                 throw new Exception('POA not found', 404);
             }
-            $form->bindModelData($poa);
 
-            $viewModel['deleteUrl'] = $this->getUrlHelper()->generate('claim.poa.delete', [
-                'claimId' => $request->getAttribute('claimId'),
-                'system'  => $system,
-                'id'      => $this->modelId
-            ]);
+            $form->bindModelData($poa);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', $viewModel));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
+            'form'   => $form,
+            'claim'  => $claim,
+            'system' => $system,
+            'poaId'  => $this->modelId,
+        ]));
     }
 
     /**
@@ -156,6 +151,7 @@ class PoaAction extends AbstractClaimAction
     public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new Poa([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],

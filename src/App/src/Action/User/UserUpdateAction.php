@@ -37,7 +37,11 @@ class UserUpdateAction extends AbstractModelAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $user = $this->userService->getUser($this->modelId);
+        $user = null;
+
+        if (!is_null($this->modelId)) {
+            $user = $this->userService->getUser($this->modelId);
+        }
 
         $form = $this->getForm($request);
 
