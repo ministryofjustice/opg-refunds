@@ -54,12 +54,14 @@ class PoaNoneFoundAction extends AbstractPoaAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new PoaNoneFound([
             'csrf' => $session['meta']['csrf'],
         ]);
+
         return $form;
     }
 }

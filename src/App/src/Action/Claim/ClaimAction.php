@@ -118,7 +118,7 @@ class ClaimAction extends AbstractClaimAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
 

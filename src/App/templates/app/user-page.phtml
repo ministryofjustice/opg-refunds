@@ -1,8 +1,10 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<h1><?= $user->getName() ?></h1>
-
 <table>
+    <tr>
+        <th>Name</th>
+        <td><?= $user->getName() ?></td>
+    </tr>
     <tr>
         <th>Email</th>
         <td><?= $user->getEmail() ?></td>
@@ -18,4 +20,4 @@
 </table>
 
 <p><a href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a></p>
-<p><a href="<?= $this->generateUrl('user') ?>">Back to users</a></p>
+<p><a href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a></p>

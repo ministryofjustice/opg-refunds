@@ -55,8 +55,7 @@ class PoaAction extends AbstractPoaAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse|RedirectResponse
-     * @throws Exception
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -65,30 +64,28 @@ class PoaAction extends AbstractPoaAction
 
         $form = $this->getForm($request, $claim);
 
-        if ($request->getMethod() == 'POST') {
-            /** @var Poa $form */
-            $form->setData($request->getParsedBody());
+        /** @var Poa $form */
+        $form->setData($request->getParsedBody());
 
-            if ($form->isValid()) {
-                $poa = new PoaModel($form->getModelData());
+        if ($form->isValid()) {
+            $poa = new PoaModel($form->getModelData());
 
-                $claim = $this->claimService->addPoa($claim, $poa);
+            $claim = $this->claimService->addPoa($claim, $poa);
 
-                if ($claim === null) {
-                    throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
-                }
-
-                //TODO: Find a better way
-                if ($_POST['submit'] === 'Save and add another') {
-                    return $this->redirectToRoute('claim.poa', [
-                        'claimId' => $request->getAttribute('claimId'),
-                        'system'  => $system,
-                        'id'      => null
-                    ]);
-                }
-
-                return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
+            if ($claim === null) {
+                throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
             }
+
+            //TODO: Find a better way
+            if ($_POST['submit'] === 'Save and add another') {
+                return $this->redirectToRoute('claim.poa', [
+                    'claimId' => $request->getAttribute('claimId'),
+                    'system'  => $system,
+                    'id'      => null
+                ]);
+            }
+
+            return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
@@ -101,8 +98,7 @@ class PoaAction extends AbstractPoaAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse|RedirectResponse
-     * @throws Exception
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -147,7 +143,7 @@ class PoaAction extends AbstractPoaAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
 

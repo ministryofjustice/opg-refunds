@@ -45,5 +45,5 @@ abstract class AbstractClaimAction extends AbstractModelAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    abstract public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm;
+    abstract protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm;
 }
