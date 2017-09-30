@@ -97,13 +97,13 @@ class ClaimAction extends AbstractClaimAction
             if ($form->isValid()) {
                 $message = $form->get('message')->getValue();
 
-                $log = $this->claimService->addLog($this->modelId, 'Caseworker note', $message);
+                $log = $this->claimService->addLog($claim->getId(), 'Caseworker note', $message);
 
                 if ($log === null) {
-                    throw new RuntimeException('Failed to add new log to claim with id: ' . $this->modelId);
+                    throw new RuntimeException('Failed to add new log to claim with id: ' . $claim->getId());
                 }
 
-                return $this->redirectToRoute('claim', ['id' => $this->modelId]);
+                return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
             }
         }
 
@@ -121,10 +121,12 @@ class ClaimAction extends AbstractClaimAction
     public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new Log([
             'claim' => $claim,
             'csrf'  => $session['meta']['csrf'],
         ]);
+
         return $form;
     }
 

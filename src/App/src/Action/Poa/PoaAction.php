@@ -2,7 +2,6 @@
 
 namespace App\Action\Poa;
 
-use App\Action\Claim\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\Poa;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -10,7 +9,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
 use Exception;
 use RuntimeException;
 
@@ -18,7 +16,7 @@ use RuntimeException;
  * Class PoaAction
  * @package App\Action\Poa
  */
-class PoaAction extends AbstractClaimAction
+class PoaAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -29,7 +27,6 @@ class PoaAction extends AbstractClaimAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
-        $system = $request->getAttribute('system');
 
         /** @var Poa $form */
         $form = $this->getForm($request, $claim);
@@ -45,6 +42,8 @@ class PoaAction extends AbstractClaimAction
             $form->bindModelData($poa);
         }
 
+        $system = $request->getAttribute('system');
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
             'form'   => $form,
             'claim'  => $claim,
@@ -54,8 +53,6 @@ class PoaAction extends AbstractClaimAction
     }
 
     /**
-     * GET/POST add action
-     *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse|RedirectResponse
@@ -102,8 +99,6 @@ class PoaAction extends AbstractClaimAction
     }
 
     /**
-     * GET/POST edit action
-     *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse|RedirectResponse

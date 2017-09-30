@@ -2,8 +2,8 @@
 
 namespace App\Action\Poa;
 
-use App\Action\Claim\AbstractClaimAction;
 use App\Form\AbstractForm;
+use App\Form\PoaDelete;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -15,7 +15,7 @@ use RuntimeException;
  * Class PoaDeleteAction
  * @package App\Action\Poa
  */
-class PoaDeleteAction extends AbstractClaimAction
+class PoaDeleteAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -26,17 +26,22 @@ class PoaDeleteAction extends AbstractClaimAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
-        $system = $request->getAttribute('system');
 
         $poa = $this->getPoa($claim);
+
         if ($poa === null) {
             throw new Exception('POA not found', 404);
         }
+
+        $system = $request->getAttribute('system');
+
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-delete-page', [
             'claim'  => $claim,
             'poa'    => $poa,
             'system' => $system,
+            'form'   => $form,
         ]));
     }
 
@@ -44,16 +49,24 @@ class PoaDeleteAction extends AbstractClaimAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
+     * @throws Exception
      */
     public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $claim = $this->claimService->deletePoa($request->getAttribute('claimId'), $this->modelId);
+        $claim = $this->getClaim($request);
 
-        if ($claim === null) {
-            throw new RuntimeException('Failed to edit POA with id: ' . $this->modelId);
+        $form = $this->getForm($request, $claim);
+
+        $form->setData($request->getParsedBody());
+
+        if ($form->isValid()) {
+            $claim = $this->claimService->deletePoa($claim->getId(), $this->modelId);
+
+            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         }
 
-        return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
+        // The only reason the form can be invalid is a CSRF check fail so no need to recover gracefully
+        throw new Exception('CSRF failure', 500);
     }
 
     /**
@@ -63,6 +76,12 @@ class PoaDeleteAction extends AbstractClaimAction
      */
     public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
-        return null;
+        $session = $request->getAttribute('session');
+
+        $form = new PoaDelete([
+            'csrf' => $session['meta']['csrf'],
+        ]);
+
+        return $form;
     }
 }

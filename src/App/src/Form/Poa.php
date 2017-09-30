@@ -84,8 +84,33 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Validation
+
         //  Attorney details (always present)
-        $field = new Element\Radio('attorney');
+        $this->addVerificationRadio('attorney', $inputFilter);
+
+        if (isset($options['claim'])) {
+            /** @var ClaimModel $claim */
+            $claim = $options['claim'];
+
+            //  Donor postcode
+            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
+                $this->addVerificationRadio('donor-postcode', $inputFilter);
+            }
+
+            //  Attorney postcode
+            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
+                $this->addVerificationRadio('attorney-postcode', $inputFilter);
+            }
+        }
+    }
+
+    /**
+     * @param string $inputName
+     * @param InputFilter $inputFilter
+     */
+    private function addVerificationRadio(string $inputName, InputFilter $inputFilter)
+    {
+        $field = new Element\Radio($inputName);
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -97,43 +122,6 @@ class Poa extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
-
-        if (isset($options['claim'])) {
-            /** @var ClaimModel $claim */
-            $claim = $options['claim'];
-
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
-                $field = new Element\Radio('donor-postcode');
-                $input = new Input($field->getName());
-
-                $input->getValidatorChain()->attach(new Validator\NotEmpty);
-
-                $field->setValueOptions([
-                    'yes' => 'yes',
-                    'no' => 'no',
-                ]);
-
-                $this->add($field);
-                $inputFilter->add($input);
-            }
-
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
-                $field = new Element\Radio('attorney-postcode');
-                $input = new Input($field->getName());
-
-                $input->getValidatorChain()->attach(new Validator\NotEmpty);
-
-                $field->setValueOptions([
-                    'yes' => 'yes',
-                    'no' => 'no',
-                ]);
-
-                $this->add($field);
-                $inputFilter->add($input);
-            }
-        }
     }
 
     /**

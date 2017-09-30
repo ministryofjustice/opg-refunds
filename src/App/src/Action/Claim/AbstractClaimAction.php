@@ -6,7 +6,6 @@ use App\Action\AbstractModelAction;
 use App\Form\AbstractForm;
 use App\Service\Claim\Claim as ClaimService;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -39,23 +38,6 @@ abstract class AbstractClaimAction extends AbstractModelAction
         $claimId = $request->getAttribute('claimId') ?: $this->modelId;
 
         return $this->claimService->getClaim($claimId, $request->getAttribute('identity')->getId());
-    }
-
-    /**
-     * @param ClaimModel $claim
-     * @return PoaModel
-     */
-    protected function getPoa(ClaimModel $claim)
-    {
-        if ($claim->getPoas() !== null) {
-            foreach ($claim->getPoas() as $poa) {
-                if ($poa->getId() == $this->modelId) {
-                    return $poa;
-                }
-            }
-        }
-
-        return null;
     }
 
     /**

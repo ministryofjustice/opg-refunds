@@ -54,15 +54,15 @@ class ConfigProvider
             ],
             'factories'  => [
                 //  Actions
-                Action\SignInAction::class => Action\SignInActionFactory::class,
-                Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
+                Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
+                Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
-                Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
-                Action\Claim\ClaimAcceptAction::class => Action\Claim\ClaimAcceptActionFactory::class,
-                Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
+                Action\SignInAction::class => Action\SignInActionFactory::class,
+                Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
 

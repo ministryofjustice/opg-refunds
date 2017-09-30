@@ -2,7 +2,6 @@
 
 namespace App\Action\Poa;
 
-use App\Action\Claim\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\PoaNoneFound;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -15,7 +14,7 @@ use Exception;
  * Class PoaNoneFoundAction
  * @package App\Action\Poa
  */
-class PoaNoneFoundAction extends AbstractClaimAction
+class PoaNoneFoundAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request

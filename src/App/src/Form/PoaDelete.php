@@ -5,10 +5,10 @@ namespace App\Form;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Class PoaNoneFound
+ * Class PoaDelete
  * @package App\Form
  */
-class PoaNoneFound extends AbstractForm
+class PoaDelete extends AbstractForm
 {
     public function __construct(array $options = [])
     {

@@ -3,7 +3,7 @@
 namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
-use App\Form\ClaimAccept;
+use App\Form\ClaimApprove;
 use App\Service\Claim\Claim as ClaimService;
 use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -11,13 +11,12 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
-use RuntimeException;
 
 /**
- * Class ClaimAcceptAction
+ * Class ClaimApproveAction
  * @package App\Action\Claim
  */
-class ClaimAcceptAction extends AbstractClaimAction
+class ClaimApproveAction extends AbstractClaimAction
 {
     /**
      * @var PoaFormatterService
@@ -25,7 +24,7 @@ class ClaimAcceptAction extends AbstractClaimAction
     private $poaFormatterService;
 
     /**
-     * ClaimAcceptAction constructor
+     * ClaimApproveAction constructor
      * @param ClaimService $claimService
      * @param PoaFormatterService $poaFormatterService
      */
@@ -51,7 +50,7 @@ class ClaimAcceptAction extends AbstractClaimAction
             throw new Exception('Claim is not complete or verified', 400);
         }
 
-        /** @var ClaimAccept $form */
+        /** @var ClaimApprove $form */
         $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-approve-page', [
@@ -69,17 +68,13 @@ class ClaimAcceptAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimAccept $form */
+        /** @var ClaimApprove $form */
         $form = $this->getForm($request, $claim);
 
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
             $claim = $this->claimService->setStatusAccepted($claim->getId());
-
-            if ($claim === null) {
-                throw new RuntimeException('Failed to set rejection reason on claim with id: ' . $this->modelId);
-            }
 
             return $this->redirectToRoute('home');
         }
@@ -99,7 +94,7 @@ class ClaimAcceptAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new ClaimAccept([
+        $form = new ClaimApprove([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);

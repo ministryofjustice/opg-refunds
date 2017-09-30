@@ -86,7 +86,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
     ])
     ?>
 
-    <?php if ($postcodes->getDonorPostcode() !== null) {
+    <?php if ($form->has('donor-postcode')) {
         $this->insert('snippet::input-radio', [
             'formElement' => $form->get('donor-postcode'),
             'question' => "Does {$postcodes->getDonorPostcode()} match the donor's address on the POA?",
@@ -102,7 +102,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
     }
     ?>
 
-    <?php if ($postcodes->getAttorneyPostcode() !== null) {
+    <?php if ($form->has('attorney-postcode')) {
         $this->insert('snippet::input-radio', [
             'formElement' => $form->get('attorney-postcode'),
             'question' => "Does {$postcodes->getAttorneyPostcode()} match any of the attorney addresses on the POA?",

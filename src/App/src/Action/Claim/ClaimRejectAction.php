@@ -45,16 +45,14 @@ class ClaimRejectAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimReject $form */
-        $form = $this->getForm($request, $claim);
-
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        }
-
-        if (!$this->poaFormatterService->isClaimComplete($claim)) {
+        } elseif (!$this->poaFormatterService->isClaimComplete($claim)) {
             throw new Exception('Claim is not complete', 400);
         }
+
+        /** @var ClaimReject $form */
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reject-page', [
             'form'  => $form,
@@ -105,10 +103,12 @@ class ClaimRejectAction extends AbstractClaimAction
     public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new ClaimReject([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);
+
         return $form;
     }
 }

@@ -67,7 +67,7 @@ abstract class AbstractModelAction extends AbstractAction
     }
 
     /**
-     * GET/POST add action - override in subclass if required
+     * POST add action - override in subclass if required
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -79,7 +79,7 @@ abstract class AbstractModelAction extends AbstractAction
     }
 
     /**
-     * GET/POST edit action - override in subclass if required
+     * POST edit action - override in subclass if required
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate

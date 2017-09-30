@@ -7,18 +7,18 @@ use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimAcceptActionFactory
+ * Class ClaimApproveActionFactory
  * @package App\Action\Claim
  */
-class ClaimAcceptActionFactory
+class ClaimApproveActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimAcceptAction
+     * @return ClaimApproveAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimAcceptAction(
+        return new ClaimApproveAction(
             $container->get(ClaimService::class),
             $container->get(PoaFormatterService::class)
         );

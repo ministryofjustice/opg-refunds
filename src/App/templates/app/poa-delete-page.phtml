@@ -18,6 +18,8 @@
 
 <form method="post" class="form">
 
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
     <p>Are you sure you want to delete the POA with case number: <?= $poa->getCaseNumber() ?>?</p>
 
     <div class="form-group">

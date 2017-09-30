@@ -2,17 +2,13 @@
 
 namespace App\Form;
 
-use App\Validator;
-use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element;
-use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Class ClaimAccept
+ * Class ClaimApprove
  * @package App\Form
  */
-class ClaimAccept extends AbstractForm
+class ClaimApprove extends AbstractForm
 {
     public function __construct(array $options = [])
     {
