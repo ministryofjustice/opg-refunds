@@ -44,7 +44,7 @@ class User
     public function getAll()
     {
         /** @var UserEntity[] $users */
-        $users = $this->repository->findBy([]);
+        $users = $this->repository->findBy([], ['name' => 'ASC']);
 
         return $this->translateToDataModelArray($users);
     }
@@ -57,10 +57,7 @@ class User
      */
     public function getById(int $id)
     {
-        /** @var UserEntity $user */
-        $user = $this->repository->findOneBy([
-            'id' => $id,
-        ]);
+        $user = $this->getUserEntity($id);
 
         return $this->translateToDataModel($user);
     }
@@ -79,5 +76,88 @@ class User
         ]);
 
         return $this->translateToDataModel($user);
+    }
+
+    /**
+     * Add a user
+     *
+     * @param UserModel $userModel
+     * @return UserModel
+     */
+    public function add(UserModel $userModel)
+    {
+        $user = new UserEntity();
+        $user->setFromDataModel($userModel);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
+     * @param $userId
+     * @param $name
+     */
+    public function setName($userId, $name)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setName($name);
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param $userId
+     * @param $email
+     */
+    public function setEmail($userId, $email)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setEmail($email);
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param $userId
+     * @param $roles
+     */
+    public function setRoles($userId, $roles)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setRoles($roles);
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param $userId
+     * @param $status
+     */
+    public function setStatus($userId, $status)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setStatus($status);
+
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param $id
+     * @return UserEntity
+     */
+    private function getUserEntity($id): UserEntity
+    {
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
+            'id' => $id,
+        ]);
+
+        return $user;
     }
 }

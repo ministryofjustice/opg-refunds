@@ -124,6 +124,8 @@ abstract class AbstractEntity
         //  Loop through the entity methods and transfer the values from the datamodel
         $entityMethods = get_class_methods($this);
 
+        $modelData = $model->getArrayCopy();
+
         foreach ($entityMethods as $entityMethod) {
             //  Must be a set method to continue
             if (strpos($entityMethod, 'set') !== 0) {
@@ -135,12 +137,11 @@ abstract class AbstractEntity
 
             //  TODO - No model to entity mappings here - possibly add later
 
-            //  Try to find a set method on the model and use it
-            $modelGetMethod = 'get' . $modelFieldName;
+            //  Translate the model field name to dash separated value and try to get it from the model data (array)
+            $modelFieldName = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $modelFieldName));
 
-            if (method_exists($model, $modelGetMethod)) {
-                //  Determine which value to get
-                $value = $model->$modelGetMethod();
+            if (isset($modelData[$modelFieldName])) {
+                $value = $modelData[$modelFieldName];
 
                 //  Don't set null or none scalar values
                 //  TODO - Enhance this if it becomes required in the future
