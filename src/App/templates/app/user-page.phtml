@@ -3,7 +3,12 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <h2 class="heading-medium heading-refunds"><?= $user->getName() ?></h2>
+        <h2 class="heading-medium heading-refunds">
+            <?= $user->getName() ?>
+            <?php if ($user->getStatus() === \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE) { ?>
+                - <span style="color: red;">INACTIVE</span>
+            <?php } ?>
+        </h2>
 
         <table>
             <tr>
@@ -11,12 +16,12 @@
                 <td><?= $user->getEmail() ?></td>
             </tr>
             <tr>
-                <th>Status</th>
-                <td><?= $user->getStatus() ?></td>
-            </tr>
-            <tr>
                 <th>Roles</th>
                 <td><?= $user->getRoles() ?></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><?= $user->getStatus() ?></td>
             </tr>
         </table>
     </div>

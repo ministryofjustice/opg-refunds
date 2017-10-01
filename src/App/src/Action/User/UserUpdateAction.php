@@ -6,6 +6,7 @@ use App\Action\AbstractModelAction;
 use App\Form\User;
 use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
@@ -56,7 +57,28 @@ class UserUpdateAction extends AbstractModelAction
         ]));
     }
 
-    //  TODO - addAction
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     */
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $form = $this->getForm($request);
+
+        if ($form->isValid()) {
+            //  Set the new user as active
+            $user = new UserModel($form->getData());
+
+            $user = $this->userService->createUser($user);
+
+            return $this->redirectToRoute('user', ['id' => $user->getId()]);
+        }
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
+            'form' => $form,
+        ]));
+    }
 
     /**
      * @param ServerRequestInterface $request
@@ -74,7 +96,11 @@ class UserUpdateAction extends AbstractModelAction
 
         $form = $this->getForm($request);
 
-        //  TODO - Handle form validation and post here
+        if ($form->isValid()) {
+            $user = $this->userService->updateUser($user->getId(), $form->getData());
+
+            return $this->redirectToRoute('user', ['id' => $user->getId()]);
+        }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
             'user' => $user,

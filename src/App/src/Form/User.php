@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Zend\Filter;
 use Zend\Form\Element;
 use Zend\InputFilter\Input;
@@ -60,14 +61,43 @@ class User extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Status field
-        //TODO
-
         //  Roles field
-        //TODO
+        $field = new Element\MultiCheckbox('roles');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $field->setValueOptions([
+            UserModel::ROLE_CASEWORKER => UserModel::ROLE_CASEWORKER,
+            UserModel::ROLE_REFUND     => UserModel::ROLE_REFUND,
+            UserModel::ROLE_REPORTING  => UserModel::ROLE_REPORTING,
+            UserModel::ROLE_ADMIN      => UserModel::ROLE_ADMIN,
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Status field
+        $field = new Element\Radio('status');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $field->setValueOptions([
+            UserModel::STATUS_ACTIVE   => UserModel::STATUS_ACTIVE,
+            UserModel::STATUS_INACTIVE => UserModel::STATUS_INACTIVE,
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
 
         //  Csrf field
-        //  TODO - Add this in the constructor if the options contain 'csrf' value
         $this->addCsrfElement($inputFilter);
     }
 }

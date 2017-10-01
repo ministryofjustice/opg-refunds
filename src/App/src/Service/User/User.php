@@ -36,6 +36,33 @@ class User implements ApiClientInterface
     }
 
     /**
+     * Create new user
+     *
+     * @param UserModel $user
+     * @return null|UserModel
+     */
+    public function createUser(UserModel $user)
+    {
+        $userData = $this->getApiClient()->httpPost('/v1/cases/user', $user->getArrayCopy());
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
+     * Update existing user
+     *
+     * @param int $userId
+     * @param array $data
+     * @return null|UserModel
+     */
+    public function updateUser(int $userId, array $data)
+    {
+        $userData = $this->getApiClient()->httpPatch('/v1/cases/user/' . $userId, $data);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
      * Create model from array data
      *
      * @param array|null $data

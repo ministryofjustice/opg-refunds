@@ -27,6 +27,40 @@
                     'formLabelBold' => false
                 ]) ?>
 
+                <?php $this->insert('snippet::input-radio', [
+                    'formElement' => $form->get('roles'),
+                    'question' => 'Roles',
+                    'options' => [
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER => [
+                            'optionLabel' => 'Caseworker'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND => [
+                            'optionLabel' => 'Refund Manager'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REPORTING => [
+                            'optionLabel' => 'Reporting Manager'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_ADMIN => [
+                            'optionLabel' => 'Service Management Team'
+                        ],
+                    ],
+                ])
+                ?>
+
+                <?php $this->insert('snippet::input-radio', [
+                    'formElement' => $form->get('status'),
+                    'question' => 'Status',
+                    'options' => [
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE => [
+                            'optionLabel' => 'Active'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE => [
+                            'optionLabel' => 'Inactive'
+                        ],
+                    ],
+                ])
+                ?>
+
             </fieldset>
 
             <p>

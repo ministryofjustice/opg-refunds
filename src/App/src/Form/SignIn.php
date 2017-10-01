@@ -61,4 +61,16 @@ class SignIn extends AbstractForm
         //  TODO - Add this in the constructor if the options contain 'csrf' value
         $this->addCsrfElement($inputFilter);
     }
+
+    /**
+     * Set the authentication errors against the email for display
+     *
+     * @param array $errorMessage
+     */
+    public function setAuthErrors(array $errorMessages)
+    {
+        $this->setMessages([
+            'email' => $errorMessages
+        ]);
+    }
 }
