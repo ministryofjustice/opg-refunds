@@ -2,36 +2,38 @@
 
 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
-<?php if (isset($error)) { ?>
-    <h2><?= $error ?></h2>
-<?php } ?>
+<div class="grid-row">
+    <div class="column-full">
 
-<form method="post" class="form">
+        <h2 class="heading-medium heading-refunds"><?= (isset($user) ? 'Edit user' : 'Add user') ?></h2>
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+        <form method="post" class="form">
 
-    <fieldset>
+            <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('name'),
-            'formLabel' => 'Name',
-            'formType' => 'text',
-            'formLabelBold' => false
-        ]) ?>
+            <fieldset>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('email'),
-            'formLabel' => 'Email',
-            'formType' => 'text',
-            'formLabelBold' => false
-        ]) ?>
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('name'),
+                    'formLabel' => 'Name',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
 
-    </fieldset>
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('email'),
+                    'formLabel' => 'Email',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
 
-    <div class="form-group">
-        <input type="submit" class="button" value="Save" />
+            </fieldset>
+
+            <p>
+                <input type="submit" class="button" value="Save" />
+                <a class="button button-secondary" href="<?= $this->generateUrl('user', ['id' => (isset($user) ? $user->getId() : null) ]) ?>">Cancel</a>
+            </p>
+
+        </form>
     </div>
-
-</form>
-
-<p><a href="<?= $this->generateUrl('user') ?>">Back to users</a></p>
+</div>

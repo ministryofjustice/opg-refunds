@@ -1,23 +1,32 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<table>
-    <tr>
-        <th>Name</th>
-        <td><?= $user->getName() ?></td>
-    </tr>
-    <tr>
-        <th>Email</th>
-        <td><?= $user->getEmail() ?></td>
-    </tr>
-    <tr>
-        <th>Status</th>
-        <td><?= $user->getStatus() ?></td>
-    </tr>
-    <tr>
-        <th>Roles</th>
-        <td><?= $user->getRoles() ?></td>
-    </tr>
-</table>
+<div class="grid-row">
+    <div class="column-full">
 
-<p><a href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a></p>
-<p><a href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a></p>
+        <h2 class="heading-medium heading-refunds"><?= $user->getName() ?></h2>
+
+        <table>
+            <tr>
+                <th>Email</th>
+                <td><?= $user->getEmail() ?></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><?= $user->getStatus() ?></td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td><?= $user->getRoles() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <p>
+            <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
+            <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
+        </p>
+    </div>
+</div>

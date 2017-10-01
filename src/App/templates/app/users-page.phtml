@@ -1,35 +1,45 @@
 <?php $this->layout('layout::default', ['title' => 'Home']) ?>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Status</th>
-            <th>Roles</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-    <?php if (count($users)) { ?>
-        <?php foreach ($users as $user) { ?>
-            <tr>
-                <td><?= $user->getName() ?></td>
-                <td><?= $user->getEmail() ?></td>
-                <td><?= $user->getStatus() ?></td>
-                <td><?= $user->getRoles() ?></td>
-                <td>
-                    <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>">View</a>
-                    <a href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
-                </td>
-            </tr>
-        <?php } ?>
-    <?php } else { ?>
-        <tr>
-            <td colspan="5">No users</td>
-        </tr>
-    <?php } ?>
-    </tbody>
-</table>
+<div class="grid-row">
+    <div class="column-full">
 
-<p><a href="<?= $this->generateUrl('user.add') ?>">Add user</a></p>
+        <?php // $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
+        <h2 class="heading-medium heading-refunds">Users</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Roles</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if (count($users)) { ?>
+                <?php foreach ($users as $user) { ?>
+                    <tr>
+                        <td>
+                            <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $user->getName() ?></a>
+                        </td>
+                        <td><?= $user->getEmail() ?></td>
+                        <td><?= $user->getStatus() ?></td>
+                        <td><?= $user->getRoles() ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="4">No users</td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <p><a class="button" href="<?= $this->generateUrl('user.add') ?>">Add user</a></p>
+    </div>
+</div>

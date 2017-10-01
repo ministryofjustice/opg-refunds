@@ -51,6 +51,7 @@ class UserUpdateAction extends AbstractModelAction
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
+            'user' => $user,
             'form' => $form,
         ]));
     }
@@ -76,6 +77,7 @@ class UserUpdateAction extends AbstractModelAction
         //  TODO - Handle form validation and post here
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
+            'user' => $user,
             'form' => $form,
         ]));
     }

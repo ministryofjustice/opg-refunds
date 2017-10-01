@@ -12,9 +12,6 @@
                 </legend>
 
                 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
-                <?php if (isset($error)) { ?>
-                    <h2><?= $error ?></h2>
-                <?php } ?>
 
                 <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
