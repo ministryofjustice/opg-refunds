@@ -135,8 +135,6 @@ class UserUpdateAction extends AbstractModelAction
         ]));
     }
 
-    //  TODO - deleteAction
-
     /**
      * Get the form for the model concerned
      *

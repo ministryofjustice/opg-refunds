@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "e845f70e905abdf99e0de676df5208e8",
+    "content-hash": "5be41b1ee36cf48b0a67ca0d788fc39e",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -509,16 +509,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-master",
+            "version": "dev-REF-91-delete_users",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25"
+                "reference": "97baa048d371aa64d76d09fcb11af96c16bfb491"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a9ca847268f220ebc41549ce247d6509b7ab7c25",
-                "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/97baa048d371aa64d76d09fcb11af96c16bfb491",
+                "reference": "97baa048d371aa64d76d09fcb11af96c16bfb491",
                 "shasum": ""
             },
             "require": {
@@ -538,10 +538,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-91-delete_users",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-10-03T12:23:38+00:00"
+            "time": "2017-10-02 17:07:35"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
@@ -779,7 +779,7 @@
             ],
             "authors": [
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M??rk S??gi-Kaz??r",
                     "email": "mark.sagikazar@gmail.com"
                 },
                 {
@@ -839,7 +839,7 @@
                     "email": "geloen.eric@gmail.com"
                 },
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M??rk S??gi-Kaz??r",
                     "email": "mark.sagikazar@gmail.com"
                 }
             ],
@@ -886,7 +886,7 @@
             ],
             "authors": [
                 {
-                    "name": "Márk Sági-Kazár",
+                    "name": "M??rk S??gi-Kaz??r",
                     "email": "mark.sagikazar@gmail.com"
                 },
                 {
@@ -2869,7 +2869,7 @@
             ],
             "authors": [
                 {
-                    "name": "Pádraic Brady",
+                    "name": "P??draic Brady",
                     "email": "padraic.brady@gmail.com",
                     "homepage": "http://blog.astrumfutura.com"
                 },

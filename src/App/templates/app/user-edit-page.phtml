@@ -27,7 +27,7 @@
                     'formLabelBold' => false
                 ]) ?>
 
-                <?php $this->insert('snippet::input-multi', [
+                <?php $this->insert('snippet::input-radio', [
                     'formElement' => $form->get('roles'),
                     'question' => 'Roles',
                     'options' => [
@@ -47,7 +47,7 @@
                 ])
                 ?>
 
-                <?php $this->insert('snippet::input-multi', [
+                <?php $this->insert('snippet::input-radio', [
                     'formElement' => $form->get('status'),
                     'question' => 'Status',
                     'options' => [

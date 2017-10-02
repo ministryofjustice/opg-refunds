@@ -63,6 +63,19 @@ class User implements ApiClientInterface
     }
 
     /**
+     * Delete user
+     *
+     * @param int $userId
+     * @return null|UserModel
+     */
+    public function deleteUser(int $userId)
+    {
+        $userData = $this->getApiClient()->httpDelete('/v1/cases/user/' . $userId);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
      * Create model from array data
      *
      * @param array|null $data

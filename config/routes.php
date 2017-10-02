@@ -36,7 +36,7 @@ $app->get('/', App\Action\Home\HomeAction::class, 'home');
 $app->get('/user[/{id:\d+}]', App\Action\User\UserAction::class, 'user');
 $app->route('/user/add', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.add');
 $app->route('/user/edit/{id:\d+}', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.edit');
-//  TODO - user.delete
+$app->route('/user/delete/{id:\d+}', App\Action\User\UserDeleteAction::class, ['GET', 'POST'], 'user.delete');
 $app->get('/refund', App\Action\RefundAction::class, 'refund');
 $app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
 $app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
