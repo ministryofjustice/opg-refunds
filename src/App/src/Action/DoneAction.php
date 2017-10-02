@@ -23,7 +23,7 @@ class DoneAction extends AbstractAction
         $contact = $session['contact'];
         $reference = $session['reference'];
         $applicant = $session['applicant'];
-        $name = implode(' ', $session['donor']['name']);
+        $name = implode(' ', $session['donor']['current']['name']);
 
         // This will end the session.
         $session->exchangeArray([]);

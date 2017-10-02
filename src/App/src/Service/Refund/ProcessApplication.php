@@ -68,7 +68,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
-        $name = implode(' ', $data['donor']['name']);
+        $name = implode(' ', $data['donor']['current']['name']);
         $contact = $data['contact'];
 
         /*
