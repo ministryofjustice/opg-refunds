@@ -227,6 +227,9 @@ class User extends AbstractEntity
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Claims' => 'AssignedClaims',
+            'Roles' => function () {
+                return (is_string($this->getRoles()) ? explode(',', $this->getRoles()) : []);
+            },
         ]);
 
         return parent::getAsDataModel($modelToEntityMappings);

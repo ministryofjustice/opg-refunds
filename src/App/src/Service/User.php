@@ -134,6 +134,9 @@ class User
     {
         $user = $this->getUserEntity($userId);
 
+        //  Translate roles array to string for entity
+        $roles = implode(',', $roles);
+
         $user->setRoles($roles);
 
         $this->entityManager->flush();

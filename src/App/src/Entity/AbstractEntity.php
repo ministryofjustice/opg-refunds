@@ -51,9 +51,6 @@ abstract class AbstractEntity
                 if (method_exists($model, $modelSetMethod)) {
                     $model->$modelSetMethod($modelFieldValue);
                 }
-
-                //  Unset the callback so it is not used below
-                unset($modelToEntityMappings[$modelFieldName]);
             }
         }
 
@@ -64,6 +61,7 @@ abstract class AbstractEntity
             //  Must be a get or is method to continue
             $isGet = strpos($entityMethod, 'get') === 0;
             $isIs = strpos($entityMethod, 'is') === 0;
+
             if (!$isGet && !$isIs) {
                 continue;
             }
@@ -74,6 +72,9 @@ abstract class AbstractEntity
             //  If there is a mapping for the model field name then swap that in
             if (in_array($entityFieldName, $modelToEntityMappings)) {
                 $modelFieldName = array_search($entityFieldName, $modelToEntityMappings);
+            } elseif (isset($modelToEntityMappings[$modelFieldName]) && $modelToEntityMappings[$modelFieldName] instanceof Closure) {
+                //  Check to see if this model field has already been populated with a closure - if it has then move to the next method
+                continue;
             }
 
             //  Try to find a set method on the model and use it
