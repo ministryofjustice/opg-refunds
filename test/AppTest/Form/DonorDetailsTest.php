@@ -3,16 +3,16 @@ namespace AppTest\Form;
 
 use PHPUnit\Framework\TestCase;
 
-use App\Form\DonorCurrentDetails;
+use App\Form\DonorDetails;
 
 // All DOB tests are now in Fieldset/DobTest.php
 
-class DonorCurrentDetailsTest extends TestCase
+class DonorDetailsTest extends TestCase
 {
 
     private function getForm()
     {
-        return new DonorCurrentDetails([
+        return new DonorDetails([
             'csrf' => bin2hex(random_bytes(32))
         ]);
     }
@@ -23,6 +23,9 @@ class DonorCurrentDetailsTest extends TestCase
             'title' => 'Ms',
             'first' => 'Betty',
             'last' => 'Jones',
+            'poa-title' => 'Sir',
+            'poa-first' => 'Fred',
+            'poa-last' => 'Jones',
             'address-1' => 'Line 1',
             'address-2' => 'Line 2',
             'address-3' => 'Line 3',
@@ -40,7 +43,7 @@ class DonorCurrentDetailsTest extends TestCase
     public function testCanInstantiate()
     {
         $form = $this->getForm();
-        $this->assertInstanceOf(DonorCurrentDetails::class, $form);
+        $this->assertInstanceOf(DonorDetails::class, $form);
     }
 
     public function testHasExpectedFields()
@@ -49,7 +52,7 @@ class DonorCurrentDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(8, $elements);
+        $this->assertCount(12, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);
@@ -57,6 +60,9 @@ class DonorCurrentDetailsTest extends TestCase
         $this->assertArrayHasKey( 'address-2', $elements);
         $this->assertArrayHasKey( 'address-3', $elements);
         $this->assertArrayHasKey( 'address-postcode', $elements);
+        $this->assertArrayHasKey( 'poa-title', $elements);
+        $this->assertArrayHasKey( 'poa-first', $elements);
+        $this->assertArrayHasKey( 'poa-last', $elements);
         $this->assertArrayHasKey( 'secret', $elements);
 
         //---
@@ -132,6 +138,42 @@ class DonorCurrentDetailsTest extends TestCase
 
         $this->assertFalse( $form->isValid() );
     }
+
+    //---------------------------------------------
+    // Optional Names Tests
+
+    public function testAllFieldsWithoutOptionalNamePresentAndValid()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['poa-title']);
+        unset($data['poa-first']);
+        unset($data['poa-last']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+
+        //---
+
+        // Filter out the optional fields.
+
+        $fieldsToValidate = array_flip(array_diff_key(
+            array_flip(array_keys($form->getElements() + $form->getFieldsets())),
+            // Remove the fields below from the validator.
+            array_flip(['poa-title', 'poa-first', 'poa-last'])
+        ));
+
+        $form->setValidationGroup($fieldsToValidate);
+
+        //---
+
+        $this->assertTrue( $form->isValid() );
+    }
+    
 
     //---------------------------------------------
     // Address Tests
