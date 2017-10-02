@@ -20,22 +20,30 @@ class DonorDetailsAction extends AbstractAction
 
         //---
 
-        $form = new Form\DonorCurrentDetails([
+        $form = new Form\DonorDetails([
             'csrf' => $session['meta']['csrf']
         ]);
 
-        $isUpdate = isset($session['donor']['current']);
+        $isUpdate = isset($session['donor']);
 
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
             $form->setData($data);
 
-            if ($form->isValid()) {
-                if (!isset($session['donor'])) {
-                    $session['donor'] = [];
-                }
+            // If they have not checked to enter a second name, don't validate those fields.
+            if (!isset($data['poa-name-different'])) {
+                // Filter out the optional fields.
+                $fieldsToValidate = array_flip(array_diff_key(
+                    array_flip(array_keys($form->getElements() + $form->getFieldsets())),
+                    // Remove the fields below from the validator.
+                    array_flip(['poa-title', 'poa-first', 'poa-last'])
+                ));
 
-                $session['donor']['current'] = $form->getFormattedData();
+                $form->setValidationGroup($fieldsToValidate);
+            }
+
+            if ($form->isValid()) {
+                $session['donor'] = $form->getFormattedData();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -46,7 +54,7 @@ class DonorDetailsAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             // We are editing previously entered details.
-            $form->setFormattedData($session['donor']['current']);
+            $form->setFormattedData($session['donor']);
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [

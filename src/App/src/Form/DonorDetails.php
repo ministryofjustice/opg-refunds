@@ -8,7 +8,7 @@ use Zend\InputFilter\InputFilter;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 
-class DonorCurrentDetails extends AbstractForm
+class DonorDetails extends AbstractForm
 {
 
     public function __construct($options = [])
@@ -138,6 +138,71 @@ class DonorCurrentDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+        //------------------------
+        // POA Name - Checkbox
+
+        $field = new Element\Checkbox('poa-name-different', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - Title
+
+        $field = new Element\Text('poa-title');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - First
+
+        $field = new Element\Text('poa-first');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // POA Name - Last
+
+        $field = new Element\Text('poa-last');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
 
         //------------------------
         // DOB
@@ -156,17 +221,25 @@ class DonorCurrentDetails extends AbstractForm
 
     public function setFormattedData(array $data)
     {
-        $data['title'] = $data['name']['title'] ?? null;
-        $data['first'] = $data['name']['first'] ?? null;
-        $data['last'] = $data['name']['last'] ?? null;
+        $data['title'] = $data['current']['name']['title'] ?? null;
+        $data['first'] = $data['current']['name']['first'] ?? null;
+        $data['last'] = $data['current']['name']['last'] ?? null;
 
-        $data['address-1'] = $data['address']['address-1'] ?? null;
-        $data['address-2'] = $data['address']['address-2'] ?? null;
-        $data['address-3'] = $data['address']['address-3'] ?? null;
-        $data['address-postcode'] = $data['address']['address-postcode'] ?? null;
+        $data['address-1'] = $data['current']['address']['address-1'] ?? null;
+        $data['address-2'] = $data['current']['address']['address-2'] ?? null;
+        $data['address-3'] = $data['current']['address']['address-3'] ?? null;
+        $data['address-postcode'] = $data['current']['address']['address-postcode'] ?? null;
 
-        if (isset($data['dob'])) {
-            $dob = $data['dob'];
+        $data['poa-title'] = $data['poa']['name']['title'] ?? null;
+        $data['poa-first'] = $data['poa']['name']['first'] ?? null;
+        $data['poa-last'] = $data['poa']['name']['last'] ?? null;
+
+        if (isset($data['poa-first'])) {
+            $data['poa-name-different'] = 'yes';
+        }
+
+        if (isset($data['current']['dob'])) {
+            $dob = $data['current']['dob'];
             $data['dob'] = [];
             list($data['dob']['year'],$data['dob']['month'],$data['dob']['day']) = explode('-', $dob);
         }
@@ -182,13 +255,24 @@ class DonorCurrentDetails extends AbstractForm
             return $result;
         }
 
-        $response = [];
+        $response = [
+            'poa' => [],
+            'current' => []
+        ];
 
-        $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+        $response['current']['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+
+        if (isset($result['poa-first'])) {
+            $response['poa']['name'] = [
+                'title' => $result['poa-title'],
+                'first' => $result['poa-first'],
+                'last' => $result['poa-last'],
+            ];
+        }
 
         //---
 
-        $response['address'] = array_intersect_key($result, array_flip([
+        $response['current']['address'] = array_intersect_key($result, array_flip([
             'address-1',
             'address-2',
             'address-3',
@@ -197,15 +281,9 @@ class DonorCurrentDetails extends AbstractForm
 
         //---
 
-        $result['dob'] = array_filter($result['dob']);
-
-        if (!empty($result['dob'])) {
-            $response['dob'] = $result['dob']['year'].'-'
-                .sprintf('%02d', $result['dob']['month']).'-'
-                .sprintf('%02d', $result['dob']['day']);
-        }
-
-        //---
+        $response['current']['dob'] = $result['dob']['year'].'-'
+            .sprintf('%02d', $result['dob']['month']).'-'
+            .sprintf('%02d', $result['dob']['day']);
 
         return $response;
     }

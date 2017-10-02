@@ -45,6 +45,56 @@ $this->fetch('snippet::actor-errors', [
 
     </fieldset>
 
+    <div class="form-group">
+        <div class="multiple-choice" data-target="name-on-poa">
+            <?php $element = $form->get('poa-name-different'); ?>
+            <input
+                id="name-on-poa-checkbox"
+                name="<?= $element->getName(); ?>"
+                type="checkbox"
+                value="yes"
+                <?= ($element->getValue()=='yes') ? ' checked="checked"' : '' ?>
+            >
+            <label for="name-on-poa-checkbox">
+                <?= ($applicant == 'donor') ? "My" : "Their" ?> name is different on the power of attorney documents
+            </label>
+        </div>
+
+        <div class="panel panel-border-narrow js-hidden" id="name-on-poa">
+            <fieldset>
+                <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Name" : "Donor name" ?> on power of attorney documents</legend>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-title'),
+                    'formLabel' => 'Title',
+                    'formType' => 'text',
+                    'formLabelBold' => false,
+                    'additionFormControlClass' => 'form-control-1-8'
+                ]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-first'),
+                    'formLabel' => 'First names',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('poa-last'),
+                    'formLabel' => 'Last name',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+            </fieldset>
+        </div>
+    </div>
+
+    <?php $this->insert('snippet::input-dob', [
+        'formLabel' => ($applicant == 'donor') ? "Date of birth" : "Donor date of birth",
+        'formElement' => $form->get('dob'),
+    ]) ?>
+
     <fieldset>
         <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Address" : "Donor address" ?></legend>
 
@@ -78,11 +128,6 @@ $this->fetch('snippet::actor-errors', [
 
 
     </fieldset>
-
-    <?php $this->insert('snippet::input-dob', [
-        'formLabel' => ($applicant == 'donor') ? "Date of birth" : "Donor date of birth",
-        'formElement' => $form->get('dob'),
-    ]) ?>
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">
