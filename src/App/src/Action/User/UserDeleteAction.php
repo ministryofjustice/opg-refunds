@@ -44,11 +44,17 @@ class UserDeleteAction extends AbstractModelAction
             throw new Exception('User not found', 404);
         }
 
+        /** @var User $identity */
+        $identity = $request->getAttribute('identity');
+
+        $deletingSelf = ($identity->getId() == $user->getId());
+
         $form = $this->getForm($request);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-delete-page', [
-            'user' => $user,
-            'form' => $form,
+            'user'          => $user,
+            'form'          => $form,
+            'deletingSelf'  => $deletingSelf,
         ]));
     }
 
@@ -67,7 +73,11 @@ class UserDeleteAction extends AbstractModelAction
         if ($form->isValid()) {
             $user = $this->userService->deleteUser($this->modelId);
 
-            return $this->redirectToRoute('user');
+            /** @var User $identity */
+            $identity = $request->getAttribute('identity');
+
+            //  If the user just deleted their own account sign then out automatically - otherwise return to the users screen
+            return $this->redirectToRoute($identity->getId() == $user->getId() ? 'sign.out' : 'user');
         }
 
         // The only reason the form can be invalid is a CSRF check fail so no need to recover gracefully

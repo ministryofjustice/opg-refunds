@@ -46,44 +46,6 @@
         "description": "Composer plugin for automating component registration in zend-mvc and Expressive applications"
     },
     {
-        "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a9ca847268f220ebc41549ce247d6509b7ab7c25",
-            "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^7.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^6.0.8 || ^5.7.15"
-        },
-        "time": "2017-10-03T12:23:38+00:00",
-        "type": "library",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"
-            }
-        },
-        "license": [
-            "MIT"
-        ],
-        "description": "PHP data models for the LPA Refunds project",
-        "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
-            "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
-        }
-    },
-    {
         "name": "psr/http-message",
         "version": "1.0.1",
         "version_normalized": "1.0.1.0",
@@ -4930,5 +4892,43 @@
             "psr",
             "psr-7"
         ]
+    },
+    {
+        "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
+        "version": "dev-REF-91-delete_users",
+        "version_normalized": "dev-REF-91-delete_users",
+        "source": {
+            "type": "git",
+            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
+            "reference": "f6b802dc3f095d0c61bfb13706e86d98bd6b0216"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/f6b802dc3f095d0c61bfb13706e86d98bd6b0216",
+            "reference": "f6b802dc3f095d0c61bfb13706e86d98bd6b0216",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^6.0.8 || ^5.7.15"
+        },
+        "time": "2017-10-03T13:10:06+00:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"
+            }
+        },
+        "license": [
+            "MIT"
+        ],
+        "description": "PHP data models for the LPA Refunds project",
+        "support": {
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-91-delete_users",
+            "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
+        }
     }
 ]
