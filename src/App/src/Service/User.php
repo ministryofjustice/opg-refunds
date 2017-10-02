@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Cases\User as UserEntity;
+use App\Exception\AlreadyExistsException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
@@ -86,6 +87,8 @@ class User
      */
     public function add(UserModel $userModel)
     {
+        $this->checkForExisting($userModel->getEmail());
+
         $user = new UserEntity();
         $user->setFromDataModel($userModel);
 
@@ -114,6 +117,8 @@ class User
      */
     public function setEmail($userId, $email)
     {
+        $this->checkForExisting($email, $userId);
+
         $user = $this->getUserEntity($userId);
 
         $user->setEmail($email);
@@ -145,6 +150,25 @@ class User
         $user->setStatus($status);
 
         $this->entityManager->flush();
+    }
+
+    /**
+     * Check for an existing user using this email address - excluding the user if an ID value is provided
+     *
+     * @param string $email
+     * @param int $userId
+     * @throws AlreadyExistsException
+     */
+    private function checkForExisting(string $email, int $userId = null)
+    {
+        //  First check that the email address is not already being used
+        $existingUser = $this->repository->findOneBy([
+            'email' => $email,
+        ]);
+
+        if ($existingUser instanceof UserEntity && $existingUser->getId() !== $userId) {
+            throw new AlreadyExistsException('Email address already exists');
+        }
     }
 
     /**
