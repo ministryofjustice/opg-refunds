@@ -90,7 +90,7 @@ class ApplicationIngestion
     {
         $decryptedData = $this->getDecryptedData($application);
         $applicationData = json_decode($decryptedData, true);
-        $donorName = "{$applicationData['donor']['name']['title']} {$applicationData['donor']['name']['first']} {$applicationData['donor']['name']['last']}";
+        $donorName = "{$applicationData['donor']['current']['name']['title']} {$applicationData['donor']['current']['name']['first']} {$applicationData['donor']['current']['name']['last']}";
         $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName, $applicationData['account']['hash']);
         return $claim;
     }
@@ -115,7 +115,7 @@ class ApplicationIngestion
                     if ($applicationData['applicant'] === 'donor') {
                         $applicantName = $claim->getDonorName() . ' (Donor)';
                     } elseif ($applicationData['applicant'] === 'attorney') {
-                        $applicantName = "{$applicationData['attorney']['name']['title']} {$applicationData['attorney']['name']['first']} {$applicationData['attorney']['name']['last']} (Attorney)";
+                        $applicantName = "{$applicationData['attorney']['current']['name']['title']} {$applicationData['attorney']['current']['name']['first']} {$applicationData['attorney']['current']['name']['last']} (Attorney)";
                     }
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());

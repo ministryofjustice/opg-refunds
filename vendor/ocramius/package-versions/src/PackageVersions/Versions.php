@@ -11,7 +11,7 @@ namespace PackageVersions;
 final class Versions
 {
     const VERSIONS = array (
-  'aws/aws-sdk-php' => '3.36.16@f8bb15a002e709cba85de3981b0ffac7968fffb5',
+  'aws/aws-sdk-php' => '3.36.18@80a150c061f36276a1618fa858e763c874309365',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.0.0@a4833d25dcfa42165c4ddec0c7062528206eeadc',
   'doctrine/annotations' => 'v1.4.0@54cacc9b81758b14e3ce750f205a393d52339e97',
@@ -95,7 +95,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-88-89-92-user_account_add_and_edit@69d453322ad74dbfbc798b5a1f05435d6e7b9b1c',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-donor-address@95cb81dc820a4dca3bc6adf7591b53eb1247d843',
 );
 
     private function __construct()
