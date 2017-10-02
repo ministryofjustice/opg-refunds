@@ -39,9 +39,9 @@ abstract class AbstractEntity
         foreach ($modelToEntityMappings as $modelFieldName => $callbackMapping) {
             if ($callbackMapping instanceof Closure) {
                 //  Get the callback result and set the value (if not null)
-                $modelFieldValue = call_user_func($callbackMapping);
+                $value = call_user_func($callbackMapping);
 
-                if (is_null($modelFieldValue)) {
+                if (is_null($value)) {
                     continue;
                 }
 
@@ -49,7 +49,7 @@ abstract class AbstractEntity
                 $modelSetMethod = 'set' . $modelFieldName;
 
                 if (method_exists($model, $modelSetMethod)) {
-                    $model->$modelSetMethod($modelFieldValue);
+                    $model->$modelSetMethod($value);
                 }
             }
         }
@@ -113,10 +113,17 @@ abstract class AbstractEntity
     }
 
     /**
+     * Sets the entity data from the datamodel provided
+     *
+     * In the $entityToModelMappings array key values reflect the set method to be used in the entity
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $entity->setSomething($model->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
      * @param AbstractDataModel $model
+     * @param array $entityToModelMappings
      * @throws Exception
      */
-    public function setFromDataModel(AbstractDataModel $model)
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
     {
         if (get_class($model) != $this->dataModelClass) {
             throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $this->dataModelClass));
@@ -136,21 +143,35 @@ abstract class AbstractEntity
             //  Get the field name (by default it will be the same for entity and model
             $entityFieldName = $modelFieldName = substr($entityMethod, 3);
 
-            //  TODO - No model to entity mappings here - possibly add later
+            if (isset($entityToModelMappings[$entityFieldName]) && $entityToModelMappings[$entityFieldName] instanceof Closure) {
+                //  Get the callback result and set the value (if not null)
+                $value = call_user_func($entityToModelMappings[$entityFieldName]);
 
-            //  Translate the model field name to dash separated value and try to get it from the model data (array)
-            $modelFieldName = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $modelFieldName));
-
-            if (isset($modelData[$modelFieldName])) {
-                $value = $modelData[$modelFieldName];
-
-                //  Don't set null or none scalar values
-                //  TODO - Enhance this if it becomes required in the future
-                if (is_null($value) || !is_scalar($value)) {
+                if (is_null($value)) {
                     continue;
                 }
 
-                $this->$entityMethod($value);
+                //  Try to find a set method on the entity and use it
+                $entitySetMethod = 'set' . $entityFieldName;
+
+                if (method_exists($this, $entitySetMethod)) {
+                    $this->$entitySetMethod($value);
+                }
+            } else {
+                //  Translate the model field name to dash separated value and try to get it from the model data (array)
+                $modelFieldName = strtolower(preg_replace('/([^A-Z-])([A-Z])/', '$1-$2', $modelFieldName));
+
+                if (isset($modelData[$modelFieldName])) {
+                    $value = $modelData[$modelFieldName];
+
+                    //  Don't set null or none scalar values
+                    //  TODO - Enhance this if it becomes required in the future
+                    if (is_null($value) || !is_scalar($value)) {
+                        continue;
+                    }
+
+                    $this->$entityMethod($value);
+                }
             }
         }
     }

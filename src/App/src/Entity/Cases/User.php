@@ -234,4 +234,19 @@ class User extends AbstractEntity
 
         return parent::getAsDataModel($modelToEntityMappings);
     }
+
+    /**
+     * @param AbstractDataModel $model
+     * @param array $entityToModelMappings
+     */
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    {
+        $entityToModelMappings = array_merge($entityToModelMappings, [
+            'Roles' => function () use ($model) {
+                return (is_array($model->getRoles()) ? implode(',', $model->getRoles()) : '');
+            },
+        ]);
+
+        parent::setFromDataModel($model, $entityToModelMappings);
+    }
 }
