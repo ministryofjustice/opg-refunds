@@ -61,6 +61,7 @@ class UserUpdateAction extends AbstractModelAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @throws Exception
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -70,9 +71,22 @@ class UserUpdateAction extends AbstractModelAction
             //  Set the new user as active
             $user = new UserModel($form->getData());
 
-            $user = $this->userService->createUser($user);
+            try {
+                $user = $this->userService->createUser($user);
 
-            return $this->redirectToRoute('user', ['id' => $user->getId()]);
+                return $this->redirectToRoute('user', ['id' => $user->getId()]);
+            } catch (Exception $ex) {
+                //  If the exception indicates a conflict translate the message for display
+                if ($ex->getCode() == 409) {
+                    $form->setMessages([
+                        'email' => [
+                            'Email address already exists'
+                        ]
+                    ]);
+                } else {
+                    throw $ex;
+                }
+            }
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
@@ -97,9 +111,22 @@ class UserUpdateAction extends AbstractModelAction
         $form = $this->getForm($request);
 
         if ($form->isValid()) {
-            $user = $this->userService->updateUser($user->getId(), $form->getData());
+            try {
+                $user = $this->userService->updateUser($user->getId(), $form->getData());
 
-            return $this->redirectToRoute('user', ['id' => $user->getId()]);
+                return $this->redirectToRoute('user', ['id' => $user->getId()]);
+            } catch (Exception $ex) {
+                //  If the exception indicates a conflict translate the message for display
+                if ($ex->getCode() == 409) {
+                    $form->setMessages([
+                        'email' => [
+                            'Email address already exists'
+                        ]
+                    ]);
+                } else {
+                    throw $ex;
+                }
+            }
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-edit-page', [
