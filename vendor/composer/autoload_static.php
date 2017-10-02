@@ -14,7 +14,9 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '383eaff206634a77a1be54e64e6459c7' => __DIR__ . '/..' . '/sabre/uri/lib/functions.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'c843e8ef90c78ff0c203eb3834eb0a82' => __DIR__ . '/..' . '/league/json-reference/src/functions.php',
         'f8b0b5f351aa0dc2d4b9c3b8f451115f' => __DIR__ . '/..' . '/league/json-guard/src/functions.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
     );
@@ -63,9 +65,11 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
+            'Sabre\\Uri\\' => 10,
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
@@ -77,6 +81,7 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'L' => 
         array (
             'League\\Plates\\' => 14,
+            'League\\JsonReference\\' => 21,
             'League\\JsonGuard\\' => 17,
         ),
         'J' => 
@@ -253,6 +258,14 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
+        'Sabre\\Uri\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sabre/uri/lib',
+        ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -272,6 +285,10 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
+        ),
+        'League\\JsonReference\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/json-reference/src',
         ),
         'League\\JsonGuard\\' => 
         array (

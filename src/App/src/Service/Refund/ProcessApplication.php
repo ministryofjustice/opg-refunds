@@ -3,6 +3,8 @@ namespace App\Service\Refund;
 
 use App\Service\Refund\Data\PhoneNumber;
 use League\JsonGuard\Validator as JsonValidator;
+use League\JsonReference\Dereferencer as JsonDereferencer;
+use League\JsonReference\ReferenceSerializer\InlineReferenceSerializer;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
@@ -47,14 +49,20 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
+        $dereferencer = JsonDereferencer::draft6();
+        $dereferencer->setReferenceSerializer(new InlineReferenceSerializer());
+
+        $schema = $dereferencer->dereference(json_decode(file_get_contents($this->jsonSchemaPath)));
+
         // Validate the generated JSON against our schema.
         $validator = new JsonValidator(
-            json_decode(json_encode($data)),
-            json_decode(file_get_contents($this->jsonSchemaPath))
+            json_decode(json_encode($data)), // Simplest way to convert to stdClass
+            $schema
         );
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
