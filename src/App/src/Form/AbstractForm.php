@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Validator;
-use Zend\Form\Element;
+use Zend\Form\Element\Csrf;
 use Zend\Form\Form as ZendForm;
 use Zend\Form\FormInterface;
 use Zend\InputFilter\Input;
@@ -22,7 +22,7 @@ abstract class AbstractForm extends ZendForm
     {
         $options = $this->getOptions();
 
-        $field = new Element\Csrf('secret');
+        $field = new Csrf('secret');
 
         $field->setCsrfValidator(new Validator\Csrf([
             'name' => $this->getName(),

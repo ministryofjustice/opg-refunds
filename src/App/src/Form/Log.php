@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element;
+use Zend\Form\Element\Textarea;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -26,7 +26,7 @@ class Log extends AbstractForm
         $this->setInputFilter($inputFilter);
 
         //  Message field
-        $field = new Element\Textarea('message');
+        $field = new Textarea('message');
         $input = new Input($field->getName());
 
         $input->getFilterChain()

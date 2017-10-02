@@ -6,7 +6,9 @@ use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Zend\Filter;
-use Zend\Form\Element;
+use Zend\Form\Element\MultiCheckbox;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Text;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -31,7 +33,7 @@ class User extends AbstractForm
         $this->setInputFilter($inputFilter);
 
         //  Name field
-        $field = new Element\Text('name');
+        $field = new Text('name');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -62,7 +64,7 @@ class User extends AbstractForm
         $inputFilter->add($input);
 
         //  Roles field
-        $field = new Element\MultiCheckbox('roles');
+        $field = new MultiCheckbox('roles');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()
@@ -81,7 +83,7 @@ class User extends AbstractForm
         $inputFilter->add($input);
 
         //  Status field
-        $field = new Element\Radio('status');
+        $field = new Radio('status');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()

@@ -8,7 +8,9 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
-use Zend\Form\Element;
+use Zend\Form\Element\Hidden;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Text;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -33,7 +35,7 @@ class Poa extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  System field
-        $field = new Element\Hidden('system');
+        $field = new Hidden('system');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -48,7 +50,7 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Case number field
-        $field = new Element\Text('case-number');
+        $field = new Text('case-number');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -69,7 +71,7 @@ class Poa extends AbstractForm
         $inputFilter->add($receivedDate->getInputFilter(), 'received-date');
 
         //  Original payment amount
-        $field = new Element\Radio('original-payment-amount');
+        $field = new Radio('original-payment-amount');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -110,7 +112,7 @@ class Poa extends AbstractForm
      */
     private function addVerificationRadio(string $inputName, InputFilter $inputFilter)
     {
-        $field = new Element\Radio($inputName);
+        $field = new Radio($inputName);
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);

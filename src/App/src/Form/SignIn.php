@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Zend\Filter;
-use Zend\Form\Element;
+use Zend\Form\Element\Password;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -46,7 +46,7 @@ class SignIn extends AbstractForm
         $inputFilter->add($input);
 
         //  Password field
-        $field = new Element\Password('password');
+        $field = new Password('password');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()

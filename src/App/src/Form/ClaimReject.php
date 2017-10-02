@@ -4,7 +4,8 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Textarea;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -25,7 +26,7 @@ class ClaimReject extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  Rejection reason
-        $field = new Element\Radio('rejection-reason');
+        $field = new Radio('rejection-reason');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -43,7 +44,7 @@ class ClaimReject extends AbstractForm
         $inputFilter->add($input);
 
         //  Rejection reason description field
-        $field = new Element\Textarea('rejection-reason-description');
+        $field = new Textarea('rejection-reason-description');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
