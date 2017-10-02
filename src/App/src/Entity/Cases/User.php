@@ -42,7 +42,7 @@ class User extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(name="password_hash", type="string")
+     * @ORM\Column(name="password_hash", type="string", nullable=true)
      */
     protected $passwordHash;
 
