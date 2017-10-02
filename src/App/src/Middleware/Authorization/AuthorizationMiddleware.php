@@ -60,8 +60,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $identity = $this->authService->getIdentity();
 
         //  Determine the roles of the user - if not logged in then they are a guest
-        $roles = ($identity instanceof User ? $identity->getRoles() : 'guest');
-        $roles = explode(',', $roles);
+        $roles = ($identity instanceof User ? $identity->getRoles() : ['guest']);
 
         //  Determine the route was are attempting to access
         $route = $request->getAttribute(RouteResult::class);

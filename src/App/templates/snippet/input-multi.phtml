@@ -22,13 +22,23 @@ $value = $formElement->getValue();
 
             <div class="multiple-choice" <?php if (isset($option['dataTargetMarkup'])): ?>data-target="<?= "{$elementId}-{$name}-info" ?>"<?php endif ?>>
 
-                <input
-                    id="<?= "{$elementId}-{$name}" ?>"
-                    type="radio"
-                    name="<?= $this->e($formElement->getName()) ?>"
-                    value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
-                    <?= ($value == $formElement->getValueOptions()[$name])?' checked':'' ?>
-                >
+                <?php if ($formElement instanceof \Zend\Form\Element\Radio) { ?>
+                    <input
+                        id="<?= "{$elementId}-{$name}" ?>"
+                        type="radio"
+                        name="<?= $this->e($formElement->getName()) ?>"
+                        value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
+                        <?= ($value == $formElement->getValueOptions()[$name]) ? ' checked' : '' ?>
+                    >
+                <?php } else { ?>
+                    <input
+                        id="<?= "{$elementId}-{$name}" ?>"
+                        type="checkbox"
+                        name="<?= $this->e($formElement->getName()) ?>[]"
+                        value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
+                        <?= (in_array($name, $value) ? ' checked' : '') ?>
+                    >
+                <?php } ?>
 
                 <label class="form-label" for="<?= "{$elementId}-{$name}" ?>">
 

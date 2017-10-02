@@ -17,7 +17,7 @@
             </tr>
             <tr>
                 <th>Roles</th>
-                <td><?= $user->getRoles() ?></td>
+                <td><?= implode(', ', $user->getRoles()) ?></td>
             </tr>
             <tr>
                 <th>Status</th>

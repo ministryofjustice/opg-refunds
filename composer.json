@@ -22,7 +22,7 @@
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-89-edit_caseworker_details",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-88-89-92-user_account_add_and_edit",
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",

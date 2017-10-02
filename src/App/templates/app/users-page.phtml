@@ -28,7 +28,7 @@
                         </td>
                         <td><?= $user->getEmail() ?></td>
                         <td><?= $user->getStatus() ?></td>
-                        <td><?= $user->getRoles() ?></td>
+                        <td><?= implode(', ', $user->getRoles()) ?></td>
                     </tr>
                 <?php } ?>
             <?php } else { ?>

@@ -117,8 +117,10 @@ abstract class AbstractDataModel
                 if (is_array($varValue)) {
                     foreach ($varValue as $thisVarValueKey => $thisVarValue) {
                         if ($thisVarValue instanceof AbstractDataModel) {
-                            $values[$varName][$thisVarValueKey] = $thisVarValue->getArrayCopy();
+                            $thisVarValue = $thisVarValue->getArrayCopy();
                         }
+
+                        $values[$varName][$thisVarValueKey] = $thisVarValue;
                     }
                 } elseif ($varValue instanceof AbstractDataModel) {
                     $values[$varName] = $varValue->getArrayCopy();
