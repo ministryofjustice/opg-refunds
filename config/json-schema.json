@@ -93,8 +93,7 @@
           "maxLength": 12,
           "pattern": "^[\\d]{7,12}$"
         }
-      },
-      "type": "object"
+      }
     },
     "postcodes": {
       "properties": {
