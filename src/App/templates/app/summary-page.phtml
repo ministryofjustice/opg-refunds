@@ -40,11 +40,11 @@ $this->layout('layout::default', [
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Attorney details',
         'fields' => [
-            [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
-            [ 'value' => date('j F Y', strtotime($details['attorney']['dob'])) ],
+            [ 'value' => "{$details['attorney']['current']['name']['title']} {$details['attorney']['current']['name']['first']} {$details['attorney']['current']['name']['last']}" ],
+            [ 'value' => date('j F Y', strtotime($details['attorney']['current']['dob'])) ],
             [
-                'label' => (isset($details['attorney']['poa-name']['first'])) ? 'Name on power of attorney' : null,
-                'value' => (isset($details['attorney']['poa-name']['first'])) ? "{$details['attorney']['poa-name']['title']} {$details['attorney']['poa-name']['first']} {$details['attorney']['poa-name']['last']}" : null
+                'label' => (isset($details['attorney']['poa']['name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['attorney']['poa']['name']['first'])) ? "{$details['attorney']['poa']['name']['title']} {$details['attorney']['poa']['name']['first']} {$details['attorney']['poa']['name']['last']}" : null
             ],
         ],
         'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])

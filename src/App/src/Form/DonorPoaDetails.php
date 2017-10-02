@@ -117,7 +117,7 @@ class DonorPoaDetails extends AbstractForm
 
         //---
 
-        return $response;
+        return array_filter($response);;
     }
 
 }

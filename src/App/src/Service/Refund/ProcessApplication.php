@@ -40,6 +40,9 @@ class ProcessApplication implements Initializer\LogSupportInterface
         //---
 
         // Include the date submitted
+        $data['version'] = 1;
+
+
         $data['submitted'] = gmdate(\DateTime::ISO8601);
 
         //---
