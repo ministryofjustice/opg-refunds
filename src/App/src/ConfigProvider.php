@@ -48,7 +48,6 @@ class ConfigProvider
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
-                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
                 Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
@@ -73,6 +72,7 @@ class ConfigProvider
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatterFactory::class,
 
                 // View Helper
                 View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
