@@ -36,7 +36,7 @@ $value = $formElement->getValue();
                         type="checkbox"
                         name="<?= $this->e($formElement->getName()) ?>[]"
                         value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
-                        <?= (in_array($name, $value) ? ' checked' : '') ?>
+                        <?= (isset($value) && in_array($name, $value) ? ' checked' : '') ?>
                     >
                 <?php } ?>
 
