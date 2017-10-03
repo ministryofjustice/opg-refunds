@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Auth\Service\TokenGenerator;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -17,7 +18,8 @@ class UserFactory
     public function __invoke(ContainerInterface $container)
     {
         return new User(
-            $container->get('doctrine.entity_manager.orm_cases')
+            $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(TokenGenerator::class)
         );
     }
 }
