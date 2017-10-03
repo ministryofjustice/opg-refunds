@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.16",
+            "version": "3.36.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "f8bb15a002e709cba85de3981b0ffac7968fffb5"
+                "reference": "80a150c061f36276a1618fa858e763c874309365"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/f8bb15a002e709cba85de3981b0ffac7968fffb5",
-                "reference": "f8bb15a002e709cba85de3981b0ffac7968fffb5",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/80a150c061f36276a1618fa858e763c874309365",
+                "reference": "80a150c061f36276a1618fa858e763c874309365",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-09-27T22:02:13+00:00"
+            "time": "2017-10-02T19:28:24+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1147,7 +1147,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-10-03 12:23:38"
+            "time": "2017-10-03T12:23:38+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",

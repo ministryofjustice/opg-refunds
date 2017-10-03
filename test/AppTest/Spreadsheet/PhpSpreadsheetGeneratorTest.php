@@ -3,6 +3,8 @@
 namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
+use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
@@ -11,6 +13,8 @@ use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
 use AppTest\DataModel\Cases\ClaimBuilder;
 use InvalidArgumentException;
+use Opg\Refunds\Caseworker\DataModel\Common\Address;
+use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
 
@@ -58,13 +62,27 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $claimBuilder = new ClaimBuilder();
         $applicationBuilder = new ApplicationBuilder();
 
+        $donor = new Donor();
+        $name = new Name();
+        $name->setTitle('Ms')
+            ->setFirst('Test')
+            ->setLast('Donor');
+        $address = new Address();
+        $address->setAddress1('10 Test Road')
+            ->setAddress2('Testington')
+            ->setAddressPostcode('TS1 1ON');
+        $current = new CurrentWithAddress();
+        $current->setName($name);
+        $current->setAddress($address);
+        $donor->setCurrent($current);
+
         $account = new Account();
         $account
             ->setName('Mr Unit Test')
             ->setAccountNumber('12345678')
             ->setSortCode('112233');
 
-        $application = $applicationBuilder->withAccount($account)->build();
+        $application = $applicationBuilder->withDonor($donor)->withAccount($account)->build();
 
         $payment = new Payment();
         $payment->setAmount(45);
