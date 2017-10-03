@@ -52,7 +52,7 @@ class ClaimLogAction extends AbstractRestfulAction
             $logsData = [];
 
             foreach ($claim->getLogs() as $log) {
-                $logsData[] = $log->toArray();
+                $logsData[] = $log->getArrayCopy();
             }
 
             return new JsonResponse($logsData);
@@ -60,7 +60,7 @@ class ClaimLogAction extends AbstractRestfulAction
             //  Return a specific log
             foreach ($claim->getLogs() as $log) {
                 if ($log->getId() === $logId) {
-                    return new JsonResponse($log->toArray());
+                    return new JsonResponse($log->getArrayCopy());
                 }
             }
 
@@ -88,6 +88,6 @@ class ClaimLogAction extends AbstractRestfulAction
 
         $log = $this->claimService->addLog($claimId, $user->getId(), $log->getTitle(), $log->getMessage());
 
-        return new JsonResponse($log->toArray());
+        return new JsonResponse($log->getArrayCopy());
     }
 }

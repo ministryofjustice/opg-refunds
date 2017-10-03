@@ -46,8 +46,8 @@ class AuthAction implements ServerMiddlewareInterface
                 $user = $this->authService->validatePassword($requestBody['email'], $requestBody['password']);
 
                 //  Get the user details excluding the claims
-                $userData = $user->toArray([
-                    'claim',
+                $userData = $user->getArrayCopy([
+                    'claims',
                 ]);
 
                 return new JsonResponse($userData);

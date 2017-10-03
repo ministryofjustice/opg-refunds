@@ -13,26 +13,26 @@ class ViewClaimQueueAction implements ServerMiddlewareInterface
     /**
      * @var ApplicationIngestion
      */
-    private $dataMigrationService;
+    private $applicationIngestionService;
     /**
      * @var Rsa
      */
     private $bankCipher;
 
-    public function __construct(ApplicationIngestion $dataMigrationService, Rsa $bankCipher)
+    public function __construct(ApplicationIngestion $applicationIngestionService, Rsa $bankCipher)
     {
         $this->bankCipher = $bankCipher;
-        $this->dataMigrationService = $dataMigrationService;
+        $this->applicationIngestionService = $applicationIngestionService;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $application = $this->dataMigrationService->getNextApplication();
+        $application = $this->applicationIngestionService->getNextApplication();
         if ($application === null) {
             return new JsonResponse([]);
         }
 
-        $decryptedData = $this->dataMigrationService->getDecryptedData($application);
+        $decryptedData = $this->applicationIngestionService->getDecryptedData($application);
 
         $payload = json_decode($decryptedData, true);
 

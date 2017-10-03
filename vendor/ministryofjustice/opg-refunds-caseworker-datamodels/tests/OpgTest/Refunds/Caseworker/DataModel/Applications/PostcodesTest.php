@@ -18,7 +18,7 @@ class PostcodesTest extends AbstractDataModelTestCase
         $this->assertEquals('WX8 YZ9', $model->getAttorneyPostcode());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'donor-postcode'    => 'AB1 2CD',
@@ -27,6 +27,6 @@ class PostcodesTest extends AbstractDataModelTestCase
 
         $model = new Postcodes($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

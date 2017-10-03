@@ -16,7 +16,7 @@ class CaseNumberTest extends AbstractDataModelTestCase
         $this->assertEquals('123456789', $model->getPoaCaseNumber());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'poa-case-number' => '123456789'
@@ -24,6 +24,6 @@ class CaseNumberTest extends AbstractDataModelTestCase
 
         $model = new CaseNumber($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

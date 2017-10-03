@@ -4,9 +4,9 @@ namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity @ORM\Table(name="`user`")
@@ -42,7 +42,7 @@ class User extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(name="password_hash", type="string")
+     * @ORM\Column(name="password_hash", type="string", nullable=true)
      */
     protected $passwordHash;
 
@@ -168,7 +168,7 @@ class User extends AbstractEntity
     /**
      * @return string
      */
-    public function getToken(): string
+    public function getToken()
     {
         return $this->token;
     }
@@ -227,8 +227,26 @@ class User extends AbstractEntity
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Claims' => 'AssignedClaims',
+            'Roles' => function () {
+                return (is_string($this->getRoles()) ? explode(',', $this->getRoles()) : []);
+            },
         ]);
 
         return parent::getAsDataModel($modelToEntityMappings);
+    }
+
+    /**
+     * @param AbstractDataModel $model
+     * @param array $entityToModelMappings
+     */
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    {
+        $entityToModelMappings = array_merge($entityToModelMappings, [
+            'Roles' => function () use ($model) {
+                return (is_array($model->getRoles()) ? implode(',', $model->getRoles()) : '');
+            },
+        ]);
+
+        parent::setFromDataModel($model, $entityToModelMappings);
     }
 }

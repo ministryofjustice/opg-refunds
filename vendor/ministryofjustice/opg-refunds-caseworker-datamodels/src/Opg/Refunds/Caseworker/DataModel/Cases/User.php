@@ -39,7 +39,7 @@ class User extends AbstractDataModel
     protected $status;
 
     /**
-     * @var string
+     * @var array
      */
     protected $roles;
 
@@ -130,18 +130,18 @@ class User extends AbstractDataModel
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getRoles(): string
+    public function getRoles(): array
     {
         return $this->roles;
     }
 
     /**
-     * @param string $roles
+     * @param array $roles
      * @return $this
      */
-    public function setRoles(string $roles): User
+    public function setRoles(array $roles): User
     {
         $this->roles = $roles;
 
