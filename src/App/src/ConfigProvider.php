@@ -81,6 +81,7 @@ class ConfigProvider
 
                 // View Helper
                 Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
+                Service\TemplateConfigInjection\TemplateConfigInjectionPlatesExtension::class => Service\TemplateConfigInjection\TemplateConfigInjectionPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,
