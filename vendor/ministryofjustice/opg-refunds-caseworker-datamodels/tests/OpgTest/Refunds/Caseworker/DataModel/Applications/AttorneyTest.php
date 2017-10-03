@@ -3,6 +3,7 @@
 namespace OpgTest\Refunds\Caseworker\DataModel\Applications;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Attorney;
+use Opg\Refunds\Caseworker\DataModel\Applications\Current;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use OpgTest\Refunds\Caseworker\DataModel\AbstractDataModelTestCase;
 use DateTime;
@@ -28,13 +29,17 @@ class AttorneyTest extends AbstractDataModelTestCase
     {
         $model = new Attorney();
 
+        $current = new Current();
+
         $dob = new DateTime('1969-08-19');
 
-        $model->setName($this->name)
-              ->setDob($dob);
+        $current->setName($this->name)
+                ->setDob($dob);
 
-        $this->assertEquals($this->name, $model->getName());
-        $this->assertEquals($dob, $model->getDob());
+        $model->setCurrent($current);
+
+        $this->assertEquals($this->name, $model->getCurrent()->getName());
+        $this->assertEquals($dob, $model->getCurrent()->getDob());
     }
 
     public function testPopulateAndGetArrayCopy()
@@ -42,8 +47,10 @@ class AttorneyTest extends AbstractDataModelTestCase
         $dob = new DateTime('1969-08-19');
 
         $data = [
-            'name'  => $this->name->getArrayCopy(),
-            'dob'   => $this->dateTimeToString($dob),
+            'current' => [
+                'name'  => $this->name->getArrayCopy(),
+                'dob'   => $this->dateTimeToString($dob),
+            ]
         ];
 
         $model = new Attorney($data);

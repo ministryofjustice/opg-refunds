@@ -4895,17 +4895,17 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "dev-REF-88-89-92-user_account_add_and_edit",
-        "version_normalized": "dev-REF-88-89-92-user_account_add_and_edit",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
         "source": {
             "type": "git",
             "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "a8ee065ce94480201e4be4205573114276b3270f"
+            "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a8ee065ce94480201e4be4205573114276b3270f",
-            "reference": "a8ee065ce94480201e4be4205573114276b3270f",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a9ca847268f220ebc41549ce247d6509b7ab7c25",
+            "reference": "a9ca847268f220ebc41549ce247d6509b7ab7c25",
             "shasum": ""
         },
         "require": {
@@ -4914,9 +4914,9 @@
         "require-dev": {
             "phpunit/phpunit": "^6.0.8 || ^5.7.15"
         },
-        "time": "2017-10-02T14:23:34+00:00",
+        "time": "2017-10-03T12:23:38+00:00",
         "type": "library",
-        "installation-source": "source",
+        "installation-source": "dist",
         "autoload": {
             "psr-4": {
                 "Opg\\Refunds\\Caseworker\\DataModel\\": "src/Opg/Refunds/Caseworker/DataModel/"
@@ -4927,7 +4927,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-88-89-92-user_account_add_and_edit",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     }
