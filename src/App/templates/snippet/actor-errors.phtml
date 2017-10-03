@@ -91,4 +91,24 @@ $this->addErrorMap([
             'field'     => 'This doesn\'t look right - enter a valid date of birth'
         ],
     ],
+    'address-1' => [
+        'required' => [
+            'summary'   => 'You must give the first line of '.($firstPerson ? 'your' : 'the').' address',
+            'field'     => 'Enter the first line of '.($firstPerson ? 'your' : 'the').' address'
+        ],
+        'too-long' => [
+            'summary'   => 'The first line of '.($firstPerson ? 'your' : 'the').' address is too long',
+            'field'     => 'Enter a valid address'
+        ],
+    ],
+    'address-postcode' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'the').' postcode',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'the').' postcode'
+        ],
+        'too-long' => [
+            'summary'   => 'Postcode is too long',
+            'field'     => 'Enter a valid postcode'
+        ],
+    ],
 ]);
