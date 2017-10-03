@@ -30,9 +30,9 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getApplicantName(ApplicationModel $application)
     {
         if ($application->getApplicant() === 'donor') {
-            return "{$this->getFormattedName($application->getDonor()->getName())} (Donor)";
+            return "{$this->getFormattedName($application->getDonor()->getCurrent()->getName())} (Donor)";
         } elseif ($application->getApplicant() === 'attorney') {
-            return "{$this->getFormattedName($application->getAttorney()->getName())} (Attorney)";
+            return "{$this->getFormattedName($application->getAttorney()->getCurrent()->getName())} (Attorney)";
         }
 
         return '';
@@ -56,7 +56,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
             return "Payment details used twice";
         }
 
-        if ($accountHashCount === 2) {
+        if ($accountHashCount > 2) {
             return "Payment details used {$accountHashCount} times";
         }
     }

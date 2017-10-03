@@ -13,16 +13,16 @@ Mandatory: attorney
 <dl class="details">
     <div class="">
         <dt class="details-term">Name:</dt>
-        <dd class="detail-definition"><?= $this->getFormattedName($attorney->getName()) ?></dd>
+        <dd class="detail-definition"><?= $this->getFormattedName($attorney->getCurrent()->getName()) ?></dd>
     </div>
     <div class="">
         <dt class="details-term">Date of birth:</dt>
-        <dd class="detail-definition"><?= $this->getDateOfBirthString($attorney->getDob()) ?></dd>
+        <dd class="detail-definition"><?= $this->getDateOfBirthString($attorney->getCurrent()->getDob()) ?></dd>
     </div>
-    <?php if ($attorney->getPoaName() !== null) { ?>
+    <?php if ($attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null) { ?>
         <div class="">
             <dt class="details-term">Name on power attorney documents:</dt>
-            <dd class="detail-definition"><?= $this->getFormattedName($attorney->getPoaName()) ?></dd>
+            <dd class="detail-definition"><?= $this->getFormattedName($attorney->getPoa()->getName()) ?></dd>
         </div>
     <?php } ?>
 </dl>

@@ -5,7 +5,7 @@ namespace App\Action\Claim;
 use App\Form\AbstractForm;
 use App\Form\ClaimApprove;
 use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\PoaFormatter as PoaFormatterService;
+use App\Service\Poa\Poa as PoaService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,19 +19,19 @@ use Exception;
 class ClaimApproveAction extends AbstractClaimAction
 {
     /**
-     * @var PoaFormatterService
+     * @var PoaService
      */
-    private $poaFormatterService;
+    private $poaService;
 
     /**
      * ClaimApproveAction constructor
      * @param ClaimService $claimService
-     * @param PoaFormatterService $poaFormatterService
+     * @param PoaService $poaService
      */
-    public function __construct(ClaimService $claimService, PoaFormatterService $poaFormatterService)
+    public function __construct(ClaimService $claimService, PoaService $poaService)
     {
         parent::__construct($claimService);
-        $this->poaFormatterService = $poaFormatterService;
+        $this->poaService = $poaService;
     }
 
     /**
@@ -46,7 +46,7 @@ class ClaimApproveAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$this->poaFormatterService->isClaimComplete($claim) || !$this->poaFormatterService->isClaimVerified($claim)) {
+        } elseif (!$this->poaService->isClaimComplete($claim) || !$this->poaService->isClaimVerified($claim)) {
             throw new Exception('Claim is not complete or verified', 400);
         }
 

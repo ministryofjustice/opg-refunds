@@ -2,12 +2,20 @@
 
 namespace AppTest\View\Date;
 
+use App\Service\Date\IDate;
 use App\View\Date\DateFormatterPlatesExtension;
 use DateTime;
+use Mockery;
+use Mockery\MockInterface;
 use PHPUnit\Framework\TestCase;
 
 class DateFormatterPlatesExtensionTest extends TestCase
 {
+    /**
+     * @var MockInterface|IDate
+     */
+    private $dateService;
+
     /**
      * @var DateFormatterPlatesExtension
      */
@@ -15,7 +23,8 @@ class DateFormatterPlatesExtensionTest extends TestCase
 
     protected function setUp()
     {
-        $this->extension = new DateFormatterPlatesExtension();
+        $this->dateService = Mockery::mock(IDate::class);
+        $this->extension = new DateFormatterPlatesExtension($this->dateService);
     }
 
     public function testGetDayAndFullTextMonth()
@@ -27,56 +36,72 @@ class DateFormatterPlatesExtensionTest extends TestCase
 
     public function testGetTimeIntervalAgoJustNow()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime());
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T09:18:38.000000+0000'));
 
         $this->assertEquals('Just now', $formatted);
     }
 
     public function testGetTimeIntervalAgo1MinuteAgo()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-1 minute'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T09:18:37.000000+0000'));
 
         $this->assertEquals('1 minute ago', $formatted);
     }
 
     public function testGetTimeIntervalAgo2MinutesAgo()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-2 minutes'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T09:17:37.000000+0000'));
 
         $this->assertEquals('2 minutes ago', $formatted);
     }
 
     public function testGetTimeIntervalAgo59MinutesAgo()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-59 minutes'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T08:19:38.000000+0000'));
 
         $this->assertEquals('59 minutes ago', $formatted);
     }
 
     public function testGetTimeIntervalAgo1HourAgo()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-1 hour'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T08:19:36.000000+0000'));
 
         $this->assertEquals('1 hour ago', $formatted);
     }
 
     public function testGetTimeIntervalAgo2HoursAgo()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-2 hours'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-25T07:19:36.000000+0000'));
 
         $this->assertEquals('2 hours ago', $formatted);
     }
 
     public function testGetTimeIntervalYesterday()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-23 hours'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-24T17:19:36.000000+0000'));
 
         $this->assertEquals('Yesterday', $formatted);
     }
 
     public function testGetTimeIntervalAgoTwoDays()
     {
-        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('-2 days'));
+        $this->dateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-09-25T09:19:37.000000+0000'))->getTimestamp());
+
+        $formatted = $this->extension->getTimeIntervalAgo(new DateTime('2017-09-23T12:19:36.000000+0000'));
 
         $this->assertEquals('2 days ago', $formatted);
     }

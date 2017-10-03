@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.3.1 - 2017-10-02
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#67](https://github.com/zendframework/zend-hydrator/pull/67) fixes an issue
+  in the `ArraySerializable::hydrate()` logic whereby nested array data was
+  _merged_ instead of _replaced_ during hydration. The hydrator now correctly
+  replaces such data.
+
 ## 2.3.0 - 2017-09-20
 
 ### Added

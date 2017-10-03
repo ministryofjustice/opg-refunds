@@ -2,7 +2,8 @@
 
 namespace App\View\Poa;
 
-use App\Service\Poa\PoaFormatter as PoaFormatterService;
+use App\Service\Poa\Poa as PoaService;
+use App\Service\Refund\Refund as RefundService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -14,7 +15,8 @@ class PoaFormatterPlatesExtensionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new PoaFormatterPlatesExtension(
-            $container->get(PoaFormatterService::class)
+            $container->get(PoaService::class),
+            $container->get(RefundService::class)
         );
     }
 }
