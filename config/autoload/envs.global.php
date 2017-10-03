@@ -9,6 +9,11 @@ return [
         'cache' => ( getenv('OPG_DOCKER_TAG') ) ? abs( crc32( getenv('OPG_DOCKER_TAG') ) ) : time(),
     ],
 
+    'stack' => [
+        'name' => getenv('OPG_STACKNAME') ?: null,
+        'type' => getenv('OPG_REFUNDS_STACK_TYPE') ?: null,
+    ],
+
     'refunds' => [
         'processing-time' => '12 weeks'
     ],
