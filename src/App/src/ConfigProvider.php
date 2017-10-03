@@ -74,9 +74,9 @@ class ConfigProvider
                 Service\Refund\Refund::class => Service\Refund\RefundFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
-                Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatterFactory::class,
 
                 // View Helper
+                View\Date\DateFormatterPlatesExtension::class => View\Date\DateFormatterPlatesExtensionFactory::class,
                 View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],

@@ -2,6 +2,7 @@
 
 namespace App\View\Date;
 
+use App\Service\Date\IDate as DateService;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use DateTime;
@@ -12,6 +13,16 @@ use DateTime;
  */
 class DateFormatterPlatesExtension implements ExtensionInterface
 {
+    /**
+     * @var DateService
+     */
+    private $dateService;
+
+    public function __construct(DateService $dateService)
+    {
+        $this->dateService = $dateService;
+    }
+
     public function register(Engine $engine)
     {
         $engine->registerFunction('getDayAndFullTextMonth', [$this, 'getDayAndFullTextMonth']);
@@ -41,7 +52,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
             return '';
         }
 
-        $now = time();
+        $now = $this->dateService->getTimeNow();
         $diff = $now - $dateTime->getTimestamp();
         $diffInMinutes = floor($diff/60);
 
