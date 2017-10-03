@@ -42,7 +42,13 @@ class BetaCheckMiddleware implements ServerMiddlewareInterface
 
         // If they are accessing the beta landing page, always allow the action to be called.
         // Also allow access to the done page.
-        if (isset($routeResult) && in_array($routeResult->getMatchedRouteName(), ['beta', 'apply.done'])) {
+        // If they are accessing the beta landing page, always allow the action to be called.
+        // Also allow access to the done page.
+        if (isset($routeResult) && in_array($routeResult->getMatchedRouteName(), [
+                'beta',
+                'apply.done',
+                'healthcheck.json'
+            ])) {
             return $delegate->process($request);
         }
 

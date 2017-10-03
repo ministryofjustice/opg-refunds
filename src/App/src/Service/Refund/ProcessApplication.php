@@ -1,13 +1,19 @@
 <?php
 namespace App\Service\Refund;
 
+use App\Service\Refund\Data\PhoneNumber;
 use League\JsonGuard\Validator as JsonValidator;
+use League\JsonReference\Dereferencer as JsonDereferencer;
+use League\JsonReference\ReferenceSerializer\InlineReferenceSerializer;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
 
-class ProcessApplication
+use Opg\Refunds\Log\Initializer;
+
+class ProcessApplication implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
 
     private $notifyClient;
     private $dataHandler;
@@ -26,22 +32,37 @@ class ProcessApplication
     public function process(array $data) : string
     {
 
-        // Remove metadata
+        // Remove unwanted data
         unset($data['meta']);
+        unset($data['case-number']['have-poa-case-number']);
+        unset($data['contact']['contact-options']);
+        unset($data['postcodes']['postcode-options']);
+        unset($data['donor']['poa']['different-name-on-poa']);
+
+        //---
 
         // Include the date submitted
+        $data['version'] = 1;
+
+
         $data['submitted'] = gmdate(\DateTime::ISO8601);
 
         //---
 
+        $dereferencer = JsonDereferencer::draft6();
+        $dereferencer->setReferenceSerializer(new InlineReferenceSerializer());
+
+        $schema = $dereferencer->dereference(json_decode(file_get_contents($this->jsonSchemaPath)));
+
         // Validate the generated JSON against our schema.
         $validator = new JsonValidator(
-            json_decode(json_encode($data)),
-            json_decode(file_get_contents($this->jsonSchemaPath))
+            json_decode(json_encode($data)), // Simplest way to convert to stdClass
+            $schema
         );
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
@@ -49,7 +70,13 @@ class ProcessApplication
 
         $reference = $this->dataHandler->store($data);
 
-        $name = implode(' ', $data['donor']['name']);
+        //---
+
+        $this->getLogger()->info('Application submitted', [ 'claim-code' => $reference ]);
+
+        //---
+
+        $name = implode(' ', $data['donor']['current']['name']);
         $contact = $data['contact'];
 
         /*
@@ -68,12 +95,19 @@ class ProcessApplication
             if (isset($contact['email']) && !empty($contact['email'])) {
                 // Send email...
                 $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
-                    'ref' => IdentFormatter::format($reference),
-                    'processed-by' => date('j F Y', strtotime($data['expected'])),
+                    'claim-code' => IdentFormatter::format($reference),
+                    'processed-by-date' => date('j F Y', strtotime($data['expected'])),
                     'donor-name' => $name,
                 ]);
             }
         } catch (ApiException $e) {
+            $this->getLogger()->alert(
+                'Unable to send email via Notify',
+                [
+                    'exception' => $e->getMessage(),
+                    'notify-message' => (string)$e->getResponse()->getBody()
+                ]
+            );
         }
 
         //---
@@ -83,20 +117,25 @@ class ProcessApplication
              * If a mobile number was entered, we send a SMS message.
              */
             if (isset($contact['phone']) && !empty($contact['phone'])) {
-                // Strip off county codes for UK numbers.
-                $phone = preg_replace('/^[+]?[0]*44/', '0', $contact['phone']);
+                $phone = new PhoneNumber($contact['phone']);
 
-                // 070 numbers are personal, non-mobile, numbers.
-                $isMobile = (bool)preg_match('/^07/', $phone) && !preg_match('/^070/', $phone);
-
-                if ($isMobile) {
+                if ($phone->isMobile()) {
                     // Send SMS...
-                    $this->notifyClient->sendSms($phone, 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
-                        'ref' => IdentFormatter::format($reference),
+                    $this->notifyClient->sendSms($phone->get(), 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                        'claim-code' => IdentFormatter::format($reference),
+                        'processed-by-date' => date('j F Y', strtotime($data['expected'])),
+                        'donor-name' => $name,
                     ]);
                 }
             }
         } catch (ApiException $e) {
+            $this->getLogger()->alert(
+                'Unable to send SMS via Notify',
+                [
+                    'exception' => $e->getMessage(),
+                    'notify-message' => (string)$e->getResponse()->getBody()
+                ]
+            );
         }
 
         //---

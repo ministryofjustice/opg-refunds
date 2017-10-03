@@ -107,7 +107,7 @@ class FlowController
             return 'apply.donor';
         }
 
-        if (!isset($session['donor']) || !is_array($session['donor'])) {
+        if (!isset($session['donor']['current']) || !is_array($session['donor']['current'])) {
             return 'apply.donor';
         }
 

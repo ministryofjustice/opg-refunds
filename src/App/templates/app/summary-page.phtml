@@ -16,25 +16,29 @@ $this->layout('layout::default', [
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
-            [ 'value' => "{$details['donor']['name']['title']} {$details['donor']['name']['first']} {$details['donor']['name']['last']}" ],
-            [ 'value' => date('j F Y', strtotime($details['donor']['dob'])) ],
+            [ 'value' => "{$details['donor']['current']['name']['title']} {$details['donor']['current']['name']['first']} {$details['donor']['current']['name']['last']}" ],
             [
-                    'label' => (isset($details['donor']['poa-name']['first'])) ? 'Name on power of attorney' : null,
-                    'value' => (isset($details['donor']['poa-name']['first'])) ? "{$details['donor']['poa-name']['title']} {$details['donor']['poa-name']['first']} {$details['donor']['poa-name']['last']}" : null
+                'label' => (isset($details['donor']['poa']['name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['donor']['poa']['name']['first'])) ? "{$details['donor']['poa']['name']['title']} {$details['donor']['poa']['name']['first']} {$details['donor']['poa']['name']['last']}" : null
             ],
-
+            [ 'value' => date('j F Y', strtotime($details['donor']['current']['dob'])) ],
+            [ 'value' => ($details['donor']['current']['address']['address-1']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-2']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-3']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-postcode']) ?? null ],
         ],
         'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
     ]) ?>
 
+
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Attorney details',
         'fields' => [
-            [ 'value' => "{$details['attorney']['name']['title']} {$details['attorney']['name']['first']} {$details['attorney']['name']['last']}" ],
-            [ 'value' => date('j F Y', strtotime($details['attorney']['dob'])) ],
+            [ 'value' => "{$details['attorney']['current']['name']['title']} {$details['attorney']['current']['name']['first']} {$details['attorney']['current']['name']['last']}" ],
+            [ 'value' => date('j F Y', strtotime($details['attorney']['current']['dob'])) ],
             [
-                'label' => (isset($details['attorney']['poa-name']['first'])) ? 'Name on power of attorney' : null,
-                'value' => (isset($details['attorney']['poa-name']['first'])) ? "{$details['attorney']['poa-name']['title']} {$details['attorney']['poa-name']['first']} {$details['attorney']['poa-name']['last']}" : null
+                'label' => (isset($details['attorney']['poa']['name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['attorney']['poa']['name']['first'])) ? "{$details['attorney']['poa']['name']['title']} {$details['attorney']['poa']['name']['first']} {$details['attorney']['poa']['name']['last']}" : null
             ],
         ],
         'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
@@ -99,22 +103,34 @@ $this->layout('layout::default', [
 
 <h2 class="heading-medium">Statement of truth</h2>
 
-<p>By submitting this claim you confirm that, to the best of your knowledge:</p>
+<p>By submitting this claim you confirm that to the best of your knowledge:</p>
 
 <ul class="list list-bullet">
-    <li>you are entitled to claim a refund</li>
-    <li>the details you have given are correct </li>
+    <li>you're entitled to claim a refund</li>
+    <li>the details you've given are correct</li>
+    <li>the bank details are the donor's</li>
 </ul>
 
 <p class="text">
-    You also accept that the details you've given will be used to process
-    a refund, as explained in our <a href="#">terms and conditions</a>. 
+    You agree to the <a href="/terms">terms and conditions</a> and that details 
+    you've given will be securely stored and used to process a refund. 
 </p>
+
+<div class="notice">
+    <p>
+        <i class="icon icon-important">
+            <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">
+        You could be breaking the law if you deliberately give untrue or misleading information.
+        </strong>
+    </p>
+</div>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
-
+    
     <input type="submit" class="button" value="Confirm and submit claim">
     
 </form>

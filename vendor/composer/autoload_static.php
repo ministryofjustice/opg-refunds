@@ -4,19 +4,21 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
+class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
-        '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '383eaff206634a77a1be54e64e6459c7' => __DIR__ . '/..' . '/sabre/uri/lib/functions.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'c843e8ef90c78ff0c203eb3834eb0a82' => __DIR__ . '/..' . '/league/json-reference/src/functions.php',
         'f8b0b5f351aa0dc2d4b9c3b8f451115f' => __DIR__ . '/..' . '/league/json-guard/src/functions.php',
+        '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -31,6 +33,7 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
             'Zend\\Stdlib\\' => 12,
             'Zend\\ServiceManager\\' => 20,
             'Zend\\Math\\' => 10,
+            'Zend\\Log\\' => 9,
             'Zend\\InputFilter\\' => 17,
             'Zend\\I18n\\' => 10,
             'Zend\\Hydrator\\' => 14,
@@ -62,16 +65,23 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
+            'Sabre\\Uri\\' => 10,
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
         ),
+        'O' => 
+        array (
+            'Opg\\Refunds\\Log\\' => 16,
+        ),
         'L' => 
         array (
             'League\\Plates\\' => 14,
+            'League\\JsonReference\\' => 21,
             'League\\JsonGuard\\' => 17,
         ),
         'J' => 
@@ -119,8 +129,8 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
     public static $prefixDirsPsr4 = array (
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
         ),
         'Zend\\Validator\\' => 
@@ -142,6 +152,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         'Zend\\Math\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-math/src',
+        ),
+        'Zend\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-log/src',
         ),
         'Zend\\InputFilter\\' => 
         array (
@@ -244,6 +258,14 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
+        'Sabre\\Uri\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/sabre/uri/lib',
+        ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -256,9 +278,17 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'Opg\\Refunds\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/ministryofjustice/opg-refunds-logger/src/Opg/Refunds/Log',
+        ),
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
+        ),
+        'League\\JsonReference\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/json-reference/src',
         ),
         'League\\JsonGuard\\' => 
         array (
@@ -1147,10 +1177,10 @@ class ComposerStaticInit4cbc6b419e2e62318acd264e58676915
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit4cbc6b419e2e62318acd264e58676915::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d::$classMap;
 
         }, null, ClassLoader::class);
     }

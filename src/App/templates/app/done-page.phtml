@@ -23,27 +23,28 @@ $this->layout('layout::default', [
         <?php if (!empty($contact['email'])): ?>
             <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
         <?php endif ?>
-        <?php if (!empty($contact['mobile'])): ?>
-            <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['mobile']) ?></span></p>
+
+        <?php if (!empty($contact['phone'])): ?>
+
+            <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
+
+            <?php if ($phone->isMobile()): ?>
+                <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+            <?php endif ?>
+
         <?php endif ?>
-    
+
         <h2 class="heading-medium">Just claim once</h2>
 
-        <p>We know lots of people pay for more than one power of attorney. So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
-
-        <p>
-            Please tell <?= ($applicant == 'donor') ? "your attorneys" : "any other attorneys" ?> 
-            you have claimed a refund. It could slow things down if we get more than one claim.
-        </p>
+        <p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
+        So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
 
         <h2 class="heading-medium">What happens next</h2>
         
         <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
         <p>We will contact you if we need more information.</p>
 
-        <br><br>
-        <p><a href="https://www.gov.uk/service-manual/user-centred-design/resources/patterns/feedback-pages.html">What did you think of this service?</a> (takes 30 seconds)</p>
-        <p><a href="#">Print this page</a>.</p>
-        
+        <?php $this->insert('snippet::refunds-helpline');?>
+
     </div>
 </div>

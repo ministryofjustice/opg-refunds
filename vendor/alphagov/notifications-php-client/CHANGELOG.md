@@ -1,4 +1,4 @@
-## [3.1.0] - 2017-05-10
+## [1.1.0] - 2017-05-10
 ### Changed
 
 * Added new methods for managing templates:

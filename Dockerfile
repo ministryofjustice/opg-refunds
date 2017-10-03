@@ -18,4 +18,8 @@ RUN cd /tmp && \
     rm /tmp/composer.phar && \
     rm -rf docker README* LICENSE* composer.*
 
+RUN mkdir -p /var/log/app && \
+    touch /var/log/app/application.log && \
+    chown app:app /var/log/app/application.log
+
 ENV OPG_SERVICE public-front

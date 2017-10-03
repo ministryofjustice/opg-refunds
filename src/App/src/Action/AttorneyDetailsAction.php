@@ -21,7 +21,7 @@ class AttorneyDetailsAction extends AbstractAction
 
         $session = $request->getAttribute('session');
 
-        $form = new Form\ActorDetails([
+        $form = new Form\AttorneyDetails([
             'csrf' => $session['meta']['csrf']
         ]);
 

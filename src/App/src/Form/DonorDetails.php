@@ -8,7 +8,7 @@ use Zend\InputFilter\InputFilter;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 
-class ActorDetails extends AbstractForm
+class DonorDetails extends AbstractForm
 {
 
     public function __construct($options = [])
@@ -134,6 +134,7 @@ class ActorDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+
         //------------------------
         // DOB
 
@@ -141,6 +142,76 @@ class ActorDetails extends AbstractForm
 
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');
+
+
+        //------------------------
+        // Address - line 1
+
+        $field = new Element\Text('address-1');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - line 2
+
+        $field = new Element\Text('address-2');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - line 3
+
+        $field = new Element\Text('address-3');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - Postcode
+
+        $field = new Element\Text('address-postcode');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
 
         //---
 
@@ -151,20 +222,25 @@ class ActorDetails extends AbstractForm
 
     public function setFormattedData(array $data)
     {
-        $data['title'] = $data['name']['title'] ?? null;
-        $data['first'] = $data['name']['first'] ?? null;
-        $data['last'] = $data['name']['last'] ?? null;
+        $data['title'] = $data['current']['name']['title'] ?? null;
+        $data['first'] = $data['current']['name']['first'] ?? null;
+        $data['last'] = $data['current']['name']['last'] ?? null;
 
-        $data['poa-title'] = $data['poa-name']['title'] ?? null;
-        $data['poa-first'] = $data['poa-name']['first'] ?? null;
-        $data['poa-last'] = $data['poa-name']['last'] ?? null;
+        $data['address-1'] = $data['current']['address']['address-1'] ?? null;
+        $data['address-2'] = $data['current']['address']['address-2'] ?? null;
+        $data['address-3'] = $data['current']['address']['address-3'] ?? null;
+        $data['address-postcode'] = $data['current']['address']['address-postcode'] ?? null;
+
+        $data['poa-title'] = $data['poa']['name']['title'] ?? null;
+        $data['poa-first'] = $data['poa']['name']['first'] ?? null;
+        $data['poa-last'] = $data['poa']['name']['last'] ?? null;
 
         if (isset($data['poa-first'])) {
             $data['poa-name-different'] = 'yes';
         }
 
-        if (isset($data['dob'])) {
-            $dob = $data['dob'];
+        if (isset($data['current']['dob'])) {
+            $dob = $data['current']['dob'];
             $data['dob'] = [];
             list($data['dob']['year'],$data['dob']['month'],$data['dob']['day']) = explode('-', $dob);
         }
@@ -180,12 +256,15 @@ class ActorDetails extends AbstractForm
             return $result;
         }
 
-        $response = [];
+        $response = [
+            'poa' => [],
+            'current' => []
+        ];
 
-        $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+        $response['current']['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
         if (isset($result['poa-first'])) {
-            $response['poa-name'] = [
+            $response['poa']['name'] = [
                 'title' => $result['poa-title'],
                 'first' => $result['poa-first'],
                 'last' => $result['poa-last'],
@@ -194,15 +273,18 @@ class ActorDetails extends AbstractForm
 
         //---
 
-        $result['dob'] = array_filter($result['dob']);
-
-        if (!empty($result['dob'])) {
-            $response['dob'] = $result['dob']['year'].'-'
-                .sprintf('%02d', $result['dob']['month']).'-'
-                .sprintf('%02d', $result['dob']['day']);
-        }
+        $response['current']['address'] = array_intersect_key($result, array_flip([
+            'address-1',
+            'address-2',
+            'address-3',
+            'address-postcode'
+        ]));
 
         //---
+
+        $response['current']['dob'] = $result['dob']['year'].'-'
+            .sprintf('%02d', $result['dob']['month']).'-'
+            .sprintf('%02d', $result['dob']['day']);
 
         return $response;
     }

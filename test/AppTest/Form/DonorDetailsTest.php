@@ -3,20 +3,16 @@ namespace AppTest\Form;
 
 use PHPUnit\Framework\TestCase;
 
-use DateTime;
-use DateInterval;
-
-use App\Form\ActorDetails;
-use App\Form\Fieldset\Dob;
+use App\Form\DonorDetails;
 
 // All DOB tests are now in Fieldset/DobTest.php
 
-class ActorDetailsTest extends TestCase
+class DonorDetailsTest extends TestCase
 {
 
     private function getForm()
     {
-        return new ActorDetails([
+        return new DonorDetails([
             'csrf' => bin2hex(random_bytes(32))
         ]);
     }
@@ -30,6 +26,10 @@ class ActorDetailsTest extends TestCase
             'poa-title' => 'Sir',
             'poa-first' => 'Fred',
             'poa-last' => 'Jones',
+            'address-1' => 'Line 1',
+            'address-2' => 'Line 2',
+            'address-3' => 'Line 3',
+            'address-postcode' => 'SW4 4JQ',
             'dob' => [
                 'day' => '1',
                 'month' => '1',
@@ -43,7 +43,7 @@ class ActorDetailsTest extends TestCase
     public function testCanInstantiate()
     {
         $form = $this->getForm();
-        $this->assertInstanceOf(ActorDetails::class, $form);
+        $this->assertInstanceOf(DonorDetails::class, $form);
     }
 
     public function testHasExpectedFields()
@@ -52,10 +52,14 @@ class ActorDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(8, $elements);
+        $this->assertCount(12, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);
+        $this->assertArrayHasKey( 'address-1', $elements);
+        $this->assertArrayHasKey( 'address-2', $elements);
+        $this->assertArrayHasKey( 'address-3', $elements);
+        $this->assertArrayHasKey( 'address-postcode', $elements);
         $this->assertArrayHasKey( 'poa-title', $elements);
         $this->assertArrayHasKey( 'poa-first', $elements);
         $this->assertArrayHasKey( 'poa-last', $elements);
@@ -168,6 +172,68 @@ class ActorDetailsTest extends TestCase
         //---
 
         $this->assertTrue( $form->isValid() );
+    }
+    
+
+    //---------------------------------------------
+    // Address Tests
+
+    public function testMissingAddress1()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['address-1']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
+    public function testMissingAddress2()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['address-2']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        // --- This is an optional field ---
+        $this->assertTrue( $form->isValid() );
+    }
+
+    public function testMissingAddress3()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['address-3']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        // --- This is an optional field ---
+        $this->assertTrue( $form->isValid() );
+    }
+
+    public function testMissingAddressPostcode()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        unset($data['address-postcode']);
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
     }
 
     //---------------------------------------------
