@@ -3,6 +3,8 @@ namespace App\Service\Refund;
 
 use App\Service\Refund\Data\PhoneNumber;
 use League\JsonGuard\Validator as JsonValidator;
+use League\JsonReference\Dereferencer as JsonDereferencer;
+use League\JsonReference\ReferenceSerializer\InlineReferenceSerializer;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
@@ -30,22 +32,37 @@ class ProcessApplication implements Initializer\LogSupportInterface
     public function process(array $data) : string
     {
 
-        // Remove metadata
+        // Remove unwanted data
         unset($data['meta']);
+        unset($data['case-number']['have-poa-case-number']);
+        unset($data['contact']['contact-options']);
+        unset($data['postcodes']['postcode-options']);
+        unset($data['donor']['poa']['different-name-on-poa']);
+
+        //---
 
         // Include the date submitted
+        $data['version'] = 1;
+
+
         $data['submitted'] = gmdate(\DateTime::ISO8601);
 
         //---
 
+        $dereferencer = JsonDereferencer::draft6();
+        $dereferencer->setReferenceSerializer(new InlineReferenceSerializer());
+
+        $schema = $dereferencer->dereference(json_decode(file_get_contents($this->jsonSchemaPath)));
+
         // Validate the generated JSON against our schema.
         $validator = new JsonValidator(
-            json_decode(json_encode($data)),
-            json_decode(file_get_contents($this->jsonSchemaPath))
+            json_decode(json_encode($data)), // Simplest way to convert to stdClass
+            $schema
         );
 
         if ($validator->fails()) {
             $errors = $validator->errors();
+            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
@@ -59,7 +76,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
-        $name = implode(' ', $data['donor']['name']);
+        $name = implode(' ', $data['donor']['current']['name']);
         $contact = $data['contact'];
 
         /*

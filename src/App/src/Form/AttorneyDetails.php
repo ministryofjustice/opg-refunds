@@ -8,7 +8,7 @@ use Zend\InputFilter\InputFilter;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 
-class ActorDetails extends AbstractForm
+class AttorneyDetails extends AbstractForm
 {
 
     public function __construct($options = [])
@@ -151,20 +151,21 @@ class ActorDetails extends AbstractForm
 
     public function setFormattedData(array $data)
     {
-        $data['title'] = $data['name']['title'] ?? null;
-        $data['first'] = $data['name']['first'] ?? null;
-        $data['last'] = $data['name']['last'] ?? null;
 
-        $data['poa-title'] = $data['poa-name']['title'] ?? null;
-        $data['poa-first'] = $data['poa-name']['first'] ?? null;
-        $data['poa-last'] = $data['poa-name']['last'] ?? null;
+        $data['title'] = $data['current']['name']['title'] ?? null;
+        $data['first'] = $data['current']['name']['first'] ?? null;
+        $data['last'] = $data['current']['name']['last'] ?? null;
+
+        $data['poa-title'] = $data['poa']['name']['title'] ?? null;
+        $data['poa-first'] = $data['poa']['name']['first'] ?? null;
+        $data['poa-last'] = $data['poa']['name']['last'] ?? null;
 
         if (isset($data['poa-first'])) {
             $data['poa-name-different'] = 'yes';
         }
 
-        if (isset($data['dob'])) {
-            $dob = $data['dob'];
+        if (isset($data['current']['dob'])) {
+            $dob = $data['current']['dob'];
             $data['dob'] = [];
             list($data['dob']['year'],$data['dob']['month'],$data['dob']['day']) = explode('-', $dob);
         }
@@ -180,12 +181,15 @@ class ActorDetails extends AbstractForm
             return $result;
         }
 
-        $response = [];
+        $response = [
+            'poa' => [],
+            'current' => []
+        ];
 
-        $response['name'] = array_intersect_key($result, array_flip(['title','first','last']));
+        $response['current']['name'] = array_intersect_key($result, array_flip(['title','first','last']));
 
         if (isset($result['poa-first'])) {
-            $response['poa-name'] = [
+            $response['poa']['name'] = [
                 'title' => $result['poa-title'],
                 'first' => $result['poa-first'],
                 'last' => $result['poa-last'],
@@ -194,13 +198,9 @@ class ActorDetails extends AbstractForm
 
         //---
 
-        $result['dob'] = array_filter($result['dob']);
-
-        if (!empty($result['dob'])) {
-            $response['dob'] = $result['dob']['year'].'-'
-                .sprintf('%02d', $result['dob']['month']).'-'
-                .sprintf('%02d', $result['dob']['day']);
-        }
+        $response['current']['dob'] = $result['dob']['year'].'-'
+            .sprintf('%02d', $result['dob']['month']).'-'
+            .sprintf('%02d', $result['dob']['day']);
 
         //---
 

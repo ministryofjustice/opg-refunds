@@ -20,7 +20,7 @@ class DonorDetailsAction extends AbstractAction
 
         //---
 
-        $form = new Form\ActorDetails([
+        $form = new Form\DonorDetails([
             'csrf' => $session['meta']['csrf']
         ]);
 
