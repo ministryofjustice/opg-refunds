@@ -174,6 +174,24 @@ class User
     }
 
     /**
+     * @param $userId
+     * @param $token
+     * @param $tokenExpires
+     * @return UserModel
+     */
+    public function setToken($userId, $token, $tokenExpires)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setToken($token);
+        $user->setTokenExpires($tokenExpires);
+
+        $this->entityManager->flush();
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
      * Check for an existing user using this email address - excluding the user if an ID value is provided
      *
      * @param string $email
