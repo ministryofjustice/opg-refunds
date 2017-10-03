@@ -34,7 +34,10 @@ class Version20171002122206 extends AbstractMigration
         $this->addSql('UPDATE "user" SET email = \'refundmanager05@publicguardian.gsi.gov.uk\' WHERE email = \'refundmanager05@refunds.uat\'');
 
         //  Create admin user
-        $this->addSql('INSERT INTO "user" (name, email, password_hash, status, roles) VALUES (\'SMT User 01\', \'smtuser01@publicguardian.gsi.gov.uk\', \'$2y$10$jiZJH3z/byGazp/ttAlyROZ.lEqhE1dbTB0MpJNODnVjWGDYILBs6\', \'active\', \'RefundManager,Caseworker,Reporting,Admin\')');
+        $adminName = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_NAME');
+        $adminUsername = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME');
+        $adminPasswordHash = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD_HASH');
+        $this->addSql("INSERT INTO \"user\" (name, email, password_hash, status, roles) VALUES ('$adminName', '$adminUsername', '$adminPasswordHash', 'active', 'RefundManager,Caseworker,Reporting,Admin')");
     }
 
     /**
