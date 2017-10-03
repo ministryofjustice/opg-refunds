@@ -31,7 +31,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
 
 <form method="post" class="form">
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <input type="hidden" name="system" value="<?= $system ?>">
 

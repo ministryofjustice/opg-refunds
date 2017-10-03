@@ -13,7 +13,7 @@
 
                 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
-                <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
                 <?php $this->insert('snippet::input-text', [
                     'formElement' => $form->get('email'),
