@@ -70,75 +70,6 @@ class DonorDetails extends AbstractForm
 
 
         //------------------------
-        // Address - line 1
-
-        $field = new Element\Text('address-1');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-
-        //------------------------
-        // Address - line 2
-
-        $field = new Element\Text('address-2');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $input->setRequired(false);
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-
-        //------------------------
-        // Address - line 3
-
-        $field = new Element\Text('address-3');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $input->setRequired(false);
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-
-        //------------------------
-        // Address - Postcode
-
-        $field = new Element\Text('address-postcode');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-        //------------------------
         // POA Name - Checkbox
 
         $field = new Element\Checkbox('poa-name-different', [
@@ -211,6 +142,76 @@ class DonorDetails extends AbstractForm
 
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');
+
+
+        //------------------------
+        // Address - line 1
+
+        $field = new Element\Text('address-1');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - line 2
+
+        $field = new Element\Text('address-2');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - line 3
+
+        $field = new Element\Text('address-3');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+
+        //------------------------
+        // Address - Postcode
+
+        $field = new Element\Text('address-postcode');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
 
         //---
 
