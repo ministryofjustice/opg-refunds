@@ -47,18 +47,27 @@
                 ])
                 ?>
 
-                <?php $this->insert('snippet::input-multi', [
-                    'formElement' => $form->get('status'),
-                    'question' => 'Status',
-                    'options' => [
-                        \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE => [
-                            'optionLabel' => 'Active'
-                        ],
-                        \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE => [
-                            'optionLabel' => 'Inactive'
-                        ],
-                    ],
-                ])
+                <?php
+                    $statusInput = $form->get('status');
+
+                    if ($statusInput instanceof \Zend\Form\Element\Hidden) {
+                        $this->insert('snippet::input-hidden', [
+                            'formElement' => $statusInput,
+                        ]);
+                    } else {
+                        $this->insert('snippet::input-multi', [
+                            'formElement' => $statusInput,
+                            'question' => 'Status',
+                            'options' => [
+                                \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE => [
+                                    'optionLabel' => 'Active'
+                                ],
+                                \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE => [
+                                    'optionLabel' => 'Inactive'
+                                ],
+                            ],
+                        ]);
+                    }
                 ?>
 
             </fieldset>

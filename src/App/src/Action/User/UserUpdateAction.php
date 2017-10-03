@@ -39,12 +39,14 @@ class UserUpdateAction extends AbstractModelAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $user = null;
+        $pendingUser = true;
 
         if (!is_null($this->modelId)) {
             $user = $this->userService->getUser($this->modelId);
+            $pendingUser = ($user->getStatus() == UserModel::STATUS_PENDING);
         }
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $pendingUser);
 
         //  Bind any existing details to the form
         if (!is_null($user)) {
@@ -65,10 +67,9 @@ class UserUpdateAction extends AbstractModelAction
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, true);
 
         if ($form->isValid()) {
-            //  Set the new user as active
             $user = new UserModel($form->getData());
 
             try {
@@ -108,7 +109,7 @@ class UserUpdateAction extends AbstractModelAction
             throw new Exception('Page not found', 404);
         }
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $user->getStatus() == UserModel::STATUS_PENDING);
 
         if ($form->isValid()) {
             try {
@@ -139,15 +140,16 @@ class UserUpdateAction extends AbstractModelAction
      * Get the form for the model concerned
      *
      * @param ServerRequestInterface $request
+     * @param $pendingUser
      * @return User
      */
-    private function getForm(ServerRequestInterface $request)
+    private function getForm(ServerRequestInterface $request, $pendingUser)
     {
         $session = $request->getAttribute('session');
 
         $form = new User([
             'csrf' => $session['meta']['csrf']
-        ]);
+        ], $pendingUser);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());

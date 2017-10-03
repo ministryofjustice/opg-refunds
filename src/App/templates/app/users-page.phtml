@@ -22,8 +22,8 @@
                     <tr>
                         <td>
                             <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $user->getName() ?></a>
-                            <?php if ($user->getStatus() === \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE) { ?>
-                                - <span style="color: red;">INACTIVE</span>
+                            <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
+                                - <span style="color: red;"><?= strtoupper($user->getStatus()) ?></span>
                             <?php } ?>
                         </td>
                         <td><?= $user->getEmail() ?></td>
