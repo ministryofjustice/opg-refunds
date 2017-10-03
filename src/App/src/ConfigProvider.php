@@ -48,6 +48,7 @@ class ConfigProvider
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
+                Service\Date\IDate::class => Service\Date\Date::class,
                 Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
@@ -70,6 +71,7 @@ class ConfigProvider
 
                 // Services
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
+                Service\Refund\Refund::class => Service\Refund\RefundFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
                 Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatterFactory::class,

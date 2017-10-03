@@ -1,30 +1,30 @@
 <?php
 
-namespace AppTest\Service\Date;
+namespace AppTest\Service\Refund;
 
-use App\Service\Date\IDateProvider;
-use App\Service\Poa\PoaFormatter;
+use App\Service\Date\IDate;
+use App\Service\Refund\Refund as RefundService;
 use DateTime;
 use Mockery;
 use Mockery\MockInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa;
 use PHPUnit\Framework\TestCase;
 
-class PoaFormatterTest extends TestCase
+class RefundTest extends TestCase
 {
     /**
-     * @var MockInterface|IDateProvider
+     * @var MockInterface|IDate
      */
-    private $dateProvider;
+    private $DateService;
     /**
-     * @var PoaFormatter
+     * @var RefundService
      */
-    private $poaFormatter;
+    private $refundService;
 
     protected function setUp()
     {
-        $this->dateProvider = Mockery::mock(IDateProvider::class);
-        $this->poaFormatter = new PoaFormatter($this->dateProvider);
+        $this->DateService = Mockery::mock(IDate::class);
+        $this->refundService = new RefundService($this->DateService);
     }
 
     public function testGetRefundAmount()
@@ -37,19 +37,19 @@ class PoaFormatterTest extends TestCase
         $poa->setReceivedDate(new DateTime('2017-03-01'))
             ->setOriginalPaymentAmount('orMore');
 
-        $refundAmount = $this->poaFormatter->getRefundAmount($poa);
+        $refundAmount = $this->refundService->getRefundAmount($poa);
 
         //Test first thing in the morning
-        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-05-01T00:00:00.000000+0000'))->getTimestamp());
-        $refundAmountWithInterest = $this->poaFormatter->getAmountWithInterest($poa, $refundAmount);
+        $this->DateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-05-01T00:00:00.000000+0000'))->getTimestamp());
+        $refundAmountWithInterest = $this->refundService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);
         $this->assertEquals(0.04, $interest);
 
         //Test last thing at night
-        $this->dateProvider->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-05-01T23:59:59.999999+0000'))->getTimestamp());
-        $refundAmountWithInterest = $this->poaFormatter->getAmountWithInterest($poa, $refundAmount);
+        $this->DateService->shouldReceive('getTimeNow')->andReturn((new DateTime('2017-05-01T23:59:59.999999+0000'))->getTimestamp());
+        $refundAmountWithInterest = $this->refundService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);

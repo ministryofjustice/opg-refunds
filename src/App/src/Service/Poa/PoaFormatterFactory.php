@@ -2,7 +2,7 @@
 
 namespace App\Service\Poa;
 
-use App\Service\Date\IDateProvider;
+use App\Service\Refund\Refund as RefundService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -14,7 +14,7 @@ class PoaFormatterFactory
     public function __invoke(ContainerInterface $container)
     {
         return new PoaFormatter(
-            $container->get(IDateProvider::class)
+            $container->get(RefundService::class)
         );
     }
 }
