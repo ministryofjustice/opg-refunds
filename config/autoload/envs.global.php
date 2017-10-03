@@ -14,6 +14,12 @@ return [
         'type' => getenv('OPG_REFUNDS_STACK_TYPE') ?: null,
     ],
 
+    'analytics' => [
+        'google' => [
+            'id' => getenv('OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID') ?: null,
+        ],
+    ],
+
     'refunds' => [
         'processing-time' => '12 weeks'
     ],

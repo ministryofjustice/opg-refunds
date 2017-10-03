@@ -16,7 +16,8 @@ return [
 
     'plates' => [
         'extensions' => [
-            App\Service\ErrorMapper\ErrorMapperPlatesExtension::class
+            App\Service\ErrorMapper\ErrorMapperPlatesExtension::class,
+            App\Service\TemplateConfigInjection\TemplateConfigInjectionPlatesExtension::class
         ],
     ],
 ];
