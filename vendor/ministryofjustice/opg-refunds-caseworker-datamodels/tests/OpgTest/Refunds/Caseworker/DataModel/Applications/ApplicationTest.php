@@ -111,24 +111,24 @@ class ApplicationTest extends AbstractDataModelTestCase
         $this->assertEquals($now, $model->getExpected());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $now = new DateTime();
 
         $data = [
             'applicant'    => 'Ross Gellar',
-            'donor'        => $this->donor->toArray(),
-            'attorney'     => $this->attorney->toArray(),
-            'contact'      => $this->contact->toArray(),
-            'case-number'  => $this->caseNumber->toArray(),
-            'postcodes'    => $this->postcodes->toArray(),
-            'account'      => $this->account->toArray(),
+            'donor'        => $this->donor->getArrayCopy(),
+            'attorney'     => $this->attorney->getArrayCopy(),
+            'contact'      => $this->contact->getArrayCopy(),
+            'case-number'  => $this->caseNumber->getArrayCopy(),
+            'postcodes'    => $this->postcodes->getArrayCopy(),
+            'account'      => $this->account->getArrayCopy(),
             'submitted'    => $this->dateTimeToString($now),
             'expected'     => $this->dateTimeToString($now),
         ];
 
         $model = new Application($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

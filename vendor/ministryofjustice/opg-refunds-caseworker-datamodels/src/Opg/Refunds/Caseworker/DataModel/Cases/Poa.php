@@ -11,6 +11,9 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
  */
 class Poa extends AbstractDataModel
 {
+    const SYSTEM_SIRIUS = 'sirius';
+    const SYSTEM_MERIS = 'meris';
+
     /**
      * @var int
      */

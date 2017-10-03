@@ -2,45 +2,57 @@
 
 namespace App\Action\Claim;
 
-use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\ClaimReject;
-use App\Service\Claim as ClaimService;
-use App\Service\Poa\PoaFormatter;
-use Exception;
+use App\Service\Claim\Claim as ClaimService;
+use App\Service\Poa\PoaFormatter as PoaFormatterService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
+use Exception;
+use RuntimeException;
 
+/**
+ * Class ClaimRejectAction
+ * @package App\Action\Claim
+ */
 class ClaimRejectAction extends AbstractClaimAction
 {
     /**
-     * @var PoaFormatter
+     * @var PoaFormatterService
      */
-    private $poaFormatter;
+    private $poaFormatterService;
 
-    public function __construct(ClaimService $claimService, PoaFormatter $poaFormatter)
+    /**
+     * ClaimRejectAction constructor
+     * @param ClaimService $claimService
+     * @param PoaFormatterService $poaFormatterService
+     */
+    public function __construct(ClaimService $claimService, PoaFormatterService $poaFormatterService)
     {
         parent::__construct($claimService);
-        $this->poaFormatter = $poaFormatter;
+        $this->poaFormatterService = $poaFormatterService;
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse
+     * @throws Exception
+     */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimReject $form */
-        $form = $this->getForm($request, $claim);
-
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        }
-
-        if (!$this->poaFormatter->isClaimComplete($claim)) {
+        } elseif (!$this->poaFormatterService->isClaimComplete($claim)) {
             throw new Exception('Claim is not complete', 400);
         }
+
+        /** @var ClaimReject $form */
+        $form = $this->getForm($request, $claim);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reject-page', [
             'form'  => $form,
@@ -48,6 +60,11 @@ class ClaimRejectAction extends AbstractClaimAction
         ]));
     }
 
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
@@ -83,13 +100,15 @@ class ClaimRejectAction extends AbstractClaimAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new ClaimReject([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);
+
         return $form;
     }
 }

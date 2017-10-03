@@ -62,16 +62,15 @@ class SignInAction extends AbstractAction
 
                 if ($result->isValid()) {
                     return $this->redirectToRoute('home');
-                } else {
-                    //  There should be only one error
-                    $authenticationError = $result->getMessages()[0];
                 }
+
+                //  There was an authentication failure so transfer it to the form for display
+                $form->setAuthErrors($result->getMessages());
             }
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::sign-in-page', [
             'form'  => $form,
-            'error' => $authenticationError,
         ]));
     }
 }

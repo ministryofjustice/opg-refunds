@@ -1,17 +1,16 @@
 <?php
+
 namespace App\Form\Fieldset;
 
-use DateTime;
-
-use Zend\Form\Element;
-use Zend\InputFilter\Input;
+use App\Filter\StandardInput as StandardInputFilter;
+use App\Validator;
+use Zend\Form\Element\Text;
 use Zend\Form\Fieldset;
+use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 use Zend\Validator\Callback;
 use Zend\Validator\ValidatorInterface;
-
-use App\Validator;
-use App\Filter\StandardInput as StandardInputFilter;
+use DateTime;
 
 class ReceivedDate extends Fieldset
 {
@@ -26,7 +25,7 @@ class ReceivedDate extends Fieldset
         //------------------------
         // Received Date - Day
 
-        $field = new Element\Text('day');
+        $field = new Text('day');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -47,7 +46,7 @@ class ReceivedDate extends Fieldset
         //------------------------
         // Received Date - Month
 
-        $field = new Element\Text('month');
+        $field = new Text('month');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -68,7 +67,7 @@ class ReceivedDate extends Fieldset
         //------------------------
         // Received Date - Year
 
-        $field = new Element\Text('year');
+        $field = new Text('year');
         $input = new Input($field->getName());
 
         $input->getFilterChain()

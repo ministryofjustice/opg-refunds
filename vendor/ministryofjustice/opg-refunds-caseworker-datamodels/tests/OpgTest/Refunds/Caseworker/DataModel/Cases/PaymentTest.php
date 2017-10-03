@@ -78,7 +78,7 @@ class PaymentTest extends AbstractDataModelTestCase
         $this->assertEquals($now, $model->getProcessedDateTime());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $now = new DateTime();
 
@@ -91,6 +91,6 @@ class PaymentTest extends AbstractDataModelTestCase
 
         $model = new Payment($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

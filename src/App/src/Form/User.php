@@ -1,0 +1,105 @@
+<?php
+
+namespace App\Form;
+
+use App\Validator;
+use App\Filter\StandardInput as StandardInputFilter;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Zend\Filter;
+use Zend\Form\Element\MultiCheckbox;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Text;
+use Zend\InputFilter\Input;
+use Zend\InputFilter\InputFilter;
+
+/**
+ * Form for adding and editing users
+ *
+ * Class User
+ * @package App\Form
+ */
+class User extends AbstractForm
+{
+    /**
+     * SignIn constructor
+     *
+     * @param array $options
+     */
+    public function __construct($options = [])
+    {
+        parent::__construct(self::class, $options);
+
+        $inputFilter = new InputFilter;
+        $this->setInputFilter($inputFilter);
+
+        //  Name field
+        $field = new Text('name');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+              ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+              ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Email field
+        $field = new Element\Email('email');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+              ->attach(new StandardInputFilter)
+              ->attach(new Filter\StringToLower);
+
+        $input->getValidatorChain()
+              ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Roles field
+        $field = new MultiCheckbox('roles');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $field->setValueOptions([
+            UserModel::ROLE_CASEWORKER => UserModel::ROLE_CASEWORKER,
+            UserModel::ROLE_REFUND     => UserModel::ROLE_REFUND,
+            UserModel::ROLE_REPORTING  => UserModel::ROLE_REPORTING,
+            UserModel::ROLE_ADMIN      => UserModel::ROLE_ADMIN,
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Status field
+        $field = new Radio('status');
+        $input = new Input($field->getName());
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $field->setValueOptions([
+            UserModel::STATUS_ACTIVE   => UserModel::STATUS_ACTIVE,
+            UserModel::STATUS_INACTIVE => UserModel::STATUS_INACTIVE,
+        ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Csrf field
+        $this->addCsrfElement($inputFilter);
+    }
+}

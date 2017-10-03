@@ -18,7 +18,7 @@ class ContactTest extends AbstractDataModelTestCase
         $this->assertEquals('07712 123456', $model->getPhone());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'email'  => 'monica@friends.com',
@@ -27,6 +27,6 @@ class ContactTest extends AbstractDataModelTestCase
 
         $model = new Contact($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

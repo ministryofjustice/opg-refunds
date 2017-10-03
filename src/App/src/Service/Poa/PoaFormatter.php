@@ -2,7 +2,6 @@
 
 namespace App\Service\Poa;
 
-use App\Form\Poa as PoaForm;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -16,30 +15,30 @@ class PoaFormatter
 {
     public function hasSiriusPoas(ClaimModel $claim)
     {
-        return $this->hasSystemPoas($claim, PoaForm::SYSTEM_SIRIUS);
+        return $this->hasSystemPoas($claim, PoaModel::SYSTEM_SIRIUS);
     }
 
     public function hasMerisPoas(ClaimModel $claim)
     {
-        return $this->hasSystemPoas($claim, PoaForm::SYSTEM_MERIS);
+        return $this->hasSystemPoas($claim, PoaModel::SYSTEM_MERIS);
     }
 
     public function getSiriusPoas(ClaimModel $claim)
     {
-        return $this->getSystemPoas($claim, PoaForm::SYSTEM_SIRIUS);
+        return $this->getSystemPoas($claim, PoaModel::SYSTEM_SIRIUS);
     }
 
     public function getMerisPoas(ClaimModel $claim)
     {
-        return $this->getSystemPoas($claim, PoaForm::SYSTEM_MERIS);
+        return $this->getSystemPoas($claim, PoaModel::SYSTEM_MERIS);
     }
 
     public function getFormattedCaseNumber(PoaModel $poa)
     {
         switch ($poa->getSystem()) {
-            case PoaForm::SYSTEM_SIRIUS:
+            case PoaModel::SYSTEM_SIRIUS:
                 return join('-', str_split($poa->getCaseNumber(), 4));
-            case PoaForm::SYSTEM_MERIS:
+            case PoaModel::SYSTEM_MERIS:
                 return $poa->getCaseNumber();
             default:
                 return $poa->getCaseNumber();
@@ -84,22 +83,22 @@ class PoaFormatter
 
     public function isAttorneyVerified(ClaimModel $claim): bool
     {
-        return $this->isVerified($claim, 'attorney');
+        return $this->isVerified($claim, VerificationModel::TYPE_ATTORNEY);
     }
 
     public function isCaseNumberVerified(ClaimModel $claim): bool
     {
-        return $this->isVerified($claim, 'case-number');
+        return $this->isVerified($claim, VerificationModel::TYPE_CASE_NUMBER);
     }
 
     public function isDonorPostcodeVerified(ClaimModel $claim): bool
     {
-        return $this->isVerified($claim, 'donor-postcode');
+        return $this->isVerified($claim, VerificationModel::TYPE_DONOR_POSTCODE);
     }
 
     public function isAttorneyPostcodeVerified(ClaimModel $claim): bool
     {
-        return $this->isVerified($claim, 'attorney-postcode');
+        return $this->isVerified($claim, VerificationModel::TYPE_ATTORNEY_POSTCODE);
     }
 
     public function isClaimVerified(ClaimModel $claim)
@@ -241,13 +240,13 @@ class PoaFormatter
     private function getFormattedVerificationMatch(VerificationModel $verification)
     {
         switch ($verification->getType()) {
-            case 'attorney':
+            case VerificationModel::TYPE_ATTORNEY:
                 return 'Attorney details';
-            case 'case-number':
+            case VerificationModel::TYPE_CASE_NUMBER:
                 return 'Case number';
-            case 'donor-postcode':
+            case VerificationModel::TYPE_DONOR_POSTCODE:
                 return 'Donor postcode' ;
-            case 'attorney-postcode':
+            case VerificationModel::TYPE_ATTORNEY_POSTCODE:
                 return 'Attorney postcode';
             default:
                 return '';

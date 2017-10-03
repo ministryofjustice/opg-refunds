@@ -20,7 +20,7 @@ class NameTest extends AbstractDataModelTestCase
         $this->assertEquals('Tribbiani', $name->getLast());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'title' => 'Mr',
@@ -30,6 +30,6 @@ class NameTest extends AbstractDataModelTestCase
 
         $name = new Name($data);
 
-        $this->assertSame($data, $name->toArray());
+        $this->assertSame($data, $name->getArrayCopy());
     }
 }

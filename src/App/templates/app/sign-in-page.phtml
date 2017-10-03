@@ -3,7 +3,7 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <form action="/sign-in" method="post" class="form">
+        <form method="post" class="form">
 
             <fieldset>
 
@@ -12,9 +12,6 @@
                 </legend>
 
                 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
-                <?php if (isset($error)) { ?>
-                    <h2><?= $error ?></h2>
-                <?php } ?>
 
                 <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
@@ -37,6 +34,8 @@
             <div class="form-group">
                 <input class="button" type="submit" value="Continue">
             </div>
+
+            <a class="button button-link" href="<?= $this->generateUrl('password.request.reset') ?>">Forgotten your password?</a>
 
         </form>
     </div>

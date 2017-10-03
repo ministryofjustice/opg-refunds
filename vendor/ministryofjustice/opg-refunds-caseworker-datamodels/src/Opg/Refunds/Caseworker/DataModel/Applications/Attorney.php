@@ -13,73 +13,49 @@ use DateTime;
 class Attorney extends AbstractDataModel
 {
     /**
-     * @var Name
+     * @var Current
      */
-    protected $name;
+    protected $current;
 
     /**
-     * @var Name
+     * @var Poa
      */
-    protected $poaName;
+    protected $poa;
 
     /**
-     * @var DateTime
+     * @return Current
      */
-    protected $dob;
-
-    /**
-     * @return Name
-     */
-    public function getName(): Name
+    public function getCurrent(): Current
     {
-        return $this->name;
+        return $this->current;
     }
 
     /**
-     * @param Name $name
+     * @param Current $current
      * @return $this
      */
-    public function setName(Name $name)
+    public function setCurrent(Current $current): Attorney
     {
-        $this->name = $name;
+        $this->current = $current;
 
         return $this;
     }
 
     /**
-     * @return Name
+     * @return Poa
      */
-    public function getPoaName()
+    public function getPoa()
     {
-        return $this->poaName;
+        return $this->poa;
     }
 
     /**
-     * @param Name $poaName
+     * @param Poa $poa
      * @return $this
      */
-    public function setPoaName(Name $poaName)
+    public function setPoa(Poa $poa): Attorney
     {
-        $this->poaName = $poaName;
-
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDob(): DateTime
-    {
-        return $this->dob;
-    }
-
-    /**
-     * @param DateTime $dob
-     * @return $this
-     */
-    public function setDob(DateTime $dob)
-    {
-        $this->dob = $dob;
+        $this->poa = $poa;
 
         return $this;
     }
@@ -94,11 +70,10 @@ class Attorney extends AbstractDataModel
     protected function map($property, $value)
     {
         switch ($property) {
-            case 'name':
-            case 'poaName':
-                return (($value instanceof Name || is_null($value)) ? $value : new Name($value));
-            case 'dob':
-                return (($value instanceof DateTime || is_null($value)) ? $value : new DateTime($value));
+            case 'current':
+                return (($value instanceof Current || is_null($value)) ? $value : new Current($value));
+            case 'poa':
+                return (($value instanceof Poa || is_null($value)) ? $value : new Poa($value));
             default:
                 return parent::map($property, $value);
         }

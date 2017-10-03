@@ -4,7 +4,6 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
-use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use DateTime;
 
 /**
@@ -138,7 +137,7 @@ class Claim extends AbstractDataModel
     public function getReferenceNumber(): string
     {
         if (!is_null($this->id)) {
-            return IdentFormatter::format($this->id);
+            return trim(chunk_split('R' . sprintf("%011d", $this->id), 4, ' '));
         }
 
         return null;
@@ -444,7 +443,7 @@ class Claim extends AbstractDataModel
     public function setLogs(array $logs): Claim
     {
         $this->logs = $logs;
-        
+
         return $this;
     }
 

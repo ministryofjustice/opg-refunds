@@ -48,7 +48,9 @@ return [
             'csv.download',
         ],
         User::ROLE_ADMIN => [
-            'admin',
+            'user',
+            'user.add',
+            'user.edit',
         ],
     ],
 ];

@@ -2,8 +2,6 @@
 
 namespace App\Action;
 
-use Api\Service\Initializers\ApiClientInterface;
-use Api\Service\Initializers\ApiClientTrait;
 use Fig\Http\Message\RequestMethodInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,10 +11,8 @@ use Exception;
  * Class AbstractModelAction
  * @package App\Action
  */
-abstract class AbstractModelAction extends AbstractAction implements ApiClientInterface
+abstract class AbstractModelAction extends AbstractAction
 {
-    use ApiClientTrait;
-
     /**
      * @var int
      */
@@ -71,7 +67,7 @@ abstract class AbstractModelAction extends AbstractAction implements ApiClientIn
     }
 
     /**
-     * GET/POST add action - override in subclass if required
+     * POST add action - override in subclass if required
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -83,7 +79,7 @@ abstract class AbstractModelAction extends AbstractAction implements ApiClientIn
     }
 
     /**
-     * GET/POST edit action - override in subclass if required
+     * POST edit action - override in subclass if required
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate

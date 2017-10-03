@@ -13,7 +13,7 @@
 
         <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-        <form method="post" class="form" action="/claim">
+        <form method="post" class="form" action="<?= $this->generateUrl('claim') ?>">
 
             <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
 
@@ -43,7 +43,7 @@
             <?php foreach ($user->getClaims() as $claim) { ?>
                 <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
                 <tr>
-                    <td><a href="/claim/<?= $claim->getId() ?>"><?= $claim->getReferenceNumber() ?></a></td>
+                    <td><a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $claim->getReferenceNumber() ?></a></td>
                     <td><?= $claim->getDonorName() ?></td>
                     <td><?= $this->getDayAndFullTextMonth($claim->getReceivedDateTime()) ?></td>
                     <td><?= $this->getTimeIntervalAgo($claim->getUpdatedDateTime()) ?></td>
@@ -63,4 +63,3 @@
 
     </div>
 </div>
-

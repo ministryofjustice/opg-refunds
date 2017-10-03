@@ -2,19 +2,21 @@
 
 namespace App\Action\Poa;
 
-use App\Action\AbstractClaimAction;
 use App\Form\AbstractForm;
 use App\Form\Poa;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;
-use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Exception;
+use RuntimeException;
 
-class PoaAction extends AbstractClaimAction
+/**
+ * Class PoaAction
+ * @package App\Action\Poa
+ */
+class PoaAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -25,42 +27,35 @@ class PoaAction extends AbstractClaimAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
-        $system = $request->getAttribute('system');
 
         /** @var Poa $form */
         $form = $this->getForm($request, $claim);
 
-        $viewModel = [
-            'form'   => $form,
-            'claim'  => $claim,
-            'system' => $system
-        ];
-
         if ($this->modelId !== null) {
             //Edit page
             $poa = $this->getPoa($claim);
+
             if ($poa === null) {
                 throw new Exception('POA not found', 404);
             }
-            $form->bindModelData($poa);
 
-            $viewModel['deleteUrl'] = $this->getUrlHelper()->generate('claim.poa.delete', [
-                'claimId' => $request->getAttribute('claimId'),
-                'system'  => $system,
-                'id'      => $this->modelId
-            ]);
+            $form->bindModelData($poa);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', $viewModel));
+        $system = $request->getAttribute('system');
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
+            'form'   => $form,
+            'claim'  => $claim,
+            'system' => $system,
+            'poaId'  => $this->modelId,
+        ]));
     }
 
     /**
-     * GET/POST add action
-     *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse|RedirectResponse
-     * @throws Exception
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -69,30 +64,28 @@ class PoaAction extends AbstractClaimAction
 
         $form = $this->getForm($request, $claim);
 
-        if ($request->getMethod() == 'POST') {
-            /** @var Poa $form */
-            $form->setData($request->getParsedBody());
+        /** @var Poa $form */
+        $form->setData($request->getParsedBody());
 
-            if ($form->isValid()) {
-                $poa = new PoaModel($form->getModelData());
+        if ($form->isValid()) {
+            $poa = new PoaModel($form->getModelData());
 
-                $claim = $this->claimService->addPoa($claim, $poa);
+            $claim = $this->claimService->addPoa($claim, $poa);
 
-                if ($claim === null) {
-                    throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
-                }
-
-                //TODO: Find a better way
-                if ($_POST['submit'] === 'Save and add another') {
-                    return $this->redirectToRoute('claim.poa', [
-                        'claimId' => $request->getAttribute('claimId'),
-                        'system'  => $system,
-                        'id'      => null
-                    ]);
-                }
-
-                return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
+            if ($claim === null) {
+                throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
             }
+
+            //TODO: Find a better way
+            if ($_POST['submit'] === 'Save and add another') {
+                return $this->redirectToRoute('claim.poa', [
+                    'claimId' => $request->getAttribute('claimId'),
+                    'system'  => $system,
+                    'id'      => null
+                ]);
+            }
+
+            return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
@@ -103,12 +96,9 @@ class PoaAction extends AbstractClaimAction
     }
 
     /**
-     * GET/POST edit action
-     *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse|RedirectResponse
-     * @throws Exception
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -153,9 +143,10 @@ class PoaAction extends AbstractClaimAction
      * @param ClaimModel $claim
      * @return AbstractForm
      */
-    public function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
     {
         $session = $request->getAttribute('session');
+
         $form = new Poa([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],

@@ -38,48 +38,45 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                Action\AdminAction::class => Action\AdminAction::class,
-                Action\CaseworkerAction::class => Action\CaseworkerAction::class,
+                //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
                 Action\DownloadAction::class => Action\DownloadAction::class,
-                Action\HomePageAction::class => Action\HomePageAction::class,
-                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
-                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
+                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
+                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
 
-                Service\Date\IDateProvider::class => Service\Date\DateProvider::class,
-                Service\Details\DetailsFormatter::class => Service\Details\DetailsFormatter::class,
+                // Services
+                Service\Claim\Claim::class => Service\Claim\Claim::class,
                 Service\Poa\PoaFormatter::class => Service\Poa\PoaFormatter::class,
-                Service\Claim::class => Service\Claim::class,
+                Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
                 //  Actions
-                Action\SignInAction::class => Action\SignInActionFactory::class,
-                Action\SignOutAction::class => Action\SignOutActionFactory::class,
-                Action\ClaimAction::class => Action\ClaimActionFactory::class,
-                Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
+                Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
+                Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
+                Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
-                Action\Claim\ClaimAcceptAction::class => Action\Claim\ClaimAcceptActionFactory::class,
-                Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
+                Action\SignInAction::class => Action\SignInActionFactory::class,
+                Action\SignOutAction::class => Action\SignOutActionFactory::class,
+                Action\User\UserAction::class => Action\User\UserActionFactory::class,
+                Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
 
                 // Middleware
-                Middleware\Auth\AuthorizationMiddleware::class => Middleware\Auth\AuthorizationMiddlewareFactory::class,
+                Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
-                Service\Auth\AuthAdapter::class => Service\Auth\AuthAdapterFactory::class,
-                AuthenticationService::class => Service\Auth\AuthenticationServiceFactory::class,
+                Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
+                AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
-                Service\Date\DateFormatter::class => Service\Date\DateFormatterFactory::class,
-                Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
-                Service\Date\DateFormatterPlatesExtension::class => Service\Date\DateFormatterPlatesExtensionFactory::class,
-                Service\Details\DetailsFormatterPlatesExtension::class => Service\Details\DetailsFormatterPlatesExtensionFactory::class,
-                Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
-                Service\Poa\PoaFormatterPlatesExtension::class => Service\Poa\PoaFormatterPlatesExtensionFactory::class,
+                View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
+                View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],
             'initializers' => [
                 Action\Initializers\UrlHelperInitializer::class,

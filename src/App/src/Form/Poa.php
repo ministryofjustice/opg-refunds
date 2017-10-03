@@ -7,7 +7,10 @@ use App\Filter\StandardInput as StandardInputFilter;
 use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
-use Zend\Form\Element;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Zend\Form\Element\Hidden;
+use Zend\Form\Element\Radio;
+use Zend\Form\Element\Text;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -17,9 +20,6 @@ use Zend\InputFilter\InputFilter;
  */
 class Poa extends AbstractForm
 {
-    const SYSTEM_SIRIUS = 'sirius';
-    const SYSTEM_MERIS = 'meris';
-
     /**
      * Poa constructor.
      * @param array $options
@@ -34,8 +34,8 @@ class Poa extends AbstractForm
         //  Csrf field
         $this->addCsrfElement($inputFilter);
 
-        //  System field (hidden)
-        $field = new Element\Text('system');
+        //  System field
+        $field = new Hidden('system');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -50,7 +50,7 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Case number field
-        $field = new Element\Text('case-number');
+        $field = new Text('case-number');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -71,7 +71,7 @@ class Poa extends AbstractForm
         $inputFilter->add($receivedDate->getInputFilter(), 'received-date');
 
         //  Original payment amount
-        $field = new Element\Radio('original-payment-amount');
+        $field = new Radio('original-payment-amount');
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -86,8 +86,33 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Validation
+
         //  Attorney details (always present)
-        $field = new Element\Radio('attorney');
+        $this->addVerificationRadio('attorney', $inputFilter);
+
+        if (isset($options['claim'])) {
+            /** @var ClaimModel $claim */
+            $claim = $options['claim'];
+
+            //  Donor postcode
+            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
+                $this->addVerificationRadio('donor-postcode', $inputFilter);
+            }
+
+            //  Attorney postcode
+            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
+                $this->addVerificationRadio('attorney-postcode', $inputFilter);
+            }
+        }
+    }
+
+    /**
+     * @param string $inputName
+     * @param InputFilter $inputFilter
+     */
+    private function addVerificationRadio(string $inputName, InputFilter $inputFilter)
+    {
+        $field = new Radio($inputName);
         $input = new Input($field->getName());
 
         $input->getValidatorChain()->attach(new Validator\NotEmpty);
@@ -99,43 +124,6 @@ class Poa extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
-
-        if (isset($options['claim'])) {
-            /** @var ClaimModel $claim */
-            $claim = $options['claim'];
-
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
-                $field = new Element\Radio('donor-postcode');
-                $input = new Input($field->getName());
-
-                $input->getValidatorChain()->attach(new Validator\NotEmpty);
-
-                $field->setValueOptions([
-                    'yes' => 'yes',
-                    'no' => 'no',
-                ]);
-
-                $this->add($field);
-                $inputFilter->add($input);
-            }
-
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
-                $field = new Element\Radio('attorney-postcode');
-                $input = new Input($field->getName());
-
-                $input->getValidatorChain()->attach(new Validator\NotEmpty);
-
-                $field->setValueOptions([
-                    'yes' => 'yes',
-                    'no' => 'no',
-                ]);
-
-                $this->add($field);
-                $inputFilter->add($input);
-            }
-        }
     }
 
     /**
@@ -160,19 +148,19 @@ class Poa extends AbstractForm
         $verifications = [];
         if (array_key_exists('attorney', $formData)) {
             $verifications[] = [
-                'type'   => 'attorney',
+                'type'   => VerificationModel::TYPE_ATTORNEY,
                 'passes' => $formData['attorney'] === 'yes',
             ];
         }
         if (array_key_exists('donor-postcode', $formData)) {
             $verifications[] = [
-                'type'   => 'donor-postcode',
+                'type'   => VerificationModel::TYPE_DONOR_POSTCODE,
                 'passes' => $formData['donor-postcode'] === 'yes',
             ];
         }
         if (array_key_exists('attorney-postcode', $formData)) {
             $verifications[] = [
-                'type'   => 'attorney-postcode',
+                'type'   => VerificationModel::TYPE_ATTORNEY_POSTCODE,
                 'passes' => $formData['attorney-postcode'] === 'yes',
             ];
         }
@@ -184,7 +172,7 @@ class Poa extends AbstractForm
 
     public function bindModelData(PoaModel $poa)
     {
-        $poaArray = $poa->toArray();
+        $poaArray = $poa->getArrayCopy();
         unset($poaArray['id']);
         unset($poaArray['system']);
         unset($poaArray['verifications']);
@@ -198,7 +186,7 @@ class Poa extends AbstractForm
 
         foreach ($poa->getVerifications() as $verification) {
             //Case number verification is automatic and is not displayed on the page so do not include it
-            if ($verification->getType() !== 'case-number') {
+            if ($verification->getType() !== VerificationModel::TYPE_CASE_NUMBER) {
                 $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
             }
         }

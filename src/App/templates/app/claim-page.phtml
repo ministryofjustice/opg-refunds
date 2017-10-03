@@ -44,7 +44,7 @@ $this->addErrorMap([
             <?php foreach ($this->getSiriusPoas($claim) as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
-                    <td><a href="/claim/<?= $claim->getId() ?>/poa/sirius/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
                     <td><?= $this->getRefundAmountString($poa) ?></td>
                     <td><?= $this->getInterestAmountString($poa) ?></td>
@@ -55,12 +55,12 @@ $this->addErrorMap([
         </table>
     <?php } ?>
 
-    <form method="post" class="form" action="<?= $poaSiriusNoneFoundUrl ?>">
+    <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'sirius']) ?>">
         <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
         <?php if ($claim->isNoSiriusPoas()) { ?>
             <input class="button" type="submit" value="Cancel and return to add Sirius POA">
         <?php } else { ?>
-            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/sirius">Add Sirius POA</a>
+            <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius']) ?>">Add Sirius POA</a>
             <?php if (!$this->hasSiriusPoas($claim)) { ?>
                 <input class="button-secondary" type="submit" value="I cannot find any Sirius POAs">
             <?php } ?>
@@ -86,7 +86,7 @@ $this->addErrorMap([
             <?php foreach ($this->getMerisPoas($claim) as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
-                    <td><a href="/claim/<?= $claim->getId() ?>/poa/meris/<?= $poa->getId() ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
                     <td><?= $this->getRefundAmountString($poa) ?></td>
                     <td><?= $this->getInterestAmountString($poa) ?></td>
@@ -97,12 +97,12 @@ $this->addErrorMap([
         </table>
     <?php } ?>
 
-    <form method="post" class="form" action="<?= $poaMerisNoneFoundUrl ?>">
+    <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'meris']) ?>">
         <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
         <?php if ($claim->isNoMerisPoas()) { ?>
             <input class="button" type="submit" value="Cancel and return to add Meris POA">
         <?php } else { ?>
-            <a class="button" href="/claim/<?= $claim->getId() ?>/poa/meris">Add Meris POA</a>
+            <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris']) ?>">Add Meris POA</a>
             <?php if (!$this->hasMerisPoas($claim)) { ?>
                 <input class="button-secondary" type="submit" value="I cannot find any Meris POAs">
             <?php } ?>

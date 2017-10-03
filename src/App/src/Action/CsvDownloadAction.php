@@ -29,7 +29,8 @@ class CsvDownloadAction extends AbstractAction implements ApiClientInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $applications = $this->getApiClient()->getApplications();
+        //  TODO - If keeping this action then move logic below into a dedicated service
+        $applications = $this->getApiClient()->httpGet('/dev/applications');
 
         $csvResource = fopen('php://output', 'w');
         foreach ($applications as $idx => $application) {
