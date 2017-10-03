@@ -27,12 +27,12 @@ class ClaimRejectAction extends AbstractClaimAction
     /**
      * ClaimRejectAction constructor
      * @param ClaimService $claimService
-     * @param PoaFormatterService $poaFormatterService
+     * @param PoaFormatterService $poaService
      */
-    public function __construct(ClaimService $claimService, PoaFormatterService $poaFormatterService)
+    public function __construct(ClaimService $claimService, PoaFormatterService $poaService)
     {
         parent::__construct($claimService);
-        $this->poaFormatterService = $poaFormatterService;
+        $this->poaFormatterService = $poaService;
     }
 
     /**

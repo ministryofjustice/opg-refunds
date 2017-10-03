@@ -49,6 +49,7 @@ class ConfigProvider
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
                 Service\Date\IDate::class => Service\Date\Date::class,
+                Service\Poa\Poa::class => Service\Poa\Poa::class,
                 Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [

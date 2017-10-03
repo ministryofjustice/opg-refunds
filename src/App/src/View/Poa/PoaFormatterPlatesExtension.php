@@ -2,6 +2,7 @@
 
 namespace App\View\Poa;
 
+use App\Service\Poa\Poa as PoaService;
 use App\Service\Refund\Refund as RefundService;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -12,53 +13,39 @@ use League\Plates\Extension\ExtensionInterface;
 class PoaFormatterPlatesExtension implements ExtensionInterface
 {
     /**
+     * @var PoaService
+     */
+    private $poaService;
+
+    /**
      * @var RefundService
      */
     private $refundService;
 
-    public function __construct(RefundService $refundService)
+    public function __construct(PoaService $poaService, RefundService $refundService)
     {
+        $this->poaService = $poaService;
         $this->refundService = $refundService;
     }
 
     public function register(Engine $engine)
     {
-        $engine->registerFunction('hasSiriusPoas', [$this, 'hasSiriusPoas']);
-        $engine->registerFunction('hasMerisPoas', [$this, 'hasMerisPoas']);
-        $engine->registerFunction('getSiriusPoas', [$this, 'getSiriusPoas']);
-        $engine->registerFunction('getMerisPoas', [$this, 'getMerisPoas']);
+        $engine->registerFunction('hasSiriusPoas', [$this->poaService, 'hasSiriusPoas']);
+        $engine->registerFunction('hasMerisPoas', [$this->poaService, 'hasMerisPoas']);
+        $engine->registerFunction('getSiriusPoas', [$this->poaService, 'getSiriusPoas']);
+        $engine->registerFunction('getMerisPoas', [$this->poaService, 'getMerisPoas']);
         $engine->registerFunction('getFormattedCaseNumber', [$this, 'getFormattedCaseNumber']);
         $engine->registerFunction('getOriginalPaymentAmountString', [$this, 'getOriginalPaymentAmountString']);
         $engine->registerFunction('getRefundAmountString', [$this, 'getRefundAmountString']);
         $engine->registerFunction('getInterestAmountString', [$this, 'getInterestAmountString']);
         $engine->registerFunction('getRefundTotalAmountString', [$this, 'getRefundTotalAmountString']);
         $engine->registerFunction('getFormattedVerificationMatches', [$this, 'getFormattedVerificationMatches']);
-        $engine->registerFunction('isAttorneyVerified', [$this, 'isAttorneyVerified']);
-        $engine->registerFunction('isCaseNumberVerified', [$this, 'isCaseNumberVerified']);
-        $engine->registerFunction('isDonorPostcodeVerified', [$this, 'isDonorPostcodeVerified']);
-        $engine->registerFunction('isAttorneyPostcodeVerified', [$this, 'isAttorneyPostcodeVerified']);
-        $engine->registerFunction('isClaimVerified', [$this, 'isClaimVerified']);
-        $engine->registerFunction('isClaimComplete', [$this, 'isClaimComplete']);
-    }
-
-    public function hasSiriusPoas(ClaimModel $claim)
-    {
-        return $this->hasSystemPoas($claim, PoaModel::SYSTEM_SIRIUS);
-    }
-
-    public function hasMerisPoas(ClaimModel $claim)
-    {
-        return $this->hasSystemPoas($claim, PoaModel::SYSTEM_MERIS);
-    }
-
-    public function getSiriusPoas(ClaimModel $claim)
-    {
-        return $this->getSystemPoas($claim, PoaModel::SYSTEM_SIRIUS);
-    }
-
-    public function getMerisPoas(ClaimModel $claim)
-    {
-        return $this->getSystemPoas($claim, PoaModel::SYSTEM_MERIS);
+        $engine->registerFunction('isAttorneyVerified', [$this->poaService, 'isAttorneyVerified']);
+        $engine->registerFunction('isCaseNumberVerified', [$this->poaService, 'isCaseNumberVerified']);
+        $engine->registerFunction('isDonorPostcodeVerified', [$this->poaService, 'isDonorPostcodeVerified']);
+        $engine->registerFunction('isAttorneyPostcodeVerified', [$this->poaService, 'isAttorneyPostcodeVerified']);
+        $engine->registerFunction('isClaimVerified', [$this->poaService, 'isClaimVerified']);
+        $engine->registerFunction('isClaimComplete', [$this->poaService, 'isClaimComplete']);
     }
 
     public function getFormattedCaseNumber(PoaModel $poa)
@@ -109,50 +96,6 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         return money_format('£%i', $this->refundService->getRefundTotalAmount($claim));
     }
 
-    public function isAttorneyVerified(ClaimModel $claim): bool
-    {
-        return $this->isVerified($claim, VerificationModel::TYPE_ATTORNEY);
-    }
-
-    public function isCaseNumberVerified(ClaimModel $claim): bool
-    {
-        return $this->isVerified($claim, VerificationModel::TYPE_CASE_NUMBER);
-    }
-
-    public function isDonorPostcodeVerified(ClaimModel $claim): bool
-    {
-        return $this->isVerified($claim, VerificationModel::TYPE_DONOR_POSTCODE);
-    }
-
-    public function isAttorneyPostcodeVerified(ClaimModel $claim): bool
-    {
-        return $this->isVerified($claim, VerificationModel::TYPE_ATTORNEY_POSTCODE);
-    }
-
-    public function isClaimVerified(ClaimModel $claim)
-    {
-        $verificationCount = 0;
-
-        if ($this->isAttorneyVerified($claim)) {
-            //Means that both the attorney's name and dob have been verified so counts for 2
-            $verificationCount+=2;
-        }
-
-        if ($this->isCaseNumberVerified($claim)) {
-            $verificationCount++;
-        }
-
-        if ($this->isDonorPostcodeVerified($claim)) {
-            $verificationCount++;
-        }
-
-        if ($this->isAttorneyPostcodeVerified($claim)) {
-            $verificationCount++;
-        }
-
-        return $verificationCount >= 3;
-    }
-
     public function getFormattedVerificationMatches(PoaModel $poa)
     {
         $verificationStrings = [];
@@ -170,46 +113,6 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         return join('<br/>', $verificationStrings);
     }
 
-    public function isClaimComplete(ClaimModel $claim)
-    {
-        return ($claim->isNoSiriusPoas() || $this->hasSiriusPoas($claim))
-            && ($claim->isNoMerisPoas() || $this->hasMerisPoas($claim));
-    }
-
-
-
-    private function hasSystemPoas(ClaimModel $claim, string $system)
-    {
-        if ($claim->getPoas() === null) {
-            return false;
-        }
-
-        foreach ($claim->getPoas() as $poa) {
-            if ($poa->getSystem() === $system) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private function getSystemPoas(ClaimModel $claim, string $system)
-    {
-        $poas = [];
-
-        if ($claim->getPoas() === null) {
-            return $poas;
-        }
-
-        foreach ($claim->getPoas() as $poa) {
-            if ($poa->getSystem() === $system) {
-                $poas[] = $poa;
-            }
-        }
-
-        return $poas;
-    }
-
     private function getFormattedVerificationMatch(VerificationModel $verification)
     {
         switch ($verification->getType()) {
@@ -224,22 +127,5 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             default:
                 return '';
         }
-    }
-
-    private function isVerified(ClaimModel $claim, string $verificationType): bool
-    {
-        if ($claim->getPoas() === null) {
-            return false;
-        }
-
-        foreach ($claim->getPoas() as $poa) {
-            foreach ($poa->getVerifications() as $verification) {
-                if ($verification->getType() === $verificationType && $verification->isPasses()) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 }
