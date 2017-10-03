@@ -1,3 +1,7 @@
-<?php $this->layout('layout::standard', ['title'=>'You can’t claim a refund']) ?>
+<?php $this->layout('layout::standard', ['title'=>'You can\'t claim a refund']) ?>
 
 <p>Refunds are only for fees paid between April 2013 and March 2017.</p>
+
+<a class="link-back" href="<?= $this->url('eligibility.when') ?>">Back</a>
+
+<?php $this->insert('snippet::refunds-helpline');?>
