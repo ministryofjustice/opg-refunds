@@ -54,8 +54,8 @@ return [
             'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '123450000',
             'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '0',
             'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '12345678',
-            'completer_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'completer@localhost.com',
-            'approver_id' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: 'approver@localhost.com',
+            'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: 'completer@localhost.com',
+            'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: 'approver@localhost.com',
         ]
     ],
 

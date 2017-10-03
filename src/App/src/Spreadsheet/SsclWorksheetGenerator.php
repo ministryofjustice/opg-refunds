@@ -30,7 +30,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
         foreach ($claims as $idx => $claim) {
             $rowIndex = $idx + 3;
             $donorCurrent = $claim->getApplication()->getDonor()->getCurrent();
-            $addressArray = $donorCurrent->getAddress()->toArray();
+            $addressArray = $donorCurrent->getAddress()->getArrayCopy();
             unset($addressArray['address-postcode']);
             $account = $claim->getApplication()->getAccount();
             $payment = $claim->getPayment();
@@ -44,7 +44,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             //Unique Payee Reference
             $cells[] = new SpreadsheetCell(4, $rowIndex, $claim->getReferenceNumber());
             //Payee Name
-            $cells[] = new SpreadsheetCell(5, $rowIndex, join(' ', $donorCurrent->getName()->toArray()));
+            $cells[] = new SpreadsheetCell(5, $rowIndex, join(' ', $donorCurrent->getName()->getArrayCopy()));
             //Payee Address (use commas to separate)
             $cells[] = new SpreadsheetCell(6, $rowIndex, join(', ', array_filter($addressArray)));
             //Payee Postcode
