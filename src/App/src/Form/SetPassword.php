@@ -2,9 +2,8 @@
 
 namespace App\Form;
 
-use App\Validator;
+use App\Validator\NotEmpty;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Filter;
 use Zend\Form\Element\Password;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -37,11 +36,15 @@ class SetPassword extends AbstractForm
         $input->getFilterChain()
               ->attach(new StandardInputFilter);
 
-        $identicalValidator = new Identical('confirm-password');
-
         $input->getValidatorChain()
-              ->attach(new Validator\NotEmpty())
-              ->attach($identicalValidator);
+              ->attach(new NotEmpty(), true)
+              ->attach(new Validator\Password())
+              ->attach(new Identical([
+                  'token' => 'confirm-password',
+                  'messages' => [
+                      Identical::NOT_SAME => 'password-mismatch',
+                  ],
+              ]));
 
         $input->setRequired(true);
 
@@ -53,11 +56,10 @@ class SetPassword extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-              ->attach(new StandardInputFilter)
-              ->attach(new Filter\StringToLower);
+              ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-              ->attach(new Validator\NotEmpty());
+              ->attach(new NotEmpty());
 
         $input->setRequired(true);
 
