@@ -31,6 +31,7 @@
     <div class="column-full">
         <p>
             <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
+            <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
             <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
         </p>
     </div>
