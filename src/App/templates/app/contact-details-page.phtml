@@ -63,7 +63,7 @@ $this->addErrorMap([
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('email'),
                     'formLabel' => 'Email address',
-                    'formType' => 'text',
+                    'formType' => 'email',
                     'formLabelBold' => true
                 ])
             ],
@@ -72,7 +72,7 @@ $this->addErrorMap([
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('phone'),
                     'formLabel' => 'Phone number',
-                    'formType' => 'text',
+                    'formType' => 'tel',
                     'formLabelBold' => true
                 ])
             ]
