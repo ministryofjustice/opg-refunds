@@ -2,6 +2,7 @@
 
 namespace App\Action\User;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Action\AbstractModelAction;
 use App\Form\User;
 use App\Service\User\User as UserService;
@@ -23,12 +24,18 @@ class UserUpdateAction extends AbstractModelAction
     protected $userService;
 
     /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
      * UserUpdateAction constructor.
      * @param UserService $userService
      */
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, NotifyClient $notifyClient)
     {
         $this->userService = $userService;
+        $this->notifyClient = $notifyClient;
     }
 
     /**
@@ -74,6 +81,17 @@ class UserUpdateAction extends AbstractModelAction
 
             try {
                 $user = $this->userService->createUser($user);
+
+                /** @var UserModel $sessionUser */
+                $sessionUser = $request->getAttribute('identity');
+
+                //  Send the set password email to the new user
+                $this->notifyClient->sendEmail($user->getEmail(), 'e5bc1a56-a630-4d12-b71d-e7e2c223f96b', [
+                    'creator-name'     => $sessionUser->getName(),
+                    'set-password-url' => $this->getUrlHelper()->generate('password.set', [
+                        'token' => $user->getToken(),
+                    ]),
+                ]);
 
                 return $this->redirectToRoute('user', ['id' => $user->getId()]);
             } catch (Exception $ex) {

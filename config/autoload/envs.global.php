@@ -6,6 +6,12 @@ return [
 
     'api_base_uri' => 'https://' . (getenv('API_HOSTNAME') ?: 'api'),
 
+    'notify' => [
+        'api' => [
+            'key' => getenv('OPG_REFUNDS_NOTIFY_API_KEY') ?: null,
+        ],
+    ],
+
     'session' => [
 
         // ini session.* settings...

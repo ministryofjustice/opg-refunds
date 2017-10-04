@@ -4,8 +4,60 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c47df1449e5a8d8f4ce834b70682b5d",
+    "content-hash": "ac999f39210c2b6518311425ab0af77f",
     "packages": [
+        {
+            "name": "alphagov/notifications-php-client",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/alphagov/notifications-php-client.git",
+                "reference": "cae2548d8e1db11fe552c8f4416275baeba1e424"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/alphagov/notifications-php-client/zipball/cae2548d8e1db11fe552c8f4416275baeba1e424",
+                "reference": "cae2548d8e1db11fe552c8f4416275baeba1e424",
+                "shasum": ""
+            },
+            "require": {
+                "firebase/php-jwt": "^3.0",
+                "guzzlehttp/psr7": "^1.2",
+                "php": ">=5.4",
+                "php-http/client-implementation": "^1.0",
+                "php-http/httplug": "^1.0",
+                "psr/http-message": "^1.0"
+            },
+            "require-dev": {
+                "php-http/curl-client": "*",
+                "php-http/guzzle6-adapter": "*",
+                "php-http/message": "^1.1",
+                "php-http/mock-client": "*",
+                "php-http/socket-client": "*",
+                "phpspec/phpspec": "^2.0"
+            },
+            "suggest": {
+                "ext-curl": "To send requests using cURL"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Alphagov\\Notifications\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Neil Smith",
+                    "email": "neil@nsmith.net"
+                }
+            ],
+            "description": "PHP client for GOV.UK Notifications",
+            "time": "2017-05-24T10:02:18+00:00"
+        },
         {
             "name": "aws/aws-sdk-php",
             "version": "3.36.18",
@@ -218,6 +270,49 @@
                 "response"
             ],
             "time": "2017-02-09T16:10:21+00:00"
+        },
+        {
+            "name": "firebase/php-jwt",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "reference": "fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "time": "2015-07-22T18:31:08+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -509,16 +604,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "dev-REF-94-password_creation",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "9460de6669f821ab361641cf48f0ae4153c919af"
+                "reference": "4fcb6907e436ed955f45e1dff09f90cc2a93ae69"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9460de6669f821ab361641cf48f0ae4153c919af",
-                "reference": "9460de6669f821ab361641cf48f0ae4153c919af",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/4fcb6907e436ed955f45e1dff09f90cc2a93ae69",
+                "reference": "4fcb6907e436ed955f45e1dff09f90cc2a93ae69",
                 "shasum": ""
             },
             "require": {
@@ -538,10 +633,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-94-password_creation",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-10-03 17:35:40"
+            "time": "2017-10-04 09:36:07"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",

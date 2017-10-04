@@ -72,6 +72,7 @@ class ConfigProvider
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
 
                 // Services
+                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 Service\Refund\Refund::class => Service\Refund\RefundFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
