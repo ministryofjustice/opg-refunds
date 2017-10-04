@@ -70,6 +70,7 @@ class ConfigProvider
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+                Middleware\ViewData\ViewDataMiddleware::class => Middleware\ViewData\ViewDataMiddlewareFactory::class,
 
                 // Services
                 \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
