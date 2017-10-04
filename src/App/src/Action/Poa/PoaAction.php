@@ -149,6 +149,7 @@ class PoaAction extends AbstractPoaAction
 
         $form = new Poa([
             'claim'  => $claim,
+            'system' => $request->getAttribute('system'),
             'csrf'   => $session['meta']['csrf'],
         ]);
 

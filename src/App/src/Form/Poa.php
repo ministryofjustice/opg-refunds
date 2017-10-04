@@ -56,8 +56,19 @@ class Poa extends AbstractForm
         $input->getFilterChain()
             ->attach(new StandardInputFilter);
 
+        $caseNumberPattern = '';
+        switch ($options['system']) {
+            case PoaModel::SYSTEM_SIRIUS:
+                $caseNumberPattern = '/^\d{4}-?\d{4}-?\d{4}$/';
+                break;
+            case PoaModel::SYSTEM_MERIS:
+                $caseNumberPattern = '/^\d{7}(\/\d{1,2})?$/';
+                break;
+        }
+
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
+            ->attach(new Validator\NotEmpty())
+            ->attach(new Validator\Regex($caseNumberPattern));
 
         $input->setRequired(true);
 
@@ -134,6 +145,8 @@ class Poa extends AbstractForm
     public function getModelData()
     {
         $formData = $this->getData();
+
+        $formData['case-number'] = str_replace('-', '', $formData['case-number']);
 
         //  If it exists transfer the received date array into a string
         if (array_key_exists('received-date', $formData)) {
