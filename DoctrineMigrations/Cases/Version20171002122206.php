@@ -36,7 +36,8 @@ class Version20171002122206 extends AbstractMigration
         //  Create admin user
         $adminName = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_NAME');
         $adminUsername = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME');
-        $adminPasswordHash = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD_HASH');
+        $adminPassword = getenv('OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD');
+        $adminPasswordHash = password_hash($adminPassword, PASSWORD_DEFAULT);
         $this->addSql("INSERT INTO \"user\" (name, email, password_hash, status, roles) VALUES ('$adminName', '$adminUsername', '$adminPasswordHash', 'active', 'RefundManager,Caseworker,Reporting,Admin')");
     }
 
