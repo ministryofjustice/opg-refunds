@@ -32,7 +32,7 @@ class CsvDownloadAction extends AbstractAction implements ApiClientInterface
         //  TODO - If keeping this action then move logic below into a dedicated service
         $applications = $this->getApiClient()->httpGet('/dev/applications');
 
-        $csvResource = fopen('php://output', 'w');
+        $csvResource = fopen('php://temp', 'w');
         foreach ($applications as $idx => $application) {
             $flattened = array_intersect_key($application, [
                 'id' => 0,
@@ -122,7 +122,6 @@ class CsvDownloadAction extends AbstractAction implements ApiClientInterface
             ->withHeader('Pragma', 'public')
             ->withHeader('Expires', '0')
             ->withHeader('Cache-Control', 'must-revalidate')
-            ->withBody($stream)
-            ->withHeader('Content-Length', "{$stream->getSize()}");
+            ->withBody($stream);
     }
 }
