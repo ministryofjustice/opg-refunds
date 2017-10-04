@@ -1,5 +1,7 @@
 <?php
 
+use Zend\Log\Logger;
+
 return [
 
     'token_ttl' => 60 * 60 * 1, //  1 hour
@@ -45,7 +47,30 @@ return [
 
     'spreadsheet' => [
         'source_folder' => __DIR__.'/../../assets',
-        'temp_folder' => '/tmp'
-    ]
+        'temp_folder' => '/tmp',
+        'sscl' => [
+            'entity' => getenv('OPG_REFUNDS_SSCL_ENTITY') ?: '0123',
+            'cost_centre' => getenv('OPG_REFUNDS_SSCL_COST_CENTRE') ?: '99999999',
+            'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '123450000',
+            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '0',
+            'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '12345678',
+            'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: 'completer@localhost.com',
+            'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: 'approver@localhost.com',
+        ]
+    ],
+
+
+    'log' => [
+
+        'logstash' => [
+            'path' => '/var/log/app/application.log',
+        ],
+
+        'priorities' => [
+            // The priority we class 500 exceptions as
+            '500' => Logger::CRIT,
+        ],
+
+    ], // log
 
 ];

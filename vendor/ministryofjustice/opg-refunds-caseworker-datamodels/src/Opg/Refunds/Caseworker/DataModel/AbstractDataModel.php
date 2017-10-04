@@ -95,7 +95,7 @@ abstract class AbstractDataModel
      * @param array $excludeFilter
      * @return array
      */
-    public function toArray(array $excludeFilter = [])
+    public function getArrayCopy(array $excludeFilter = [])
     {
         $objectValues = get_object_vars($this);
 
@@ -117,11 +117,13 @@ abstract class AbstractDataModel
                 if (is_array($varValue)) {
                     foreach ($varValue as $thisVarValueKey => $thisVarValue) {
                         if ($thisVarValue instanceof AbstractDataModel) {
-                            $values[$varName][$thisVarValueKey] = $thisVarValue->toArray();
+                            $thisVarValue = $thisVarValue->getArrayCopy();
                         }
+
+                        $values[$varName][$thisVarValueKey] = $thisVarValue;
                     }
                 } elseif ($varValue instanceof AbstractDataModel) {
-                    $values[$varName] = $varValue->toArray();
+                    $values[$varName] = $varValue->getArrayCopy();
                 }
             }
         }

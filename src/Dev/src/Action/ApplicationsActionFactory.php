@@ -65,6 +65,8 @@ class ApplicationsActionFactory
 
         //---
 
-        return new ApplicationsAction($db, $rsa, $hybrid);
+        $casesEntityManager = $container->get('doctrine.entity_manager.orm_cases');
+
+        return new ApplicationsAction($db, $casesEntityManager, $rsa, $hybrid);
     }
 }

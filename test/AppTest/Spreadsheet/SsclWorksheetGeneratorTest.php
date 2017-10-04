@@ -3,6 +3,9 @@
 namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Current;
+use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
+use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
@@ -11,10 +14,24 @@ use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
 use AppTest\DataModel\Cases\ClaimBuilder;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\Common\Address;
+use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PHPUnit\Framework\TestCase;
 
 class SsclWorksheetGeneratorTest extends TestCase
 {
+    /**
+     * @var array
+     */
+    private $ssclConfig = [
+        'entity' => '0123',
+        'cost_centre' => '99999999',
+        'account' => '123450000',
+        'objective' => '0',
+        'analysis' => '12345678',
+        'completer_id' => 'completer@localhost.com',
+        'approver_id' => 'approver@localhost.com',
+    ];
     /**
      * @var ISpreadsheetWorksheetGenerator
      */
@@ -37,9 +54,23 @@ class SsclWorksheetGeneratorTest extends TestCase
 
     public function setUp()
     {
-        $this->generator = new SsclWorksheetGenerator();
+        $this->generator = new SsclWorksheetGenerator($this->ssclConfig);
         $this->claimBuilder = new ClaimBuilder();
         $this->applicationBuilder = new ApplicationBuilder();
+
+        $donor = new Donor();
+        $name = new Name();
+        $name->setTitle('Ms')
+             ->setFirst('Test')
+             ->setLast('Donor');
+        $address = new Address();
+        $address->setAddress1('10 Test Road')
+                ->setAddress2('Testington')
+                ->setAddressPostcode('TS1 1ON');
+        $current = new CurrentWithAddress();
+        $current->setName($name);
+        $current->setAddress($address);
+        $donor->setCurrent($current);
 
         $account = new Account();
         $account
@@ -47,7 +78,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             ->setAccountNumber('12345678')
             ->setSortCode('112233');
 
-        $application = $this->applicationBuilder->withAccount($account)->build();
+        $application = $this->applicationBuilder->withDonor($donor)->withAccount($account)->build();
 
         $payment = new Payment();
         $payment->setAmount(45);
@@ -116,15 +147,15 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Payee Name
             $this->assertEquals(5, $cells[3]->getColumn());
-            $this->assertEquals($account->getName(), $cells[3]->getData());
+            $this->assertEquals('Ms Test Donor', $cells[3]->getData());
 
             //Payee Address (use commas to separate)
             $this->assertEquals(6, $cells[4]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[4]->getData());
+            $this->assertEquals('10 Test Road, Testington', $cells[4]->getData());
 
             //Payee Postcode
             $this->assertEquals(7, $cells[5]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[5]->getData());
+            $this->assertEquals('TS1 1ON', $cells[5]->getData());
 
             //Payment Method
             $this->assertEquals(10, $cells[6]->getColumn());
@@ -138,9 +169,9 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(12, $cells[8]->getColumn());
             $this->assertEquals($account->getAccountNumber(), $cells[8]->getData());
 
-            //Name of Bank
+            //Name of Bank - Not required by SSCL (Georgia confirmed on 21/09/2017)
             $this->assertEquals(13, $cells[9]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[9]->getData());
+            $this->assertEquals('', $cells[9]->getData());
 
             //Account Name
             $this->assertEquals(14, $cells[10]->getColumn());
@@ -154,33 +185,33 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(16, $cells[12]->getColumn());
             $this->assertEquals((new DateTime('today'))->format('d/m/Y'), $cells[12]->getData());
 
-            //Invoice Number
+            //Invoice Number - Not required by SSCL (Georgia confirmed on 21/09/2017)
             $this->assertEquals(17, $cells[13]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[13]->getData());
+            $this->assertEquals('', $cells[13]->getData());
 
             //Description
             $this->assertEquals(18, $cells[14]->getColumn());
             $this->assertEquals('Lasting Power of Attorney', $cells[14]->getData());
 
-            //Entity
+            //Entity - From config
             $this->assertEquals(19, $cells[15]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[15]->getData());
+            $this->assertEquals('0123', $cells[15]->getData());
 
-            //Cost Centre
+            //Cost Centre - From config
             $this->assertEquals(20, $cells[16]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[16]->getData());
+            $this->assertEquals('99999999', $cells[16]->getData());
 
-            //Account
+            //Account - From config
             $this->assertEquals(21, $cells[17]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[17]->getData());
+            $this->assertEquals('123450000', $cells[17]->getData());
 
-            //Objective
+            //Objective - From config
             $this->assertEquals(22, $cells[18]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[18]->getData());
+            $this->assertEquals('0', $cells[18]->getData());
 
-            //Analysis
+            //Analysis - From config
             $this->assertEquals(23, $cells[19]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[19]->getData());
+            $this->assertEquals('12345678', $cells[19]->getData());
 
             //VAT Rate
             $this->assertEquals(24, $cells[20]->getColumn());
@@ -198,13 +229,13 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(28, $cells[23]->getColumn());
             $this->assertEquals($payment->getAmount(), $cells[23]->getData());
 
-            //Completer ID
+            //Completer ID - From config
             $this->assertEquals(29, $cells[24]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[24]->getData());
+            $this->assertEquals('completer@localhost.com', $cells[24]->getData());
 
-            //Approver ID
+            //Approver ID - From config
             $this->assertEquals(30, $cells[25]->getColumn());
-            $this->assertEquals('UNDEFINED', $cells[25]->getData());
+            $this->assertEquals('approver@localhost.com', $cells[25]->getData());
         }
     }
 }

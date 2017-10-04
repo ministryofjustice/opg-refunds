@@ -8,7 +8,6 @@ use App\Entity\Sirius\Poa as SiriusPoa;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -16,7 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * Class PingAction
  * @package App\Action
  */
-class PingAction implements ServerMiddlewareInterface
+class PingAction extends AbstractRestfulAction
 {
     /**
      * @var EntityManager
@@ -28,13 +27,24 @@ class PingAction implements ServerMiddlewareInterface
      */
     private $siriusEntityManager;
 
+    /**
+     * PingAction constructor
+     *
+     * @param EntityManager $claimsEntityManager
+     * @param EntityManager $siriusEntityManager
+     */
     public function __construct(EntityManager $claimsEntityManager, EntityManager $siriusEntityManager)
     {
         $this->claimsEntityManager = $claimsEntityManager;
         $this->siriusEntityManager = $siriusEntityManager;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return JsonResponse
+     */
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claimDbConnectionSuccessful = false;
         $foundUser = false;

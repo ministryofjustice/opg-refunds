@@ -23,6 +23,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
+            'doctrine'     => include __DIR__ . '/../config/doctrine.php',
         ];
     }
 
@@ -37,9 +38,17 @@ class ConfigProvider
             'invokables' => [
             ],
             'factories'  => [
+                'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
+                'doctrine.entity_manager.orm_cases_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases_migration'],
+                'doctrine.entity_manager.orm_sirius' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius'],
+                'doctrine.entity_manager.orm_sirius_migration' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_sirius_migration'],
+
                 //  Actions
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\ClaimLogAction::class => Action\ClaimLogActionFactory::class,
+                Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
+                Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
 

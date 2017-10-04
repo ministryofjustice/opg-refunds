@@ -12,21 +12,21 @@ class ContactTest extends AbstractDataModelTestCase
         $model = new Contact();
 
         $model->setEmail('monica@friends.com')
-              ->setMobile('07712 123456');
+              ->setPhone('07712 123456');
 
         $this->assertEquals('monica@friends.com', $model->getEmail());
-        $this->assertEquals('07712 123456', $model->getMobile());
+        $this->assertEquals('07712 123456', $model->getPhone());
     }
 
-    public function testPopulateAndToArray()
+    public function testPopulateAndGetArrayCopy()
     {
         $data = [
             'email'  => 'monica@friends.com',
-            'mobile' => '07712 123456',
+            'phone' => '07712 123456',
         ];
 
         $model = new Contact($data);
 
-        $this->assertSame($data, $model->toArray());
+        $this->assertSame($data, $model->getArrayCopy());
     }
 }

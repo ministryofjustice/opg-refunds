@@ -65,7 +65,7 @@ class Authentication
             'email' => $email,
         ]);
 
-        if (is_null($user) || $user->getPasswordHash() != hash('sha256', $password)) {
+        if (is_null($user) || !password_verify($password, $user->getPasswordHash())) {
             throw new InvalidInputException('User not found');
         }
 
@@ -106,6 +106,10 @@ class Authentication
         $user = $this->repository->findOneBy([
             'token' => $token,
         ]);
+
+        if (is_null($user)) {
+            throw new UnauthorizedException('Bad token');
+        }
 
         //  Confirm that the user is active
         if ($user->getStatus() !== User::STATUS_ACTIVE) {

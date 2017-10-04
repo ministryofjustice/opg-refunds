@@ -3,6 +3,8 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\Collection;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,6 +14,13 @@ use Doctrine\ORM\Mapping as ORM;
 class Poa extends AbstractEntity
 {
     /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = PoaModel::class;
+
+    /**
      * @var int
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -20,35 +29,50 @@ class Poa extends AbstractEntity
     protected $id;
 
     /**
-     * @var DateTime
-     * @ORM\Column(name="received_datetime", type="datetimetz")
-     */
-    protected $receivedDateTime;
-
-    /**
-     * @var float
-     * @ORM\Column(name="net_amount_paid", type="decimal")
-     */
-    protected $netAmountPaid;
-
-    /**
      * @var string
      * @ORM\Column(type="string")
      */
-    protected $status;
+    protected $system;
 
     /**
-     * @var float
-     * @ORM\Column(name="amount_to_refund", type="decimal")
+     * @var string
+     * @ORM\Column(name="case_number", type="string")
      */
-    protected $amountToRefund;
+    protected $caseNumber;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(name="received_date", type="date")
+     */
+    protected $receivedDate;
+
+    /**
+     * @var string
+     * @ORM\Column(name="original_payment_amount", type="string")
+     */
+    protected $originalPaymentAmount;
 
     /**
      * @var Claim
-     * @ORM\ManyToOne(targetEntity="Claim", inversedBy="poas")
+     * @ORM\ManyToOne(targetEntity="Claim")
      * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
     protected $claim;
+
+    /**
+     * @var Collection|Verification[]
+     * @ORM\OneToMany(targetEntity="Verification", mappedBy="poa", cascade={"persist", "remove"})
+     */
+    protected $verifications;
+
+    public function __construct(string $system, string $caseNumber, DateTime $receivedDate, string $originalPaymentAmount, Claim $claim)
+    {
+        $this->system = $system;
+        $this->caseNumber = $caseNumber;
+        $this->receivedDate = $receivedDate;
+        $this->originalPaymentAmount = $originalPaymentAmount;
+        $this->claim = $claim;
+    }
 
     /**
      * @return int
@@ -59,67 +83,67 @@ class Poa extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return string
      */
-    public function getReceivedDateTime(): DateTime
+    public function getSystem(): string
     {
-        return $this->receivedDateTime;
+        return $this->system;
     }
 
     /**
-     * @param DateTime $receivedDateTime
+     * @param string $system
      */
-    public function setReceivedDateTime(DateTime $receivedDateTime)
+    public function setSystem(string $system)
     {
-        $this->receivedDateTime = $receivedDateTime;
-    }
-
-    /**
-     * @return float
-     */
-    public function getNetAmountPaid(): float
-    {
-        return $this->netAmountPaid;
-    }
-
-    /**
-     * @param float $netAmountPaid
-     */
-    public function setNetAmountPaid(float $netAmountPaid)
-    {
-        $this->netAmountPaid = $netAmountPaid;
+        $this->system = $system;
     }
 
     /**
      * @return string
      */
-    public function getStatus(): string
+    public function getCaseNumber(): string
     {
-        return $this->status;
+        return $this->caseNumber;
     }
 
     /**
-     * @param string $status
+     * @param string $caseNumber
      */
-    public function setStatus(string $status)
+    public function setCaseNumber(string $caseNumber)
     {
-        $this->status = $status;
+        $this->caseNumber = $caseNumber;
     }
 
     /**
-     * @return float
+     * @return DateTime
      */
-    public function getAmountToRefund(): float
+    public function getReceivedDate(): DateTime
     {
-        return $this->amountToRefund;
+        return $this->receivedDate;
     }
 
     /**
-     * @param float $amountToRefund
+     * @param DateTime $receivedDate
      */
-    public function setAmountToRefund(float $amountToRefund)
+    public function setReceivedDate(DateTime $receivedDate)
     {
-        $this->amountToRefund = $amountToRefund;
+        $this->receivedDate = $receivedDate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalPaymentAmount(): string
+    {
+        return $this->originalPaymentAmount;
+    }
+
+    /**
+     * @param string $originalPaymentAmount
+     */
+    public function setOriginalPaymentAmount(string $originalPaymentAmount)
+    {
+        $this->originalPaymentAmount = $originalPaymentAmount;
     }
 
     /**
@@ -136,5 +160,21 @@ class Poa extends AbstractEntity
     public function setClaim(Claim $claim)
     {
         $this->claim = $claim;
+    }
+
+    /**
+     * @return Collection|Verification[]
+     */
+    public function getVerifications()
+    {
+        return $this->verifications;
+    }
+
+    /**
+     * @param Collection|Verification[] $verifications
+     */
+    public function setVerifications($verifications)
+    {
+        $this->verifications = $verifications;
     }
 }

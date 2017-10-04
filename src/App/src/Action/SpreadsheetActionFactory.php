@@ -24,7 +24,7 @@ class SpreadsheetActionFactory
         $sourceFolder = $config['spreadsheet']['source_folder'];
         $tempFolder = $config['spreadsheet']['temp_folder'];
 
-        $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator();
+        $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator($config['spreadsheet']['sscl']);
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
 
         return new SpreadsheetAction(

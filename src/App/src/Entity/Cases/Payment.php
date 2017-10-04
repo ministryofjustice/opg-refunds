@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Opg\Refunds\Caseworker\DataModel\Cases\Payment as PaymentModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -11,6 +12,13 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Payment extends AbstractEntity
 {
+    /**
+     * Class of the datamodel that this entity can be converted to
+     *
+     * @var string
+     */
+    protected $dataModelClass = PaymentModel::class;
+
     /**
      * @var int
      * @ORM\Id
@@ -21,7 +29,7 @@ class Payment extends AbstractEntity
 
     /**
      * @var float
-     * @ORM\Column(type="decimal")
+     * @ORM\Column(type="float")
      */
     protected $amount;
 
@@ -39,7 +47,7 @@ class Payment extends AbstractEntity
 
     /**
      * @var DateTime
-     * @ORM\Column(name="processed_datetime", type="datetimetz")
+     * @ORM\Column(name="processed_datetime", type="datetimetz", nullable=true)
      */
     protected $processedDateTime;
 
@@ -49,6 +57,15 @@ class Payment extends AbstractEntity
      * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
      */
     protected $claim;
+
+    public function __construct(float $amount, string $method, Claim $claim)
+    {
+        $this->amount = $amount;
+        $this->method = $method;
+        $this->claim = $claim;
+
+        $this->addedDateTime = new DateTime();
+    }
 
     /**
      * @return int

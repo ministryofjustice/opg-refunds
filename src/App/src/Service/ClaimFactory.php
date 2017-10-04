@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Ingestion\Service\ApplicationIngestion;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -17,7 +18,8 @@ class ClaimFactory
     public function __invoke(ContainerInterface $container)
     {
         return new Claim(
-            $container->get('doctrine.entity_manager.orm_cases')
+            $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(ApplicationIngestion::class)
         );
     }
 }
