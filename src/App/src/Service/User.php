@@ -202,6 +202,25 @@ class User
     }
 
     /**
+     * Set the hashed password and activate the account
+     *
+     * @param $userId
+     * @param $password
+     * @return UserModel
+     */
+    public function setPassword($userId, $password)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setPasswordHash(password_hash($password, PASSWORD_DEFAULT));
+        $user->setStatus(UserModel::STATUS_ACTIVE);
+
+        $this->entityManager->flush();
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
      * Check for an existing user using this email address - excluding the user if an ID value is provided
      *
      * @param string $email

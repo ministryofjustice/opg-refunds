@@ -28,6 +28,7 @@
 
 //  Unauthenticated routes
 $app->post('/v1/auth', Auth\Action\AuthAction::class, 'auth');
+$app->route('/v1/user/{token}', App\Action\UserAction::class, ['GET', 'PATCH'], 'user.by.token');
 $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes
