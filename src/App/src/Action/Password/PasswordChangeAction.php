@@ -46,11 +46,9 @@ class PasswordChangeAction extends AbstractAction
 
         $token = $request->getAttribute('token');
 
-        //  If the user is logged in and a token has been provided then redirect to the route without it
+        //  If the user is logged in a token can not be provided
         if (!empty($token) && $loggedIn) {
-            return $this->redirectToRoute('password.change', [
-                'token' => null,
-            ]);
+            throw new Exception('Password tokens can not be provided for authenticated users', 403);
         } elseif (empty($token) && !$loggedIn) {
             //  If no token has been provided and the user isn't logged in then bounce them
             return $this->redirectToRoute('sign.in');
@@ -62,7 +60,7 @@ class PasswordChangeAction extends AbstractAction
             $user = $this->userService->getUserByToken($token);
 
             if ($user->getStatus() != User::STATUS_PENDING) {
-                throw new Exception('Unauthorized', 401);
+                throw new Exception('Token has been used', 403);
             }
         }
 

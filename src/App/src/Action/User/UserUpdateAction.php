@@ -85,12 +85,17 @@ class UserUpdateAction extends AbstractModelAction
                 /** @var UserModel $sessionUser */
                 $sessionUser = $request->getAttribute('identity');
 
+                //  Generate the change password URL
+                $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
+
+                $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
+                    'token' => $user->getToken(),
+                ]);
+
                 //  Send the set password email to the new user
                 $this->notifyClient->sendEmail($user->getEmail(), 'e5bc1a56-a630-4d12-b71d-e7e2c223f96b', [
-                    'creator-name'     => $sessionUser->getName(),
-                    'set-password-url' => $this->getUrlHelper()->generate('password.set', [
-                        'token' => $user->getToken(),
-                    ]),
+                    'creator-name'        => $sessionUser->getName(),
+                    'change-password-url' => $changePasswordUrl,
                 ]);
 
                 return $this->redirectToRoute('user', ['id' => $user->getId()]);
@@ -116,7 +121,7 @@ class UserUpdateAction extends AbstractModelAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
