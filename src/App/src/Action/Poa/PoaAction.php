@@ -2,6 +2,7 @@
 
 namespace App\Action\Poa;
 
+use Api\Exception\ApiException;
 use App\Form\AbstractForm;
 use App\Form\Poa;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -70,22 +71,30 @@ class PoaAction extends AbstractPoaAction
         if ($form->isValid()) {
             $poa = new PoaModel($form->getModelData());
 
-            $claim = $this->claimService->addPoa($claim, $poa);
+            try {
+                $claim = $this->claimService->addPoa($claim, $poa);
 
-            if ($claim === null) {
-                throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
+                if ($claim === null) {
+                    throw new RuntimeException('Failed to add new POA to claim with id: ' . $this->modelId);
+                }
+
+                //TODO: Find a better way
+                if ($_POST['submit'] === 'Save and add another') {
+                    return $this->redirectToRoute('claim.poa', [
+                        'claimId' => $request->getAttribute('claimId'),
+                        'system'  => $system,
+                        'id'      => null
+                    ]);
+                }
+
+                return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
+            } catch (ApiException $ex) {
+                if ($ex->getCode() === 400) {
+                    $form->setMessages(['case-number' => ['Case number is already registered with another claim']]);
+                } else {
+                    throw $ex;
+                }
             }
-
-            //TODO: Find a better way
-            if ($_POST['submit'] === 'Save and add another') {
-                return $this->redirectToRoute('claim.poa', [
-                    'claimId' => $request->getAttribute('claimId'),
-                    'system'  => $system,
-                    'id'      => null
-                ]);
-            }
-
-            return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
