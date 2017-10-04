@@ -30,7 +30,7 @@ class UserAction extends AbstractRestfulAction
     }
 
     /**
-     * READ/GET index action - override in subclass if required
+     * READ/GET index action
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -76,7 +76,7 @@ class UserAction extends AbstractRestfulAction
     }
 
     /**
-     * MODIFY/PATCH modify action - override in subclass if required
+     * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -105,5 +105,22 @@ class UserAction extends AbstractRestfulAction
         $user = $this->userService->getById($userId);
 
         return new JsonResponse($user->getArrayCopy());
+    }
+
+    /**
+     * DELETE/DELETE delete action
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return JsonResponse
+     */
+    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $userId = $request->getAttribute('id');
+
+        //  Soft delete - set the status to deleted
+        $userModel = $this->userService->setStatus($userId, UserModel::STATUS_DELETED);
+
+        return new JsonResponse($userModel->getArrayCopy());
     }
 }
