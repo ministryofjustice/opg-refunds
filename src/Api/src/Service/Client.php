@@ -44,42 +44,6 @@ class Client
     }
 
     /**
-     * Send the authenticate API call
-     *
-     * @param string $email
-     * @param string $password
-     * @return array
-     */
-    public function authenticate(string $email, string $password)
-    {
-        return $this->httpPost('/v1/auth', [
-            'email'    => $email,
-            'password' => $password,
-        ]);
-    }
-
-    /**
-     * Get user details
-     *
-     * @param int $userId
-     * @return array
-     */
-    public function getUser(int $userId)
-    {
-        return $this->httpGet('/v1/cases/user/' . $userId);
-    }
-
-    /**
-     * Get all claims
-     *
-     * @return array
-     */
-    public function getClaims()
-    {
-        return $this->httpGet('/v1/cases/claim');
-    }
-
-    /**
      * Get SSCL spreadsheet containing all refundable claims
      *
      * @return ResponseInterface
@@ -93,20 +57,7 @@ class Client
 
         $request = new Request('GET', $url, $this->buildHeaders());
 
-        //  Can throw RuntimeException if there is a problem
-        $response = $this->httpClient->sendRequest($request);
-
-        return $response;
-    }
-
-    /**
-     * Get all applications
-     *
-     * @return array
-     */
-    public function getApplications()
-    {
-        return $this->httpGet('/dev/applications');
+        return $this->httpClient->sendRequest($request);
     }
 
     /**
@@ -117,7 +68,7 @@ class Client
      * @return array|null
      * @throw RuntimeException | Exception\ApiException
      */
-    private function httpGet($path, array $query = [])
+    public function httpGet($path, array $query = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -148,7 +99,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    private function httpPost($path, array $payload)
+    public function httpPost($path, array $payload)
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -165,9 +116,79 @@ class Client
         }
     }
 
-    //  TODO - Create httpPatch function
+    /**
+     * Performs a PUT against the API
+     *
+     * @param string $path
+     * @param array  $payload
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpPut($path, array $payload)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
 
-    //  TODO - Create httpDelete function
+        $request = new Request('PUT', $url, $this->buildHeaders(), json_encode($payload));
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
+
+    /**
+     * Performs a PATCH against the API
+     *
+     * @param string $path
+     * @param array  $payload
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpPatch($path, array $payload)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
+
+        $request = new Request('PATCH', $url, $this->buildHeaders(), json_encode($payload));
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
+
+    /**
+     * Performs a DELETE against the API
+     *
+     * @param string $path
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpDelete($path)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
+
+        $request = new Request('DELETE', $url, $this->buildHeaders());
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
 
     /**
      * Generates the standard set of HTTP headers expected by the API

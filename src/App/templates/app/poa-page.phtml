@@ -1,0 +1,131 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\Poa $form
+ * @var string $system
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::case-numbers', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<?php if ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS) { ?>
+    <h2 class="heading-medium">Sirius power of attorney details</h2>
+<?php } elseif ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_MERIS) { ?>
+    <h2 class="heading-medium">Meris power of attorney details</h2>
+<?php } ?>
+
+<?php
+$attorney = $claim->getApplication()->getAttorney();
+$attorneyName = $attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null ? $this->getFormattedName($attorney->getPoa()->getName()) : $this->getFormattedName($attorney->getCurrent()->getName());
+$postcodes = $claim->getApplication()->getPostcodes();
+?>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <input type="hidden" name="system" value="<?= $system ?>">
+
+    <div>
+        <h3 class="heading-small">Add power of attorney details</h3>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('case-number'),
+            'formLabel' => 'Case number',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+        <h3 class="heading-small">Received date - TBC?</h3>
+
+        <?php $this->insert('snippet::input-received-date', [
+            'formLabel' => 'Received date',
+            'formElement' => $form->get('received-date'),
+        ]) ?>
+    </div>
+
+    <?php $this->insert('snippet::input-multi', [
+        'formElement' => $form->get('original-payment-amount'),
+        'question' => 'Original payment amount',
+        'options' => [
+            'orMore' => [
+                'optionLabel' => '£110 or more'
+            ],
+            'lessThan' => [
+                'optionLabel' => 'Less than £110'
+            ],
+            'noRefund' => [
+                'optionLabel' => 'No refund amount'
+            ],
+        ],
+    ])
+    ?>
+
+    <h3 class="heading-small">Check verification details</h3>
+
+    <?php $this->insert('snippet::input-multi', [
+        'formElement' => $form->get('attorney'),
+        'question' => "Does {$attorneyName} and {$this->getDateOfBirthString($attorney->getCurrent()->getDob())} match one attorney's details on the POA?",
+        'options' => [
+            'yes' => [
+                'optionLabel' => 'Yes'
+            ],
+            'no' => [
+                'optionLabel' => 'No'
+            ],
+        ],
+    ])
+    ?>
+
+    <?php if ($form->has('donor-postcode')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('donor-postcode'),
+            'question' => "Does {$postcodes->getDonorPostcode()} match the donor's address on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
+    ?>
+
+    <?php if ($form->has('attorney-postcode')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('attorney-postcode'),
+            'question' => "Does {$postcodes->getAttorneyPostcode()} match any of the attorney addresses on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    }
+    ?>
+
+    <div class="form-group">
+        <input id='return-submit' type='submit' class="button" name='submit' value='Save and return to claim'>
+        <input id='add-submit' type='submit' class="button button-secondary" name='submit' value='Save and add another'>
+        <?php if (isset($poaId)) { ?>
+            <a class="button button-link" href="<?= $this->generateUrl('claim.poa.delete', ['claimId' => $claim->getId(), 'system'  => $system, 'id' => $poaId]); ?>">Delete</a>
+        <?php } ?>
+    </div>
+
+    <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel</a>
+
+</form>

@@ -1,0 +1,37 @@
+<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds">
+            <?= $user->getName() ?>
+            <?php if ($user->getStatus() === \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE) { ?>
+                - <span style="color: red;">INACTIVE</span>
+            <?php } ?>
+        </h2>
+
+        <table>
+            <tr>
+                <th>Email</th>
+                <td><?= $user->getEmail() ?></td>
+            </tr>
+            <tr>
+                <th>Roles</th>
+                <td><?= implode(', ', $user->getRoles()) ?></td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td><?= $user->getStatus() ?></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <p>
+            <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
+            <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
+        </p>
+    </div>
+</div>

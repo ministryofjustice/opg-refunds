@@ -1,0 +1,40 @@
+<?php
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<h2 class="heading-medium heading-refunds">Payment details</h2>
+<dl class="details">
+    <div class="">
+        <dt class="details-term">Refund made via:</dt>
+        <dd class="detail-definition">Bank transfer</dd>
+    </div>
+    <div class="">
+        <dt class="details-term">Total refund amount:</dt>
+        <dd class="detail-definition"><?= $this->getRefundTotalAmountString($claim) ?></dd>
+    </div>
+
+    <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+    <div class="details-warning">
+        <dt class="details-term">Warning</dt>
+    <?php } else { ?>
+    <div class="">
+    <?php } ?>
+
+    <div class="">
+        <dt class="details-term">
+            <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+                <i class="icon icon-important">
+                    <span class="visually-hidden">Warning</span>
+                </i>
+            <?php } ?>
+            <?= $this->getPaymentDetailsUsedText($claim->getAccountHashCount()) ?>
+        </dt>
+    </div>
+</dl>

@@ -2,18 +2,21 @@
 
 namespace App\Action;
 
+use Api\Service\Initializers\ApiClientInterface;
+use Api\Service\Initializers\ApiClientTrait;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
 
 /**
  * Class DownloadAction
  * @package App\Action
  */
-class DownloadAction extends AbstractApiClientAction
+class DownloadAction extends AbstractAction implements ApiClientInterface
 {
+    use ApiClientTrait;
+
     /**
      * Process an incoming server request and return a response, optionally delegating
      * to the next middleware component to create the response.
@@ -25,7 +28,9 @@ class DownloadAction extends AbstractApiClientAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        //  TODO - If keeping this action then move logic below into a dedicated service
         $response = $this->getApiClient()->getSpreadsheetResponse();
+
         $fileContents = $response->getBody();
         $contentDisposition = $response->getHeaderLine('Content-Disposition');
         $contentLength = $response->getHeaderLine('Content-Length');

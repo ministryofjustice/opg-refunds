@@ -21,12 +21,13 @@ abstract class AbstractAction implements
      * Redirect to the specified route
      *
      * @param $route
+     * @param array $routeParams
      * @return Response\RedirectResponse
      */
-    protected function redirectToRoute($route)
+    protected function redirectToRoute($route, $routeParams = [])
     {
         return new Response\RedirectResponse(
-            $this->getUrlHelper()->generate($route)
+            $this->getUrlHelper()->generate($route, $routeParams)
         );
     }
 }

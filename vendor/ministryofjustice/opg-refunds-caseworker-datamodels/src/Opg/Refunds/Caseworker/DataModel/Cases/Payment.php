@@ -43,7 +43,7 @@ class Payment extends AbstractDataModel
      * @param float $amount
      * @return $this
      */
-    public function setAmount(float $amount)
+    public function setAmount(float $amount): Payment
     {
         $this->amount = $amount;
 
@@ -62,7 +62,7 @@ class Payment extends AbstractDataModel
      * @param string $method
      * @return $this
      */
-    public function setMethod(string $method)
+    public function setMethod(string $method): Payment
     {
         $this->method = $method;
 
@@ -81,7 +81,7 @@ class Payment extends AbstractDataModel
      * @param DateTime $addedDateTime
      * @return $this
      */
-    public function setAddedDateTime(DateTime $addedDateTime)
+    public function setAddedDateTime(DateTime $addedDateTime): Payment
     {
         $this->addedDateTime = $addedDateTime;
 
@@ -100,7 +100,7 @@ class Payment extends AbstractDataModel
      * @param DateTime $processedDateTime
      * @return $this
      */
-    public function setProcessedDateTime(DateTime $processedDateTime)
+    public function setProcessedDateTime(DateTime $processedDateTime): Payment
     {
         $this->processedDateTime = $processedDateTime;
 

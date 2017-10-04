@@ -1,0 +1,145 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\AbstractForm $form
+ */
+
+$this->addErrorMap([
+    'message' => [
+        'required' => [
+            'summary'   => 'Please enter a user log message',
+            'field'     => 'Enter a user log message'
+        ]
+    ]
+]);
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->insert('snippet::approve-reject-buttons', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<div>
+    <h2 class="heading-medium">Sirius power of attorneys</h2>
+
+    <?php if ($this->hasSiriusPoas($claim)) { ?>
+        <table class="poa-table">
+            <thead>
+            <tr>
+                <th>Case reference</th>
+                <th>Received date</th>
+                <th>Refund amount</th>
+                <th>Interest amount</th>
+                <th>Verification matches</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getSiriusPoas($claim) as $poa) {
+                /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
+                <tr>
+                    <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
+                    <td><?= $this->getRefundAmountString($poa) ?></td>
+                    <td><?= $this->getInterestAmountString($poa) ?></td>
+                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    <?php } ?>
+
+    <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'sirius']) ?>">
+        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php if ($claim->isNoSiriusPoas()) { ?>
+            <input class="button" type="submit" value="Cancel and return to add Sirius POA">
+        <?php } else { ?>
+            <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius']) ?>">Add Sirius POA</a>
+            <?php if (!$this->hasSiriusPoas($claim)) { ?>
+                <input class="button-secondary" type="submit" value="I cannot find any Sirius POAs">
+            <?php } ?>
+        <?php } ?>
+    </form>
+</div>
+
+<div>
+    <h2 class="heading-medium">Meris power of attorneys</h2>
+
+    <?php if ($this->hasMerisPoas($claim)) { ?>
+        <table class="poa-table">
+            <thead>
+            <tr>
+                <th>Case reference</th>
+                <th>Received date</th>
+                <th>Refund amount</th>
+                <th>Interest amount</th>
+                <th>Verification matches</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($this->getMerisPoas($claim) as $poa) {
+                /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
+                <tr>
+                    <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
+                    <td><?= $this->getRefundAmountString($poa) ?></td>
+                    <td><?= $this->getInterestAmountString($poa) ?></td>
+                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    <?php } ?>
+
+    <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'meris']) ?>">
+        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php if ($claim->isNoMerisPoas()) { ?>
+            <input class="button" type="submit" value="Cancel and return to add Meris POA">
+        <?php } else { ?>
+            <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris']) ?>">Add Meris POA</a>
+            <?php if (!$this->hasMerisPoas($claim)) { ?>
+                <input class="button-secondary" type="submit" value="I cannot find any Meris POAs">
+            <?php } ?>
+        <?php } ?>
+    </form>
+</div>
+
+<h2 class="heading-medium heading-refunds">User log</h2>
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('message'),
+        'formLabel' => 'Add a user log',
+        'formType' => 'textarea',
+        'formLabelBold' => false,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+    <input class="button button-secondary" type="submit" value="Submit log">
+</form>
+
+<h2 class="heading-medium heading-refunds">Timeline</h2>
+
+<div class="timeline">
+    <ul>
+        <?php foreach ($claim->getLogs() as $log) { ?>
+            <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
+            <li>
+                <p class="timeline-reference"><?= $this->getLogDateString($log->getCreatedDateTime()) ?> <span class="time"><?= $this->getLogTimeString($log->getCreatedDateTime()) ?></span></p>
+                <h2><?= $log->getTitle() ?></h2>
+                <p><?= $log->getMessage() ?></p>
+                <?php if ($log->getUserName() !== null) { ?>
+                    <p>by <?= $log->getUserName() ?></p>
+                <?php } ?>
+            </li>
+        <?php } ?>
+    </ul>
+</div>

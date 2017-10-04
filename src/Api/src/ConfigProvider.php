@@ -37,6 +37,9 @@ class ConfigProvider
             'factories'  => [
                 Service\Client::class => Service\ClientFactory::class,
             ],
+            'initializers' => [
+                Service\Initializers\ApiClientInitializer::class,
+            ],
         ];
     }
 }

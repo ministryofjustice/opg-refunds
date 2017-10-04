@@ -30,6 +30,14 @@ return [
         ],
         User::ROLE_CASEWORKER => [
             'caseworker',
+            'process.new.claim',
+            'claim',
+            'claim.poa',
+            'claim.poa.none.found',
+            'claim.poa.cancel.none.found',
+            'claim.poa.delete',
+            'claim.approve',
+            'claim.reject',
         ],
         User::ROLE_REPORTING => [
             'reporting',
@@ -40,7 +48,9 @@ return [
             'csv.download',
         ],
         User::ROLE_ADMIN => [
-            'admin',
+            'user',
+            'user.add',
+            'user.edit',
         ],
     ],
 ];
