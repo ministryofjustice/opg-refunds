@@ -18,6 +18,7 @@ class User extends AbstractDataModel
     const STATUS_ACTIVE   = 'active';
     const STATUS_INACTIVE = 'inactive';
     const STATUS_DELETED  = 'deleted';
+    const STATUS_PENDING  = 'pending';
 
     /**
      * @var int
