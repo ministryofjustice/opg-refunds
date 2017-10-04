@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Action;
+namespace App\Action\Password;
 
+use App\Action\AbstractAction;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
 /**
- * Class PasswordSetNewAction
- * @package App\Action
+ * Class PasswordResetAction
+ * @package App\Action\Password
  */
-class PasswordSetNewAction extends AbstractAction
+class PasswordResetAction extends AbstractAction
 {
     /**
      * @param ServerRequestInterface $request
@@ -19,6 +20,6 @@ class PasswordSetNewAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::password-set-new-page'));
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-page'));
     }
 }

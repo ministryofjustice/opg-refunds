@@ -76,6 +76,51 @@ class User implements ApiClientInterface
     }
 
     /**
+     * Get user details by token
+     *
+     * @param string $token
+     * @return UserModel
+     */
+    public function getUserByToken(string $token)
+    {
+        $userData = $this->getApiClient()->httpGet('/v1/user/' . $token);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
+     * Update password using a token value - for pending users only
+     *
+     * @param $userId
+     * @param $password
+     * @return null|UserModel
+     */
+    public function updatePassword($userId, $password)
+    {
+        $userData = $this->getApiClient()->httpPatch('/v1/cases/user/' . $userId, [
+            'password' => $password,
+        ]);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
+     * Update password using a token value - for pending users only
+     *
+     * @param $token
+     * @param $password
+     * @return null|UserModel
+     */
+    public function updatePasswordByToken($token, $password)
+    {
+        $userData = $this->getApiClient()->httpPatch('/v1/user/' . $token, [
+            'password' => $password,
+        ]);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
      * Create model from array data
      *
      * @param array|null $data

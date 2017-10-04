@@ -29,7 +29,7 @@
 //  Unauthenticated routes
 $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
-$app->get('/reset-password', App\Action\PasswordRequestResetAction::class, 'password.request.reset');
+$app->get('/reset-password', App\Action\Password\PasswordResetAction::class, 'password.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\Home\HomeAction::class, 'home');
@@ -39,7 +39,7 @@ $app->route('/user/edit/{id:\d+}', App\Action\User\UserUpdateAction::class, ['GE
 $app->route('/user/delete/{id:\d+}', App\Action\User\UserDeleteAction::class, ['GET', 'POST'], 'user.delete');
 $app->get('/refund', App\Action\RefundAction::class, 'refund');
 $app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
-$app->get('/set-password', App\Action\PasswordSetNewAction::class, 'password.set.new');
+$app->route('/change-password[/{token}]', App\Action\Password\PasswordChangeAction::class, ['GET', 'POST'], 'password.change');
 $app->get('/download', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
 $app->route('/claim[/{id:\d+}]', App\Action\Claim\ClaimAction::class, ['GET', 'POST'], 'claim');
