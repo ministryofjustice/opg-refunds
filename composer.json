@@ -19,6 +19,7 @@
     ],
     "require": {
         "php": "^7.0",
+        "alphagov/notifications-php-client": "^1.1",
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",

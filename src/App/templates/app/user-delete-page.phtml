@@ -1,10 +1,10 @@
-<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+<?php $this->layout('layout::default', ['title' => 'Users']) ?>
 
 <h2 class="heading-medium">Delete user</h2>
 
 <form method="post" class="form">
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <?php if ($deletingSelf) { ?>
         <p>You are about to delete your own account. Are you sure you want to continue?</p>

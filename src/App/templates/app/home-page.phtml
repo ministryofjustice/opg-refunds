@@ -1,4 +1,4 @@
-<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+<?php $this->layout('layout::default', ['title' => 'Your claims']) ?>
 <?php
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user
@@ -15,7 +15,7 @@
 
         <form method="post" class="form" action="<?= $this->generateUrl('claim') ?>">
 
-            <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
             <input type='submit' class="button" name='submit' value='Process new claim'>
 

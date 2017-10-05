@@ -2,6 +2,7 @@
 
 namespace App\Action\User;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Action\AbstractModelAction;
 use App\Form\User;
 use App\Service\User\User as UserService;
@@ -23,12 +24,18 @@ class UserUpdateAction extends AbstractModelAction
     protected $userService;
 
     /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
      * UserUpdateAction constructor.
      * @param UserService $userService
      */
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, NotifyClient $notifyClient)
     {
         $this->userService = $userService;
+        $this->notifyClient = $notifyClient;
     }
 
     /**
@@ -39,12 +46,14 @@ class UserUpdateAction extends AbstractModelAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $user = null;
+        $pendingUser = true;
 
         if (!is_null($this->modelId)) {
             $user = $this->userService->getUser($this->modelId);
+            $pendingUser = ($user->getStatus() == UserModel::STATUS_PENDING);
         }
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $pendingUser);
 
         //  Bind any existing details to the form
         if (!is_null($user)) {
@@ -65,14 +74,29 @@ class UserUpdateAction extends AbstractModelAction
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, true);
 
         if ($form->isValid()) {
-            //  Set the new user as active
             $user = new UserModel($form->getData());
 
             try {
                 $user = $this->userService->createUser($user);
+
+                /** @var UserModel $sessionUser */
+                $sessionUser = $request->getAttribute('identity');
+
+                //  Generate the change password URL
+                $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
+
+                $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
+                    'token' => $user->getToken(),
+                ]);
+
+                //  Send the set password email to the new user
+                $this->notifyClient->sendEmail($user->getEmail(), 'e5bc1a56-a630-4d12-b71d-e7e2c223f96b', [
+                    'creator-name'        => $sessionUser->getName(),
+                    'change-password-url' => $changePasswordUrl,
+                ]);
 
                 return $this->redirectToRoute('user', ['id' => $user->getId()]);
             } catch (Exception $ex) {
@@ -97,7 +121,7 @@ class UserUpdateAction extends AbstractModelAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -108,7 +132,7 @@ class UserUpdateAction extends AbstractModelAction
             throw new Exception('Page not found', 404);
         }
 
-        $form = $this->getForm($request);
+        $form = $this->getForm($request, $user->getStatus() == UserModel::STATUS_PENDING);
 
         if ($form->isValid()) {
             try {
@@ -139,15 +163,16 @@ class UserUpdateAction extends AbstractModelAction
      * Get the form for the model concerned
      *
      * @param ServerRequestInterface $request
+     * @param $pendingUser
      * @return User
      */
-    private function getForm(ServerRequestInterface $request)
+    private function getForm(ServerRequestInterface $request, $pendingUser)
     {
         $session = $request->getAttribute('session');
 
         $form = new User([
             'csrf' => $session['meta']['csrf']
-        ]);
+        ], $pendingUser);
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());

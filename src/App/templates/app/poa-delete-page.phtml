@@ -18,7 +18,7 @@
 
 <form method="post" class="form">
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <p>Are you sure you want to delete the POA with case number: <?= $poa->getCaseNumber() ?>?</p>
 

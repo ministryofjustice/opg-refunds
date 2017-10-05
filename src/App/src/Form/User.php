@@ -6,6 +6,7 @@ use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Zend\Filter;
+use Zend\Form\Element\Hidden;
 use Zend\Form\Element\MultiCheckbox;
 use Zend\Form\Element\Radio;
 use Zend\Form\Element\Text;
@@ -24,8 +25,9 @@ class User extends AbstractForm
      * SignIn constructor
      *
      * @param array $options
+     * @param bool $pendingUser
      */
-    public function __construct($options = [])
+    public function __construct($options = [], $pendingUser = false)
     {
         parent::__construct(self::class, $options);
 
@@ -84,17 +86,24 @@ class User extends AbstractForm
 
         //  Status field
         $field = new Radio('status');
+
+        $field->setValueOptions([
+            UserModel::STATUS_ACTIVE   => UserModel::STATUS_ACTIVE,
+            UserModel::STATUS_INACTIVE => UserModel::STATUS_INACTIVE,
+        ]);
+
+        //  If the user is pending (including new users) then change the input to a hidden value
+        if ($pendingUser) {
+            $field = new Hidden('status');
+            $field->setValue(UserModel::STATUS_PENDING);
+        }
+
         $input = new Input($field->getName());
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty());
 
         $input->setRequired(true);
-
-        $field->setValueOptions([
-            UserModel::STATUS_ACTIVE   => UserModel::STATUS_ACTIVE,
-            UserModel::STATUS_INACTIVE => UserModel::STATUS_INACTIVE,
-        ]);
 
         $this->add($field);
         $inputFilter->add($input);
