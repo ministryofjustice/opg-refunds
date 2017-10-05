@@ -122,22 +122,30 @@ class PoaAction extends AbstractPoaAction
         if ($form->isValid()) {
             $poa = new PoaModel($form->getModelData());
 
-            $claim = $this->claimService->editPoa($claim, $poa, $this->modelId);
+            try {
+                $claim = $this->claimService->editPoa($claim, $poa, $this->modelId);
 
-            if ($claim === null) {
-                throw new RuntimeException('Failed to edit POA with id: ' . $this->modelId);
+                if ($claim === null) {
+                    throw new RuntimeException('Failed to edit POA with id: ' . $this->modelId);
+                }
+
+                //TODO: Find a better way
+                if ($_POST['submit'] === 'Save and add another') {
+                    return $this->redirectToRoute('claim.poa', [
+                        'claimId' => $request->getAttribute('claimId'),
+                        'system'  => $system,
+                        'id'      => null
+                    ]);
+                }
+
+                return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
+            } catch (ApiException $ex) {
+                if ($ex->getCode() === 400) {
+                    $form->setMessages(['case-number' => ['Case number is already registered with another claim']]);
+                } else {
+                    throw $ex;
+                }
             }
-
-            //TODO: Find a better way
-            if ($_POST['submit'] === 'Save and add another') {
-                return $this->redirectToRoute('claim.poa', [
-                    'claimId' => $request->getAttribute('claimId'),
-                    'system'  => $system,
-                    'id'      => null
-                ]);
-            }
-
-            return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
