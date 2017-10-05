@@ -9,7 +9,8 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="poa")
+ * @ORM\Entity
+ * @ORM\Table(name="poa", uniqueConstraints={@ORM\UniqueConstraint(name="case_number_idx", columns={"system", "case_number"})})
  **/
 class Poa extends AbstractEntity
 {
