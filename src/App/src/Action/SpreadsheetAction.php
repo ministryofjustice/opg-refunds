@@ -6,6 +6,7 @@ use App\Service\Spreadsheet;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
+use DateTime;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -53,7 +54,9 @@ class SpreadsheetAction extends AbstractRestfulAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $claims = $this->spreadsheetService->getAllRefundable();
+        $date = new DateTime($request->getAttribute('date'));
+
+        $claims = $this->spreadsheetService->getAllRefundable($date);
 
         $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims);
 
