@@ -2,8 +2,8 @@
 
 namespace App\Action;
 
-use Api\Service\Initializers\ApiClientInterface;
-use Api\Service\Initializers\ApiClientTrait;
+use App\Service\Refund\Refund as RefundService;
+use DateTime;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,9 +13,17 @@ use Zend\Diactoros\Response;
  * Class DownloadAction
  * @package App\Action
  */
-class DownloadAction extends AbstractAction implements ApiClientInterface
+class DownloadAction extends AbstractAction
 {
-    use ApiClientTrait;
+    /**
+     * @var RefundService
+     */
+    private $refundService;
+
+    public function __construct(RefundService $refundService)
+    {
+        $this->refundService = $refundService;
+    }
 
     /**
      * Process an incoming server request and return a response, optionally delegating
@@ -28,14 +36,7 @@ class DownloadAction extends AbstractAction implements ApiClientInterface
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //  TODO - If keeping this action then move logic below into a dedicated service
-        $response = $this->getApiClient()->getSpreadsheetResponse();
-
-        $fileContents = $response->getBody();
-        $contentDisposition = $response->getHeaderLine('Content-Disposition');
-        $contentLength = $response->getHeaderLine('Content-Length');
-
-        $fileName = substr($contentDisposition, strpos($contentDisposition, '=') + 1);
+        $refundSpreadsheet = $this->refundService->getRefundSpreadsheet(new DateTime());
 
         $response = new Response();
 
@@ -43,14 +44,14 @@ class DownloadAction extends AbstractAction implements ApiClientInterface
             ->withHeader('Content-Type', 'application/vnd.ms-excel')
             ->withHeader(
                 'Content-Disposition',
-                "attachment; filename=" . basename($fileName)
+                "attachment; filename=" . basename($refundSpreadsheet['name'])
             )
             ->withHeader('Content-Transfer-Encoding', 'Binary')
             ->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Pragma', 'public')
             ->withHeader('Expires', '0')
             ->withHeader('Cache-Control', 'must-revalidate')
-            ->withBody($fileContents)
-            ->withHeader('Content-Length', $contentLength);
+            ->withBody($refundSpreadsheet['stream'])
+            ->withHeader('Content-Length', $refundSpreadsheet['length']);
     }
 }

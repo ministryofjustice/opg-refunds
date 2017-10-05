@@ -70,6 +70,28 @@ class Client
      */
     public function httpGet($path, array $query = [])
     {
+        $response = $this->httpGetResponse($path, $query);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+                return $this->handleResponse($response);
+            case 404:
+                return null;
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
+
+    /**
+     * Performs a GET against the API but does not process the response. Response is returned for caller to process
+     *
+     * @param string $path
+     * @param array  $query
+     * @return ResponseInterface
+     * @throw RuntimeException
+     */
+    public function httpGetResponse($path, array $query = [])
+    {
         $url = new Uri($this->apiBaseUri . $path);
 
         foreach ($query as $name => $value) {
@@ -81,14 +103,7 @@ class Client
         //  Can throw RuntimeException if there is a problem
         $response = $this->httpClient->sendRequest($request);
 
-        switch ($response->getStatusCode()) {
-            case 200:
-                return $this->handleResponse($response);
-            case 404:
-                return null;
-            default:
-                return $this->handleErrorResponse($response);
-        }
+        return $response;
     }
 
     /**
