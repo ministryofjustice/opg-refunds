@@ -33,6 +33,8 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                //  Services
+                Service\TokenGenerator::class => Service\TokenGenerator::class,
             ],
             'factories'  => [
                 //  Actions

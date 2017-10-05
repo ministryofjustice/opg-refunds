@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\AbstractEntity;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Payment as PaymentModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
@@ -56,7 +55,7 @@ class Spreadsheet
      *
      * @return ClaimModel[]
      */
-    public function getAllRefundable()
+    public function getAllRefundable(DateTime $date)
     {
         $claims = $this->repository->findBy([
             'status' => ClaimModel::STATUS_ACCEPTED

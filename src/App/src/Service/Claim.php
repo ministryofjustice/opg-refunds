@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use DateTime;
+use Doctrine\DBAL\Exception\DriverException;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -233,7 +234,15 @@ class Claim
             $this->entityManager->persist($verification);
         }
 
-        $this->entityManager->flush();
+        try {
+            $this->entityManager->flush();
+        } catch (DriverException $ex) {
+            if ($ex->getErrorCode() === 7) {
+                //Duplicate case number
+                throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
+            }
+            throw $ex;
+        }
 
         $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
 
