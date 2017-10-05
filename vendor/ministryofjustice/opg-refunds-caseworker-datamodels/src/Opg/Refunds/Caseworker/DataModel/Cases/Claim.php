@@ -103,9 +103,9 @@ class Claim extends AbstractDataModel
     protected $payment;
 
     /**
-     * @var Log[]
+     * @var Note[]
      */
-    protected $logs;
+    protected $notes;
 
     /**
      * @var int
@@ -429,20 +429,20 @@ class Claim extends AbstractDataModel
     }
 
     /**
-     * @return Log[]
+     * @return Note[]
      */
-    public function getLogs(): array
+    public function getNotes(): array
     {
-        return $this->logs;
+        return $this->notes;
     }
 
     /**
-     * @param Log[] $logs
+     * @param Note[] $notes
      * @return $this
      */
-    public function setLogs(array $logs): Claim
+    public function setNotes(array $notes): Claim
     {
-        $this->logs = $logs;
+        $this->notes = $notes;
 
         return $this;
     }
@@ -484,9 +484,9 @@ class Claim extends AbstractDataModel
                 }, $value);
             case 'payment':
                 return (($value instanceof Payment || is_null($value)) ? $value : new Payment($value));
-            case 'logs':
+            case 'notes':
                 return array_map(function ($value) {
-                    return ($value instanceof Log ? $value : new Log($value));
+                    return ($value instanceof Note ? $value : new Note($value));
                 }, $value);
             case 'createdDateTime':
             case 'updatedDateTime':
