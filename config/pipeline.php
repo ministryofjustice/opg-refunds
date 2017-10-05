@@ -47,6 +47,9 @@ $app->pipe(Middleware\Session\SlimFlashMiddleware::class);
 // Authorization middleware to detemine if the user can access the requested route
 $app->pipe(Middleware\Authorization\AuthorizationMiddleware::class);
 
+// Middleware to set any default data in the template renderer
+$app->pipe(Middleware\ViewData\ViewDataMiddleware::class);
+
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();
 

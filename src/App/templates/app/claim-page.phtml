@@ -56,7 +56,7 @@ $this->addErrorMap([
     <?php } ?>
 
     <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'sirius']) ?>">
-        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php $this->insert('snippet::input-hidden', ['formElement' => $poaNoneFoundForm->get('secret')]) ?>
         <?php if ($claim->isNoSiriusPoas()) { ?>
             <input class="button" type="submit" value="Cancel and return to add Sirius POA">
         <?php } else { ?>
@@ -98,7 +98,7 @@ $this->addErrorMap([
     <?php } ?>
 
     <form method="post" class="form" action="<?= $this->generateUrl('claim.poa.none.found', ['id' => $claim->getId(), 'system' => 'meris']) ?>">
-        <?php $this->insert('snippet::form-csrf', ['form' => $poaNoneFoundForm]) ?>
+        <?php $this->insert('snippet::input-hidden', ['formElement' => $poaNoneFoundForm->get('secret')]) ?>
         <?php if ($claim->isNoMerisPoas()) { ?>
             <input class="button" type="submit" value="Cancel and return to add Meris POA">
         <?php } else { ?>
@@ -113,7 +113,7 @@ $this->addErrorMap([
 <h2 class="heading-medium heading-refunds">User log</h2>
 <form method="post" class="form">
 
-    <?php $this->insert('snippet::form-csrf', ['form' => $form]) ?>
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('message'),

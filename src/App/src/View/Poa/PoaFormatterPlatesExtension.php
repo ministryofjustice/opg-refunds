@@ -3,7 +3,7 @@
 namespace App\View\Poa;
 
 use App\Service\Poa\Poa as PoaService;
-use App\Service\Refund\Refund as RefundService;
+use App\Service\Refund\RefundCalculator as RefundCalculatorService;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -18,14 +18,14 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
     private $poaService;
 
     /**
-     * @var RefundService
+     * @var RefundCalculatorService
      */
-    private $refundService;
+    private $refundCalculatorService;
 
-    public function __construct(PoaService $poaService, RefundService $refundService)
+    public function __construct(PoaService $poaService, RefundCalculatorService $refundCalculatorService)
     {
         $this->poaService = $poaService;
-        $this->refundService = $refundService;
+        $this->refundCalculatorService = $refundCalculatorService;
     }
 
     public function register(Engine $engine)
@@ -76,13 +76,13 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
 
     public function getRefundAmountString(PoaModel $poa)
     {
-        return money_format('£%i', $this->refundService->getRefundAmount($poa));
+        return money_format('£%i', $this->refundCalculatorService->getRefundAmount($poa));
     }
 
     public function getInterestAmountString(PoaModel $poa)
     {
-        $refundAmount = $this->refundService->getRefundAmount($poa);
-        $refundAmountWithInterest = $this->refundService->getAmountWithInterest($poa, $refundAmount);
+        $refundAmount = $this->refundCalculatorService->getRefundAmount($poa);
+        $refundAmountWithInterest = $this->refundCalculatorService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
         return money_format('£%i', $interest);
     }
@@ -93,7 +93,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             return '£0.00';
         }
 
-        return money_format('£%i', $this->refundService->getRefundTotalAmount($claim));
+        return money_format('£%i', $this->refundCalculatorService->getRefundTotalAmount($claim));
     }
 
     public function getFormattedVerificationMatches(PoaModel $poa)

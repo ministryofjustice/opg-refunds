@@ -18,7 +18,8 @@ class UserUpdateActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new UserUpdateAction(
-            $container->get(UserService::class)
+            $container->get(UserService::class),
+            $container->get(\Alphagov\Notifications\Client::class)
         );
     }
 }

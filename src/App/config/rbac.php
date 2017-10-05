@@ -21,12 +21,12 @@ return [
     'permissions' => [
         'guest' => [
             'sign.in',
-            'password.request.reset',
+            'password.change',
+            'password.reset',
         ],
         'authenticated-user' => [
             'home',
             'sign.out',
-            'password.set.new',
         ],
         User::ROLE_CASEWORKER => [
             'caseworker',
@@ -51,6 +51,7 @@ return [
             'user',
             'user.add',
             'user.edit',
+            'user.delete',
         ],
     ],
 ];

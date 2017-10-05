@@ -51,31 +51,40 @@
                 <div class="content">
                     <nav id="proposition-menu">
                         <a href="<?= $this->generateUrl('home') ?>" id="proposition-name">Claim a power of attorney refund</a>
-                        <ul id="proposition-links">
-                            <li>
-                                <a href="<?= $this->generateUrl('home') ?>" class="active">Your claims</a>
-                            </li>
-                            <li>
-                                <a href="<?= $this->generateUrl('refund') ?>" class="">Refunds</a>
-                            </li>
-                            <li>
-                                <a href="<?= $this->generateUrl('user') ?>" class="">Users</a>
-                            </li>
-                            <li>
-                                <a href="#" class="">FAQs</a>
-                            </li>
-                        </ul>
-
+                        <?php if (isset($identity)) { ?>
+                            <ul id="proposition-links">
+                                <li>
+                                    <a href="<?= $this->generateUrl('home') ?>" class="active">Your claims</a>
+                                </li>
+                                <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND, $identity->getRoles())) { ?>
+                                    <li>
+                                        <a href="<?= $this->generateUrl('refund') ?>" class="">Refunds</a>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_ADMIN, $identity->getRoles())) { ?>
+                                    <li>
+                                        <a href="<?= $this->generateUrl('user', ['id' => null]) ?>" class="">Users</a>
+                                    </li>
+                                <?php } ?>
+                                <li>
+                                    <a href="#" class="">FAQs</a>
+                                </li>
+                            </ul>
+                        <?php } ?>
                     </nav>
                 </div>
             </div>
 
-            <div class="header-profile">
-                <p>
-                    Logged in as <a href="">TODO</a><br/>
-                    <a href="<?= $this->generateUrl('sign.out') ?>">Sign out</a>
-                </p>
-            </div>
+            <?php if (isset($identity)) { ?>
+                <div class="header-profile">
+                    <p>
+                        Logged in as <?= $identity->getName(); ?><br/>
+                        <a href="<?= $this->generateUrl('password.change') ?>">Change password</a>
+                        &nbsp;|&nbsp;
+                        <a href="<?= $this->generateUrl('sign.out') ?>">Sign out</a>
+                    </p>
+                </div>
+            <?php } ?>
 
         </div>
     </header>

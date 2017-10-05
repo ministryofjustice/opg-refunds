@@ -40,15 +40,14 @@ class ConfigProvider
             'invokables' => [
                 //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\DownloadAction::class => Action\DownloadAction::class,
                 Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
-                Action\PasswordRequestResetAction::class => Action\PasswordRequestResetAction::class,
-                Action\PasswordSetNewAction::class => Action\PasswordSetNewAction::class,
+                Action\Password\PasswordResetAction::class => Action\Password\PasswordResetAction::class,
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
                 Service\Date\IDate::class => Service\Date\Date::class,
+                Service\Refund\Refund::class => Service\Refund\Refund::class,
                 Service\Poa\Poa::class => Service\Poa\Poa::class,
                 Service\User\User::class => Service\User\User::class,
             ],
@@ -58,21 +57,26 @@ class ConfigProvider
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
+                Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
+                Action\DownloadAction::class => Action\DownloadActionFactory::class,
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
+                Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
+                Middleware\ViewData\ViewDataMiddleware::class => Middleware\ViewData\ViewDataMiddlewareFactory::class,
 
                 // Services
+                \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
-                Service\Refund\Refund::class => Service\Refund\RefundFactory::class,
+                Service\Refund\RefundCalculator::class => Service\Refund\RefundCalculatorFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
 

@@ -1,12 +1,12 @@
-<?php $this->layout('layout::default', ['title' => 'Home']) ?>
+<?php $this->layout('layout::default', ['title' => 'Users']) ?>
 
 <div class="grid-row">
     <div class="column-full">
 
         <h2 class="heading-medium heading-refunds">
             <?= $user->getName() ?>
-            <?php if ($user->getStatus() === \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE) { ?>
-                - <span style="color: red;">INACTIVE</span>
+            <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
+                - <span style="color: red;"><?= strtoupper($user->getStatus()) ?></span>
             <?php } ?>
         </h2>
 
@@ -31,6 +31,7 @@
     <div class="column-full">
         <p>
             <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
+            <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
             <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
         </p>
     </div>
