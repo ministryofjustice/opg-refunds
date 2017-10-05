@@ -4,7 +4,7 @@ namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -18,7 +18,7 @@ class Note extends AbstractEntity
      *
      * @var string
      */
-    protected $dataModelClass = LogModel::class;
+    protected $dataModelClass = NoteModel::class;
 
     /**
      * @var int
