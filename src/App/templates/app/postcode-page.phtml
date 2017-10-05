@@ -34,7 +34,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>We need at least one postcode from <?= ($applicant == 'donor') ? "your" : "the donor's" ?> power of attorney, at the time it was registered.</p>
 

@@ -19,7 +19,9 @@ $this->addErrorMap([
 
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
