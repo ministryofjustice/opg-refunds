@@ -57,7 +57,7 @@ class ApplicationIngestion
     public function getNextApplication()
     {
         /** @var Application $application */
-        $application = $this->applicationRepository->findOneBy(['processed' => false], ['created' => 'DESC']);
+        $application = $this->applicationRepository->findOneBy(['processed' => false], ['created' => 'ASC']);
         return $application;
     }
 
