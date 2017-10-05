@@ -5,6 +5,15 @@
  * @var \App\Form\Poa $form
  * @var string $system
  */
+
+$this->addErrorMap([
+    'case-number' => [
+        'not-match' => [
+            'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus an optional sequence number'),
+            'field'     => 'Invalid case number'
+        ]
+    ]
+]);
 ?>
 
 <?php $this->start('left-sidebar') ?>

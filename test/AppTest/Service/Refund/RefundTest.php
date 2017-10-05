@@ -3,7 +3,7 @@
 namespace AppTest\Service\Refund;
 
 use App\Service\Date\IDate;
-use App\Service\Refund\Refund as RefundService;
+use App\Service\Refund\RefundCalculator as RefundCalculatorService;
 use DateTime;
 use Mockery;
 use Mockery\MockInterface;
@@ -17,14 +17,14 @@ class RefundTest extends TestCase
      */
     private $dateService;
     /**
-     * @var RefundService
+     * @var RefundCalculatorService
      */
-    private $refundService;
+    private $refundCalculatorService;
 
     protected function setUp()
     {
         $this->dateService = Mockery::mock(IDate::class);
-        $this->refundService = new RefundService($this->dateService);
+        $this->refundCalculatorService = new RefundCalculatorService($this->dateService);
     }
 
     public function testGetRefundAmount()
@@ -37,13 +37,13 @@ class RefundTest extends TestCase
         $poa->setReceivedDate(new DateTime('2017-03-01'))
             ->setOriginalPaymentAmount('orMore');
 
-        $refundAmount = $this->refundService->getRefundAmount($poa);
+        $refundAmount = $this->refundCalculatorService->getRefundAmount($poa);
 
         //Test first thing in the morning
         $this->dateService
             ->shouldReceive('getTimeNow')
             ->andReturn((new DateTime('2017-05-01T00:00:00.000000+0000'))->getTimestamp());
-        $refundAmountWithInterest = $this->refundService->getAmountWithInterest($poa, $refundAmount);
+        $refundAmountWithInterest = $this->refundCalculatorService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);
@@ -53,7 +53,7 @@ class RefundTest extends TestCase
         $this->dateService
             ->shouldReceive('getTimeNow')
             ->andReturn((new DateTime('2017-05-01T23:59:59.999999+0000'))->getTimestamp());
-        $refundAmountWithInterest = $this->refundService->getAmountWithInterest($poa, $refundAmount);
+        $refundAmountWithInterest = $this->refundCalculatorService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);
