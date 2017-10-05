@@ -128,11 +128,11 @@ class Claim extends AbstractEntity
     protected $payment;
 
     /**
-     * @var Collection|Log[]
-     * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
+     * @var Collection|Note[]
+     * @ORM\OneToMany(targetEntity="Note", mappedBy="claim", cascade={"persist", "remove"})
      * @ORM\OrderBy({"createdDateTime" = "DESC"})
      */
-    protected $logs;
+    protected $notes;
 
     /**
      * @var int
@@ -427,19 +427,19 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Collection|Log[]
+     * @return Collection|Note[]
      */
-    public function getLogs()
+    public function getNotes()
     {
-        return $this->logs;
+        return $this->notes;
     }
 
     /**
-     * @param Collection|Log[] $logs
+     * @param Collection|Note[] $notes
      */
-    public function setLogs($logs)
+    public function setNotes($notes)
     {
-        $this->logs = $logs;
+        $this->notes = $notes;
     }
 
     /**

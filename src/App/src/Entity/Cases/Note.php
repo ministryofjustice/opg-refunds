@@ -9,9 +9,9 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="log")
+ * @ORM\Entity @ORM\Table(name="note")
  **/
-class Log extends AbstractEntity
+class Note extends AbstractEntity
 {
     /**
      * Class of the datamodel that this entity can be converted to

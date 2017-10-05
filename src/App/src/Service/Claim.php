@@ -11,7 +11,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\User as UserEntity;
-use App\Entity\Cases\Log as LogEntity;
+use App\Entity\Cases\Note as LogEntity;
 use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;

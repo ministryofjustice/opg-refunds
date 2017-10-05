@@ -4,7 +4,7 @@ namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
-use App\Entity\Cases\Log;
+use App\Entity\Cases\Note;
 use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
@@ -119,7 +119,7 @@ class ApplicationIngestion
                     }
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
-                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
+                    $log = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
 
                     $this->casesEntityManager->persist($log);
                     $this->casesEntityManager->flush();
