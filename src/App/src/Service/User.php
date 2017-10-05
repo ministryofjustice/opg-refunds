@@ -4,8 +4,8 @@ namespace App\Service;
 
 use App\Entity\Cases\User as UserEntity;
 use App\Exception\AlreadyExistsException;
+use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\Common\Collections\Criteria;
-use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
@@ -29,14 +29,20 @@ class User
     private $entityManager;
 
     /**
+     * @var TokenGeneratorService
+     */
+    private $tokenGeneratorService;
+
+    /**
      * User constructor
      *
      * @param EntityManager $entityManager
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, TokenGeneratorService $tokenGeneratorService)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
+        $this->tokenGeneratorService = $tokenGeneratorService;
     }
 
     /**
@@ -97,6 +103,10 @@ class User
 
         $user = new UserEntity();
         $user->setFromDataModel($userModel);
+
+        //  Set the new user with a token that can be used to set the password the first time
+        $user->setToken($this->tokenGeneratorService->generate());
+        $user->setTokenExpires(-1);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -167,6 +177,43 @@ class User
         $user = $this->getUserEntity($userId);
 
         $user->setStatus($status);
+
+        $this->entityManager->flush();
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
+     * @param $userId
+     * @param $token
+     * @param $tokenExpires
+     * @return UserModel
+     */
+    public function setToken($userId, $token, $tokenExpires)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setToken($token);
+        $user->setTokenExpires($tokenExpires);
+
+        $this->entityManager->flush();
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
+     * Set the hashed password and activate the account
+     *
+     * @param $userId
+     * @param $password
+     * @return UserModel
+     */
+    public function setPassword($userId, $password)
+    {
+        $user = $this->getUserEntity($userId);
+
+        $user->setPasswordHash(password_hash($password, PASSWORD_DEFAULT));
+        $user->setStatus(UserModel::STATUS_ACTIVE);
 
         $this->entityManager->flush();
 

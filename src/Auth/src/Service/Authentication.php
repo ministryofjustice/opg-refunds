@@ -5,11 +5,12 @@ namespace Auth\Service;
 use App\Entity\Cases\User as UserEntity;
 use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
+use App\Service\User as UserService;
 use Auth\Exception\UnauthorizedException;
+use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
 /**
@@ -26,9 +27,14 @@ class Authentication
     private $repository;
 
     /**
-     * @var EntityManager
+     * @var UserService
      */
-    private $entityManager;
+    private $userService;
+
+    /**
+     * @var TokenGeneratorService
+     */
+    private $tokenGeneratorService;
 
     /**
      * The number of seconds before an auth token expires
@@ -40,13 +46,15 @@ class Authentication
     /**
      * Authentication constructor
      *
+     * @param UserService $userService
      * @param EntityManager $entityManager
      * @param int $tokenTtl
      */
-    public function __construct(EntityManager $entityManager, int $tokenTtl)
+    public function __construct(EntityManager $entityManager, UserService $userService, TokenGeneratorService $tokenGeneratorService, int $tokenTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
-        $this->entityManager = $entityManager;
+        $this->userService = $userService;
+        $this->tokenGeneratorService = $tokenGeneratorService;
         $this->tokenTtl = $tokenTtl;
     }
 
@@ -76,21 +84,12 @@ class Authentication
 
         //  Attempt to generate a token for the user
         do {
-            $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
+            $token = $this->tokenGeneratorService->generate();
 
-            // Use base62 for shorter tokens
-            $token = BigInteger::factory('bcmath')->baseConvert($token, 16, 62);
+            $user = $this->userService->setToken($user->getId(), $token, time() + $this->tokenTtl);
+        } while (!$user instanceof User);
 
-            if ($isStrong !== true) {
-                throw new Exception('Unable to generate a strong token');
-            }
-
-            $tokenExpires = time() + $this->tokenTtl;
-
-            $created = $this->setToken($user->getId(), $token, $tokenExpires);
-        } while (!$created);
-
-        return $this->translateToDataModel($user);
+        return $user;
     }
 
     /**
@@ -121,30 +120,7 @@ class Authentication
             throw new UnauthorizedException('Token expired');
         }
 
-        //  Increase the token expires value
-        $this->setToken($user->getId(), $user->getToken(),  time() + $this->tokenTtl);
-
-        return $this->translateToDataModel($user);
-    }
-
-    /**
-     * Set the token values against a user record
-     *
-     * @param int $id
-     * @param string $token
-     * @param int $tokenExpires
-     * @return bool
-     */
-    public function setToken(int $id, string $token, int $tokenExpires)
-    {
-        /** @var UserEntity $user */
-        $user = $this->entityManager->getReference(UserEntity::class, $id);
-
-        $user->setToken($token);
-        $user->setTokenExpires($tokenExpires);
-
-        $this->entityManager->flush();
-
-        return true;
+        //  Increase the token expires value - and return the user model
+        return $this->userService->setToken($user->getId(), $user->getToken(),  time() + $this->tokenTtl);
     }
 }
