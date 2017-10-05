@@ -234,15 +234,7 @@ class Claim
             $this->entityManager->persist($verification);
         }
 
-        try {
-            $this->entityManager->flush();
-        } catch (DriverException $ex) {
-            if ($ex->getErrorCode() === 7) {
-                //Duplicate case number
-                throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
-            }
-            throw $ex;
-        }
+        $this->flushPoaChanges($poaModel);
 
         $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
 
@@ -302,7 +294,7 @@ class Claim
             }
         }
 
-        $this->entityManager->flush();
+        $this->flushPoaChanges($poaModel);
 
         $this->addLog($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
 
@@ -384,5 +376,23 @@ class Claim
             'id' => $claimId,
         ]);
         return $claim;
+    }
+
+    /**
+     * @param PoaModel $poaModel
+     * @throws DriverException
+     * @throws Exception
+     */
+    public function flushPoaChanges(PoaModel $poaModel)
+    {
+        try {
+            $this->entityManager->flush();
+        } catch (DriverException $ex) {
+            if ($ex->getErrorCode() === 7) {
+                //Duplicate case number
+                throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
+            }
+            throw $ex;
+        }
     }
 }
