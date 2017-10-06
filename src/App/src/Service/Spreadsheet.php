@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\AbstractEntity;
+use App\Service\Claim as ClaimService;
 use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -19,9 +19,7 @@ use Zend\Crypt\PublicKey\Rsa;
  */
 class Spreadsheet
 {
-    use EntityToModelTrait {
-        translateToDataModel as protected traitTranslateToDataModel;
-    }
+    use EntityToModelTrait;
 
     /**
      * @var EntityRepository
@@ -39,16 +37,22 @@ class Spreadsheet
     private $bankCipher;
 
     /**
+     * @var ClaimService
+     */
+    private $claimService;
+
+    /**
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
      * @param Rsa $bankCipher
      */
-    public function __construct(EntityManager $entityManager, Rsa $bankCipher)
+    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
         $this->bankCipher = $bankCipher;
+        $this->claimService = $claimService;
     }
 
     /**
@@ -58,7 +62,7 @@ class Spreadsheet
      * @param DateTime $date
      * @return ClaimModel[]
      */
-    public function getAllRefundable(DateTime $date)
+    public function getAllRefundable(DateTime $date, int $userId)
     {
         $queryBuilder = $this->repository->createQueryBuilder('c');
 
@@ -85,7 +89,13 @@ class Spreadsheet
 
         $claims = $queryBuilder->getQuery()->getResult();
 
-        return $this->translateToDataModelArray($claims);
+        $refundableClaims = [];
+
+        foreach ($claims as $claim) {
+            $refundableClaims[] = $this->getRefundable($claim, $userId);
+        }
+
+        return $refundableClaims;
     }
 
     public function getAllHistoricRefundDates()
@@ -107,16 +117,20 @@ class Spreadsheet
     }
 
     /**
-     * @param AbstractEntity $entity
-     * @return \Opg\Refunds\Caseworker\DataModel\AbstractDataModel
+     * @param ClaimEntity $entity
+     * @param int $userId
+     * @return ClaimModel
      */
-    public function translateToDataModel($entity)
+    private function getRefundable(ClaimEntity $entity, int $userId)
     {
+        $claimId = $entity->getId();
+
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
-        $claim = $this->traitTranslateToDataModel($entity);
+        $claim = $this->translateToDataModel($entity);
 
         $refundAmount = $this->getRefundTotalAmount($claim);
+        $refundAmountString = money_format('£%i', $refundAmount);
 
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
@@ -124,21 +138,30 @@ class Spreadsheet
             $payment = new PaymentEntity($refundAmount, 'Bank transfer');
             $this->entityManager->persist($payment);
             $entity->setPayment($payment);
-        } else {
+
+            $message = "A refund amount of $refundAmountString was added to the claim";
+            $this->claimService->addNote($claimId, $userId, 'Refund added', $message);
+        } elseif ($entity->getPayment()->getAmount() !== $refundAmount) {
+            $originalPaymentAmount = $entity->getPayment()->getAmount();
+
             //Update amount in case interest has changed
             $entity->getPayment()->setAmount($refundAmount);
+
+            $message = "The refund amount for claim was changed from {money_format('£%i', $originalPaymentAmount)} to $refundAmountString";
+            $this->claimService->addNote($claimId, $userId, 'Refund updated', $message);
         }
 
-        $this->entityManager->flush();
+        $message = "A refundable claim for $refundAmountString was downloaded";
+        $this->claimService->addNote($claimId, $userId, 'Refund downloaded', $message);
 
         //  Retrieve updated claim
         $entity = $this->repository->findOneBy([
-            'id' => $entity->getId(),
+            'id' => $claimId,
         ]);
 
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
-        $claim = $this->traitTranslateToDataModel($entity);
+        $claim = $this->translateToDataModel($entity);
 
         //  Deserialize the application from the JSON data
         $applicationArray = json_decode($entity->getJsonData(), true);
