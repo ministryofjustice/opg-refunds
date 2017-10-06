@@ -81,7 +81,7 @@ class SpreadsheetAction extends AbstractRestfulAction
             $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;
 
             $stream = new Stream($this->spreadsheetGenerator->generateStream($schema, $fileFormat, $spreadsheetWorksheet));
-            $fileName = SpreadsheetFileNameFormatter::getFileName($schema, $fileFormat);
+            $fileName = SpreadsheetFileNameFormatter::getFileName($schema, $fileFormat, $dateString);
 
             $response = new Response();
 

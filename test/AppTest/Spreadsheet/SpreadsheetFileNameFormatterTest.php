@@ -22,10 +22,11 @@ class SpreadsheetFileNameFormatterTest extends TestCase
     {
         $result = $this->formatter->getFileName(
             ISpreadsheetGenerator::SCHEMA_SSCL,
-            ISpreadsheetGenerator::FILE_FORMAT_XLS
+            ISpreadsheetGenerator::FILE_FORMAT_XLS,
+            '2017-10-06'
         );
 
-        $this->assertEquals('OPG Multi-SOP1 Refund Requests.xls', $result);
+        $this->assertEquals('OPG Multi-SOP1 Refund Requests 2017-10-06.xls', $result);
     }
 
     public function testGetTempFileNameSsclXls()
