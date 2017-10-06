@@ -55,6 +55,7 @@ class ConfigProvider
                 Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
