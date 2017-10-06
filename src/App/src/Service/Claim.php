@@ -69,12 +69,20 @@ class Claim
     /**
      * Get all claims
      *
+     * @param int $page
+     * @param int $pageSize
      * @return ClaimModel[]
      */
-    public function getAll()
+    public function search($page = 1, $pageSize = 25)
     {
+        if ($pageSize > 50) {
+            $pageSize = 50;
+        }
+
+        $offset = ($page - 1) * $pageSize;
+
         /** @var ClaimEntity[] $claims */
-        $claims = $this->claimRepository->findBy([]);
+        $claims = $this->claimRepository->findBy([], 'receivedDateTime', $pageSize, $offset);
 
         return $this->translateToDataModelArray($claims);
     }

@@ -34,9 +34,10 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 //  Authenticated routes
 $prefix = '/v1/cases';
 
-$app->route($prefix . '/claim[/{id:\d+}]', App\Action\ClaimAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'claim');
+$app->route($prefix . '/claim/{id:\d+}', App\Action\ClaimAction::class, ['GET', 'PATCH'], 'claim');
 $app->route($prefix . '/claim/{claimId:\d+}/note[/{id:\d+}]', App\Action\ClaimNoteAction::class, ['GET', 'POST'], 'claim.log');
 $app->route($prefix . '/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
+$app->get($prefix . '/claim/search', App\Action\ClaimSearchAction::class, 'claim.search');
 $app->route($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');
 $app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
 $app->get($prefix . '/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, 'spreadsheet');
