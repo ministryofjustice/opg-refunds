@@ -36,7 +36,10 @@ class DownloadAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $refundSpreadsheet = $this->refundService->getRefundSpreadsheet(new DateTime());
+        $dateString = $request->getAttribute('date');
+        $date = $dateString === null ? new DateTime('today') : new DateTime($dateString);
+
+        $refundSpreadsheet = $this->refundService->getRefundSpreadsheet($date);
 
         $response = new Response();
 
