@@ -27,8 +27,8 @@ class DateFormatterPlatesExtension implements ExtensionInterface
     {
         $engine->registerFunction('getDayAndFullTextMonth', [$this, 'getDayAndFullTextMonth']);
         $engine->registerFunction('getTimeIntervalAgo', [$this, 'getTimeIntervalAgo']);
-        $engine->registerFunction('getLogDateString', [$this, 'getLogDateString']);
-        $engine->registerFunction('getLogTimeString', [$this, 'getLogTimeString']);
+        $engine->registerFunction('getNoteDateString', [$this, 'getNoteDateString']);
+        $engine->registerFunction('getNoteTimeString', [$this, 'getNoteTimeString']);
         $engine->registerFunction('getDateOfBirthString', [$this, 'getDateOfBirthString']);
         $engine->registerFunction('getReceivedDateString', [$this, 'getReceivedDateString']);
     }
@@ -89,7 +89,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      * @param DateTime $dateTime
      * @return false|string
      */
-    public function getLogDateString($dateTime)
+    public function getNoteDateString($dateTime)
     {
         return date('d M Y', $dateTime->getTimestamp());
     }
@@ -98,7 +98,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      * @param DateTime $dateTime
      * @return false|string
      */
-    public function getLogTimeString($dateTime)
+    public function getNoteTimeString($dateTime)
     {
         return date('H:i', $dateTime->getTimestamp());
     }
