@@ -4,21 +4,21 @@ namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="log")
+ * @ORM\Entity @ORM\Table(name="note")
  **/
-class Log extends AbstractEntity
+class Note extends AbstractEntity
 {
     /**
      * Class of the datamodel that this entity can be converted to
      *
      * @var string
      */
-    protected $dataModelClass = LogModel::class;
+    protected $dataModelClass = NoteModel::class;
 
     /**
      * @var int
