@@ -3,6 +3,7 @@
 namespace App\Action;
 
 use App\Service\Spreadsheet;
+use App\Service\User as UserService;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
@@ -30,7 +31,8 @@ class SpreadsheetActionFactory
         return new SpreadsheetAction(
             $container->get(Spreadsheet::class),
             $spreadsheetWorksheetGenerator,
-            $spreadsheetGenerator
+            $spreadsheetGenerator,
+            $container->get(UserService::class)
         );
     }
 }

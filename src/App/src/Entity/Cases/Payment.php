@@ -53,16 +53,14 @@ class Payment extends AbstractEntity
 
     /**
      * @var Claim
-     * @ORM\OneToOne(targetEntity="Claim", inversedBy="payment")
-     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Claim", mappedBy="payment")
      */
     protected $claim;
 
-    public function __construct(float $amount, string $method, Claim $claim)
+    public function __construct(float $amount, string $method)
     {
         $this->amount = $amount;
         $this->method = $method;
-        $this->claim = $claim;
 
         $this->addedDateTime = new DateTime();
     }
