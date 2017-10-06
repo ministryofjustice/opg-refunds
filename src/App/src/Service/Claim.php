@@ -7,6 +7,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
@@ -71,20 +72,33 @@ class Claim
      *
      * @param int $page
      * @param int $pageSize
-     * @return ClaimModel[]
+     * @return ClaimPage
      */
-    public function search($page = 1, $pageSize = 25)
+    public function search($page, $pageSize)
     {
-        if ($pageSize > 50) {
+        if ($page === null) {
+            $page = 1;
+        }
+
+        if ($pageSize === null) {
+            $pageSize = 25;
+        } elseif ($pageSize > 50) {
             $pageSize = 50;
         }
 
         $offset = ($page - 1) * $pageSize;
 
         /** @var ClaimEntity[] $claims */
-        $claims = $this->claimRepository->findBy([], 'receivedDateTime', $pageSize, $offset);
+        $claims = $this->claimRepository->findBy([], ['receivedDateTime' => 'ASC'], $pageSize, $offset);
 
-        return $this->translateToDataModelArray($claims);
+        //TODO: Set page count and total
+        $claimPage = new ClaimPage();
+        $claimPage
+            ->setPage($page)
+            ->setPageSize($pageSize)
+            ->setClaims($this->translateToDataModelArray($claims));
+
+        return $claimPage;
     }
 
     /**

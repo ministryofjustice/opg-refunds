@@ -41,13 +41,8 @@ class ClaimSearchAction extends AbstractRestfulAction
         $pageSize = $request->getAttribute('pageSize');
 
         //  Search claims
-        $claims = $this->claimService->search($page, $pageSize);
-        $claimsData = [];
+        $claimPage = $this->claimService->search($page, $pageSize);
 
-        foreach ($claims as $claim) {
-            $claimsData[] = $claim->getArrayCopy();
-        }
-
-        return new JsonResponse($claimsData);
+        return new JsonResponse($claimPage->getArrayCopy());
     }
 }
