@@ -71,19 +71,39 @@ class Spreadsheet
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
             // Retrieving a previous spreadsheet
+            $startDateTime = clone $date;
+            $endDateTime = $date->add(new DateInterval('P1D'));
             $queryBuilder->join('c.payment', 'p')
                 ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setParameters([
                     'status' => ClaimModel::STATUS_ACCEPTED,
-                    'startDateTime' => $date,
-                    'endDateTime' => $date->add(new DateInterval('P1D'))
+                    'startDateTime' => $startDateTime,
+                    'endDateTime' => $endDateTime
                 ]);
         }
 
         $claims = $queryBuilder->getQuery()->getResult();
 
         return $this->translateToDataModelArray($claims);
+    }
+
+    public function getAllHistoricRefundDates()
+    {
+        $historicRefundDates = [];
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE'
+        );
+
+        $results = $statement->fetchAll();
+
+        foreach ($results as $result) {
+            $historicRefundDate = new DateTime($result['historic_refund_date']);
+            $historicRefundDates[] = date('Y-m-d', $historicRefundDate->getTimestamp());
+        }
+
+        return $historicRefundDates;
     }
 
     /**
