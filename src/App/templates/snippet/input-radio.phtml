@@ -12,11 +12,13 @@ $value = $formElement->getValue();
 
     <fieldset>
 
-        <legend class="visually-hidden"><?= $this->e($question) ?></legend>
-
-        <?php foreach($formElement->getMessages() as $message): ?>
-            <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
-        <?php endforeach ?>
+        <legend id="<?= "{$elementId}" ?>"">
+            <span class="visually-hidden"><?= $this->e($question) ?></span>
+            
+            <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
+            <?php endforeach ?>
+        </legend>
 
         <?php foreach($options as $name => $option): ?>
 
