@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\AbstractEntity;
+use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -51,15 +52,36 @@ class Spreadsheet
     }
 
     /**
-     * Get all refundable claims
+     * Get all refundable claims for a specific date. Using today will retrieve all newly accepted claims up to a
+     * maximum of 3000
      *
+     * @param DateTime $date
      * @return ClaimModel[]
      */
     public function getAllRefundable(DateTime $date)
     {
-        $claims = $this->repository->findBy([
-            'status' => ClaimModel::STATUS_ACCEPTED
-        ]);
+        $queryBuilder = $this->repository->createQueryBuilder('c');
+
+        if ($date == new DateTime('today')) {
+            // Creating today's spreadsheet
+            $queryBuilder->leftJoin('c.payment', 'p')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today)')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setMaxResults(3000)
+                ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
+        } else {
+            // Retrieving a previous spreadsheet
+            $queryBuilder->join('c.payment', 'p')
+                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setParameters([
+                    'status' => ClaimModel::STATUS_ACCEPTED,
+                    'startDateTime' => $date,
+                    'endDateTime' => $date->add(new DateInterval('P1D'))
+                ]);
+        }
+
+        $claims = $queryBuilder->getQuery()->getResult();
 
         return $this->translateToDataModelArray($claims);
     }

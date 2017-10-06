@@ -53,8 +53,7 @@ class Payment extends AbstractEntity
 
     /**
      * @var Claim
-     * @ORM\OneToOne(targetEntity="Claim", inversedBy="payment")
-     * @ORM\JoinColumn(name="claim_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Claim", mappedBy="payment")
      */
     protected $claim;
 

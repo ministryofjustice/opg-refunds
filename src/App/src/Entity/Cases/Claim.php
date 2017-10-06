@@ -123,7 +123,8 @@ class Claim extends AbstractEntity
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="Payment", inversedBy="claim", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
      */
     protected $payment;
 
