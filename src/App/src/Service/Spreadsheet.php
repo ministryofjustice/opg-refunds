@@ -141,13 +141,14 @@ class Spreadsheet
 
             $message = "A refund amount of $refundAmountString was added to the claim";
             $this->claimService->addNote($claimId, $userId, 'Refund added', $message);
-        } elseif ($entity->getPayment()->getAmount() !== $refundAmount) {
+        } elseif (abs(($entity->getPayment()->getAmount()-$refundAmount)/$refundAmount) > 0.00001) {
             $originalPaymentAmount = $entity->getPayment()->getAmount();
 
             //Update amount in case interest has changed
             $entity->getPayment()->setAmount($refundAmount);
 
-            $message = "The refund amount for claim was changed from {money_format('£%i', $originalPaymentAmount)} to $refundAmountString";
+            $newRefundAmountString = money_format('£%i', $originalPaymentAmount);
+            $message = "The refund amount for claim was changed from $refundAmountString to $newRefundAmountString";
             $this->claimService->addNote($claimId, $userId, 'Refund updated', $message);
         }
 
