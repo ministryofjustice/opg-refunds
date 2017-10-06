@@ -101,8 +101,9 @@ class Spreadsheet
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
             //Create and persist payment
-            $payment = new PaymentEntity($refundAmount, 'Bank transfer', $entity);
+            $payment = new PaymentEntity($refundAmount, 'Bank transfer');
             $this->entityManager->persist($payment);
+            $entity->setPayment($payment);
         } else {
             //Update amount in case interest has changed
             $entity->getPayment()->setAmount($refundAmount);

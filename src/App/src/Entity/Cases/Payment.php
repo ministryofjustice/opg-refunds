@@ -57,11 +57,10 @@ class Payment extends AbstractEntity
      */
     protected $claim;
 
-    public function __construct(float $amount, string $method, Claim $claim)
+    public function __construct(float $amount, string $method)
     {
         $this->amount = $amount;
         $this->method = $method;
-        $this->claim = $claim;
 
         $this->addedDateTime = new DateTime();
     }
