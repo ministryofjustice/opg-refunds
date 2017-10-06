@@ -63,7 +63,7 @@ class SpreadsheetAction extends AbstractRestfulAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $dateString = $request->getAttribute('id');
+        $dateString = $request->getAttribute('date');
 
         if ($dateString === null) {
             // Get all historic refund dates
