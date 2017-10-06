@@ -56,6 +56,9 @@
                                 <li>
                                     <a href="<?= $this->generateUrl('home') ?>" class="active">Your claims</a>
                                 </li>
+                                <li>
+                                    <a href="<?= $this->generateUrl('claim.search') ?>" class="active">Search</a>
+                                </li>
                                 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND, $identity->getRoles())) { ?>
                                     <li>
                                         <a href="<?= $this->generateUrl('refund') ?>" class="">Refunds</a>
@@ -66,9 +69,6 @@
                                         <a href="<?= $this->generateUrl('user', ['id' => null]) ?>" class="">Users</a>
                                     </li>
                                 <?php } ?>
-                                <li>
-                                    <a href="<?= $this->generateUrl('claim.search') ?>" class="active">Search</a>
-                                </li>
                                 <li>
                                     <a href="#" class="">FAQs</a>
                                 </li>
