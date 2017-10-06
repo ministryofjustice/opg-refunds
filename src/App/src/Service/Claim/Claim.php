@@ -15,7 +15,7 @@ class Claim implements ApiClientInterface
     use ApiClientTrait;
 
     /**
-     * Retrieves the next available, unassigned Claim, assigns it to the currently noteged in user and returns it
+     * Retrieves the next available, unassigned Claim, assigns it to the currently logged in user and returns it
      *
      * @param int $userId user id to assign claim to
      * @return int the id of the next case to process. Will be zero if none was assigned
