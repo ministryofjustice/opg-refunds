@@ -8,8 +8,8 @@
 $this->addErrorMap([
     'message' => [
         'required' => [
-            'summary'   => 'Please enter a user log message',
-            'field'     => 'Enter a user log message'
+            'summary'   => 'Please enter a user note',
+            'field'     => 'Enter a user note'
         ]
     ]
 ]);
@@ -110,34 +110,34 @@ $this->addErrorMap([
     </form>
 </div>
 
-<h2 class="heading-medium heading-refunds">User log</h2>
+<h2 class="heading-medium heading-refunds">User note</h2>
 <form method="post" class="form">
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('message'),
-        'formLabel' => 'Add a user log',
+        'formLabel' => 'Add a user note',
         'formType' => 'textarea',
         'formLabelBold' => false,
         'additionFormControlClass' => 'form-control-3-4'
     ]) ?>
 
-    <input class="button button-secondary" type="submit" value="Submit log">
+    <input class="button button-secondary" type="submit" value="Submit note">
 </form>
 
 <h2 class="heading-medium heading-refunds">Timeline</h2>
 
 <div class="timeline">
     <ul>
-        <?php foreach ($claim->getLogs() as $log) { ?>
-            <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Log $log */ ?>
+        <?php foreach ($claim->getNotes() as $note) { ?>
+            <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Note $note */ ?>
             <li>
-                <p class="timeline-reference"><?= $this->getLogDateString($log->getCreatedDateTime()) ?> <span class="time"><?= $this->getLogTimeString($log->getCreatedDateTime()) ?></span></p>
-                <h2><?= $log->getTitle() ?></h2>
-                <p><?= $log->getMessage() ?></p>
-                <?php if ($log->getUserName() !== null) { ?>
-                    <p>by <?= $log->getUserName() ?></p>
+                <p class="timeline-reference"><?= $this->getNoteDateString($note->getCreatedDateTime()) ?> <span class="time"><?= $this->getNoteTimeString($note->getCreatedDateTime()) ?></span></p>
+                <h2><?= $note->getTitle() ?></h2>
+                <p><?= $note->getMessage() ?></p>
+                <?php if ($note->getUserName() !== null) { ?>
+                    <p>by <?= $note->getUserName() ?></p>
                 <?php } ?>
             </li>
         <?php } ?>
