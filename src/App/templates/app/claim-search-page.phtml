@@ -1,9 +1,52 @@
 <?php $this->layout('layout::default', ['title' => 'Search claims']) ?>
+<?php
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage $claimPage
+ */
+?>
 
 <div class="grid-row">
     <div class="column-full">
 
         <h2 class="heading-medium heading-refunds">Search claims</h2>
+
+        <?php if (count($claimPage->getClaims()) > 0) { ?>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Claim code</th>
+                    <th>Donor name</th>
+                    <th>Received</th>
+                    <th>Modified</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach ($claimPage->getClaims() as $claim) { ?>
+                    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
+                    <tr>
+                        <td><?= $claim->getReferenceNumber() ?></td>
+                        <td><?= $claim->getDonorName() ?></td>
+                        <td><?= $this->getDayAndFullTextMonth($claim->getReceivedDateTime()) ?></td>
+                        <td><?= $this->getTimeIntervalAgo($claim->getUpdatedDateTime()) ?></td>
+                        <td><?= $claim->getAssignedToId() ?></td>
+                        <td><?= $claim->getStatus() ?></td>
+                    </tr>
+                <?php } ?>
+
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+            <table>
+                <tr>
+                    <td colspan="6">No claims found</td>
+                </tr>
+            </table>
+        <?php } ?>
 
     </div>
 </div>

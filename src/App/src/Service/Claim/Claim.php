@@ -6,6 +6,7 @@ use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -49,15 +50,24 @@ class Claim implements ApiClientInterface
     }
 
     /**
-     * Get all claims
+     * Search claims
      *
-     * @return array
+     * @return ClaimPage
      */
-    public function getClaims()
+    public function searchClaims($page, $pageSize)
     {
-        $claimsData = $this->getApiClient()->httpGet('/v1/cases/claim');
+        $queryParameters = [];
+        if ($page != null) {
+            $queryParameters[] = 'page=' . $page;
+        }
+        if ($pageSize != null) {
+            $queryParameters[] = 'pageSize=' . $pageSize;
+        }
 
-        return $this->createModelCollection($claimsData);
+        $claimPageData = $this->getApiClient()->httpGet('/v1/cases/claim/search?' . join('&', $queryParameters));
+        $claimPage = new ClaimPage($claimPageData);
+
+        return $claimPage;
     }
 
     /**

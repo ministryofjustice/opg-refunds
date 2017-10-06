@@ -4,6 +4,7 @@ namespace App\Action\Claim;
 
 use App\Service\Claim\Claim as ClaimService;
 use App\Action\AbstractAction;
+use Fig\Http\Message\RequestMethodInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -35,6 +36,19 @@ class ClaimSearchAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-search-page'));
+        if ($request->getMethod() === RequestMethodInterface::METHOD_POST) {
+            //  Search
+        }
+
+        $queryParameters = $request->getQueryParams();
+
+        $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
+        $pageSize = isset($queryParameters['page']) ? $queryParameters['pageSize'] : null;
+
+        $claimPage = $this->claimService->searchClaims($page, $pageSize);
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-search-page', [
+            'claimPage' => $claimPage
+        ]));
     }
 }
