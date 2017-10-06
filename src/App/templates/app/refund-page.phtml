@@ -10,7 +10,9 @@
         <h2 class="heading-medium heading-refunds">Historic Refunds</h2>
 
         <ul>
-            <li><a href="<?= $this->generateUrl('download', ['date' => '2017-10-05']) ?>">05 October 2017</a></li>
+            <?php foreach ($historicRefundDates as $historicRefundDate) { ?>
+                <li><a href="<?= $this->generateUrl('download', ['date' => $historicRefundDate]) ?>"><?= $this->getHistoricRefundDateString($historicRefundDate) ?></a></li>
+            <?php } ?>
         </ul>
 
     </div>

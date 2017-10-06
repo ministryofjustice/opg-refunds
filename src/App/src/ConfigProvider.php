@@ -40,7 +40,6 @@ class ConfigProvider
             'invokables' => [
                 //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
                 Action\Password\PasswordResetAction::class => Action\Password\PasswordResetAction::class,
 
@@ -62,6 +61,7 @@ class ConfigProvider
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
                 Action\DownloadAction::class => Action\DownloadActionFactory::class,
+                Action\RefundAction::class => Action\RefundActionFactory::class,
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
