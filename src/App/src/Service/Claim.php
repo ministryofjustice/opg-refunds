@@ -7,11 +7,11 @@ use Doctrine\DBAL\Exception\DriverException;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\User as UserEntity;
-use App\Entity\Cases\Note as LogEntity;
+use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
@@ -136,7 +136,7 @@ class Claim
         if ($updateCount === 1) {
             $assignedClaimId = $result[0]['id'];
 
-            $this->addLog(
+            $this->addNote(
                 $assignedClaimId,
                 $userId,
                 'Claim started by caseworker',
@@ -155,14 +155,14 @@ class Claim
         $claim->setUpdatedDateTime(new DateTime());
 
         if ($noSiriusPoas) {
-            $this->addLog(
+            $this->addNote(
                 $claimId,
                 $userId,
                 'No Sirius POAs',
                 "Caseworker confirmed that they could not find any Sirius POAs for this claim"
             );
         } else {
-            $this->addLog(
+            $this->addNote(
                 $claimId,
                 $userId,
                 'Sirius POA found',
@@ -179,14 +179,14 @@ class Claim
         $claim->setUpdatedDateTime(new DateTime());
 
         if ($noMerisPoas) {
-            $this->addLog(
+            $this->addNote(
                 $claimId,
                 $userId,
                 'No Meris POAs',
                 "Caseworker confirmed that they could not find any Meris POAs for this claim"
             );
         } else {
-            $this->addLog(
+            $this->addNote(
                 $claimId,
                 $userId,
                 'Meris POA found',
@@ -200,9 +200,9 @@ class Claim
      * @param int $userId
      * @param string $title
      * @param string $message
-     * @return LogModel
+     * @return NoteModel
      */
-    public function addLog(int $claimId, int $userId, string $title, string $message)
+    public function addNote(int $claimId, int $userId, string $title, string $message)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -211,14 +211,14 @@ class Claim
             'id' => $userId,
         ]);
 
-        $log = new LogEntity($title, $message, $claim, $user);
+        $note = new NoteEntity($title, $message, $claim, $user);
 
-        $this->entityManager->persist($log);
+        $this->entityManager->persist($note);
         $this->entityManager->flush();
 
-        /** @var LogModel $logModel */
-        $logModel = $this->translateToDataModel($log);
-        return $logModel;
+        /** @var NoteModel $noteModel */
+        $noteModel = $this->translateToDataModel($note);
+        return $noteModel;
     }
 
     public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
@@ -236,7 +236,7 @@ class Claim
 
         $this->flushPoaChanges($poaModel);
 
-        $this->addLog($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
+        $this->addNote($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -296,7 +296,7 @@ class Claim
 
         $this->flushPoaChanges($poaModel);
 
-        $this->addLog($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
+        $this->addNote($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -318,7 +318,7 @@ class Claim
         $this->entityManager->remove($poa);
         $this->entityManager->flush();
 
-        $this->addLog($claimId, $userId, 'POA delete', "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details");
+        $this->addNote($claimId, $userId, 'POA delete', "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details");
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -337,7 +337,7 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
-        $this->addLog(
+        $this->addNote(
             $claimId,
             $userId,
             'Claim accepted',
@@ -357,7 +357,7 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
-        $this->addLog(
+        $this->addNote(
             $claimId,
             $userId,
             'Claim rejected',

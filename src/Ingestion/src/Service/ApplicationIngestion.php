@@ -119,9 +119,9 @@ class ApplicationIngestion
                     }
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
-                    $log = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
+                    $note = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
 
-                    $this->casesEntityManager->persist($log);
+                    $this->casesEntityManager->persist($note);
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);

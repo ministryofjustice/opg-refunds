@@ -7,18 +7,18 @@ use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimLogActionFactory
+ * Class ClaimNoteActionFactory
  * @package App\Action
  */
-class ClaimLogActionFactory
+class ClaimNoteActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimLogAction
+     * @return ClaimNoteAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimLogAction(
+        return new ClaimNoteAction(
             $container->get(ClaimService::class),
             $container->get(UserService::class)
         );
