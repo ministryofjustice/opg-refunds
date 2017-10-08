@@ -221,9 +221,10 @@ class User extends AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Claims' => 'AssignedClaims',
@@ -232,7 +233,7 @@ class User extends AbstractEntity
             },
         ]);
 
-        return parent::getAsDataModel($modelToEntityMappings);
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 
     /**

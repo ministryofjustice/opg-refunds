@@ -4,28 +4,32 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractPage;
 
-class ClaimPage extends AbstractPage
+/**
+ * Class ClaimSummaryPage
+ * @package Opg\Refunds\Caseworker\DataModel\Cases
+ */
+class ClaimSummaryPage extends AbstractPage
 {
     /**
-     * @var Claim[]
+     * @var ClaimSummary[]
      */
-    protected $claims;
+    protected $claimSummaries;
 
     /**
-     * @return Claim[]
+     * @return ClaimSummary[]
      */
-    public function getClaims()
+    public function getClaimSummaries()
     {
-        return $this->claims;
+        return $this->claimSummaries;
     }
 
     /**
-     * @param Claim[] $claims
+     * @param Claim[] $claimSummaries
      * @return $this
      */
-    public function setClaims(array $claims): ClaimPage
+    public function setClaimSummaries(array $claimSummaries): ClaimSummaryPage
     {
-        $this->claims = $claims;
+        $this->claimSummaries = $claimSummaries;
 
         return $this;
     }
@@ -40,9 +44,9 @@ class ClaimPage extends AbstractPage
     protected function map($property, $value)
     {
         switch ($property) {
-            case 'claims':
+            case 'claimSummaries':
                 return array_map(function ($value) {
-                    return ($value instanceof Claim ? $value : new Claim($value));
+                    return ($value instanceof ClaimSummary ? $value : new ClaimSummary($value));
                 }, $value);
             default:
                 return parent::map($property, $value);

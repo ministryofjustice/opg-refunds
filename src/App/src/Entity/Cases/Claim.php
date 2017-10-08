@@ -467,9 +467,10 @@ class Claim extends AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Application' => function () {
@@ -478,8 +479,14 @@ class Claim extends AbstractEntity
             'AssignedToId' => function () {
                 return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getId() : null);
             },
+            'AssignedToName' => function () {
+                return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getName() : null);
+            },
+            'AssignedToStatus' => function () {
+                return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getStatus() : null);
+            },
         ]);
 
-        return parent::getAsDataModel($modelToEntityMappings);
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 }

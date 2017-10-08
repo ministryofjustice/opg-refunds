@@ -5,6 +5,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 /**
  * Class Claim
@@ -137,7 +138,7 @@ class Claim extends AbstractDataModel
     public function getReferenceNumber(): string
     {
         if (!is_null($this->id)) {
-            return trim(chunk_split('R' . sprintf("%011d", $this->id), 4, ' '));
+            return IdentFormatter::format($this->id);
         }
 
         return null;

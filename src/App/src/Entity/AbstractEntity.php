@@ -24,16 +24,19 @@ abstract class AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      * @throws Exception
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
     {
-        if (empty($this->dataModelClass)) {
+        $dataModelClass = $dataModelClass ?: $this->dataModelClass;
+
+        if (empty($dataModelClass)) {
             throw new Exception('Model class string must be provided for conversion');
         }
 
-        $model = new $this->dataModelClass();
+        $model = new $dataModelClass();
 
         //  Process any callbacks in the model to entity mappings then UNSET THEM
         foreach ($modelToEntityMappings as $modelFieldName => $callbackMapping) {

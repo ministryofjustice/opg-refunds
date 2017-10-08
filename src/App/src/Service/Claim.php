@@ -8,7 +8,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
@@ -73,7 +74,7 @@ class Claim
      *
      * @param int $page
      * @param int $pageSize
-     * @return ClaimPage
+     * @return ClaimSummaryPage
      */
     public function search($page, $pageSize)
     {
@@ -103,21 +104,21 @@ class Claim
         $total = count($paginator);
         $pageCount = ceil($total/$pageSize);
 
-        $claims = [];
+        $claimSummaries = [];
 
         foreach ($paginator as $claim) {
-            $claims[] = $this->translateToDataModel($claim);
+            $claimSummaries[] = $this->translateToDataModel($claim, ClaimSummaryModel::class);
         }
 
-        $claimPage = new ClaimPage();
-        $claimPage
+        $claimSummaryPage = new ClaimSummaryPage();
+        $claimSummaryPage
             ->setPage($page)
             ->setPageSize($pageSize)
             ->setPageCount($pageCount)
             ->setTotal($total)
-            ->setClaims($claims);
+            ->setClaimSummaries($claimSummaries);
 
-        return $claimPage;
+        return $claimSummaryPage;
     }
 
     /**

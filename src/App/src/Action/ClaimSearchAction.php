@@ -43,8 +43,8 @@ class ClaimSearchAction extends AbstractRestfulAction
         $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
 
         //  Search claims
-        $claimPage = $this->claimService->search($page, $pageSize);
+        $claimSummaryPage = $this->claimService->search($page, $pageSize);
 
-        return new JsonResponse($claimPage->getArrayCopy());
+        return new JsonResponse($claimSummaryPage->getArrayCopy());
     }
 }
