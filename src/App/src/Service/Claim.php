@@ -72,11 +72,14 @@ class Claim
     /**
      * Get all claims
      *
-     * @param int $page
-     * @param int $pageSize
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $donorName
+     * @param int|null $assignedToId
+     * @param string|null $status
      * @return ClaimSummaryPage
      */
-    public function search($page, $pageSize)
+    public function search($page, $pageSize, $donorName, $assignedToId, $status)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
@@ -91,15 +94,40 @@ class Claim
             $pageSize = 50;
         }
 
+        $join = '';
+        $whereClauses = [];
+        $parameters = [];
+
+        if (isset($donorName)) {
+            $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
+            $parameters['donorName'] = "%{$donorName}%";
+        }
+
+        if (isset($assignedToId)) {
+            $join = ' JOIN c.assignedTo u';
+            $whereClauses[] = 'u.id = :assignedToId';
+            $parameters['assignedToId'] = $assignedToId;
+        }
+
+        if (isset($status)) {
+            $whereClauses[] = 'c.status = :status';
+            $parameters['status'] = $status;
+        }
+
         $offset = ($page - 1) * $pageSize;
 
         // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
-        $dql = "SELECT c FROM App\Entity\Cases\Claim c ORDER BY c.receivedDateTime ASC";
+        $dql = 'SELECT c FROM App\Entity\Cases\Claim c' . $join;
+        if (count($whereClauses) > 0) {
+            $dql .= ' WHERE ' . join(' AND ', $whereClauses);
+        }
+        $dql .= ' ORDER BY c.receivedDateTime ASC';
         $query = $this->entityManager->createQuery($dql)
+            ->setParameters($parameters)
             ->setFirstResult($offset)
             ->setMaxResults($pageSize);
 
-        $paginator = new Paginator($query, false);
+        $paginator = new Paginator($query, true);
 
         $total = count($paginator);
         $pageCount = ceil($total/$pageSize);
