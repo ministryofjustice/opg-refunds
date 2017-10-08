@@ -37,8 +37,10 @@ class ClaimSearchAction extends AbstractRestfulAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $page = $request->getAttribute('page');
-        $pageSize = $request->getAttribute('pageSize');
+        $queryParameters = $request->getQueryParams();
+
+        $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
+        $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
 
         //  Search claims
         $claimPage = $this->claimService->search($page, $pageSize);

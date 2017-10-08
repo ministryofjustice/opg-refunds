@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -76,27 +77,45 @@ class Claim
      */
     public function search($page, $pageSize)
     {
+        //TODO: Get proper migration running via cron job
+        $this->applicationIngestionService->ingestAllApplication();
+
         if ($page === null) {
             $page = 1;
         }
 
         if ($pageSize === null) {
-            $pageSize = 25;
+            $pageSize = 10;
         } elseif ($pageSize > 50) {
             $pageSize = 50;
         }
 
         $offset = ($page - 1) * $pageSize;
 
-        /** @var ClaimEntity[] $claims */
-        $claims = $this->claimRepository->findBy([], ['receivedDateTime' => 'ASC'], $pageSize, $offset);
+        // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
+        $dql = "SELECT c FROM App\Entity\Cases\Claim c ORDER BY c.receivedDateTime ASC";
+        $query = $this->entityManager->createQuery($dql)
+            ->setFirstResult($offset)
+            ->setMaxResults($pageSize);
 
-        //TODO: Set page count and total
+        $paginator = new Paginator($query, false);
+
+        $total = count($paginator);
+        $pageCount = ceil($total/$pageSize);
+
+        $claims = [];
+
+        foreach ($paginator as $claim) {
+            $claims[] = $this->translateToDataModel($claim);
+        }
+
         $claimPage = new ClaimPage();
         $claimPage
             ->setPage($page)
             ->setPageSize($pageSize)
-            ->setClaims($this->translateToDataModelArray($claims));
+            ->setPageCount($pageCount)
+            ->setTotal($total)
+            ->setClaims($claims);
 
         return $claimPage;
     }

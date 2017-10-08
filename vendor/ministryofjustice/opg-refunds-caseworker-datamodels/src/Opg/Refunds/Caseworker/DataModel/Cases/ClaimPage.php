@@ -14,7 +14,7 @@ class ClaimPage extends AbstractPage
     /**
      * @return Claim[]
      */
-    public function getClaims(): array
+    public function getClaims()
     {
         return $this->claims;
     }

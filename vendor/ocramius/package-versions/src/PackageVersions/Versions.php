@@ -11,7 +11,7 @@ namespace PackageVersions;
 final class Versions
 {
     const VERSIONS = array (
-  'aws/aws-sdk-php' => '3.36.21@010aea6ccdc76ad63fdca556f9a408544d390dfb',
+  'aws/aws-sdk-php' => '3.36.23@755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.0.0@a4833d25dcfa42165c4ddec0c7062528206eeadc',
   'doctrine/annotations' => 'v1.4.0@54cacc9b81758b14e3ce750f205a393d52339e97',
@@ -29,7 +29,7 @@ final class Versions
   'guzzlehttp/promises' => 'v1.3.1@a59da6cf61d80060647ff4d3eb2c03a2bc694646',
   'guzzlehttp/psr7' => '1.4.2@f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-search-claims@72cae3c423d4a2f54aae904b1d17b15d943b7f61',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-search-claims@26b33fe5f69d5d950c018290d82fdd562cd477fe',
   'ministryofjustice/opg-refunds-logger' => 'v1.1.0@84fb465fa7eddd22e47c46de8111a46cf54cacfa',
   'mtdowling/jmespath.php' => '2.4.0@adcc9531682cf87dfda21e1fd5d0e7a41d292fac',
   'nikic/fast-route' => 'v1.2.0@b5f95749071c82a8e0f58586987627054400cdf6',
@@ -76,7 +76,7 @@ final class Versions
   'phpunit/php-text-template' => '1.2.1@31f8b717e51d9a2afca6c9f046f5d69fc27c8686',
   'phpunit/php-timer' => '1.0.9@3dcf38ca72b158baf0bc245e9184d3fdffa9c46f',
   'phpunit/php-token-stream' => '2.0.1@9a02332089ac48e704c70f6cefed30c224e3c0b0',
-  'phpunit/phpunit' => '6.4.0@a1bcaca096998de32c29535fdd2dea0c475e8f61',
+  'phpunit/phpunit' => '6.4.1@b770d8ba7e60295ee91d69d5a5e01ae833cac220',
   'phpunit/phpunit-mock-objects' => '4.0.4@2f789b59ab89669015ad984afa350c4ec577ade0',
   'sebastian/code-unit-reverse-lookup' => '1.0.1@4419fcdb5eabb9caa61a27c7a1db532a6b55dd18',
   'sebastian/comparator' => '2.0.2@ae068fede81d06e7bb9bb46a367210a3d3e1fe6a',
@@ -95,7 +95,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-search-claims@75a5a324cf02bbbe7158f0a16582538c8a026fe9',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-search-claims@c3cb4d7f8525a73e0a07c6260dc2e4980f78b4d6',
 );
 
     private function __construct()

@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.36.21",
+            "version": "3.36.23",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "010aea6ccdc76ad63fdca556f9a408544d390dfb"
+                "reference": "755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/010aea6ccdc76ad63fdca556f9a408544d390dfb",
-                "reference": "010aea6ccdc76ad63fdca556f9a408544d390dfb",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060",
+                "reference": "755ff10ad2ea4ebb04b4e2b150a4a4fb13a22060",
                 "shasum": ""
             },
             "require": {
@@ -84,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-10-05T19:28:13+00:00"
+            "time": "2017-10-06T22:26:58+00:00"
         },
         {
             "name": "container-interop/container-interop",
@@ -1119,12 +1119,12 @@
             "source": {
                 "type": "git",
                 "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "72cae3c423d4a2f54aae904b1d17b15d943b7f61"
+                "reference": "26b33fe5f69d5d950c018290d82fdd562cd477fe"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/72cae3c423d4a2f54aae904b1d17b15d943b7f61",
-                "reference": "72cae3c423d4a2f54aae904b1d17b15d943b7f61",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/26b33fe5f69d5d950c018290d82fdd562cd477fe",
+                "reference": "26b33fe5f69d5d950c018290d82fdd562cd477fe",
                 "shasum": ""
             },
             "require": {
@@ -1147,7 +1147,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/search-claims",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-10-06T15:51:13+00:00"
+            "time": "2017-10-08T13:02:14+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
@@ -3704,16 +3704,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.4.0",
+            "version": "6.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "a1bcaca096998de32c29535fdd2dea0c475e8f61"
+                "reference": "b770d8ba7e60295ee91d69d5a5e01ae833cac220"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/a1bcaca096998de32c29535fdd2dea0c475e8f61",
-                "reference": "a1bcaca096998de32c29535fdd2dea0c475e8f61",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/b770d8ba7e60295ee91d69d5a5e01ae833cac220",
+                "reference": "b770d8ba7e60295ee91d69d5a5e01ae833cac220",
                 "shasum": ""
             },
             "require": {
@@ -3784,7 +3784,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-10-06T03:14:57+00:00"
+            "time": "2017-10-07T17:53:53+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
