@@ -52,9 +52,14 @@ class Claim implements ApiClientInterface
     /**
      * Search claims
      *
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $donorName
+     * @param int|null $assignedToId
+     * @param string|null $status
      * @return ClaimSummaryPage
      */
-    public function searchClaims($page, $pageSize)
+    public function searchClaims($page, $pageSize, $donorName, $assignedToId, $status)
     {
         $queryParameters = [];
         if ($page != null) {
@@ -62,6 +67,15 @@ class Claim implements ApiClientInterface
         }
         if ($pageSize != null) {
             $queryParameters['pageSize'] = $pageSize;
+        }
+        if ($donorName != null) {
+            $queryParameters['donorName'] = $donorName;
+        }
+        if ($assignedToId != null) {
+            $queryParameters['assignedToId'] = $assignedToId;
+        }
+        if ($status != null) {
+            $queryParameters['status'] = $status;
         }
 
         $url = '/v1/cases/claim/search';
