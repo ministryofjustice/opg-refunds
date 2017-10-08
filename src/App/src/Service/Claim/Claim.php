@@ -6,7 +6,7 @@ use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -52,22 +52,27 @@ class Claim implements ApiClientInterface
     /**
      * Search claims
      *
-     * @return ClaimPage
+     * @return ClaimSummaryPage
      */
     public function searchClaims($page, $pageSize)
     {
         $queryParameters = [];
         if ($page != null) {
-            $queryParameters[] = 'page=' . $page;
+            $queryParameters['page'] = $page;
         }
         if ($pageSize != null) {
-            $queryParameters[] = 'pageSize=' . $pageSize;
+            $queryParameters['pageSize'] = $pageSize;
         }
 
-        $claimPageData = $this->getApiClient()->httpGet('/v1/cases/claim/search?' . join('&', $queryParameters));
-        $claimPage = new ClaimPage($claimPageData);
+        $url = '/v1/cases/claim/search';
+        if ($queryParameters) {
+            $url .= '?' . http_build_query($queryParameters);
+        }
 
-        return $claimPage;
+        $claimPageData = $this->getApiClient()->httpGet($url);
+        $claimSummaryPage = new ClaimSummaryPage($claimPageData);
+
+        return $claimSummaryPage;
     }
 
     /**

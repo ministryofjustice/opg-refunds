@@ -1,7 +1,7 @@
 <?php $this->layout('layout::default', ['title' => 'Search claims']) ?>
 <?php
 /**
- * @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimPage $claimPage
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage $claimSummaryPage
  */
 ?>
 
@@ -10,7 +10,7 @@
 
         <h2 class="heading-medium heading-refunds">Search claims</h2>
 
-        <?php if (count($claimPage->getClaims()) > 0) { ?>
+        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
 
             <table>
                 <thead>
@@ -25,15 +25,15 @@
                 </thead>
                 <tbody>
 
-                <?php foreach ($claimPage->getClaims() as $claim) { ?>
-                    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
+                <?php foreach ($claimSummaryPage->getClaimSummaries() as $claimSummary) { ?>
+                    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
                     <tr>
-                        <td><?= $claim->getReferenceNumber() ?></td>
-                        <td><?= $claim->getDonorName() ?></td>
-                        <td><?= $this->getDayAndFullTextMonth($claim->getReceivedDateTime()) ?></td>
-                        <td><?= $this->getTimeIntervalAgo($claim->getUpdatedDateTime()) ?></td>
-                        <td><?= $claim->getAssignedToId() ?></td>
-                        <td><?= $claim->getStatus() ?></td>
+                        <td><?= $claimSummary->getReferenceNumber() ?></td>
+                        <td><?= $claimSummary->getDonorName() ?></td>
+                        <td><?= $this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime()) ?></td>
+                        <td><?= $this->getTimeIntervalAgo($claimSummary->getUpdatedDateTime()) ?></td>
+                        <td><?= $claimSummary->getAssignedToName() ?></td>
+                        <td><?= $claimSummary->getStatus() ?></td>
                     </tr>
                 <?php } ?>
 
@@ -46,6 +46,28 @@
                     <td colspan="6">No claims found</td>
                 </tr>
             </table>
+        <?php } ?>
+
+        <?php if ($claimSummaryPage->getPageCount() > 1) { ?>
+            <div class="grid-row">
+                <div class="column-one-fifth">
+                    <p>
+                        <?php if ($claimSummaryPage->getPage() > 1) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], ['page' => $claimSummaryPage->getPage()-1]) ?>">Previous page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+                <div class="column-three-fifths">
+                    <p style="text-align: center">Page <?= $claimSummaryPage->getPage() ?> of <?= $claimSummaryPage->getPageCount() ?></p>
+                </div>
+                <div class="column-one-fifth">
+                    <p style="text-align: right">
+                        <?php if ($claimSummaryPage->getPage() < $claimSummaryPage->getPageCount()) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], ['page' => $claimSummaryPage->getPage()+1]) ?>">Next page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+            </div>
         <?php } ?>
 
     </div>

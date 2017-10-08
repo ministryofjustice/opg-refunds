@@ -43,12 +43,12 @@ class ClaimSearchAction extends AbstractAction
         $queryParameters = $request->getQueryParams();
 
         $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
-        $pageSize = isset($queryParameters['page']) ? $queryParameters['pageSize'] : null;
+        $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
 
-        $claimPage = $this->claimService->searchClaims($page, $pageSize);
+        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-search-page', [
-            'claimPage' => $claimPage
+            'claimSummaryPage' => $claimSummaryPage
         ]));
     }
 }
