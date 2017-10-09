@@ -2,7 +2,8 @@
 
 namespace App\Service;
 
-use App\Entity\AbstractEntity;
+use App\Service\Claim as ClaimService;
+use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -18,9 +19,7 @@ use Zend\Crypt\PublicKey\Rsa;
  */
 class Spreadsheet
 {
-    use EntityToModelTrait {
-        translateToDataModel as protected traitTranslateToDataModel;
-    }
+    use EntityToModelTrait;
 
     /**
      * @var EntityRepository
@@ -38,64 +37,132 @@ class Spreadsheet
     private $bankCipher;
 
     /**
+     * @var ClaimService
+     */
+    private $claimService;
+
+    /**
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
      * @param Rsa $bankCipher
      */
-    public function __construct(EntityManager $entityManager, Rsa $bankCipher)
+    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
         $this->bankCipher = $bankCipher;
+        $this->claimService = $claimService;
     }
 
     /**
-     * Get all refundable claims
+     * Get all refundable claims for a specific date. Using today will retrieve all newly accepted claims up to a
+     * maximum of 3000
      *
+     * @param DateTime $date
      * @return ClaimModel[]
      */
-    public function getAllRefundable(DateTime $date)
+    public function getAllRefundable(DateTime $date, int $userId)
     {
-        $claims = $this->repository->findBy([
-            'status' => ClaimModel::STATUS_ACCEPTED
-        ]);
+        $queryBuilder = $this->repository->createQueryBuilder('c');
 
-        return $this->translateToDataModelArray($claims);
+        if ($date == new DateTime('today')) {
+            // Creating today's spreadsheet
+            $queryBuilder->leftJoin('c.payment', 'p')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today)')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setMaxResults(3000)
+                ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
+        } else {
+            // Retrieving a previous spreadsheet
+            $startDateTime = clone $date;
+            $endDateTime = $date->add(new DateInterval('P1D'));
+            $queryBuilder->join('c.payment', 'p')
+                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setParameters([
+                    'status' => ClaimModel::STATUS_ACCEPTED,
+                    'startDateTime' => $startDateTime,
+                    'endDateTime' => $endDateTime
+                ]);
+        }
+
+        $claims = $queryBuilder->getQuery()->getResult();
+
+        $refundableClaims = [];
+
+        foreach ($claims as $claim) {
+            $refundableClaims[] = $this->getRefundable($claim, $userId);
+        }
+
+        return $refundableClaims;
+    }
+
+    public function getAllHistoricRefundDates()
+    {
+        $historicRefundDates = [];
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE'
+        );
+
+        $results = $statement->fetchAll();
+
+        foreach ($results as $result) {
+            $historicRefundDate = new DateTime($result['historic_refund_date']);
+            $historicRefundDates[] = date('Y-m-d', $historicRefundDate->getTimestamp());
+        }
+
+        return $historicRefundDates;
     }
 
     /**
-     * @param AbstractEntity $entity
-     * @return \Opg\Refunds\Caseworker\DataModel\AbstractDataModel
+     * @param ClaimEntity $entity
+     * @param int $userId
+     * @return ClaimModel
      */
-    public function translateToDataModel($entity)
+    private function getRefundable(ClaimEntity $entity, int $userId)
     {
+        $claimId = $entity->getId();
+
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
-        $claim = $this->traitTranslateToDataModel($entity);
+        $claim = $this->translateToDataModel($entity);
 
         $refundAmount = $this->getRefundTotalAmount($claim);
+        $refundAmountString = money_format('£%i', $refundAmount);
 
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
             //Create and persist payment
-            $payment = new PaymentEntity($refundAmount, 'Bank transfer', $entity);
+            $payment = new PaymentEntity($refundAmount, 'Bank transfer');
             $this->entityManager->persist($payment);
-        } else {
+            $entity->setPayment($payment);
+
+            $message = "A refund amount of $refundAmountString was added to the claim";
+            $this->claimService->addNote($claimId, $userId, 'Refund added', $message);
+        } elseif (abs(($entity->getPayment()->getAmount()-$refundAmount)/$refundAmount) > 0.00001) {
+            $originalPaymentAmount = $entity->getPayment()->getAmount();
+
             //Update amount in case interest has changed
             $entity->getPayment()->setAmount($refundAmount);
+
+            $newRefundAmountString = money_format('£%i', $originalPaymentAmount);
+            $message = "The refund amount for claim was changed from $refundAmountString to $newRefundAmountString";
+            $this->claimService->addNote($claimId, $userId, 'Refund updated', $message);
         }
 
-        $this->entityManager->flush();
+        $message = "A refundable claim for $refundAmountString was downloaded";
+        $this->claimService->addNote($claimId, $userId, 'Refund downloaded', $message);
 
         //  Retrieve updated claim
         $entity = $this->repository->findOneBy([
-            'id' => $entity->getId(),
+            'id' => $claimId,
         ]);
 
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
-        $claim = $this->traitTranslateToDataModel($entity);
+        $claim = $this->translateToDataModel($entity);
 
         //  Deserialize the application from the JSON data
         $applicationArray = json_decode($entity->getJsonData(), true);

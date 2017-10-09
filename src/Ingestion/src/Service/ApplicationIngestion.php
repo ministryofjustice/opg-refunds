@@ -4,7 +4,7 @@ namespace Ingestion\Service;
 
 use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
-use App\Entity\Cases\Log;
+use App\Entity\Cases\Note;
 use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
@@ -57,7 +57,7 @@ class ApplicationIngestion
     public function getNextApplication()
     {
         /** @var Application $application */
-        $application = $this->applicationRepository->findOneBy(['processed' => false], ['created' => 'DESC']);
+        $application = $this->applicationRepository->findOneBy(['processed' => false], ['created' => 'ASC']);
         return $application;
     }
 
@@ -95,6 +95,17 @@ class ApplicationIngestion
         return $claim;
     }
 
+    public function ingestAllApplication()
+    {
+        $count = 0;
+
+        while ($this->ingestApplication()) {
+            $count++;
+        }
+
+        return $count;
+    }
+
     /**
      * Ingest a single application and copy it to the cases database
      *
@@ -119,9 +130,9 @@ class ApplicationIngestion
                     }
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
-                    $log = new Log('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
+                    $note = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
 
-                    $this->casesEntityManager->persist($log);
+                    $this->casesEntityManager->persist($note);
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);

@@ -6,16 +6,16 @@ use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
 use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Log as LogModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class ClaimLogAction
+ * Class ClaimNoteAction
  * @package App\Action
  */
-class ClaimLogAction extends AbstractRestfulAction
+class ClaimNoteAction extends AbstractRestfulAction
 {
     /**
      * @var ClaimService
@@ -44,23 +44,27 @@ class ClaimLogAction extends AbstractRestfulAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claimId = $request->getAttribute('claimId');
-        $claim = $this->claimService->get($claimId);
 
-        $logId = $request->getAttribute('id');
-        if ($logId === null) {
-            //  Return all of the logs
-            $logsData = [];
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
 
-            foreach ($claim->getLogs() as $log) {
-                $logsData[] = $log->getArrayCopy();
+        $claim = $this->claimService->get($claimId, $user->getId());
+
+        $noteId = $request->getAttribute('id');
+        if ($noteId === null) {
+            //  Return all of the notes
+            $notesData = [];
+
+            foreach ($claim->getNotes() as $note) {
+                $notesData[] = $note->getArrayCopy();
             }
 
-            return new JsonResponse($logsData);
+            return new JsonResponse($notesData);
         } else {
-            //  Return a specific log
-            foreach ($claim->getLogs() as $log) {
-                if ($log->getId() === $logId) {
-                    return new JsonResponse($log->getArrayCopy());
+            //  Return a specific note
+            foreach ($claim->getNotes() as $note) {
+                if ($note->getId() === $noteId) {
+                    return new JsonResponse($note->getArrayCopy());
                 }
             }
 
@@ -79,15 +83,15 @@ class ClaimLogAction extends AbstractRestfulAction
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $requestBody = $request->getParsedBody();
-        $log = new LogModel($requestBody);
+        $note = new NoteModel($requestBody);
 
         $claimId = $request->getAttribute('claimId');
 
         $token = $request->getHeaderLine('token');
         $user = $this->userService->getByToken($token);
 
-        $log = $this->claimService->addLog($claimId, $user->getId(), $log->getTitle(), $log->getMessage());
+        $note = $this->claimService->addNote($claimId, $user->getId(), $note->getTitle(), $note->getMessage());
 
-        return new JsonResponse($log->getArrayCopy());
+        return new JsonResponse($note->getArrayCopy());
     }
 }

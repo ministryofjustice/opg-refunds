@@ -4,10 +4,9 @@ namespace App\Spreadsheet;
 
 class SpreadsheetFileNameFormatter
 {
-    public static function getFileName($schema, $fileFormat)
+    public static function getFileName($schema, $fileFormat, $dateString)
     {
-        //TODO: Check if this functionality is required. I'm thinking for each day's spreadsheet name
-        return 'OPG Multi-SOP1 Refund Requests.xls';
+        return "OPG Multi-SOP1 Refund Requests $dateString.xls";
     }
 
     public static function getTempFileName($schema, $fileFormat)

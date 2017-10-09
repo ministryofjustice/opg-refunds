@@ -14,13 +14,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 class User extends AbstractEntity
 {
     /**
-     * Class of the datamodel that this entity can be converted to
-     *
-     * @var string
-     */
-    protected $dataModelClass = UserModel::class;
-
-    /**
      * @var int
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -221,9 +214,10 @@ class User extends AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = UserModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Claims' => 'AssignedClaims',
@@ -232,14 +226,15 @@ class User extends AbstractEntity
             },
         ]);
 
-        return parent::getAsDataModel($modelToEntityMappings);
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 
     /**
      * @param AbstractDataModel $model
      * @param array $entityToModelMappings
+     * @param string $dataModelClass
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = UserModel::class)
     {
         $entityToModelMappings = array_merge($entityToModelMappings, [
             'Roles' => function () use ($model) {
@@ -247,6 +242,6 @@ class User extends AbstractEntity
             },
         ]);
 
-        parent::setFromDataModel($model, $entityToModelMappings);
+        parent::setFromDataModel($model, $entityToModelMappings, $dataModelClass);
     }
 }

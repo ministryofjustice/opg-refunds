@@ -24,16 +24,19 @@ abstract class AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      * @throws Exception
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
     {
-        if (empty($this->dataModelClass)) {
+        $dataModelClass = $dataModelClass ?: $this->dataModelClass;
+
+        if (empty($dataModelClass)) {
             throw new Exception('Model class string must be provided for conversion');
         }
 
-        $model = new $this->dataModelClass();
+        $model = new $dataModelClass();
 
         //  Process any callbacks in the model to entity mappings then UNSET THEM
         foreach ($modelToEntityMappings as $modelFieldName => $callbackMapping) {
@@ -121,12 +124,15 @@ abstract class AbstractEntity
      *
      * @param AbstractDataModel $model
      * @param array $entityToModelMappings
+     * @param string|null $dataModelClass
      * @throws Exception
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = null)
     {
-        if (get_class($model) != $this->dataModelClass) {
-            throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $this->dataModelClass));
+        $dataModelClass = $dataModelClass ?: $this->dataModelClass;
+
+        if (get_class($model) != $dataModelClass) {
+            throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $dataModelClass));
         }
 
         //  Loop through the entity methods and transfer the values from the datamodel

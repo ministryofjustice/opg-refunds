@@ -16,13 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Claim extends AbstractEntity
 {
     /**
-     * Class of the datamodel that this entity can be converted to
-     *
-     * @var string
-     */
-    protected $dataModelClass = ClaimModel::class;
-
-    /**
      * @var int
      * @ORM\Id
      * @ORM\Column(type="bigint")
@@ -123,16 +116,17 @@ class Claim extends AbstractEntity
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="Payment", inversedBy="claim", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
      */
     protected $payment;
 
     /**
-     * @var Collection|Log[]
-     * @ORM\OneToMany(targetEntity="Log", mappedBy="claim", cascade={"persist", "remove"})
+     * @var Collection|Note[]
+     * @ORM\OneToMany(targetEntity="Note", mappedBy="claim", cascade={"persist", "remove"})
      * @ORM\OrderBy({"createdDateTime" = "DESC"})
      */
-    protected $logs;
+    protected $notes;
 
     /**
      * @var int
@@ -427,19 +421,19 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * @return Collection|Log[]
+     * @return Collection|Note[]
      */
-    public function getLogs()
+    public function getNotes()
     {
-        return $this->logs;
+        return $this->notes;
     }
 
     /**
-     * @param Collection|Log[] $logs
+     * @param Collection|Note[] $notes
      */
-    public function setLogs($logs)
+    public function setNotes($notes)
     {
-        $this->logs = $logs;
+        $this->notes = $notes;
     }
 
     /**
@@ -466,9 +460,10 @@ class Claim extends AbstractEntity
      * The value in the mapping array can also be a callback function
      *
      * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [])
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = ClaimModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Application' => function () {
@@ -477,8 +472,14 @@ class Claim extends AbstractEntity
             'AssignedToId' => function () {
                 return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getId() : null);
             },
+            'AssignedToName' => function () {
+                return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getName() : null);
+            },
+            'AssignedToStatus' => function () {
+                return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getStatus() : null);
+            },
         ]);
 
-        return parent::getAsDataModel($modelToEntityMappings);
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 }
