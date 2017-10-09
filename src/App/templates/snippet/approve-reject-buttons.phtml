@@ -1,4 +1,7 @@
 <?php
+
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
 /*
 Without error
 Mandatory: claim
@@ -7,12 +10,39 @@ Mandatory: claim
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  */
+
 ?>
 
 <?php if($this->isClaimComplete($claim)) { ?>
-    <?php if($this->isClaimVerified($claim)) { ?>
-        <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
-    <?php } else { ?>
-        <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
-    <?php } ?>
+    <h2 class="heading-medium heading-refunds">Outcome</h2>
+    <dl class="details">
+
+        <?php if ($claim->isReadOnly()) { ?>
+            <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
+                <div class="">
+                    <dt class="details-term">Claim approved:</dt>
+                    <dd class="detail-definition">
+                        <span>Claim was approved on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?></span>
+                        <?php if ($claim->getPayment() !== null) { ?>
+                            <br/><span>A payment of <?= $this->getMoneyString($claim->getPayment()->getAmount()) ?> was added to the spreadsheet on <?= $this->getFinishedDateString($claim->getPayment()->getAddedDateTime()) ?></span>
+                        <?php } ?>
+                    </dd>
+                </div>
+            <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
+                <div class="">
+                    <dt class="details-term">Claim rejected:</dt>
+                    <dd class="detail-definition">
+                        Claim was rejected on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?> due to '<?= $this->getRejectionReasonsText($claim->getRejectionReason()) ?>' with description '<?= $claim->getRejectionReasonDescription() ?>'
+                    </dd>
+                </div>
+            <?php } ?>
+        <?php } else { ?>
+            <?php if($this->isClaimVerified($claim)) { ?>
+                <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
+            <?php } else { ?>
+                <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
+            <?php } ?>
+        <?php } ?>
+
+    </dl>
 <?php } ?>

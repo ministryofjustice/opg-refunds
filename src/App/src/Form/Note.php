@@ -9,10 +9,10 @@ use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
 /**
- * Class Log
+ * Class Note
  * @package App\Form
  */
-class Log extends AbstractForm
+class Note extends AbstractForm
 {
     /**
      * Log constructor.

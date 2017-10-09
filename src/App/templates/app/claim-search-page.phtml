@@ -1,0 +1,118 @@
+<?php $this->layout('layout::default', ['title' => 'Search claims']) ?>
+<?php
+/**
+ * @var \App\Form\ClaimSearch $form
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage $claimSummaryPage
+ * @var array $searchParameters
+ */
+?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds">Search claims</h2>
+
+        <form method="post" class="form">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+            <?php $this->insert('snippet::input-text', [
+                'formElement' => $form->get('donorName'),
+                'formLabel' => 'Donor name',
+                'formType' => 'text',
+                'formLabelBold' => false
+            ]) ?>
+
+            <div class="form-group">
+                <input type='submit' class="button" name='submit' value='Search'>
+            </div>
+
+        </form>
+
+        <?php if(count($searchParameters) > 0) { ?>
+            <div>
+                <h3 class="heading-small">Search parameters <a href="<?= $this->generateUrl('claim.search') ?>">Clear all</a></h3>
+                <p>
+                    <?php foreach ($searchParameters as $key => $value) { ?>
+                        <?php if ($key === 'donorName') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['donorName']); ?>
+                            <span>Donor name: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                        <?php if ($key === 'assignedToId') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['assignedToId']); ?>
+                            <span>Assigned to id: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                        <?php if ($key === 'status') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['status']); ?>
+                            <span>Status: <?= $this->getStatusText($value) ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                    <?php } ?>
+                </p>
+            </div>
+        <?php } ?>
+
+        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Claim code</th>
+                    <th>Donor name</th>
+                    <th>Received</th>
+                    <th>Modified</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach ($claimSummaryPage->getClaimSummaries() as $claimSummary) { ?>
+                    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
+                    <tr>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $claimSummary->getReferenceNumber() ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['donorName' => $claimSummary->getDonorName()])) ?>"><?= $claimSummary->getDonorName() ?></td></a>
+                        <td><?= $this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime()) ?></td>
+                        <td><?= $this->getTimeIntervalAgo($claimSummary->getUpdatedDateTime()) ?></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $claimSummary->getAssignedToName() ?></td></a>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->getStatusText($claimSummary->getStatus()) ?></td></a>
+                    </tr>
+                <?php } ?>
+
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+            <table>
+                <tr>
+                    <td colspan="6">No claims found</td>
+                </tr>
+            </table>
+        <?php } ?>
+
+        <?php if ($claimSummaryPage->getPageCount() > 1) { ?>
+            <div class="grid-row">
+                <div class="column-one-fifth">
+                    <p>
+                        <?php if ($claimSummaryPage->getPage() > 1) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['page' => $claimSummaryPage->getPage()-1])) ?>">Previous page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+                <div class="column-three-fifths">
+                    <p style="text-align: center">Page <?= $claimSummaryPage->getPage() ?> of <?= $claimSummaryPage->getPageCount() ?></p>
+                </div>
+                <div class="column-one-fifth">
+                    <p style="text-align: right">
+                        <?php if ($claimSummaryPage->getPage() < $claimSummaryPage->getPageCount()) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['page' => $claimSummaryPage->getPage()+1])) ?>">Next page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+            </div>
+        <?php } ?>
+
+    </div>
+</div>

@@ -106,16 +106,16 @@ class DateFormatterPlatesExtensionTest extends TestCase
         $this->assertEquals('2 days ago', $formatted);
     }
 
-    public function testGetLogDateString()
+    public function testGetNoteDateString()
     {
-        $formatted = $this->extension->getLogDateString(new DateTime('2017-09-25T09:19:37.000000+0000'));
+        $formatted = $this->extension->getNoteDateString(new DateTime('2017-09-25T09:19:37.000000+0000'));
 
         $this->assertEquals('25 Sep 2017', $formatted);
     }
 
-    public function testGetLogTimeString()
+    public function testGetNoteTimeString()
     {
-        $formatted = $this->extension->getLogTimeString(new DateTime('2017-09-25T09:19:37.000000+0000'));
+        $formatted = $this->extension->getNoteTimeString(new DateTime('2017-09-25T09:19:37.000000+0000'));
 
         $this->assertEquals('09:19', $formatted);
     }

@@ -40,7 +40,7 @@ $app->route('/user/delete/{id:\d+}', App\Action\User\UserDeleteAction::class, ['
 $app->get('/refund', App\Action\RefundAction::class, 'refund');
 $app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
 $app->route('/change-password[/{token}]', App\Action\Password\PasswordChangeAction::class, ['GET', 'POST'], 'password.change');
-$app->get('/download', App\Action\DownloadAction::class, 'download');
+$app->get('/download[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\DownloadAction::class, 'download');
 $app->get('/csv-download', App\Action\CsvDownloadAction::class, 'csv.download');
 $app->route('/claim[/{id:\d+}]', App\Action\Claim\ClaimAction::class, ['GET', 'POST'], 'claim');
 $app->route('/claim/{claimId:\d+}/approve', App\Action\Claim\ClaimApproveAction::class, ['GET', 'POST'], 'claim.approve');
@@ -48,3 +48,6 @@ $app->route('/claim/{claimId:\d+}/reject', App\Action\Claim\ClaimRejectAction::c
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Action\Poa\PoaAction::class, ['GET', 'POST'], 'claim.poa');
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
+$app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
+$app->route('/claim/assign/{claimId:\d+}', App\Action\Claim\ClaimAssignAction::class, ['GET', 'POST'], 'claim.assign');
+$app->route('/claim/unassign/{claimId:\d+}', App\Action\Claim\ClaimUnassignAction::class, ['GET', 'POST'], 'claim.unassign');

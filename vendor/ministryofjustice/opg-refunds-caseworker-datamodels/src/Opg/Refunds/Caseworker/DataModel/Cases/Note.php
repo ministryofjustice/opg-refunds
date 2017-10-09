@@ -5,7 +5,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 
-class Log extends AbstractDataModel
+class Note extends AbstractDataModel
 {
     /**
      * @var int
@@ -54,7 +54,7 @@ class Log extends AbstractDataModel
      * @param int $id
      * @return $this
      */
-    public function setId(int $id): Log
+    public function setId(int $id): Note
     {
         $this->id = $id;
 
@@ -73,7 +73,7 @@ class Log extends AbstractDataModel
      * @param DateTime $createdDateTime
      * @return $this
      */
-    public function setCreatedDateTime(DateTime $createdDateTime): Log
+    public function setCreatedDateTime(DateTime $createdDateTime): Note
     {
         $this->createdDateTime = $createdDateTime;
 
@@ -92,7 +92,7 @@ class Log extends AbstractDataModel
      * @param string $title
      * @return $this
      */
-    public function setTitle(string $title): Log
+    public function setTitle(string $title): Note
     {
         $this->title = $title;
 
@@ -109,9 +109,9 @@ class Log extends AbstractDataModel
 
     /**
      * @param string $message
-     * @return Log
+     * @return Note
      */
-    public function setMessage(string $message): Log
+    public function setMessage(string $message): Note
     {
         $this->message = $message;
 
@@ -130,7 +130,7 @@ class Log extends AbstractDataModel
      * @param int $userId
      * @return $this
      */
-    public function setUserId(int $userId): Log
+    public function setUserId(int $userId): Note
     {
         $this->userId = $userId;
 
@@ -149,7 +149,7 @@ class Log extends AbstractDataModel
      * @param string $userName
      * @return $this
      */
-    public function setUserName(string $userName): Log
+    public function setUserName(string $userName): Note
     {
         $this->userName = $userName;
 
@@ -168,7 +168,7 @@ class Log extends AbstractDataModel
      * @param int $poaId
      * @return $this
      */
-    public function setPoaId(int $poaId): Log
+    public function setPoaId(int $poaId): Note
     {
         $this->poaId = $poaId;
 

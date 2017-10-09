@@ -3,7 +3,7 @@
 namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
-use App\Form\Log;
+use App\Form\Note;
 use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -85,8 +85,8 @@ class ClaimAction extends AbstractClaimAction
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        //Even though we are adding a log message here,
-        //we are technically editing the claim by adding a log message to it
+        //Even though we are adding a note here,
+        //we are technically editing the claim by adding a note to it
         $claim = $this->getClaim($request);
 
         $form = $this->getForm($request, $claim);
@@ -97,10 +97,10 @@ class ClaimAction extends AbstractClaimAction
             if ($form->isValid()) {
                 $message = $form->get('message')->getValue();
 
-                $log = $this->claimService->addLog($claim->getId(), 'Caseworker note', $message);
+                $note = $this->claimService->addNote($claim->getId(), 'Caseworker note', $message);
 
-                if ($log === null) {
-                    throw new RuntimeException('Failed to add new log to claim with id: ' . $claim->getId());
+                if ($note === null) {
+                    throw new RuntimeException('Failed to add new note to claim with id: ' . $claim->getId());
                 }
 
                 return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
@@ -122,7 +122,7 @@ class ClaimAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new Log([
+        $form = new Note([
             'claim' => $claim,
             'csrf'  => $session['meta']['csrf'],
         ]);

@@ -40,7 +40,6 @@ class ConfigProvider
             'invokables' => [
                 //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\RefundAction::class => Action\RefundAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
                 Action\Password\PasswordResetAction::class => Action\Password\PasswordResetAction::class,
 
@@ -55,13 +54,17 @@ class ConfigProvider
                 //  Actions
                 Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
+                Action\Claim\ClaimAssignAction::class => Action\Claim\ClaimAssignActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
+                Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
+                Action\Claim\ClaimUnassignAction::class => Action\Claim\ClaimUnassignActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
                 Action\DownloadAction::class => Action\DownloadActionFactory::class,
+                Action\RefundAction::class => Action\RefundActionFactory::class,
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,

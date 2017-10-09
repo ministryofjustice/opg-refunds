@@ -27,10 +27,12 @@ class DateFormatterPlatesExtension implements ExtensionInterface
     {
         $engine->registerFunction('getDayAndFullTextMonth', [$this, 'getDayAndFullTextMonth']);
         $engine->registerFunction('getTimeIntervalAgo', [$this, 'getTimeIntervalAgo']);
-        $engine->registerFunction('getLogDateString', [$this, 'getLogDateString']);
-        $engine->registerFunction('getLogTimeString', [$this, 'getLogTimeString']);
+        $engine->registerFunction('getNoteDateString', [$this, 'getNoteDateString']);
+        $engine->registerFunction('getNoteTimeString', [$this, 'getNoteTimeString']);
         $engine->registerFunction('getDateOfBirthString', [$this, 'getDateOfBirthString']);
         $engine->registerFunction('getReceivedDateString', [$this, 'getReceivedDateString']);
+        $engine->registerFunction('getHistoricRefundDateString', [$this, 'getHistoricRefundDateString']);
+        $engine->registerFunction('getFinishedDateString', [$this, 'getFinishedDateString']);
     }
 
     /**
@@ -89,7 +91,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      * @param DateTime $dateTime
      * @return false|string
      */
-    public function getLogDateString($dateTime)
+    public function getNoteDateString($dateTime)
     {
         return date('d M Y', $dateTime->getTimestamp());
     }
@@ -98,7 +100,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      * @param DateTime $dateTime
      * @return false|string
      */
-    public function getLogTimeString($dateTime)
+    public function getNoteTimeString($dateTime)
     {
         return date('H:i', $dateTime->getTimestamp());
     }
@@ -117,6 +119,24 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      * @return false|string
      */
     public function getReceivedDateString($dateTime)
+    {
+        return date('d/m/Y', $dateTime->getTimestamp());
+    }
+
+    /**
+     * @param string $historicRefundDateString
+     * @return false|string
+     */
+    public function getHistoricRefundDateString($historicRefundDateString)
+    {
+        return date('d F Y', (new DateTime($historicRefundDateString))->getTimestamp());
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * @return false|string
+     */
+    public function getFinishedDateString($dateTime)
     {
         return date('d/m/Y', $dateTime->getTimestamp());
     }

@@ -27,22 +27,22 @@
         'question' => '',
         'options' => [
             'notInDateRange' => [
-                'optionLabel' => 'Not in date range'
+                'optionLabel' => $this->getRejectionReasonsText('notInDateRange')
             ],
             'noDonorLpaFound' => [
-                'optionLabel' => 'LPA for associated donor could not be found'
+                'optionLabel' => $this->getRejectionReasonsText('noDonorLpaFound')
             ],
             'previouslyRefunded' => [
-                'optionLabel' => 'Refund already given'
+                'optionLabel' => $this->getRejectionReasonsText('previouslyRefunded')
             ],
             'noFeesPaid' => [
-                'optionLabel' => 'No fees paid'
+                'optionLabel' => $this->getRejectionReasonsText('noFeesPaid')
             ],
             'claimNotVerified' => [
-                'optionLabel' => 'Claim isn’t verified'
+                'optionLabel' => $this->getRejectionReasonsText('claimNotVerified')
             ],
             'other' => [
-                'optionLabel' => 'Other'
+                'optionLabel' => $this->getRejectionReasonsText('other')
             ],
         ],
     ])
