@@ -119,6 +119,11 @@ class Claim extends AbstractDataModel
     protected $accountHashCount;
 
     /**
+     * @var bool
+     */
+    protected $readOnly;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -487,6 +492,25 @@ class Claim extends AbstractDataModel
     public function setAccountHashCount(int $accountHashCount): Claim
     {
         $this->accountHashCount = $accountHashCount;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->readOnly;
+    }
+
+    /**
+     * @param bool $readOnly
+     * @return $this
+     */
+    public function setReadOnly(bool $readOnly): Claim
+    {
+        $this->readOnly = $readOnly;
 
         return $this;
     }
