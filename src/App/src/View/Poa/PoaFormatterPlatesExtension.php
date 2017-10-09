@@ -37,6 +37,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getFormattedCaseNumber', [$this, 'getFormattedCaseNumber']);
         $engine->registerFunction('getOriginalPaymentAmountString', [$this, 'getOriginalPaymentAmountString']);
         $engine->registerFunction('getRefundAmountString', [$this, 'getRefundAmountString']);
+        $engine->registerFunction('getMoneyString', [$this, 'getMoneyString']);
         $engine->registerFunction('getInterestAmountString', [$this, 'getInterestAmountString']);
         $engine->registerFunction('getRefundTotalAmountString', [$this, 'getRefundTotalAmountString']);
         $engine->registerFunction('getFormattedVerificationMatches', [$this, 'getFormattedVerificationMatches']);
@@ -74,9 +75,14 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         }
     }
 
+    public function getMoneyString(float $amount)
+    {
+        return money_format('£%i', $amount);
+    }
+
     public function getRefundAmountString(PoaModel $poa)
     {
-        return money_format('£%i', $this->refundCalculatorService->getRefundAmount($poa));
+        return $this->getMoneyString($this->refundCalculatorService->getRefundAmount($poa));
     }
 
     public function getInterestAmountString(PoaModel $poa)
@@ -84,7 +90,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         $refundAmount = $this->refundCalculatorService->getRefundAmount($poa);
         $refundAmountWithInterest = $this->refundCalculatorService->getAmountWithInterest($poa, $refundAmount);
         $interest = $refundAmountWithInterest - $refundAmount;
-        return money_format('£%i', $interest);
+        return $this->getMoneyString($interest);
     }
 
     public function getRefundTotalAmountString(ClaimModel $claim)
@@ -93,7 +99,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             return '£0.00';
         }
 
-        return money_format('£%i', $this->refundCalculatorService->getRefundTotalAmount($claim));
+        return $this->getMoneyString($this->refundCalculatorService->getRefundTotalAmount($claim));
     }
 
     public function getFormattedVerificationMatches(PoaModel $poa)
