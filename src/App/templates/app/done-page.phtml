@@ -1,50 +1,44 @@
 <?php
 $title = 'Claim submitted';
-$this->layout('layout::default', [
+$this->layout('layout::standard', [
     'title' => $title,
 ]);
 ?>
 
-<div class="grid-row">
-    <div class="column-two-thirds">
-
-        <div class="govuk-box-highlight">
-            <h1 class="bold-large">Claim submitted</h1>
-            <p>
-                Your claim code:
-                <strong class="heading-medium"><?= $this->e($reference) ?></strong>
-            </p>
-        </div>
-
-        <h2 class="heading-medium">Thank you</h2>
-        
-        <p>We now have your refund claim for <?= $this->e($name) ?>.</p>
-        
-        <?php if (!empty($contact['email'])): ?>
-            <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
-        <?php endif ?>
-
-        <?php if (!empty($contact['phone'])): ?>
-
-            <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
-
-            <?php if ($phone->isMobile()): ?>
-                <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
-            <?php endif ?>
-
-        <?php endif ?>
-
-        <h2 class="heading-medium">Just claim once</h2>
-
-        <p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
-        So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
-
-        <h2 class="heading-medium">What happens next</h2>
-        
-        <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
-        <p>We will contact you if we need more information.</p>
-
-        <?php $this->insert('snippet::refunds-helpline');?>
-
-    </div>
+<div class="govuk-box-highlight">
+    <h1 class="bold-large">Claim submitted</h1>
+    <p>
+        Your claim code:
+        <strong class="heading-medium"><?= $this->e($reference) ?></strong>
+    </p>
 </div>
+
+<h2 class="heading-medium">Thank you</h2>
+
+<p>We now have your refund claim for <?= $this->e($name) ?>.</p>
+
+<?php if (!empty($contact['email'])): ?>
+    <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
+<?php endif ?>
+
+<?php if (!empty($contact['phone'])): ?>
+
+    <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
+
+    <?php if ($phone->isMobile()): ?>
+        <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+    <?php endif ?>
+
+<?php endif ?>
+
+<h2 class="heading-medium">Just claim once</h2>
+
+<p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
+So we will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
+
+<h2 class="heading-medium">What happens next</h2>
+
+<p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
+<p>We will contact you if we need more information.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>

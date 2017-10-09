@@ -2,6 +2,7 @@
 $title = 'Can you give a reference number?';
 $this->layout('layout::standard', [
     'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 $this->addErrorMap([

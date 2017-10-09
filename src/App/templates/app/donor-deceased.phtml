@@ -2,7 +2,7 @@
 $title = 'About the donor';
 $this->layout('layout::standard', [
     'title' => $title,
-    'form' => $form
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 $form->setAttribute('method', 'get');

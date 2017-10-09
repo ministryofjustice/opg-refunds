@@ -2,6 +2,7 @@
 $title = ($applicant == 'attorney') ? 'Your details (attorney)' : 'Attorney details';
 $this->layout('layout::standard', [
     'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 // Error messages are in a snippet as shared between donor and attorney page
