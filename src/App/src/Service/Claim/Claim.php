@@ -199,7 +199,13 @@ class Claim implements ApiClientInterface
         $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
 
         if ($poaCaseNumber !== null) {
-            if ($poaCaseNumber === $poa->getCaseNumber()) {
+            $caseNumber = $poa->getCaseNumber();
+
+            //Strip out meris sequence number if present
+            $poaCaseNumber = strpos($poaCaseNumber, '/') ? substr($poaCaseNumber, 0, strpos($poaCaseNumber, '/')) : $poaCaseNumber;
+            $caseNumber = strpos($caseNumber, '/') ? substr($caseNumber, 0, strpos($caseNumber, '/')) : $caseNumber;
+
+            if ($poaCaseNumber === $caseNumber) {
                 //Add verification for case number
                 $verifications = $poa->getVerifications();
                 $verifications[] = new VerificationModel([
