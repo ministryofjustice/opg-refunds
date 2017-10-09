@@ -2,6 +2,7 @@
 
 namespace App\Action\Claim;
 
+use App\Form\ClaimSearch;
 use App\Service\Claim\Claim as ClaimService;
 use App\Action\AbstractAction;
 use Fig\Http\Message\RequestMethodInterface;
@@ -36,23 +37,55 @@ class ClaimSearchAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $form = $this->getForm($request);
+
+        $searchParameters = array_merge($request->getQueryParams(), $request->getParsedBody());
+
+        $form->setData($searchParameters);
+
         if ($request->getMethod() === RequestMethodInterface::METHOD_POST) {
             //  Search
+            if ($form->isValid()) {
+                //  Unset non search form links so they aren't added to search links
+                unset($searchParameters['secret']);
+                unset($searchParameters['submit']);
+
+                //  Redirect to search with get params
+                return $this->redirectToRoute('claim.search', [], $searchParameters);
+            }
         }
 
-        $queryParameters = $request->getQueryParams();
-
-        $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
-        $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
-        $donorName = isset($queryParameters['donorName']) ? $queryParameters['donorName'] : null;
-        $assignedToId = isset($queryParameters['assignedToId']) ? $queryParameters['assignedToId'] : null;
-        $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
-        $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
+        $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
+        $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
+        $donorName = isset($searchParameters['donorName']) ? $searchParameters['donorName'] : null;
+        $assignedToId = isset($searchParameters['assignedToId']) ? $searchParameters['assignedToId'] : null;
+        $status = isset($searchParameters['status']) ? $searchParameters['status'] : null;
+        $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
 
         $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $donorName, $assignedToId, $status, $accountHash);
 
+        //  Unset page so it isn't added to search links
+        unset($searchParameters['page']);
+
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-search-page', [
-            'claimSummaryPage' => $claimSummaryPage
+            'form'             => $form,
+            'claimSummaryPage' => $claimSummaryPage,
+            'searchParameters' => $searchParameters
         ]));
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return ClaimSearch
+     */
+    protected function getForm(ServerRequestInterface $request): ClaimSearch
+    {
+        $session = $request->getAttribute('session');
+
+        $form = new ClaimSearch([
+            'csrf'   => $session['meta']['csrf'],
+        ]);
+
+        return $form;
     }
 }
