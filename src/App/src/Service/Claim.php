@@ -158,10 +158,11 @@ class Claim
     /**
      * Get one claim
      *
-     * @param $claimId
+     * @param int $claimId
+     * @param int $userId
      * @return ClaimModel
      */
-    public function get($claimId)
+    public function get(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -173,6 +174,9 @@ class Claim
 
         /** @var ClaimModel $claimModel */
         $claimModel = $this->translateToDataModel($claim);
+
+        $claimModel->setReadOnly($this->isReadOnly($claim, $userId));
+
         return $claimModel;
     }
 
@@ -227,6 +231,8 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setNoSiriusPoas($noSiriusPoas);
         $claim->setUpdatedDateTime(new DateTime());
 
@@ -250,6 +256,8 @@ class Claim
     public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
 
         $claim->setNoMerisPoas($noMerisPoas);
         $claim->setUpdatedDateTime(new DateTime());
@@ -282,6 +290,8 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
+        $this->checkCanEdit($claim, $userId);
+
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([
             'id' => $userId,
@@ -300,6 +310,9 @@ class Claim
     public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
@@ -324,6 +337,9 @@ class Claim
     public function editPoa(int $claimId, int $poaId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         /** @var PoaEntity $poa */
@@ -384,6 +400,9 @@ class Claim
     public function deletePoa($claimId, $poaId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         /** @var PoaEntity $poa */
@@ -407,6 +426,8 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedDateTime(new DateTime());
@@ -424,6 +445,8 @@ class Claim
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
 
         $claim->setStatus(ClaimModel::STATUS_REJECTED);
         $claim->setRejectionReason($rejectionReason);
@@ -469,6 +492,19 @@ class Claim
                 throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
             }
             throw $ex;
+        }
+    }
+
+    private function isReadOnly(ClaimEntity $claim, int $userId)
+    {
+        // Deliberately not checking $claim->getAssignedTo() !== null as in progress claims should always be assigned
+        return $claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS && $claim->getAssignedTo()->getId() === $userId;
+    }
+
+    private function checkCanEdit($claim, $userId)
+    {
+        if ($this->isReadOnly($claim, $userId)) {
+            throw new Exception('You cannot edit this claim', 403);
         }
     }
 }

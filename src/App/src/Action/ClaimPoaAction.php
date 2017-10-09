@@ -44,7 +44,11 @@ class ClaimPoaAction extends AbstractRestfulAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claimId = $request->getAttribute('claimId');
-        $claim = $this->claimService->get($claimId);
+
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
+
+        $claim = $this->claimService->get($claimId, $user->getId());
 
         $poaId = $request->getAttribute('id');
         if ($poaId === null) {
