@@ -2,7 +2,7 @@
 
 namespace Opg\Refunds\Caseworker\DataModel;
 
-class AbstractPage extends AbstractDataModel
+abstract class AbstractPage extends AbstractDataModel
 {
     /**
      * @var int
