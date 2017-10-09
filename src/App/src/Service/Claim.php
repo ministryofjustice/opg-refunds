@@ -80,7 +80,7 @@ class Claim
      * @param string|null $accountHash
      * @return ClaimSummaryPage
      */
-    public function search($page, $pageSize, $donorName, $assignedToId, $status, $accountHash)
+    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();

@@ -14,13 +14,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Note extends AbstractEntity
 {
     /**
-     * Class of the datamodel that this entity can be converted to
-     *
-     * @var string
-     */
-    protected $dataModelClass = NoteModel::class;
-
-    /**
      * @var int
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -193,7 +186,7 @@ class Note extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = NoteModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'UserId' => function () {

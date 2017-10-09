@@ -4,6 +4,7 @@ namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
 use Doctrine\Common\Collections\Collection;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -14,13 +15,6 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Poa extends AbstractEntity
 {
-    /**
-     * Class of the datamodel that this entity can be converted to
-     *
-     * @var string
-     */
-    protected $dataModelClass = PoaModel::class;
-
     /**
      * @var int
      * @ORM\Id
@@ -177,5 +171,21 @@ class Poa extends AbstractEntity
     public function setVerifications($verifications)
     {
         $this->verifications = $verifications;
+    }
+
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = PoaModel::class)
+    {
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 }
