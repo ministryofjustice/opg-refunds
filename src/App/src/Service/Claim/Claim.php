@@ -23,19 +23,42 @@ class Claim implements ApiClientInterface
      */
     public function assignNextClaim(int $userId)
     {
-        //  GET on caseworker's case endpoint without an id means get next refund case
         $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim", []);
 
         return $result['assignedClaimId'];
     }
 
     /**
+     * Assigns a specific claim to a specific user
+     *
      * @param int $claimId
      * @param int $userId
+     * @return int the id of the next case to process. Will be zero if none was assigned
+     */
+    public function assignClaim(int $claimId, int $userId)
+    {
+        $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim/$claimId", []);
+
+        return $result['assignedClaimId'];
+    }
+
+    /**
+     * Removes the assigned user from the claim making it available for another caseworker
+     *
+     * @param int $claimId
+     * @param int $userId
+     */
+    public function unAssignClaim(int $claimId, int $userId)
+    {
+        $this->getApiClient()->httpDelete("/v1/cases/user/$userId/claim/$claimId");
+    }
+
+    /**
+     * @param int $claimId
      * @return ClaimModel
      * @throws Exception
      */
-    public function getClaim(int $claimId, int $userId)
+    public function getClaim(int $claimId)
     {
         $claimData = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
 

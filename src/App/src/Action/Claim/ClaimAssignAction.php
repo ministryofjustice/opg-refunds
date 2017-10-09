@@ -3,9 +3,7 @@
 namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
-use App\Form\ClaimApprove;
-use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\Poa as PoaService;
+use App\Form\ClaimAssign;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,27 +11,11 @@ use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
 
 /**
- * Class ClaimApproveAction
+ * Class ClaimAssignAction
  * @package App\Action\Claim
  */
-class ClaimApproveAction extends AbstractClaimAction
+class ClaimAssignAction extends AbstractClaimAction
 {
-    /**
-     * @var PoaService
-     */
-    private $poaService;
-
-    /**
-     * ClaimApproveAction constructor
-     * @param ClaimService $claimService
-     * @param PoaService $poaService
-     */
-    public function __construct(ClaimService $claimService, PoaService $poaService)
-    {
-        parent::__construct($claimService);
-        $this->poaService = $poaService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -46,14 +28,12 @@ class ClaimApproveAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$this->poaService->isClaimComplete($claim) || !$this->poaService->isClaimVerified($claim)) {
-            throw new Exception('Claim is not complete or verified', 400);
         }
 
-        /** @var ClaimApprove $form */
+        /** @var ClaimAssign $form */
         $form = $this->getForm($request, $claim);
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-approve-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-assign-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -68,18 +48,19 @@ class ClaimApproveAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimApprove $form */
+        /** @var ClaimAssign $form */
         $form = $this->getForm($request, $claim);
 
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $this->claimService->setStatusAccepted($claim->getId());
+            $userId = $request->getAttribute('identity')->getId();
+            $assignedClaimId = $this->claimService->assignClaim($claim->getId(), $userId);
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-approve-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-assign-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -94,7 +75,7 @@ class ClaimApproveAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new ClaimApprove([
+        $form = new ClaimAssign([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);
