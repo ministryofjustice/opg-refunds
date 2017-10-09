@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <?php $subTitle = 'Claim a power of attorney refund'; ?>
-    <title><?= (isset($title)) ? $this->e($title).' | ' : '' ?><?= ($title!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
+    <title><?= (isset($pageTitle)) ? $this->e($pageTitle).' | ' : '' ?><?= ($pageTitle!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
     <?php if ( isset($this->config()['analytics']['google']['id']) ): ?>
         <?php $gaId = $this->config()['analytics']['google']['id']; ?>
