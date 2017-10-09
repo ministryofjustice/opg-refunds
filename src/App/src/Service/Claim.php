@@ -216,8 +216,12 @@ class Claim
         if ($updateCount === 1) {
             $assignedClaimId = $result[0]['id'];
 
+            $claim = $this->getClaimEntity($assignedClaimId);
+            $claim->setAssignedTo($user);
+            $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+
             $this->addNote(
-                $assignedClaimId,
+                $claim->getId(),
                 $userId,
                 'Claim started by caseworker',
                 "Caseworker has begun to process this claim"
