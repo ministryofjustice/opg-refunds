@@ -82,7 +82,7 @@ class Claim implements ApiClientInterface
      * @param string|null $accountHash
      * @return ClaimSummaryPage
      */
-    public function searchClaims($page, $pageSize, $donorName, $assignedToId, $status, $accountHash)
+    public function searchClaims(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
     {
         $queryParameters = [];
         if ($page != null) {

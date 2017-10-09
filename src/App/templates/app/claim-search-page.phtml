@@ -47,7 +47,7 @@
                         <?php if ($key === 'status') {
                             $clearSearchParameters = $searchParameters;
                             unset($clearSearchParameters['status']); ?>
-                            <span>Status: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                            <span>Status: <?= $this->getStatusText($value) ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
                         <?php } ?>
                     <?php } ?>
                 </p>
