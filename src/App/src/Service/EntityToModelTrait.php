@@ -25,6 +25,10 @@ trait EntityToModelTrait
             throw new InvalidInputException('Entity not found');
         }
 
+        if ($dataModelClass === null) {
+            return $entity->getAsDataModel([]);
+        }
+
         return $entity->getAsDataModel([], $dataModelClass);
     }
 

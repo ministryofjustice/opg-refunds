@@ -232,8 +232,9 @@ class User extends AbstractEntity
     /**
      * @param AbstractDataModel $model
      * @param array $entityToModelMappings
+     * @param string $dataModelClass
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = UserModel::class)
     {
         $entityToModelMappings = array_merge($entityToModelMappings, [
             'Roles' => function () use ($model) {
@@ -241,6 +242,6 @@ class User extends AbstractEntity
             },
         ]);
 
-        parent::setFromDataModel($model, $entityToModelMappings);
+        parent::setFromDataModel($model, $entityToModelMappings, $dataModelClass);
     }
 }

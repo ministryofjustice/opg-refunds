@@ -124,12 +124,15 @@ abstract class AbstractEntity
      *
      * @param AbstractDataModel $model
      * @param array $entityToModelMappings
+     * @param string|null $dataModelClass
      * @throws Exception
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [])
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = null)
     {
-        if (get_class($model) != $this->dataModelClass) {
-            throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $this->dataModelClass));
+        $dataModelClass = $dataModelClass ?: $this->dataModelClass;
+
+        if (get_class($model) != $dataModelClass) {
+            throw new Exception(sprintf('Unexpected datamodel (%s) used for population - expected %', get_class($model), $dataModelClass));
         }
 
         //  Loop through the entity methods and transfer the values from the datamodel
