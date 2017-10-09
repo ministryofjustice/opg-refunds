@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment as PaymentModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,13 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
  **/
 class Payment extends AbstractEntity
 {
-    /**
-     * Class of the datamodel that this entity can be converted to
-     *
-     * @var string
-     */
-    protected $dataModelClass = PaymentModel::class;
-
     /**
      * @var int
      * @ORM\Id
@@ -151,5 +145,21 @@ class Payment extends AbstractEntity
     public function setClaim(Claim $claim)
     {
         $this->claim = $claim;
+    }
+
+    /**
+     * Returns the entity as a datamodel structure
+     *
+     * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
+     * for example a mapping of 'Something' => 'AnotherThing' will result in $model->setSomething($entity->getAnotherThing());
+     * The value in the mapping array can also be a callback function
+     *
+     * @param array $modelToEntityMappings
+     * @param string|null $dataModelClass
+     * @return AbstractDataModel
+     */
+    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = PaymentModel::class)
+    {
+        return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 }

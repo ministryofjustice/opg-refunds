@@ -44,22 +44,13 @@ class ClaimAction extends AbstractRestfulAction
     {
         $claimId = $request->getAttribute('id');
 
-        if ($claimId === null) {
-            //  Get all of the claims
-            $claims = $this->claimService->getAll();
-            $claimsData = [];
+        $token = $request->getHeaderLine('token');
+        $user = $this->userService->getByToken($token);
 
-            foreach ($claims as $claim) {
-                $claimsData[] = $claim->getArrayCopy();
-            }
+        //  Return a specific claim
+        $claim = $this->claimService->get($claimId, $user->getId());
 
-            return new JsonResponse($claimsData);
-        } else {
-            //  Return a specific claim
-            $claim = $this->claimService->get($claimId);
-
-            return new JsonResponse($claim->getArrayCopy());
-        }
+        return new JsonResponse($claim->getArrayCopy());
     }
 
     /**
@@ -99,7 +90,7 @@ class ClaimAction extends AbstractRestfulAction
             }
         }
 
-        $claim = $this->claimService->get($claimId);
+        $claim = $this->claimService->get($claimId, $user->getId());
 
         return new JsonResponse($claim->getArrayCopy());
     }

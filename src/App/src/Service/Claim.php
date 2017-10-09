@@ -4,9 +4,12 @@ namespace App\Service;
 
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
@@ -69,23 +72,97 @@ class Claim
     /**
      * Get all claims
      *
-     * @return ClaimModel[]
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $donorName
+     * @param int|null $assignedToId
+     * @param string|null $status
+     * @param string|null $accountHash
+     * @return ClaimSummaryPage
      */
-    public function getAll()
+    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
     {
-        /** @var ClaimEntity[] $claims */
-        $claims = $this->claimRepository->findBy([]);
+        //TODO: Get proper migration running via cron job
+        $this->applicationIngestionService->ingestAllApplication();
 
-        return $this->translateToDataModelArray($claims);
+        if ($page === null) {
+            $page = 1;
+        }
+
+        if ($pageSize === null) {
+            $pageSize = 10;
+        } elseif ($pageSize > 50) {
+            $pageSize = 50;
+        }
+
+        $join = '';
+        $whereClauses = [];
+        $parameters = [];
+
+        if (isset($donorName)) {
+            $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
+            $parameters['donorName'] = "%{$donorName}%";
+        }
+
+        if (isset($assignedToId)) {
+            $join = ' JOIN c.assignedTo u';
+            $whereClauses[] = 'u.id = :assignedToId';
+            $parameters['assignedToId'] = $assignedToId;
+        }
+
+        if (isset($status)) {
+            $whereClauses[] = 'c.status = :status';
+            $parameters['status'] = $status;
+        }
+
+        if (isset($accountHash)) {
+            $whereClauses[] = 'c.accountHash = :accountHash';
+            $parameters['accountHash'] = $accountHash;
+        }
+
+        $offset = ($page - 1) * $pageSize;
+
+        // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
+        $dql = 'SELECT c FROM App\Entity\Cases\Claim c' . $join;
+        if (count($whereClauses) > 0) {
+            $dql .= ' WHERE ' . join(' AND ', $whereClauses);
+        }
+        $dql .= ' ORDER BY c.receivedDateTime ASC';
+        $query = $this->entityManager->createQuery($dql)
+            ->setParameters($parameters)
+            ->setFirstResult($offset)
+            ->setMaxResults($pageSize);
+
+        $paginator = new Paginator($query, true);
+
+        $total = count($paginator);
+        $pageCount = ceil($total/$pageSize);
+
+        $claimSummaries = [];
+
+        foreach ($paginator as $claim) {
+            $claimSummaries[] = $this->translateToDataModel($claim, ClaimSummaryModel::class);
+        }
+
+        $claimSummaryPage = new ClaimSummaryPage();
+        $claimSummaryPage
+            ->setPage($page)
+            ->setPageSize($pageSize)
+            ->setPageCount($pageCount)
+            ->setTotal($total)
+            ->setClaimSummaries($claimSummaries);
+
+        return $claimSummaryPage;
     }
 
     /**
      * Get one claim
      *
-     * @param $claimId
+     * @param int $claimId
+     * @param int $userId
      * @return ClaimModel
      */
-    public function get($claimId)
+    public function get(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -97,6 +174,9 @@ class Claim
 
         /** @var ClaimModel $claimModel */
         $claimModel = $this->translateToDataModel($claim);
+
+        $claimModel->setReadOnly($this->isReadOnly($claim, $userId));
+
         return $claimModel;
     }
 
@@ -147,9 +227,64 @@ class Claim
         return ['assignedClaimId' => $assignedClaimId];
     }
 
+    public function assignClaim(int $claimId, int $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        if ($claim->getStatus() !== ClaimModel::STATUS_NEW && $claim->getAssignedTo() !== null) {
+            throw new Exception('You cannot assign this claim', 403);
+        }
+
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+
+        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedTo($user);
+        $claim->setAssignedDateTime(new DateTime());
+
+        $this->addNote(
+            $claim->getId(),
+            $userId,
+            'Claim started by caseworker',
+            "Caseworker has begun to process this claim"
+        );
+
+        return ['assignedClaimId' => $claim->getId()];
+    }
+
+    /**
+     * Removes the assigned user from the claim making it available for another caseworker
+     *
+     * @param int $claimId
+     * @param int $userId
+     */
+    public function unAssignClaim(int $claimId, int $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
+        $claim->setStatus(ClaimModel::STATUS_NEW);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            'Claim returned',
+            "Caseworker returned claim to pool"
+        );
+    }
+
     public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
 
         $claim->setNoSiriusPoas($noSiriusPoas);
         $claim->setUpdatedDateTime(new DateTime());
@@ -174,6 +309,8 @@ class Claim
     public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
 
         $claim->setNoMerisPoas($noMerisPoas);
         $claim->setUpdatedDateTime(new DateTime());
@@ -224,6 +361,9 @@ class Claim
     public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
@@ -248,6 +388,9 @@ class Claim
     public function editPoa(int $claimId, int $poaId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         /** @var PoaEntity $poa */
@@ -308,6 +451,9 @@ class Claim
     public function deletePoa($claimId, $poaId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         /** @var PoaEntity $poa */
@@ -331,6 +477,8 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
+        $this->checkCanEdit($claim, $userId);
+
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedDateTime(new DateTime());
@@ -348,6 +496,8 @@ class Claim
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
 
         $claim->setStatus(ClaimModel::STATUS_REJECTED);
         $claim->setRejectionReason($rejectionReason);
@@ -393,6 +543,19 @@ class Claim
                 throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
             }
             throw $ex;
+        }
+    }
+
+    private function isReadOnly(ClaimEntity $claim, int $userId)
+    {
+        // Deliberately not checking $claim->getAssignedTo() !== null as in progress claims should always be assigned
+        return $claim->getStatus() !== ClaimModel::STATUS_IN_PROGRESS || $claim->getAssignedTo()->getId() !== $userId;
+    }
+
+    private function checkCanEdit($claim, $userId)
+    {
+        if ($this->isReadOnly($claim, $userId)) {
+            throw new Exception('You cannot edit this claim', 403);
         }
     }
 }

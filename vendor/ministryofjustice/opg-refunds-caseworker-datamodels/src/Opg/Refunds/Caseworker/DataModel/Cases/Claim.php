@@ -5,6 +5,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 /**
  * Class Claim
@@ -73,6 +74,11 @@ class Claim extends AbstractDataModel
     protected $donorName;
 
     /**
+     * @var string
+     */
+    protected $accountHash;
+
+    /**
      * @var Poa[]
      */
     protected $poas;
@@ -113,6 +119,11 @@ class Claim extends AbstractDataModel
     protected $accountHashCount;
 
     /**
+     * @var bool
+     */
+    protected $readOnly;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -137,7 +148,7 @@ class Claim extends AbstractDataModel
     public function getReferenceNumber(): string
     {
         if (!is_null($this->id)) {
-            return trim(chunk_split('R' . sprintf("%011d", $this->id), 4, ' '));
+            return IdentFormatter::format($this->id);
         }
 
         return null;
@@ -315,6 +326,25 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return string
+     */
+    public function getAccountHash(): string
+    {
+        return $this->accountHash;
+    }
+
+    /**
+     * @param string $accountHash
+     * @return $this
+     */
+    public function setAccountHash(string $accountHash): Claim
+    {
+        $this->accountHash = $accountHash;
+
+        return $this;
+    }
+
+    /**
      * @return Poa[]
      */
     public function getPoas()
@@ -462,6 +492,25 @@ class Claim extends AbstractDataModel
     public function setAccountHashCount(int $accountHashCount): Claim
     {
         $this->accountHashCount = $accountHashCount;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReadOnly(): bool
+    {
+        return $this->readOnly;
+    }
+
+    /**
+     * @param bool $readOnly
+     * @return $this
+     */
+    public function setReadOnly(bool $readOnly): Claim
+    {
+        $this->readOnly = $readOnly;
 
         return $this;
     }

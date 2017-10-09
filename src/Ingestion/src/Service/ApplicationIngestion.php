@@ -95,6 +95,17 @@ class ApplicationIngestion
         return $claim;
     }
 
+    public function ingestAllApplication()
+    {
+        $count = 0;
+
+        while ($this->ingestApplication()) {
+            $count++;
+        }
+
+        return $count;
+    }
+
     /**
      * Ingest a single application and copy it to the cases database
      *
