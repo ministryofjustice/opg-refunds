@@ -216,12 +216,8 @@ class Claim
         if ($updateCount === 1) {
             $assignedClaimId = $result[0]['id'];
 
-            $claim = $this->getClaimEntity($assignedClaimId);
-            $claim->setAssignedTo($user);
-            $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
-
             $this->addNote(
-                $claim->getId(),
+                $assignedClaimId,
                 $userId,
                 'Claim started by caseworker',
                 "Caseworker has begun to process this claim"
@@ -229,6 +225,59 @@ class Claim
         }
 
         return ['assignedClaimId' => $assignedClaimId];
+    }
+
+    public function assignClaim(int $claimId, int $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        if ($claim->getStatus() !== ClaimModel::STATUS_NEW && $claim->getAssignedTo() !== null) {
+            throw new Exception('You cannot assign this claim', 403);
+        }
+
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+
+        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedTo($user);
+        $claim->setAssignedDateTime(new DateTime());
+
+        $this->addNote(
+            $claim->getId(),
+            $userId,
+            'Claim started by caseworker',
+            "Caseworker has begun to process this claim"
+        );
+
+        return ['assignedClaimId' => $claim->getId()];
+    }
+
+    /**
+     * Removes the assigned user from the claim making it available for another caseworker
+     *
+     * @param int $claimId
+     * @param int $userId
+     */
+    public function unAssignClaim(int $claimId, int $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
+        $claim->setStatus(ClaimModel::STATUS_NEW);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            'Claim returned',
+            "Caseworker returned claim to pool"
+        );
     }
 
     public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
@@ -293,8 +342,6 @@ class Claim
     public function addNote(int $claimId, int $userId, string $title, string $message)
     {
         $claim = $this->getClaimEntity($claimId);
-
-        $this->checkCanEdit($claim, $userId);
 
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([

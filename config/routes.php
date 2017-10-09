@@ -39,7 +39,7 @@ $app->route($prefix . '/claim/{claimId:\d+}/note[/{id:\d+}]', App\Action\ClaimNo
 $app->route($prefix . '/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
 $app->get($prefix . '/claim/search', App\Action\ClaimSearchAction::class, 'claim.search');
 $app->route($prefix . '/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');
-$app->route($prefix . '/user/{id:\d+}/claim', App\Action\UserClaimAction::class, ['GET', 'PUT'], 'user.claim');
+$app->route($prefix . '/user/{id:\d+}/claim[/{claimId:\d+}]', App\Action\UserClaimAction::class, ['GET', 'PUT', 'DELETE'], 'user.claim');
 $app->get($prefix . '/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, 'spreadsheet');
 
 //Example routes

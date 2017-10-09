@@ -35,9 +35,34 @@ class UserClaimAction extends AbstractRestfulAction
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $userId = $request->getAttribute('id');
+        $claimId = $request->getAttribute('claimId');
 
-        $result = $this->claimService->assignNextClaim($userId);
+        if ($claimId === null) {
+            $result = $this->claimService->assignNextClaim($userId);
+        } else {
+            $result = $this->claimService->assignClaim($claimId, $userId);
+        }
 
         return new JsonResponse($result);
+    }
+
+    /**
+     * DELETE/DELETE delete action
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     *
+     * @return ResponseInterface
+     */
+    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $userId = $request->getAttribute('id');
+        $claimId = $request->getAttribute('claimId');
+
+        $this->claimService->unassignClaim($claimId, $userId);
+
+        $claim = $this->claimService->get($claimId, $userId);
+
+        return new JsonResponse($claim->getArrayCopy());
     }
 }
