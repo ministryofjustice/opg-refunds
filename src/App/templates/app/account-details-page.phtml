@@ -1,9 +1,9 @@
 <?php
-$title = 'Your bank details';
 $title = ($applicant == 'donor') ? 'Your bank details' : 'Donor\'s bank details';
 $this->layout('layout::standard',
     [
-        'title' => $title
+        'title' => $title,
+        'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
     ]);
 
 $this->addErrorMap([

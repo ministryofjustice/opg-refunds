@@ -2,6 +2,7 @@
 $title = ($applicant == 'donor') ? 'Your details (donor)' : 'Donor details';
 $this->layout('layout::standard', [
     'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 
