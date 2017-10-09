@@ -47,8 +47,9 @@ class ClaimSearchAction extends AbstractAction
         $donorName = isset($queryParameters['donorName']) ? $queryParameters['donorName'] : null;
         $assignedToId = isset($queryParameters['assignedToId']) ? $queryParameters['assignedToId'] : null;
         $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
+        $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
 
-        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $donorName, $assignedToId, $status);
+        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $donorName, $assignedToId, $status, $accountHash);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-search-page', [
             'claimSummaryPage' => $claimSummaryPage

@@ -74,6 +74,11 @@ class Claim extends AbstractDataModel
     protected $donorName;
 
     /**
+     * @var string
+     */
+    protected $accountHash;
+
+    /**
      * @var Poa[]
      */
     protected $poas;
@@ -311,6 +316,25 @@ class Claim extends AbstractDataModel
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAccountHash(): string
+    {
+        return $this->accountHash;
+    }
+
+    /**
+     * @param string $accountHash
+     * @return $this
+     */
+    public function setAccountHash(string $accountHash): Claim
+    {
+        $this->accountHash = $accountHash;
 
         return $this;
     }
