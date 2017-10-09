@@ -10,13 +10,7 @@
 <div class="grid-row">
     <div class="column-full">
 
-        <h2 class="heading-medium heading-refunds">
-            Search claims
-
-            <?php if(count($searchParameters) > 0) { ?>
-                <a href="<?= $this->generateUrl('claim.search') ?>">Clear search</a>
-            <?php } ?>
-        </h2>
+        <h2 class="heading-medium heading-refunds">Search claims</h2>
 
         <form method="post" class="form">
 
@@ -34,6 +28,31 @@
             </div>
 
         </form>
+
+        <?php if(count($searchParameters) > 0) { ?>
+            <div>
+                <h3 class="heading-small">Search parameters <a href="<?= $this->generateUrl('claim.search') ?>">Clear all</a></h3>
+                <p>
+                    <?php foreach ($searchParameters as $key => $value) { ?>
+                        <?php if ($key === 'donorName') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['donorName']); ?>
+                            <span>Donor name: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                        <?php if ($key === 'assignedToId') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['assignedToId']); ?>
+                            <span>Assigned to id: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                        <?php if ($key === 'status') {
+                            $clearSearchParameters = $searchParameters;
+                            unset($clearSearchParameters['status']); ?>
+                            <span>Status: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
+                        <?php } ?>
+                    <?php } ?>
+                </p>
+            </div>
+        <?php } ?>
 
         <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
 
