@@ -3,6 +3,7 @@
 namespace App\View\Details;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Common\Name as NameModel;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
@@ -21,6 +22,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getPaymentDetailsUsedText', [$this, 'getPaymentDetailsUsedText']);
         $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this, 'shouldShowPaymentDetailsUsedCountWarning']);
         $engine->registerFunction('getRejectionReasonsText', [$this, 'getRejectionReasonsText']);
+        $engine->registerFunction('getStatusText', [$this, 'getStatusText']);
     }
 
     public function getFormattedName(NameModel $name)
@@ -82,6 +84,22 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
                 return 'Claim isn’t verified';
             case 'other':
                 return 'Other';
+            default:
+                return 'Unknown';
+        }
+    }
+
+    public function getStatusText(string $status)
+    {
+        switch ($status) {
+            case ClaimModel::STATUS_NEW:
+                return 'New';
+            case ClaimModel::STATUS_IN_PROGRESS:
+                return 'In Progress';
+            case ClaimModel::STATUS_REJECTED:
+                return 'Rejected';
+            case ClaimModel::STATUS_ACCEPTED:
+                return 'Accepted';
             default:
                 return 'Unknown';
         }
