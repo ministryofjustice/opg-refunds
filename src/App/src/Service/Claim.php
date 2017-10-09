@@ -498,7 +498,7 @@ class Claim
     private function isReadOnly(ClaimEntity $claim, int $userId)
     {
         // Deliberately not checking $claim->getAssignedTo() !== null as in progress claims should always be assigned
-        return $claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS && $claim->getAssignedTo()->getId() === $userId;
+        return $claim->getStatus() !== ClaimModel::STATUS_IN_PROGRESS || $claim->getAssignedTo()->getId() !== $userId;
     }
 
     private function checkCanEdit($claim, $userId)
