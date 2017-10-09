@@ -77,9 +77,10 @@ class Claim
      * @param string|null $donorName
      * @param int|null $assignedToId
      * @param string|null $status
+     * @param string|null $accountHash
      * @return ClaimSummaryPage
      */
-    public function search($page, $pageSize, $donorName, $assignedToId, $status)
+    public function search($page, $pageSize, $donorName, $assignedToId, $status, $accountHash)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
@@ -112,6 +113,11 @@ class Claim
         if (isset($status)) {
             $whereClauses[] = 'c.status = :status';
             $parameters['status'] = $status;
+        }
+
+        if (isset($accountHash)) {
+            $whereClauses[] = 'c.accountHash = :accountHash';
+            $parameters['accountHash'] = $accountHash;
         }
 
         $offset = ($page - 1) * $pageSize;
