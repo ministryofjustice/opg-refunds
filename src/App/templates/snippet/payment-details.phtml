@@ -34,7 +34,7 @@ Mandatory: claim
                     <span class="visually-hidden">Warning</span>
                 </i>
             <?php } ?>
-            <?= $this->getPaymentDetailsUsedText($claim->getAccountHashCount()) ?>
+            <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $claim->getAccountHash()]) ?>"><?= $this->getPaymentDetailsUsedText($claim->getAccountHashCount()) ?></a>
         </dt>
     </div>
 </dl>

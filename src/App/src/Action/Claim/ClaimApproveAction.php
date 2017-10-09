@@ -74,12 +74,12 @@ class ClaimApproveAction extends AbstractClaimAction
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $claim = $this->claimService->setStatusAccepted($claim->getId());
+            $this->claimService->setStatusAccepted($claim->getId());
 
             return $this->redirectToRoute('home');
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reject-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-approve-page', [
             'form'  => $form,
             'claim' => $claim
         ]));

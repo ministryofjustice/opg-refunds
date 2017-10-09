@@ -38,6 +38,9 @@ return [
             'claim.poa.delete',
             'claim.approve',
             'claim.reject',
+            'claim.search',
+            'claim.assign',
+            'claim.unassign',
         ],
         User::ROLE_REPORTING => [
             'reporting',

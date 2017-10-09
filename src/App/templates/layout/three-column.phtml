@@ -1,8 +1,18 @@
 <?php $this->layout('layout::default',[
     'title' => ($title) ?? null
-]) ?>
+])
 
-<h2 class="heading-large"><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></h2>
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<h2 class="heading-large">
+    <span><?= $claim->getReferenceNumber() ?> <?= $claim->getDonorName() ?></span>
+    <?php if ($claim->isReadOnly()) { ?>
+        <span class="heading-secondary"><?= $this->getStatusText($claim->getStatus()) ?> (Read Only)</span>
+    <?php } ?>
+</h2>
 
 <div class="grid-row">
     <div class="column-one-fifth">

@@ -32,6 +32,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getDateOfBirthString', [$this, 'getDateOfBirthString']);
         $engine->registerFunction('getReceivedDateString', [$this, 'getReceivedDateString']);
         $engine->registerFunction('getHistoricRefundDateString', [$this, 'getHistoricRefundDateString']);
+        $engine->registerFunction('getFinishedDateString', [$this, 'getFinishedDateString']);
     }
 
     /**
@@ -129,5 +130,14 @@ class DateFormatterPlatesExtension implements ExtensionInterface
     public function getHistoricRefundDateString($historicRefundDateString)
     {
         return date('d F Y', (new DateTime($historicRefundDateString))->getTimestamp());
+    }
+
+    /**
+     * @param DateTime $dateTime
+     * @return false|string
+     */
+    public function getFinishedDateString($dateTime)
+    {
+        return date('d/m/Y', $dateTime->getTimestamp());
     }
 }

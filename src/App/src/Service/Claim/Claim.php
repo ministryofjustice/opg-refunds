@@ -6,6 +6,7 @@ use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -22,42 +23,96 @@ class Claim implements ApiClientInterface
      */
     public function assignNextClaim(int $userId)
     {
-        //  GET on caseworker's case endpoint without an id means get next refund case
         $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim", []);
 
         return $result['assignedClaimId'];
     }
 
     /**
+     * Assigns a specific claim to a specific user
+     *
      * @param int $claimId
      * @param int $userId
+     * @return int the id of the next case to process. Will be zero if none was assigned
+     */
+    public function assignClaim(int $claimId, int $userId)
+    {
+        $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim/$claimId", []);
+
+        return $result['assignedClaimId'];
+    }
+
+    /**
+     * Removes the assigned user from the claim making it available for another caseworker
+     *
+     * @param int $claimId
+     * @param int $userId
+     */
+    public function unAssignClaim(int $claimId, int $userId)
+    {
+        $this->getApiClient()->httpDelete("/v1/cases/user/$userId/claim/$claimId");
+    }
+
+    /**
+     * @param int $claimId
      * @return ClaimModel
      * @throws Exception
      */
-    public function getClaim(int $claimId, int $userId)
+    public function getClaim(int $claimId)
     {
         $claimData = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
 
         $claim = $this->createDataModel($claimData);
 
-        if (!$claim instanceof ClaimModel || $claim->getAssignedToId() !== $userId) {
-            //User is not assigned to chosen claim
-            throw new Exception('Access forbidden', 403);
+        if (!$claim instanceof ClaimModel) {
+            throw new Exception('Claim not found', 404);
         }
 
         return $claim;
     }
 
     /**
-     * Get all claims
+     * Search claims
      *
-     * @return array
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $donorName
+     * @param int|null $assignedToId
+     * @param string|null $status
+     * @param string|null $accountHash
+     * @return ClaimSummaryPage
      */
-    public function getClaims()
+    public function searchClaims(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
     {
-        $claimsData = $this->getApiClient()->httpGet('/v1/cases/claim');
+        $queryParameters = [];
+        if ($page != null) {
+            $queryParameters['page'] = $page;
+        }
+        if ($pageSize != null) {
+            $queryParameters['pageSize'] = $pageSize;
+        }
+        if ($donorName != null) {
+            $queryParameters['donorName'] = $donorName;
+        }
+        if ($assignedToId != null) {
+            $queryParameters['assignedToId'] = $assignedToId;
+        }
+        if ($status != null) {
+            $queryParameters['status'] = $status;
+        }
+        if ($accountHash != null) {
+            $queryParameters['accountHash'] = $accountHash;
+        }
 
-        return $this->createModelCollection($claimsData);
+        $url = '/v1/cases/claim/search';
+        if ($queryParameters) {
+            $url .= '?' . http_build_query($queryParameters);
+        }
+
+        $claimPageData = $this->getApiClient()->httpGet($url);
+        $claimSummaryPage = new ClaimSummaryPage($claimPageData);
+
+        return $claimSummaryPage;
     }
 
     /**
@@ -167,7 +222,13 @@ class Claim implements ApiClientInterface
         $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
 
         if ($poaCaseNumber !== null) {
-            if ($poaCaseNumber === $poa->getCaseNumber()) {
+            $caseNumber = $poa->getCaseNumber();
+
+            //Strip out meris sequence number if present
+            $poaCaseNumber = strpos($poaCaseNumber, '/') ? substr($poaCaseNumber, 0, strpos($poaCaseNumber, '/')) : $poaCaseNumber;
+            $caseNumber = strpos($caseNumber, '/') ? substr($caseNumber, 0, strpos($caseNumber, '/')) : $caseNumber;
+
+            if ($poaCaseNumber === $caseNumber) {
                 //Add verification for case number
                 $verifications = $poa->getVerifications();
                 $verifications[] = new VerificationModel([
