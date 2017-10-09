@@ -41,9 +41,8 @@ class Claim implements ApiClientInterface
 
         $claim = $this->createDataModel($claimData);
 
-        if (!$claim instanceof ClaimModel || $claim->getAssignedToId() !== $userId) {
-            //User is not assigned to chosen claim
-            throw new Exception('Access forbidden', 403);
+        if (!$claim instanceof ClaimModel) {
+            throw new Exception('Claim not found', 404);
         }
 
         return $claim;
