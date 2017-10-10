@@ -38,7 +38,6 @@ class ConfigProvider
             'invokables' => [
                 // Actions
                 Action\HomePageAction::class => Action\HomePageAction::class,
-                Action\TestAction::class => Action\TestAction::class,
                 Action\WhoAction::class => Action\WhoAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,

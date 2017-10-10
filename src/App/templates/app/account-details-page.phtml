@@ -1,9 +1,9 @@
 <?php
-$title = 'Your bank details';
 $title = ($applicant == 'donor') ? 'Your bank details' : 'Donor\'s bank details';
 $this->layout('layout::standard',
     [
-        'title' => $title
+        'title' => $title,
+        'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
     ]);
 
 $this->addErrorMap([
@@ -56,7 +56,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>
     If a refund is approved it will be paid to this account.

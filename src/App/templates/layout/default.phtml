@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <?php $subTitle = 'Claim a power of attorney refund'; ?>
-    <title><?= (isset($title)) ? $this->e($title).' | ' : '' ?><?= ($title!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
+    <title><?= (isset($pageTitle)) ? $this->e($pageTitle).' | ' : '' ?><?= ($pageTitle!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
     <?php if ( isset($this->config()['analytics']['google']['id']) ): ?>
         <?php $gaId = $this->config()['analytics']['google']['id']; ?>
@@ -95,8 +95,8 @@
 
     <div class="phase-banner">
         <p>
-            <strong class="phase-tag">BETA</strong>
-            <span>This is a new service – your <a href="#">feedback</a> will help us to improve it.</span>
+            <strong class="phase-tag">PRIVATE BETA</strong>
+            <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/Refundsfeedback" rel="external" target="_blank">feedback</a> will help us to improve it.</span>
         </p>
         </div>
 
@@ -112,9 +112,9 @@
             <div class="footer-meta-inner">
             <h2 class="visuallyhidden">Support links</h2>
             <ul>
-                <li><a href="/cookies">Cookies <span class="visuallyhidden">(Opens in a new window)</span></a></li>
-                <li><a href="/terms">Terms and conditions <span class="visuallyhidden">(Opens in a new window)</span></a></li>
-                <li>Built by <a href="https://www.gov.uk/government/organisations/office-of-the-public-guardian" rel="external" target="_blank">OPG Digital</a></li>
+                <li><a href="/cookies" rel="external" target="_blank">Cookies <span class="visuallyhidden">(Opens in a new window)</span></a></li>
+                <li><a href="/terms" rel="external" target="_blank">Terms and conditions <span class="visuallyhidden">(Opens in a new window)</span></a></li>
+                <li>Built by <a href="https://www.gov.uk/government/organisations/office-of-the-public-guardian" rel="external" target="_blank">OPG Digital <span class="visuallyhidden">(Opens in a new window)</span></a></li>
             </ul>
 
             <div class="open-government-licence">

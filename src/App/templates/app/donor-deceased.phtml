@@ -2,7 +2,7 @@
 $title = 'About the donor';
 $this->layout('layout::standard', [
     'title' => $title,
-    'form' => $form
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 $form->setAttribute('method', 'get');
@@ -18,7 +18,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>We need to know if the donor is still alive.</p>
 <p>This is because a refund can only be paid to the donor or to their estate.</p>

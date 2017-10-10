@@ -2,7 +2,8 @@
 $title = 'Your contact details';
 $this->layout('layout::standard',
 [
-    'title' => $title
+    'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 $this->addErrorMap([
@@ -41,7 +42,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>We will use these details to:</p>
 

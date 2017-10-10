@@ -2,6 +2,7 @@
 $title = 'Can you give a reference number?';
 $this->layout('layout::standard', [
     'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 $this->addErrorMap([
@@ -36,7 +37,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>Power of attorney reference numbers are:</p>
 

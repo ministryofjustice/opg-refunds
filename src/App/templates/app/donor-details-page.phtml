@@ -2,6 +2,7 @@
 $title = ($applicant == 'donor') ? 'Your details (donor)' : 'Donor details';
 $this->layout('layout::standard', [
     'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
 
@@ -12,7 +13,9 @@ $this->fetch('snippet::actor-errors', [
 
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 

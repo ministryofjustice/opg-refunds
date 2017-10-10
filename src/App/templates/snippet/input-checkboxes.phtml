@@ -17,15 +17,13 @@ $vales = $formElement->getValue() ?? array();
 
     <fieldset>
 
-        <legend>
-            <h3 class="heading-medium">
-                <?= $this->e($question) ?>
-            </h3>
+        <legend id="<?= "{$elementId}" ?>">
+            <h3 class="heading-medium"><?= $this->e($question) ?></h3>
+            
+            <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
+            <?php endforeach ?>
         </legend>
-
-        <?php foreach($formElement->getMessages() as $message): ?>
-            <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
-        <?php endforeach ?>
 
         <?php foreach($options as $name => $option): ?>
 

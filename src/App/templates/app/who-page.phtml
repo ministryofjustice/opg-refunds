@@ -2,7 +2,7 @@
 $title = 'About you';
 $this->layout('layout::standard', [
         'title' => $title,
-        'form' => $form
+        'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
     ]);
 
 $form->setAttribute('method', 'get');
@@ -18,7 +18,9 @@ $this->addErrorMap([
 ]);
 ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
 
 <p>You can only claim a refund if you are the donor or one of their attorneys.</p>
 

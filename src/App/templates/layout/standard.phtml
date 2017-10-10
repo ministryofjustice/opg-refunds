@@ -1,12 +1,14 @@
 <?php $this->layout('layout::default',[
-    'title' => ($title) ?? null
+    'pageTitle' => ($pageTitle) ?? ($title) ?? null
 ]) ?>
 
 <div class="grid-row">
   <div class="column-two-thirds">
     
+    <?=$this->section('error-summary')?>
+
     <h1 class="heading-xlarge">
-        <?=$this->e($title)?>
+        <?=$this->e( ($h1Title) ?? ($title) )?>
     </h1>
 
     <?=$this->section('content')?>
