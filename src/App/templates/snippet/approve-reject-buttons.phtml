@@ -21,7 +21,7 @@ Mandatory: claim
             <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
                 <div class="">
                     <dt class="details-term">Claim approved:</dt>
-                    <dd class="detail-definition">
+                    <dd class="details-definition">
                         <span>Claim was approved on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?></span>
                         <?php if ($claim->getPayment() !== null) { ?>
                             <br/><span>A payment of <?= $this->getMoneyString($claim->getPayment()->getAmount()) ?> was added to the spreadsheet on <?= $this->getFinishedDateString($claim->getPayment()->getAddedDateTime()) ?></span>
@@ -31,7 +31,7 @@ Mandatory: claim
             <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
                 <div class="">
                     <dt class="details-term">Claim rejected:</dt>
-                    <dd class="detail-definition">
+                    <dd class="details-definition">
                         Claim was rejected on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?> due to '<?= $this->getRejectionReasonsText($claim->getRejectionReason()) ?>' with description '<?= $claim->getRejectionReasonDescription() ?>'
                     </dd>
                 </div>
