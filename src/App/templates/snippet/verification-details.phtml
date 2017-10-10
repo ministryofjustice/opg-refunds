@@ -32,7 +32,7 @@ $attorney = $claim->getApplication()->getAttorney();
 <dl class="details">
     <div class="">
         <dt class="details-term">Attorney details</dt>
-        <dd class="detail-definition">
+        <dd class="details-definition">
             <ul>
                 <li>
                     Name:
@@ -57,7 +57,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <?php if ($caseNumber->getPoaCaseNumber() !== null) { ?>
     <div class="">
         <dt class="details-term">Case reference:</dt>
-        <dd class="detail-definition"><?= $caseNumber->getPoaCaseNumber() ?></dd>
+        <dd class="details-definition"><?= $caseNumber->getPoaCaseNumber() ?></dd>
         <?php if ($this->isCaseNumberVerified($claim)) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">

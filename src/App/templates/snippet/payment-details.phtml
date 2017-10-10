@@ -13,11 +13,11 @@ Mandatory: claim
 <dl class="details">
     <div class="">
         <dt class="details-term">Refund made via:</dt>
-        <dd class="detail-definition">Bank transfer</dd>
+        <dd class="details-definition">Bank transfer</dd>
     </div>
     <div class="">
         <dt class="details-term">Total refund amount:</dt>
-        <dd class="detail-definition"><?= $this->getRefundTotalAmountString($claim) ?></dd>
+        <dd class="details-definition"><?= $this->getRefundTotalAmountString($claim) ?></dd>
     </div>
 
     <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
