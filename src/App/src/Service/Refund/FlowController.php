@@ -20,8 +20,16 @@ class FlowController
      */
     private static $routes = [
         [
+            'name'      => 'apply.who',
+            'requires'  => 'apply.who',
+        ],
+        [
+            'name'      => 'apply.deceased',
+            'requires'  => 'apply.deceased',
+        ],
+        [
             'name'      => 'apply.donor',
-            'requires'  => 'apply.donor',
+            'requires'  => 'apply.who',
         ],
         [
             'name'      => 'apply.attorney',
@@ -89,7 +97,7 @@ class FlowController
 
 
     /**
-     * Determines the next accessible route, ased on the current session data.
+     * Determines the next accessible route, based on the current session data.
      *
      * @param Session $session
      * @return string
@@ -104,7 +112,11 @@ class FlowController
         //---
 
         if (!isset($session['applicant'])) {
-            return 'apply.donor';
+            return 'apply.who';
+        }
+
+        if ($session['applicant'] === 'attorney' && !isset($session['deceased'])) {
+            return 'apply.deceased';
         }
 
         if (!isset($session['donor']['current']) || !is_array($session['donor']['current'])) {
