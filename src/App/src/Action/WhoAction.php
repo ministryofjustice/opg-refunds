@@ -29,7 +29,7 @@ class WhoAction extends AbstractAction
 
                 if ($isUpdate && $applicant != $session['applicant']) {
                     // Remove all session data if the applicant changes.
-                    $session->exchangeArray([]);
+                    $session->clear();
                 } elseif (isset($session['deceased'])) {
                     // Always require them to (re-)confirm if they're deceased
                     unset($session['deceased']);
