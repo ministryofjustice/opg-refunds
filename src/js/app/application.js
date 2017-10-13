@@ -2,7 +2,7 @@ $(document).ready(function () {
   // Turn off jQuery animation
   jQuery.fx.off = true
 
-  $('h1.no-back-link').each(function (idx, elm) {
+  $('.no-back-link').each(function (idx, elm) {
     new GOVUK.BackLink(elm);
   });
 

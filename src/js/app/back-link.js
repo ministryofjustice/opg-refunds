@@ -2,8 +2,8 @@
   'use strict'
 
   var BackLink = function (elm) {
-    if (elm) {
-      this.$header = $(elm);
+    if (global.history && global.history.back && elm) {
+      this.$el = $(elm);
       this.setup();
       this.bindEvents();
     }
@@ -14,19 +14,18 @@
                   '<a class="link-back" href="#">' +
                     'Back' +
                     ' <span class="visuallyhidden"> ' +
-                      'to the previous question' +
+                      'to the previous page' +
                     '</span>' +
                   '</a>'
                 );
-    this.$header.before(this.$link);
-    this.$header.removeClass('no-back-link');
+    this.$el.prepend(this.$link);
+    this.$el.removeClass('no-back-link');
   };
 
   BackLink.prototype.bindEvents = function () {
     this.$link.on("click", function(e) {
       e.preventDefault();
-      console.log("BACK");
-      root.history.back();
+      history.back();
       return false;
     });
   };
