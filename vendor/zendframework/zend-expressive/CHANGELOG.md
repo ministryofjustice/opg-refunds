@@ -2,6 +2,62 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.0.5 - 2017-10-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#521](https://github.com/zendframework/zend-expressive/pull/521) adds an
+  explicit requirement on http-interop/http-middleware `^0.4.1` to the package.
+  This is necessary as newer builds of zend-stratigility instead depend on the
+  metapackage webimpress/http-middleware-compatibility instead of the
+  http-interop/http-middleware package — but middleware shipped in Expressive
+  requires it. This addition fixes problems due to missing http-middleware
+  interfaces.
+
+## 2.0.4 - 2017-10-09
+
+### Added
+
+- [#508](https://github.com/zendframework/zend-expressive/pull/508) adds
+  documentation covering `Zend\Expressive\Helper\ContentLengthMiddleware`,
+  introduced in zend-expressive-helpers 4.1.0.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#479](https://github.com/zendframework/zend-expressive/pull/479) fixes the
+  `WhoopsErrorResponseGenerator::$whoops` dockblock Type to support Whoops 1
+  and 2.
+- [#482](https://github.com/zendframework/zend-expressive/pull/482) fixes the
+  `Application::$defaultDelegate` dockblock Type.
+- [#489](https://github.com/zendframework/zend-expressive/pull/489) fixes an
+  edge case in the `WhoopsErrorHandler` whereby it would emit an error if
+  `$_SERVER['SCRIPT_NAME']` did not exist. It now checks for that value before
+  attempting to use it.
+
 ## 2.0.3 - 2017-03-28
 
 ### Added
@@ -168,7 +224,7 @@ All notable changes to this project will be documented in this file, in reverse 
   `Zend\Expressive\Delegate\NotFoundDelegate`.
 
 - [#428](https://github.com/zendframework/zend-expressive/pull/428) adds the
-  constants `DISPATCH_MIDDLEWARE` and `ROUTING_MIDDLEWARE` to 
+  constants `DISPATCH_MIDDLEWARE` and `ROUTING_MIDDLEWARE` to
   `Zend\Expressive\Application`; they have identical values to the constants
   previously defined in `Zend\Expressive\Container\ApplicationFactory`.
 

@@ -8,6 +8,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        'aaf5b53a99b4de51dadc23016def253f' => __DIR__ . '/..' . '/webimpress/http-middleware-compatibility/autoload/http-middleware.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
@@ -48,6 +49,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         array (
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
+            'Webimpress\\ComposerExtraDependency\\' => 35,
         ),
         'S' => 
         array (
@@ -152,8 +154,8 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         ),
         'Zend\\Expressive\\Router\\' => 
         array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
-            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
         ),
         'Zend\\Expressive\\Helper\\' => 
         array (
@@ -206,6 +208,10 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Webimpress\\ComposerExtraDependency\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webimpress/composer-extra-dependency/src',
         ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
