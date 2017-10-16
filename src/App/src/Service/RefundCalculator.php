@@ -60,6 +60,6 @@ class RefundCalculator
 
         $refundAmountWithInterest = round($refundAmount * pow(1 + ($interestRate / 100), $diffInYears), 2);
 
-        return $refundAmountWithInterest;
+        return $refundAmountWithInterest - $refundAmount;
     }
 }

@@ -30,25 +30,23 @@ class RefundTest extends TestCase
         $refundAmount = RefundCalculatorService::getRefundAmount($originalPaymentAmount, $receivedDate);
 
         //Test first thing in the morning
-        $refundAmountWithInterest = $this->refundCalculatorService->getRefundInterestAmount(
+        $refundInterestAmount = $this->refundCalculatorService->getRefundInterestAmount(
             $originalPaymentAmount,
             $receivedDate,
             (new DateTime('2017-05-01T00:00:00.000000+0000'))->getTimestamp()
         );
-        $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);
-        $this->assertEquals(0.04, $interest);
+        $this->assertEquals(0.04, $refundInterestAmount);
 
         //Test last thing at night
-        $refundAmountWithInterest = $this->refundCalculatorService->getRefundInterestAmount(
+        $refundInterestAmount = $this->refundCalculatorService->getRefundInterestAmount(
             $originalPaymentAmount,
             $receivedDate,
             (new DateTime('2017-05-01T23:59:59.999999+0000'))->getTimestamp()
         );
-        $interest = $refundAmountWithInterest - $refundAmount;
 
         $this->assertEquals(45.0, $refundAmount);
-        $this->assertEquals(0.04, $interest);
+        $this->assertEquals(0.04, $refundInterestAmount);
     }
 }
