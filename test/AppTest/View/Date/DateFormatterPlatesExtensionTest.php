@@ -92,6 +92,6 @@ class DateFormatterPlatesExtensionTest extends TestCase
     {
         $formatted = $this->extension->getNoteTimeString(new DateTime('2017-09-25T09:19:37.000000+0000'));
 
-        $this->assertEquals('09:19', $formatted);
+        $this->assertEquals('10:19', $formatted);
     }
 }
