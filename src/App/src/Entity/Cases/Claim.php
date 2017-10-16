@@ -128,11 +128,6 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
-    /**
-     * @var int
-     */
-    protected $accountHashCount;
-
     public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
@@ -434,22 +429,6 @@ class Claim extends AbstractEntity
     public function setNotes($notes)
     {
         $this->notes = $notes;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountHashCount()
-    {
-        return $this->accountHashCount;
-    }
-
-    /**
-     * @param int $accountHashCount
-     */
-    public function setAccountHashCount(int $accountHashCount)
-    {
-        $this->accountHashCount = $accountHashCount;
     }
 
     /**
