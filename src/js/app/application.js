@@ -1,7 +1,4 @@
 $(document).ready(function () {
-  // Turn off jQuery animation
-  jQuery.fx.off = true
-
   $('.no-back-link').each(function (idx, elm) {
     new GOVUK.BackLink(elm);
   });
@@ -11,5 +8,6 @@ $(document).ready(function () {
   var showHideContent = new GOVUK.ShowHideContent()
   showHideContent.init()
 
-  GOVUK.scrollToHash.init('.error-summary-list');
+  $('.error-summary').focus()
+  new GOVUK.ScrollToHash('.error-summary-list')
 })
