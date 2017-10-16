@@ -51,8 +51,8 @@ $this->addErrorMap([
                         <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <?php } ?>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td><?= $this->getRefundAmountString($poa) ?></td>
-                    <td><?= $this->getInterestAmountString($poa) ?></td>
+                    <td><?= $this->getMoneyString($poa->getRefundAmount()) ?></td>
+                    <td><?= $this->getMoneyString($poa->getRefundInterestAmount()) ?></td>
                     <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
                 </tr>
             <?php } ?>
@@ -99,8 +99,8 @@ $this->addErrorMap([
                         <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
                     <?php } ?>
                     <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td><?= $this->getRefundAmountString($poa) ?></td>
-                    <td><?= $this->getInterestAmountString($poa) ?></td>
+                    <td><?= $this->getMoneyString($poa->getRefundAmount()) ?></td>
+                    <td><?= $this->getMoneyString($poa->getRefundInterestAmount()) ?></td>
                     <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
                 </tr>
             <?php } ?>

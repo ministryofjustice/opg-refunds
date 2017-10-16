@@ -79,7 +79,6 @@ class ConfigProvider
                 // Services
                 \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
-                Service\Refund\RefundCalculator::class => Service\Refund\RefundCalculatorFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
 
