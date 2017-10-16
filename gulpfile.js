@@ -15,7 +15,7 @@ const sourcemaps = require('gulp-sourcemaps');
 // Paths
 const paths = {
   build: `${__dirname}/public`,
-  src: `${__dirname}/src/js/app`,
+  src: `${__dirname}/src/js`,
   modules: `${__dirname}/node_modules`
 };
 
@@ -29,8 +29,9 @@ const vendorModules = [
 // Application JavaScript files
 const applicationModules = [
   `${paths.src}/vendor/govuk_elements/details.polyfill.js`,
-  `${paths.src}/back-link.js`,
-  `${paths.src}/application.js`
+  `${paths.src}/app/back-link.js`,
+  `${paths.src}/app/scroll-to-hash.js`,
+  `${paths.src}/app/application.js`
 ];
 
 // --------------------------------------------------------
@@ -64,7 +65,13 @@ function appScripts() {
     .pipe(gulp.dest(`${paths.build}/assets/javascripts`));
 }
 
+// Watch
+function watch() {
+  gulp.watch(applicationModules, appScripts);
+}
+
 // Task sets
 const compile = gulp.series(gulp.parallel(vendorScripts,appScripts));
 
 gulp.task('build', gulp.series(compile));
+gulp.task('dev', gulp.series(compile, watch));
