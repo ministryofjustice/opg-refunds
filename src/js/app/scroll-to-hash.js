@@ -4,6 +4,8 @@
   var $ = global.jQuery
   var GOVUK = global.GOVUK || {}
 
+  var SCROLL_TOP_OFFSET = 90;
+
   var ScrollToHash = function (selector) {
     $(selector).on('click', 'a[href*="#"]', this.handleClick)
   }
@@ -18,7 +20,7 @@
       
       if (target.length) {
         $('html, body').animate({
-          scrollTop: target.offset().top - 90
+          scrollTop: target.offset().top - SCROLL_TOP_OFFSET
         }, 10)
       }
      }  
