@@ -23,6 +23,7 @@
         "aws/aws-sdk-php": "^3.33",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
+        "http-interop/http-middleware": "^0.4.1",
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",

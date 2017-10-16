@@ -13,7 +13,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 /**
  * Middleware.
  *
- * Middleware accepts a request and a response, and optionally a
+ * Middleware accepts a request and a response, and a
  * callback `$next` (called if the middleware wants to allow the *next*
  * middleware to process the incoming request, or to delegate output to another
  * process).
@@ -24,6 +24,8 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  * For the purposes of Stratigility, `$next` is typically one of either an instance
  * of `Next` or an instance of `NoopFinalHandler`, and, as such, should follow
  * those calling semantics.
+ *
+ * @deprecated since 2.0.0; to be removed in 3.0.0.
  */
 interface MiddlewareInterface
 {

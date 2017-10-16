@@ -4,10 +4,7 @@ namespace App\Service\Refund;
 
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
-use App\Service\Date\IDate as DateService;
 use DateTime;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 
 /**
  * Class Refund

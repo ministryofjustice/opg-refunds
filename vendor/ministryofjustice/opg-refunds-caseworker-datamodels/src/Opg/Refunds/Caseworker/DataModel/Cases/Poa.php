@@ -45,6 +45,16 @@ class Poa extends AbstractDataModel
     protected $verifications;
 
     /**
+     * @var float
+     */
+    protected $refundAmount;
+
+    /**
+     * @var float
+     */
+    protected $refundInterestAmount;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -154,6 +164,44 @@ class Poa extends AbstractDataModel
     public function setVerifications(array $verifications): Poa
     {
         $this->verifications = $verifications;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRefundAmount(): float
+    {
+        return $this->refundAmount;
+    }
+
+    /**
+     * @param float $refundAmount
+     * @return $this
+     */
+    public function setRefundAmount(float $refundAmount): Poa
+    {
+        $this->refundAmount = $refundAmount;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRefundInterestAmount(): float
+    {
+        return $this->refundInterestAmount;
+    }
+
+    /**
+     * @param float $refundInterestAmount
+     * @return $this
+     */
+    public function setRefundInterestAmount(float $refundInterestAmount): Poa
+    {
+        $this->refundInterestAmount = $refundInterestAmount;
 
         return $this;
     }
