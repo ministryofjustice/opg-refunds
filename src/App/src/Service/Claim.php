@@ -141,7 +141,7 @@ class Claim
         $claimSummaries = [];
 
         foreach ($paginator as $claim) {
-            $claimSummaries[] = $this->translateToDataModel($claim, ClaimSummaryModel::class);
+            $claimSummaries[] = $this->translateToDataModel($claim, [], ClaimSummaryModel::class);
         }
 
         $claimSummaryPage = new ClaimSummaryPage();
@@ -170,12 +170,10 @@ class Claim
         $accountHashCount = $this->entityManager->createQuery($dql)
             ->setParameter(1, $claim->getAccountHash())
             ->getSingleScalarResult();
-        $claim->setAccountHashCount($accountHashCount);
 
         /** @var ClaimModel $claimModel */
-        $claimModel = $this->translateToDataModel($claim);
-
-        $claimModel->setReadOnly($this->isReadOnly($claim, $userId));
+        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
+        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
 
         return $claimModel;
     }
@@ -544,6 +542,18 @@ class Claim
             }
             throw $ex;
         }
+    }
+
+    private function getClaimModelToEntityMappings(int $accountHashCount, ClaimEntity $claim, int $userId): array
+    {
+        return [
+            'AccountHashCount' => function () use ($accountHashCount) {
+                return $accountHashCount;
+            },
+            'ReadOnly' => function () use ($claim, $userId) {
+                return $this->isReadOnly($claim, $userId);
+            }
+        ];
     }
 
     private function isReadOnly(ClaimEntity $claim, int $userId)
