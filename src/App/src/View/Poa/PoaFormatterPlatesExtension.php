@@ -99,7 +99,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             return 'None';
         }
 
-        return join('<br/>', $verificationStrings);
+        return join(', ', $verificationStrings);
     }
 
     private function getFormattedVerificationMatch(VerificationModel $verification)
