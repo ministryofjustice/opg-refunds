@@ -1,17 +1,20 @@
 <?php
 namespace App\Service\Refund\Data;
 
+use Aws\Kms\KmsClient;
 use Zend\Crypt\PublicKey\Rsa as RsaCipher;
 
 class BankDetailsHandler
 {
 
-    private $cipher;
+    private $kmsKeyId;
+    private $kmsClient;
     private $hashSalt;
 
-    public function __construct(RsaCipher $cipher, string $hashSalt)
+    public function __construct(KmsClient $kmsClient, string $kmsKeyId, string $hashSalt)
     {
-        $this->cipher = $cipher;
+        $this->kmsKeyId = $kmsKeyId;
+        $this->kmsClient = $kmsClient;
         $this->hashSalt = $hashSalt;
     }
 
@@ -30,10 +33,19 @@ class BankDetailsHandler
 
         //---
 
+        $kmsResult = $this->kmsClient->encrypt([
+            'KeyId' => $this->kmsKeyId,
+            'Plaintext' => $accountDetails
+        ]);
+
+        $cipherAccountDetails = base64_encode($kmsResult->get('CiphertextBlob'));
+
+        //---
+
         return [
             'name' => $data['name'],
             'hash' => hash('sha512', $this->hashSalt.$accountDetails),
-            'details' => $this->cipher->encrypt($accountDetails)
+            'details' => $cipherAccountDetails
         ];
     }
 }
