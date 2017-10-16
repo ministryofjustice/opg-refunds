@@ -46,7 +46,7 @@
                     <td><a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $claim->getReferenceNumber() ?></a></td>
                     <td><?= $claim->getDonorName() ?></td>
                     <td><?= $this->getDayAndFullTextMonth($claim->getReceivedDateTime()) ?></td>
-                    <td><?= $this->getTimeIntervalAgo($claim->getUpdatedDateTime()) ?></td>
+                    <td><?= $this->getTimeIntervalBetween($claim->getUpdatedDateTime()) ?></td>
                 </tr>
             <?php } ?>
 

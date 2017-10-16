@@ -75,7 +75,7 @@
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $claimSummary->getReferenceNumber() ?></a></td>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['donorName' => $claimSummary->getDonorName()])) ?>"><?= $claimSummary->getDonorName() ?></td></a>
                         <td><?= $this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime()) ?></td>
-                        <td><?= $this->getTimeIntervalAgo($claimSummary->getUpdatedDateTime()) ?></td>
+                        <td><?= $this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime()) ?></td>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $claimSummary->getAssignedToName() ?></td></a>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->getStatusText($claimSummary->getStatus()) ?></td></a>
                     </tr>
