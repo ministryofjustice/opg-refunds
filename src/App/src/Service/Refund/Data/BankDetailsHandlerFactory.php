@@ -3,6 +3,7 @@ namespace App\Service\Refund\Data;
 
 use Zend\Crypt\PublicKey\Rsa;
 use Interop\Container\ContainerInterface;
+use Aws\Kms\KmsClient;
 
 class BankDetailsHandlerFactory
 {
@@ -12,20 +13,27 @@ class BankDetailsHandlerFactory
 
         $config = $container->get('config');
 
-        //-------------------------------------
-        // Encryption - Account Details
 
-        if (!isset($config['security']['rsa']['keys']['public']['bank'])) {
-            throw new \UnexpectedValueException('Bank RSA public key is not configured');
+        //-------------------------------------
+        // KMS Setup
+
+        if (!isset($config['security']['kms'])) {
+            throw new \UnexpectedValueException('AWS KMS is not configured');
         }
 
-        $keyPath = $config['security']['rsa']['keys']['public']['bank'];
+        $kmsConfig = $config['security']['kms'];
 
-        $cipher = Rsa::factory([
-            'public_key'    => $keyPath,
-            'binary_output' => false,   // Thus base64
-        ]);
+        if (!isset($kmsConfig['client'])) {
+            throw new \UnexpectedValueException('AWS KMS Client is not configured');
+        }
 
+        $kmsClient = new KmsClient($kmsConfig['client']);
+
+        //---
+
+        if (!isset($kmsConfig['settings']['keyId'])) {
+            throw new \UnexpectedValueException('AWS KMS KeyId is not configured');
+        }
 
         //-------------------------------------
         // Salt Hash
@@ -42,6 +50,10 @@ class BankDetailsHandlerFactory
 
         //---
 
-        return new BankDetailsHandler($cipher, $salt);
+        return new BankDetailsHandler(
+            $kmsClient,
+            $kmsConfig['settings']['keyId'],
+            $salt
+        );
     }
 }

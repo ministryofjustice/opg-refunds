@@ -67,11 +67,17 @@ return [
 
     'security' => [
 
-        'rsa' => [
-            'keys' => [
-                'public' => [
-                    'bank' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC') ?: null,
+        'kms' => [
+            'client' => [
+                'version' => '2014-11-01',
+                'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION') ?: null,
+                'credentials' => [
+                    'key' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_CREDENTIALS_KEY') ?: null,
+                    'secret' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_CREDENTIALS_SECRET') ?: null,
                 ],
+            ],
+            'settings' => [
+                'keyId' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS') ?: null,
             ],
         ],
 
