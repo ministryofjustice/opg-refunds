@@ -13,11 +13,11 @@ Mandatory: claim
 
 ?>
 
-<?php if($claim->getStatus() === ClaimModel::STATUS_NEW || !$claim->isReadOnly()) { ?>
+<?php if($claim->getStatus() === ClaimModel::STATUS_PENDING || !$claim->isReadOnly()) { ?>
     <h2 class="heading-medium heading-refunds">Claim ownership</h2>
     <dl class="details">
 
-        <?php if($claim->getStatus() === ClaimModel::STATUS_NEW) { ?>
+        <?php if($claim->getStatus() === ClaimModel::STATUS_PENDING) { ?>
             <a class="button button-secondary" href="<?= $this->generateUrl('claim.assign', ['claimId' => $claim->getId()]) ?>">Assign claim to myself</a>
         <?php } elseif (!$claim->isReadOnly()) { ?>
             <a class="button button-secondary" href="<?= $this->generateUrl('claim.unassign', ['claimId' => $claim->getId()]) ?>">Return claim to queue</a>

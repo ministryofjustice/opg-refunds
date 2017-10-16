@@ -73,7 +73,7 @@ class ClaimTest extends AbstractDataModelTestCase
               ->setUpdatedDateTime($now)
               ->setReceivedDateTime($now)
               ->setApplication($this->application)
-              ->setStatus(Claim::STATUS_NEW)
+              ->setStatus(Claim::STATUS_PENDING)
               ->setAssignedToId(123)
               ->setAssignedDateTime($now)
               ->setFinishedDateTime($now)
@@ -86,7 +86,7 @@ class ClaimTest extends AbstractDataModelTestCase
         $this->assertEquals($now, $model->getUpdatedDateTime());
         $this->assertEquals($now, $model->getReceivedDateTime());
         $this->assertEquals($this->application, $model->getApplication());
-        $this->assertEquals(Claim::STATUS_NEW, $model->getStatus());
+        $this->assertEquals(Claim::STATUS_PENDING, $model->getStatus());
         $this->assertEquals(123, $model->getAssignedToId());
         $this->assertEquals($now, $model->getAssignedDateTime());
         $this->assertEquals($now, $model->getFinishedDateTime());
@@ -105,7 +105,7 @@ class ClaimTest extends AbstractDataModelTestCase
             'updated-date-time'  => $this->dateTimeToString($now),
             'received-date-time' => $this->dateTimeToString($now),
             'application'        => $this->application->getArrayCopy(),
-            'status'             => Claim::STATUS_NEW,
+            'status'             => Claim::STATUS_PENDING,
             'assigned-to-id'     => 123,
             'assigned-date-time' => $this->dateTimeToString($now),
             'finished-date-time' => $this->dateTimeToString($now),
