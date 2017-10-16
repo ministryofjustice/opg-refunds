@@ -2,7 +2,6 @@
 namespace App\Service\Refund\Data;
 
 use PDO;
-use App\Crypt\Hybrid as HybridCipher;
 
 use Opg\Refunds\Log\Initializer;
 
@@ -17,12 +16,10 @@ class DataHandlerLocal implements DataHandlerInterface, Initializer\LogSupportIn
     use Initializer\LogSupportTrait;
 
     private $db;
-    private $cipher;
 
-    public function __construct(PDO $db, HybridCipher $cipher)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
-        $this->cipher = $cipher;
     }
 
     public function store(array $data) : string
@@ -31,8 +28,6 @@ class DataHandlerLocal implements DataHandlerInterface, Initializer\LogSupportIn
         $data = json_encode($data);
 
         $data = gzdeflate($data);
-
-        $data = $this->cipher->encrypt($data);
 
         //---
 
