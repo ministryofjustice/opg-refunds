@@ -42,7 +42,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <input type="hidden" name="system" value="<?= $system ?>">
+    <input type="hidden" name="system" value="<?= $this->e($system) ?>">
 
     <div>
         <h3 class="heading-small">Add power of attorney details</h3>

@@ -11,7 +11,7 @@
 
         <ul>
             <?php foreach ($historicRefundDates as $historicRefundDate) { ?>
-                <li><a href="<?= $this->generateUrl('download', ['date' => $historicRefundDate]) ?>"><?= $this->getHistoricRefundDateString($historicRefundDate) ?></a></li>
+                <li><a href="<?= $this->generateUrl('download', ['date' => $historicRefundDate]) ?>"><?= $this->e($this->getHistoricRefundDateString($historicRefundDate)) ?></a></li>
             <?php } ?>
         </ul>
 

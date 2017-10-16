@@ -13,18 +13,18 @@ Mandatory: application
 <dl class="details">
     <div class="">
         <dt class="details-term">Applicant:</dt>
-        <dd class="details-definition"><?= $this->getApplicantName($application) ?></dd>
+        <dd class="details-definition"><?= $this->e($this->getApplicantName($application)) ?></dd>
     </div>
     <?php if ($application->getContact()->getEmail() !== null) { ?>
         <div class="">
             <dt class="details-term">Email:</dt>
-            <dd class="details-definition"><?= $application->getContact()->getEmail() ?></dd>
+            <dd class="details-definition"><?= $this->e($application->getContact()->getEmail()) ?></dd>
         </div>
     <?php } ?>
     <?php if ($application->getContact()->getPhone() !== null) { ?>
         <div class="">
             <dt class="details-term">Telephone:</dt>
-            <dd class="details-definition"><?= $application->getContact()->getPhone() ?></dd>
+            <dd class="details-definition"><?= $this->e($application->getContact()->getPhone()) ?></dd>
         </div>
     <?php } ?>
 </dl>

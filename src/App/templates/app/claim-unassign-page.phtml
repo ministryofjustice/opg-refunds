@@ -20,7 +20,7 @@
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <p>Are you sure you want to return the claim with claim code: <?= $claim->getReferenceNumber() ?> to the queue?</p>
+    <p>Are you sure you want to return the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?> to the queue?</p>
 
     <div class="form-group">
         <input type='submit' class="button" name='submit' value='Return claim'>

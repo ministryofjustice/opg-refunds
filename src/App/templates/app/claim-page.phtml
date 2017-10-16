@@ -46,14 +46,14 @@ $this->addErrorMap([
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
                     <?php if ($claim->isReadOnly()) { ?>
-                        <td><?= $this->getFormattedCaseNumber($poa) ?></td>
+                        <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
                     <?php } ?>
-                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td><?= $this->getMoneyString($poa->getRefundAmount()) ?></td>
-                    <td><?= $this->getMoneyString($poa->getRefundInterestAmount()) ?></td>
-                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                    <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
+                    <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
+                    <td><?= $this->e($this->getMoneyString($poa->getRefundInterestAmount())) ?></td>
+                    <td><?= $this->e($this->getFormattedVerificationMatches($poa)) ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -94,14 +94,14 @@ $this->addErrorMap([
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
                     <?php if ($claim->isReadOnly()) { ?>
-                        <td><?= $this->getFormattedCaseNumber($poa) ?></td>
+                        <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->getFormattedCaseNumber($poa) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
                     <?php } ?>
-                    <td><?= $this->getReceivedDateString($poa->getReceivedDate()) ?></td>
-                    <td><?= $this->getMoneyString($poa->getRefundAmount()) ?></td>
-                    <td><?= $this->getMoneyString($poa->getRefundInterestAmount()) ?></td>
-                    <td><?= $this->getFormattedVerificationMatches($poa) ?></td>
+                    <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
+                    <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
+                    <td><?= $this->e($this->getMoneyString($poa->getRefundInterestAmount())) ?></td>
+                    <td><?= $this->e($this->getFormattedVerificationMatches($poa)) ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -148,11 +148,11 @@ $this->addErrorMap([
         <?php foreach ($claim->getNotes() as $note) { ?>
             <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Note $note */ ?>
             <li>
-                <p class="timeline-reference"><?= $this->getNoteDateString($note->getCreatedDateTime()) ?> <span class="time"><?= $this->getNoteTimeString($note->getCreatedDateTime()) ?></span></p>
-                <h2><?= $note->getTitle() ?></h2>
-                <p><?= $note->getMessage() ?></p>
+                <p class="timeline-reference"><?= $this->e($this->getNoteDateString($note->getCreatedDateTime())) ?> <span class="time"><?= $this->e($this->getNoteTimeString($note->getCreatedDateTime())) ?></span></p>
+                <h2><?= $this->e($note->getTitle()) ?></h2>
+                <p><?= $this->e($note->getMessage()) ?></p>
                 <?php if ($note->getUserName() !== null) { ?>
-                    <p>by <?= $note->getUserName() ?></p>
+                    <p>by <?= $this->e($note->getUserName()) ?></p>
                 <?php } ?>
             </li>
         <?php } ?>

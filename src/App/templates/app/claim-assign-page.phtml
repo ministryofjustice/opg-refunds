@@ -20,7 +20,7 @@
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <p>Are you sure you want to assign the claim with claim code: <?= $claim->getReferenceNumber() ?> to yourself?</p>
+    <p>Are you sure you want to assign the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?> to yourself?</p>
 
     <div class="form-group">
         <input type='submit' class="button" name='submit' value='Assign claim'>

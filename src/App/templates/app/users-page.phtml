@@ -21,14 +21,14 @@
                 <?php foreach ($users as $user) { ?>
                     <tr>
                         <td>
-                            <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $user->getName() ?></a>
+                            <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $this->e($user->getName()) ?></a>
                             <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
-                                - <span style="color: red;"><?= strtoupper($user->getStatus()) ?></span>
+                                - <span style="color: red;"><?= $this->e(strtoupper($user->getStatus())) ?></span>
                             <?php } ?>
                         </td>
-                        <td><?= $user->getEmail() ?></td>
-                        <td><?= $user->getStatus() ?></td>
-                        <td><?= implode(', ', $user->getRoles()) ?></td>
+                        <td><?= $this->e($user->getEmail()) ?></td>
+                        <td><?= $this->e($user->getStatus()) ?></td>
+                        <td><?= $this->e(implode(', ', $user->getRoles())) ?></td>
                     </tr>
                 <?php } ?>
             <?php } else { ?>
