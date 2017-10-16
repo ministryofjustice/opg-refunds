@@ -29,6 +29,7 @@ const vendorModules = [
 // Application JavaScript files
 const applicationModules = [
   `${paths.src}/vendor/govuk_elements/details.polyfill.js`,
+  `${paths.src}/back-link.js`,
   `${paths.src}/application.js`
 ];
 

@@ -1,9 +1,14 @@
-<?php $this->layout('layout::default',[
-    'pageTitle' => ($pageTitle) ?? ($title) ?? null
-]) ?>
+<?php
+$this->layout('layout::default',[
+  'pageTitle' => ($pageTitle) ?? ($title) ?? null
+]);
+
+$backButtonVisibility = $this->e( ($backButton) ?? true);
+
+?>
 
 <div class="grid-row">
-  <div class="column-two-thirds">
+  <div class="column-two-thirds <?= ($backButtonVisibility)?' no-back-link':'' ?>">
     
     <?=$this->section('error-summary')?>
 
