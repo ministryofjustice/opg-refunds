@@ -81,7 +81,7 @@
             <?php if (isset($identity)) { ?>
                 <div class="header-profile">
                     <p>
-                        Logged in as <?= $identity->getName(); ?><br/>
+                        Logged in as <?= $this->e($identity->getName()); ?><br/>
                         <a href="<?= $this->generateUrl('password.change') ?>">Change password</a>
                         &nbsp;|&nbsp;
                         <a href="<?= $this->generateUrl('sign.out') ?>">Sign out</a>

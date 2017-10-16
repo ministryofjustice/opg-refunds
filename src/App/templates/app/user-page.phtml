@@ -6,22 +6,22 @@
         <h2 class="heading-medium heading-refunds">
             <?= $user->getName() ?>
             <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
-                - <span style="color: red;"><?= strtoupper($user->getStatus()) ?></span>
+                - <span style="color: red;"><?= $this->e(strtoupper($user->getStatus())) ?></span>
             <?php } ?>
         </h2>
 
         <table>
             <tr>
                 <th>Email</th>
-                <td><?= $user->getEmail() ?></td>
+                <td><?= $this->e($user->getEmail()) ?></td>
             </tr>
             <tr>
                 <th>Roles</th>
-                <td><?= implode(', ', $user->getRoles()) ?></td>
+                <td><?= $this->e(implode(', ', $user->getRoles())) ?></td>
             </tr>
             <tr>
                 <th>Status</th>
-                <td><?= $user->getStatus() ?></td>
+                <td><?= $this->e($user->getStatus()) ?></td>
             </tr>
         </table>
     </div>

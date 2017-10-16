@@ -22,9 +22,9 @@ Mandatory: claim
                 <div class="">
                     <dt class="details-term">Claim approved:</dt>
                     <dd class="details-definition">
-                        <span>Claim was approved on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?></span>
+                        <span>Claim was approved on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
                         <?php if ($claim->getPayment() !== null) { ?>
-                            <br/><span>A payment of <?= $this->getMoneyString($claim->getPayment()->getAmount()) ?> was added to the spreadsheet on <?= $this->getFinishedDateString($claim->getPayment()->getAddedDateTime()) ?></span>
+                            <br/><span>A payment of <?= $this->e($this->getMoneyString($claim->getPayment()->getAmount())) ?> was added to the spreadsheet on <?= $this->e($this->getFinishedDateString($claim->getPayment()->getAddedDateTime())) ?></span>
                         <?php } ?>
                     </dd>
                 </div>
@@ -32,7 +32,7 @@ Mandatory: claim
                 <div class="">
                     <dt class="details-term">Claim rejected:</dt>
                     <dd class="details-definition">
-                        Claim was rejected on <?= $this->getFinishedDateString($claim->getFinishedDateTime()) ?> due to '<?= $this->getRejectionReasonsText($claim->getRejectionReason()) ?>' with description '<?= $claim->getRejectionReasonDescription() ?>'
+                        Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>' with description '<?= $this->e($claim->getRejectionReasonDescription()) ?>'
                     </dd>
                 </div>
             <?php } ?>

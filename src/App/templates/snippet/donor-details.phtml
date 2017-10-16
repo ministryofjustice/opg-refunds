@@ -13,16 +13,16 @@ Mandatory: donor
 <dl class="details">
     <div class="">
         <dt class="details-term">Name:</dt>
-        <dd class="details-definition"><?= $this->getFormattedName($donor->getCurrent()->getName()) ?></dd>
+        <dd class="details-definition"><?= $this->e($this->getFormattedName($donor->getCurrent()->getName())) ?></dd>
     </div>
     <div class="">
         <dt class="details-term">Date of birth:</dt>
-        <dd class="details-definition"><?= $this->getDateOfBirthString($donor->getCurrent()->getDob()) ?></dd>
+        <dd class="details-definition"><?= $this->e($this->getDateOfBirthString($donor->getCurrent()->getDob())) ?></dd>
     </div>
     <?php if ($donor->getPoa() !== null && $donor->getPoa()->getName() !== null) { ?>
         <div class="">
             <dt class="details-term">Name on power attorney documents:</dt>
-            <dd class="details-definition"><?= $this->getFormattedName($donor->getPoa()->getName()) ?></dd>
+            <dd class="details-definition"><?= $this->e($this->getFormattedName($donor->getPoa()->getName())) ?></dd>
         </div>
     <?php } ?>
 </dl>

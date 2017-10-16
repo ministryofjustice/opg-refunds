@@ -17,7 +17,7 @@ Mandatory: claim
     </div>
     <div class="">
         <dt class="details-term">Total refund amount:</dt>
-        <dd class="details-definition"><?= $this->getRefundTotalAmountString($claim) ?></dd>
+        <dd class="details-definition"><?= $this->e($this->getRefundTotalAmountString($claim)) ?></dd>
     </div>
 
     <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
@@ -34,7 +34,7 @@ Mandatory: claim
                     <span class="visually-hidden">Warning</span>
                 </i>
             <?php } ?>
-            <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $claim->getAccountHash()]) ?>"><?= $this->getPaymentDetailsUsedText($claim->getAccountHashCount()) ?></a>
+            <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $this->e($claim->getAccountHash())]) ?>"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></a>
         </dt>
     </div>
 </dl>
