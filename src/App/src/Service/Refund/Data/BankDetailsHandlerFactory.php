@@ -1,7 +1,6 @@
 <?php
 namespace App\Service\Refund\Data;
 
-use Zend\Crypt\PublicKey\Rsa;
 use Interop\Container\ContainerInterface;
 use Aws\Kms\KmsClient;
 
