@@ -36,6 +36,7 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                Service\TimeDate::class => Service\TimeDate::class,
             ],
             'factories'  => [
                 'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
@@ -58,6 +59,7 @@ class ConfigProvider
                 //  Services
                 Service\Claim::class => Service\ClaimFactory::class,
                 Service\User::class => Service\UserFactory::class,
+                Service\RefundCalculator::class => Service\RefundCalculatorFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt
