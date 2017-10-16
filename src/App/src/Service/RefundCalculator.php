@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 
 /**
  * Class RefundCalculator
@@ -61,5 +62,33 @@ class RefundCalculator
         $refundAmountWithInterest = round($refundAmount * pow(1 + ($interestRate / 100), $diffInYears), 2);
 
         return $refundAmountWithInterest - $refundAmount;
+    }
+
+    /**
+     * @param ClaimModel $claim
+     * @param int $refundTime
+     * @return float
+     */
+    public static function getRefundTotalAmount(ClaimModel $claim, int $refundTime): float
+    {
+        if ($claim->getPoas() === null) {
+            return 0.0;
+        }
+
+        $refundTotalAmount = 0.0;
+
+        foreach ($claim->getPoas() as $poa) {
+            $refundAmount = self::getRefundAmount($poa->getOriginalPaymentAmount(), $poa->getReceivedDate());
+
+            $refundInterestAmount = self::getRefundInterestAmount(
+                $poa->getOriginalPaymentAmount(),
+                $poa->getReceivedDate(),
+                $refundTime
+            );
+
+            $refundTotalAmount += $refundAmount + $refundInterestAmount;
+        }
+
+        return $refundTotalAmount;
     }
 }
