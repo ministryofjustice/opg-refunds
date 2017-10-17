@@ -71,6 +71,7 @@ class Authentication
         /** @var UserEntity $user */
         $user = $this->repository->findOneBy([
             'email' => $email,
+            'status' => User::STATUS_ACTIVE,
         ]);
 
         if (is_null($user) || !password_verify($password, $user->getPasswordHash())) {
@@ -103,7 +104,8 @@ class Authentication
     {
         /** @var UserEntity $user */
         $user = $this->repository->findOneBy([
-            'token' => $token,
+            'token'  => $token,
+            'status' => User::STATUS_ACTIVE,
         ]);
 
         if (is_null($user)) {
