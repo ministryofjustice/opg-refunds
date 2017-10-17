@@ -65,10 +65,14 @@ class SignIn extends AbstractForm
     /**
      * Set the authentication errors against the email for display
      *
-     * @param array $errorMessage
+     * @param mixed $errorMessages
      */
-    public function setAuthErrors(array $errorMessages)
+    public function setAuthErrors($errorMessages)
     {
+        if (!is_array($errorMessages)) {
+            $errorMessages = [$errorMessages];
+        }
+
         $this->setMessages([
             'email' => $errorMessages
         ]);

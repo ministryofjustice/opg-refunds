@@ -64,8 +64,7 @@ class SignInAction extends AbstractAction
                     return $this->redirectToRoute('home');
                 }
 
-                //  There was an authentication failure so transfer it to the form for display
-                $form->setAuthErrors($result->getMessages());
+                $form->setAuthErrors('Email and password combination not recognised');
             }
         }
 
