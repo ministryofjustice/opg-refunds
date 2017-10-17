@@ -56,6 +56,6 @@ class AuthAction implements ServerMiddlewareInterface
             }
         }
 
-        throw new UnauthorizedException('Not authorized');
+        throw new UnauthorizedException('Authentication failed');
     }
 }
