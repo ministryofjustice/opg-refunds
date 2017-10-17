@@ -15,9 +15,6 @@ class DonorDetailsAction extends AbstractAction
     {
         $session = $request->getAttribute('session');
 
-        // Include who is applying
-        $session['applicant'] = $request->getAttribute('who');
-
         //---
 
         $form = new Form\DonorDetails([

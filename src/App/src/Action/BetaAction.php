@@ -24,6 +24,13 @@ class BetaAction extends AbstractAction
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $session = $request->getAttribute('session');
+
+        // Clear out any existing session data if there is any.
+        $session->clear();
+
+        //---
+
         // Extract details from link...
         $id = $request->getAttribute('betaId');
         $expires = $request->getAttribute('betaExpires');

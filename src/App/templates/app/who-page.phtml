@@ -5,9 +5,6 @@ $this->layout('layout::standard', [
         'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
     ]);
 
-$form->setAttribute('method', 'get');
-$form->setAttribute('action', $this->url('eligibility.who.answer'));
-
 $this->addErrorMap([
     'who' => [
         'required' => [
@@ -25,6 +22,8 @@ $this->addErrorMap([
 <p>You can only claim a refund if you are the donor or one of their attorneys.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <?php $this->insert('snippet::input-radio', [
         'formElement' => $form->get('who'),

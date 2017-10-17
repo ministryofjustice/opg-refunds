@@ -44,16 +44,12 @@ $app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session
 $app->route('/when-were-fees-paid', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when');
 $app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when.answer');
 
-$app->route('/who-is-applying', App\Action\WhoAction::class, ['GET'], 'eligibility.who');
-$app->route('/who-is-applying/answer', App\Action\WhoAction::class, ['GET'], 'eligibility.who.answer');
-
-$app->route('/donor-status', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased');
-$app->route('/donor-status/answer', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.deceased.answer');
-
 //---
 
-$prefix = '/application/by-{who:donor|attorney}';
+$prefix = '/application';
 
+$app->route($prefix.'/who-is-applying', App\Action\WhoAction::class, ['GET', 'POST'], 'apply.who');
+$app->route($prefix.'/donor-status', App\Action\DonorDeceasedAction::class, ['GET', 'POST'], 'apply.deceased');
 $app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
 $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
 $app->route($prefix.'/case-number', App\Action\CaseNumberAction::class, ['GET', 'POST'], 'apply.case');

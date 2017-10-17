@@ -23,7 +23,7 @@ class WhenFeesPaidAction extends AbstractAction
             if ($form->isValid()) {
                 if ($form->getData()['fees-in-range'] === 'yes') {
                     return new Response\RedirectResponse(
-                        $this->getUrlHelper()->generate('eligibility.who')
+                        $this->getUrlHelper()->generate('apply.who')
                     );
                 }
 
