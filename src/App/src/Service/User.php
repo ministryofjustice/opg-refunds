@@ -229,12 +229,26 @@ class User
      */
     private function checkForExisting(string $email, int $userId = null)
     {
-        //  First check that the email address is not already being used
-        $existingUser = $this->repository->findOneBy([
-            'email' => $email,
-        ]);
+        $predicates = 'u.email = :email AND u.status <> :status';
 
-        if ($existingUser instanceof UserEntity && $existingUser->getId() !== $userId) {
+        $params = [
+            'email'  => $email,
+            'status' => UserModel::STATUS_DELETED,
+        ];
+
+        if (!is_null($userId)) {
+            $predicates = 'u.id <> :id AND ' . $predicates;
+            $params['id'] = $userId;
+        }
+
+        $queryBuilder = $this->repository->createQueryBuilder('u');
+
+        $queryBuilder->where($predicates)
+            ->setParameters($params);
+
+        $users = $queryBuilder->getQuery()->getResult();
+
+        if (count($users) > 0) {
             throw new AlreadyExistsException('Email address already exists');
         }
     }
