@@ -137,7 +137,7 @@ class Claim extends AbstractEntity
         $this->accountHash = $accountHash;
 
         $this->createdDateTime = new DateTime();
-        $this->status = ClaimModel::STATUS_NEW;
+        $this->status = ClaimModel::STATUS_PENDING;
         $this->noSiriusPoas = false;
         $this->noMerisPoas = false;
     }
