@@ -15,7 +15,7 @@ $hasErrors = !empty($formElement->getMessages());
         <div id="id-<?=  $this->e($formElement->getName()) ?>" class="form-date">
             <div class="form-group form-group-day">
                 <?php $this->insert('snippet::input-text', [
-                    'formSet' => $formElement->getName(),
+                    'formSet' => $this->e($formElement->getName()),
                     'formElement' => $formElement->get('day'),
                     'formLabel' => 'Day',
                     'formType' => 'number',
@@ -27,7 +27,7 @@ $hasErrors = !empty($formElement->getMessages());
 
             <div class="form-group form-group-month">
                 <?php $this->insert('snippet::input-text', [
-                    'formSet' => $formElement->getName(),
+                    'formSet' => $this->e($formElement->getName()),
                     'formElement' => $formElement->get('month'),
                     'formLabel' => 'Month',
                     'formType' => 'number',
@@ -39,7 +39,7 @@ $hasErrors = !empty($formElement->getMessages());
 
             <div class="form-group form-group-year">
                 <?php $this->insert('snippet::input-text', [
-                    'formSet' => $formElement->getName(),
+                    'formSet' => $this->e($formElement->getName()),
                     'formElement' => $formElement->get('year'),
                     'formLabel' => 'Year',
                     'formType' => 'number',

@@ -3,7 +3,6 @@
 namespace App\View\Poa;
 
 use App\Service\Poa\Poa as PoaService;
-use App\Service\Refund\RefundCalculator as RefundCalculatorService;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
@@ -17,15 +16,9 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
      */
     private $poaService;
 
-    /**
-     * @var RefundCalculatorService
-     */
-    private $refundCalculatorService;
-
-    public function __construct(PoaService $poaService, RefundCalculatorService $refundCalculatorService)
+    public function __construct(PoaService $poaService)
     {
         $this->poaService = $poaService;
-        $this->refundCalculatorService = $refundCalculatorService;
     }
 
     public function register(Engine $engine)
@@ -36,9 +29,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getMerisPoas', [$this->poaService, 'getMerisPoas']);
         $engine->registerFunction('getFormattedCaseNumber', [$this, 'getFormattedCaseNumber']);
         $engine->registerFunction('getOriginalPaymentAmountString', [$this, 'getOriginalPaymentAmountString']);
-        $engine->registerFunction('getRefundAmountString', [$this, 'getRefundAmountString']);
         $engine->registerFunction('getMoneyString', [$this, 'getMoneyString']);
-        $engine->registerFunction('getInterestAmountString', [$this, 'getInterestAmountString']);
         $engine->registerFunction('getRefundTotalAmountString', [$this, 'getRefundTotalAmountString']);
         $engine->registerFunction('getFormattedVerificationMatches', [$this, 'getFormattedVerificationMatches']);
         $engine->registerFunction('isAttorneyVerified', [$this->poaService, 'isAttorneyVerified']);
@@ -80,26 +71,18 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
         return money_format('£%i', $amount);
     }
 
-    public function getRefundAmountString(PoaModel $poa)
-    {
-        return $this->getMoneyString($this->refundCalculatorService->getRefundAmount($poa));
-    }
-
-    public function getInterestAmountString(PoaModel $poa)
-    {
-        $refundAmount = $this->refundCalculatorService->getRefundAmount($poa);
-        $refundAmountWithInterest = $this->refundCalculatorService->getAmountWithInterest($poa, $refundAmount);
-        $interest = $refundAmountWithInterest - $refundAmount;
-        return $this->getMoneyString($interest);
-    }
-
     public function getRefundTotalAmountString(ClaimModel $claim)
     {
         if ($claim->getPoas() === null) {
             return '£0.00';
         }
 
-        return $this->getMoneyString($this->refundCalculatorService->getRefundTotalAmount($claim));
+        $refundTotalAmount = 0.0;
+        foreach ($claim->getPoas() as $poa) {
+            $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
+        }
+
+        return $this->getMoneyString($refundTotalAmount);
     }
 
     public function getFormattedVerificationMatches(PoaModel $poa)
@@ -116,7 +99,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             return 'None';
         }
 
-        return join('<br/>', $verificationStrings);
+        return join(', ', $verificationStrings);
     }
 
     private function getFormattedVerificationMatch(VerificationModel $verification)

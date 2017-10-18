@@ -2,7 +2,6 @@
 
 namespace App\View\Date;
 
-use App\Service\Date\IDate as DateService;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use DateTime;
@@ -13,20 +12,10 @@ use DateTime;
  */
 class DateFormatterPlatesExtension implements ExtensionInterface
 {
-    /**
-     * @var DateService
-     */
-    private $dateService;
-
-    public function __construct(DateService $dateService)
-    {
-        $this->dateService = $dateService;
-    }
-
     public function register(Engine $engine)
     {
         $engine->registerFunction('getDayAndFullTextMonth', [$this, 'getDayAndFullTextMonth']);
-        $engine->registerFunction('getTimeIntervalAgo', [$this, 'getTimeIntervalAgo']);
+        $engine->registerFunction('getTimeIntervalBetween', [$this, 'getTimeIntervalBetween']);
         $engine->registerFunction('getNoteDateString', [$this, 'getNoteDateString']);
         $engine->registerFunction('getNoteTimeString', [$this, 'getNoteTimeString']);
         $engine->registerFunction('getDateOfBirthString', [$this, 'getDateOfBirthString']);
@@ -46,16 +35,17 @@ class DateFormatterPlatesExtension implements ExtensionInterface
 
     /**
      * @param DateTime $dateTime
+     * @param $timestamp
      * @return false|string
      */
-    public function getTimeIntervalAgo($dateTime)
+    public function getTimeIntervalBetween($dateTime, $timestamp = null)
     {
         if ($dateTime === null) {
             return '';
         }
 
-        $now = $this->dateService->getTimeNow();
-        $diff = $now - $dateTime->getTimestamp();
+        $timestamp = $timestamp ?: time();
+        $diff = $timestamp - $dateTime->getTimestamp();
         $diffInMinutes = floor($diff/60);
 
         if ($diffInMinutes < 60) {
@@ -70,7 +60,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
         $diffInHours = floor($diff / 3600);
 
         if ($diffInHours < 24) {
-            if (date('z', $dateTime->getTimestamp()) !== date('z', $now)) {
+            if (date('z', $dateTime->getTimestamp()) !== date('z', $timestamp)) {
                 return 'Yesterday';
             } elseif ($diffInHours === 1.0) {
                 return '1 hour ago';

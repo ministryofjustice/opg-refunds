@@ -20,7 +20,7 @@
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <p>Are you sure you want to delete the POA with case number: <?= $poa->getCaseNumber() ?>?</p>
+    <p>Are you sure you want to delete the POA with case number: <?= $this->e($poa->getCaseNumber()) ?>?</p>
 
     <div class="form-group">
         <input type="submit" class="button" name="submit" value="Delete POA">

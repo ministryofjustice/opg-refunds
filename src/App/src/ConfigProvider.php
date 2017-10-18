@@ -45,7 +45,6 @@ class ConfigProvider
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
-                Service\Date\IDate::class => Service\Date\Date::class,
                 Service\Refund\Refund::class => Service\Refund\Refund::class,
                 Service\Poa\Poa::class => Service\Poa\Poa::class,
                 Service\User\User::class => Service\User\User::class,
@@ -79,12 +78,10 @@ class ConfigProvider
                 // Services
                 \Alphagov\Notifications\Client::class => Service\Notify\NotifyClientFactory::class,
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
-                Service\Refund\RefundCalculator::class => Service\Refund\RefundCalculatorFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
 
                 // View Helper
-                View\Date\DateFormatterPlatesExtension::class => View\Date\DateFormatterPlatesExtensionFactory::class,
                 View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],

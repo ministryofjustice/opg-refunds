@@ -92,8 +92,8 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getStatusText(string $status)
     {
         switch ($status) {
-            case ClaimModel::STATUS_NEW:
-                return 'New';
+            case ClaimModel::STATUS_PENDING:
+                return 'Pending';
             case ClaimModel::STATUS_IN_PROGRESS:
                 return 'In Progress';
             case ClaimModel::STATUS_REJECTED:

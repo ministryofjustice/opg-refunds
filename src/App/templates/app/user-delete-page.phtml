@@ -9,7 +9,7 @@
     <?php if ($deletingSelf) { ?>
         <p>You are about to delete your own account. Are you sure you want to continue?</p>
     <?php }else { ?>
-        <p>Are you sure you want to delete <?= $user->getName() ?>?</p>
+        <p>Are you sure you want to delete <?= $this->e($user->getName()) ?>?</p>
     <?php } ?>
 
     <div class="form-group">

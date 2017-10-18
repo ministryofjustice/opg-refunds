@@ -72,12 +72,12 @@
                 <?php foreach ($claimSummaryPage->getClaimSummaries() as $claimSummary) { ?>
                     <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
                     <tr>
-                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $claimSummary->getReferenceNumber() ?></a></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['donorName' => $claimSummary->getDonorName()])) ?>"><?= $claimSummary->getDonorName() ?></td></a>
-                        <td><?= $this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime()) ?></td>
-                        <td><?= $this->getTimeIntervalAgo($claimSummary->getUpdatedDateTime()) ?></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $claimSummary->getAssignedToName() ?></td></a>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->getStatusText($claimSummary->getStatus()) ?></td></a>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getReferenceNumber()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['donorName' => $claimSummary->getDonorName()])) ?>"><?= $this->e($claimSummary->getDonorName()) ?></td></a>
+                        <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
+                        <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $this->e($claimSummary->getAssignedToName()) ?></td></a>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td></a>
                     </tr>
                 <?php } ?>
 
@@ -102,7 +102,7 @@
                     </p>
                 </div>
                 <div class="column-three-fifths">
-                    <p style="text-align: center">Page <?= $claimSummaryPage->getPage() ?> of <?= $claimSummaryPage->getPageCount() ?></p>
+                    <p style="text-align: center">Page <?= $this->e($claimSummaryPage->getPage()) ?> of <?= $this->e($claimSummaryPage->getPageCount()) ?></p>
                 </div>
                 <div class="column-one-fifth">
                     <p style="text-align: right">
