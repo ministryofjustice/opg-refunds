@@ -2,8 +2,10 @@
 
 namespace App\Action;
 
+use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -21,13 +23,19 @@ class UserAction extends AbstractRestfulAction
     private $userService;
 
     /**
+     * @var ClaimService
+     */
+    private $claimService;
+
+    /**
      * UserAction constructor
      *
      * @param UserService $userService
      */
-    public function __construct(UserService $userService)
+    public function __construct(UserService $userService, ClaimService $claimService)
     {
         $this->userService = $userService;
+        $this->claimService = $claimService;
     }
 
     /**
@@ -87,6 +95,7 @@ class UserAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return JsonResponse
+     * @throws Exception
      */
     public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -137,8 +146,19 @@ class UserAction extends AbstractRestfulAction
     {
         $userId = $request->getAttribute('id');
 
+        $token = $request->getHeaderLine('token');
+        $actioningUser = $this->userService->getByToken($token);
+
         //  Soft delete - set the status to deleted
         $userModel = $this->userService->setStatus($userId, UserModel::STATUS_DELETED);
+
+        //  Loop through the claims assigned to the user and return all in progress ones to the pool
+        foreach ($userModel->getClaims() as $claim) {
+            /** @var ClaimModel $claim */
+            if ($claim->getStatus() == ClaimModel::STATUS_IN_PROGRESS) {
+                $this->claimService->removeClaim($claim->getId(), $actioningUser->getId());
+            }
+        }
 
         return new JsonResponse($userModel->getArrayCopy());
     }

@@ -67,7 +67,19 @@ class ApplicationIngestion
      */
     public function getDecryptedData(Application $application): string
     {
-        $json = gzinflate($this->fullCipher->decrypt($application->getData()));
+        $json = null;
+
+        try{
+            $json = gzinflate($application->getData());
+        } catch ( \Throwable $e)
+        {
+        }
+
+        // If JSON is not a string, we'll assume the payload way encrypted.
+        if (!is_string($json)) {
+            $json = gzinflate($this->fullCipher->decrypt($application->getData()));
+        }
+
         return $json;
     }
 

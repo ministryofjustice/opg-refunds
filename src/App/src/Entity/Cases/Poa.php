@@ -3,6 +3,7 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use App\Service\RefundCalculator as RefundCalculatorService;
 use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
@@ -186,6 +187,22 @@ class Poa extends AbstractEntity
      */
     public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = PoaModel::class)
     {
+        $modelToEntityMappings = array_merge($modelToEntityMappings, [
+            'RefundAmount' => function () {
+                return RefundCalculatorService::getRefundAmount(
+                    $this->getOriginalPaymentAmount(),
+                    $this->getReceivedDate()
+                );
+            },
+            'RefundInterestAmount' => function () {
+                return RefundCalculatorService::getRefundInterestAmount(
+                    $this->getOriginalPaymentAmount(),
+                    $this->getReceivedDate(),
+                    time()
+                );
+            },
+        ]);
+
         return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
 }

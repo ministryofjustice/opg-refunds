@@ -24,7 +24,8 @@
         "dasprid/container-interop-doctrine": "^1.0",
         "doctrine/migrations": "^1.5",
         "doctrine/orm": "^2.5",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-master",
+        "http-interop/http-middleware": "^0.4.1",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "^1.1",
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "phpoffice/phpspreadsheet": "^1.0@beta",
         "roave/security-advisories": "dev-master",
@@ -39,11 +40,12 @@
         "zendframework/zend-stdlib": "^3.1"
     },
     "require-dev": {
+        "filp/whoops": "^2.1.7",
+        "mockery/mockery": "^1.0",
         "phpunit/phpunit": "^6.0.8 || ^5.7.15",
         "squizlabs/php_codesniffer": "^2.8.1",
-        "zfcampus/zf-development-mode": "^3.1",
         "zendframework/zend-expressive-tooling": "^0.4.1",
-        "filp/whoops": "^2.1.7"
+        "zfcampus/zf-development-mode": "^3.1"
     },
     "autoload": {
         "psr-4": {

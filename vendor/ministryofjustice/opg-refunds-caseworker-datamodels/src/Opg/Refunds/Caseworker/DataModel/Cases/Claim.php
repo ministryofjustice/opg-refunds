@@ -13,7 +13,7 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
  */
 class Claim extends AbstractDataModel
 {
-    const STATUS_NEW = 'new';
+    const STATUS_PENDING = 'pending';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';

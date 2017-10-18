@@ -81,11 +81,11 @@ class ClaimAction extends AbstractRestfulAction
         if (isset($requestBody['status'])) {
             if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
                 $this->claimService->setStatusAccepted($claimId, $user->getId());
-            }
-            if ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
+            } elseif ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
                 if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
                     throw new Exception('Rejection reason and description are required', 400);
                 }
+
                 $this->claimService->setStatusRejected($claimId, $user->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
             }
         }

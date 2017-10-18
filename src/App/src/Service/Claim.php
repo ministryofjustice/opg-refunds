@@ -65,7 +65,6 @@ class Claim
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
-        $this->entityManager = $entityManager;
         $this->applicationIngestionService = $applicationIngestionService;
     }
 
@@ -141,7 +140,7 @@ class Claim
         $claimSummaries = [];
 
         foreach ($paginator as $claim) {
-            $claimSummaries[] = $this->translateToDataModel($claim, ClaimSummaryModel::class);
+            $claimSummaries[] = $this->translateToDataModel($claim, [], ClaimSummaryModel::class);
         }
 
         $claimSummaryPage = new ClaimSummaryPage();
@@ -170,12 +169,10 @@ class Claim
         $accountHashCount = $this->entityManager->createQuery($dql)
             ->setParameter(1, $claim->getAccountHash())
             ->getSingleScalarResult();
-        $claim->setAccountHashCount($accountHashCount);
 
         /** @var ClaimModel $claimModel */
-        $claimModel = $this->translateToDataModel($claim);
-
-        $claimModel->setReadOnly($this->isReadOnly($claim, $userId));
+        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
+        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
 
         return $claimModel;
     }
@@ -199,7 +196,7 @@ class Claim
         //Using SQL directly to update claim in single atomic call to prevent race conditions
         $statement = $this->entityManager->getConnection()->executeQuery(
             'UPDATE claim SET assigned_to_id = ?, assigned_datetime = NOW(), updated_datetime = NOW(), status = ? WHERE id = (SELECT id FROM claim WHERE assigned_to_id IS NULL AND status = ? ORDER BY received_datetime ASC LIMIT 1) RETURNING id',
-            [$user->getId(), ClaimModel::STATUS_IN_PROGRESS, ClaimModel::STATUS_NEW]
+            [$user->getId(), ClaimModel::STATUS_IN_PROGRESS, ClaimModel::STATUS_PENDING]
         );
 
         $result = $statement->fetchAll();
@@ -227,11 +224,19 @@ class Claim
         return ['assignedClaimId' => $assignedClaimId];
     }
 
+    /**
+     * Assign a claim to a user
+     *
+     * @param int $claimId
+     * @param int $userId
+     * @return array
+     * @throws Exception
+     */
     public function assignClaim(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
 
-        if ($claim->getStatus() !== ClaimModel::STATUS_NEW && $claim->getAssignedTo() !== null) {
+        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && $claim->getAssignedTo() !== null) {
             throw new Exception('You cannot assign this claim', 403);
         }
 
@@ -267,7 +272,7 @@ class Claim
 
         $this->checkCanEdit($claim, $userId);
 
-        $claim->setStatus(ClaimModel::STATUS_NEW);
+        $claim->setStatus(ClaimModel::STATUS_PENDING);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
@@ -276,10 +281,40 @@ class Claim
             $claimId,
             $userId,
             'Claim returned',
-            "Caseworker returned claim to pool"
+            'Caseworker returned claim to pool'
         );
     }
 
+    /**
+     * Removes the assigned user from the claim to make it available for another caseworker
+     *
+     * @param int $claimId
+     * @param int $userId
+     */
+    public function removeClaim(int $claimId, int $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $assignedUser = $claim->getAssignedTo();
+
+        $claim->setStatus(ClaimModel::STATUS_PENDING);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            'Claim returned',
+            "Claim has been returned to the pool because the assigned caseworker ({$assignedUser->getName()}) was deleted"
+        );
+    }
+
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param bool $noSiriusPoas
+     */
     public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -306,6 +341,11 @@ class Claim
         }
     }
 
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param bool $noMerisPoas
+     */
     public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -358,6 +398,12 @@ class Claim
         return $noteModel;
     }
 
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param PoaModel $poaModel
+     * @return ClaimModel
+     */
     public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -376,7 +422,12 @@ class Claim
 
         $this->flushPoaChanges($poaModel);
 
-        $this->addNote($claimId, $userId, 'POA added', "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details");
+        $this->addNote(
+            $claimId,
+            $userId,
+            'POA added',
+            "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details"
+        );
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -385,6 +436,13 @@ class Claim
         return $claimModel;
     }
 
+    /**
+     * @param int $claimId
+     * @param int $poaId
+     * @param int $userId
+     * @param PoaModel $poaModel
+     * @return ClaimModel
+     */
     public function editPoa(int $claimId, int $poaId, int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -439,7 +497,12 @@ class Claim
 
         $this->flushPoaChanges($poaModel);
 
-        $this->addNote($claimId, $userId, 'POA edited', "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details");
+        $this->addNote(
+            $claimId,
+            $userId,
+            'POA edited',
+            "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details"
+        );
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -448,6 +511,12 @@ class Claim
         return $claimModel;
     }
 
+    /**
+     * @param $claimId
+     * @param $poaId
+     * @param $userId
+     * @return ClaimModel
+     */
     public function deletePoa($claimId, $poaId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -464,7 +533,12 @@ class Claim
         $this->entityManager->remove($poa);
         $this->entityManager->flush();
 
-        $this->addNote($claimId, $userId, 'POA delete', "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details");
+        $this->addNote(
+            $claimId,
+            $userId,
+            'POA delete',
+            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details"
+        );
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -473,6 +547,10 @@ class Claim
         return $claimModel;
     }
 
+    /**
+     * @param $claimId
+     * @param $userId
+     */
     public function setStatusAccepted($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -493,6 +571,12 @@ class Claim
         );
     }
 
+    /**
+     * @param $claimId
+     * @param $userId
+     * @param $rejectionReason
+     * @param $rejectionReasonDescription
+     */
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
@@ -546,12 +630,44 @@ class Claim
         }
     }
 
+    /**
+     * @param int $accountHashCount
+     * @param ClaimEntity $claim
+     * @param int $userId
+     * @return array
+     */
+    private function getClaimModelToEntityMappings(int $accountHashCount, ClaimEntity $claim, int $userId): array
+    {
+        return [
+            'AccountHashCount' => function () use ($accountHashCount) {
+                return $accountHashCount;
+            },
+            'ReadOnly' => function () use ($claim, $userId) {
+                return $this->isReadOnly($claim, $userId);
+            }
+        ];
+    }
+
+    /**
+     * Check if a given claim should be considered read only for the user ID provided
+     *
+     * @param ClaimEntity $claim
+     * @param int $userId
+     * @return bool
+     */
     private function isReadOnly(ClaimEntity $claim, int $userId)
     {
         // Deliberately not checking $claim->getAssignedTo() !== null as in progress claims should always be assigned
         return $claim->getStatus() !== ClaimModel::STATUS_IN_PROGRESS || $claim->getAssignedTo()->getId() !== $userId;
     }
 
+    /**
+     * Check if a user can edit a specific claim
+     *
+     * @param $claim
+     * @param $userId
+     * @throws Exception
+     */
     private function checkCanEdit($claim, $userId)
     {
         if ($this->isReadOnly($claim, $userId)) {

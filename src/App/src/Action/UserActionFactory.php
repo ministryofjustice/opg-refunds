@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 
@@ -18,7 +19,8 @@ class UserActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new UserAction(
-            $container->get(UserService::class)
+            $container->get(UserService::class),
+            $container->get(ClaimService::class)
         );
     }
 }

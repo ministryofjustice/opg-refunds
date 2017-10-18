@@ -128,11 +128,6 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
-    /**
-     * @var int
-     */
-    protected $accountHashCount;
-
     public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
@@ -142,7 +137,7 @@ class Claim extends AbstractEntity
         $this->accountHash = $accountHash;
 
         $this->createdDateTime = new DateTime();
-        $this->status = ClaimModel::STATUS_NEW;
+        $this->status = ClaimModel::STATUS_PENDING;
         $this->noSiriusPoas = false;
         $this->noMerisPoas = false;
     }
@@ -434,22 +429,6 @@ class Claim extends AbstractEntity
     public function setNotes($notes)
     {
         $this->notes = $notes;
-    }
-
-    /**
-     * @return int
-     */
-    public function getAccountHashCount()
-    {
-        return $this->accountHashCount;
-    }
-
-    /**
-     * @param int $accountHashCount
-     */
-    public function setAccountHashCount(int $accountHashCount)
-    {
-        $this->accountHashCount = $accountHashCount;
     }
 
     /**
