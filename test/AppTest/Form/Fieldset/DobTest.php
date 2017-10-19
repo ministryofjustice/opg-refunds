@@ -370,6 +370,38 @@ class DobTest extends TestCase
 
         $form->setData([
             'dob' => [
+                'day' => '11s',
+                'month' => '12s',
+                'year' => '1983s'
+            ]
+        ]);
+
+        // We don't allow a letter in a date
+
+        $this->assertFalse( $form->isValid() );
+
+        //---
+
+        $form = $this->getDobWrappedInForm();
+
+        $form->setData([
+            'dob' => [
+                'day' => ' 11',
+                'month' => ' 12',
+                'year' => ' 1983'
+            ]
+        ]);
+
+        // We should allow blank spaces before values.
+
+        $this->assertTrue( $form->isValid() );
+
+        //---
+
+        $form = $this->getDobWrappedInForm();
+
+        $form->setData([
+            'dob' => [
                 'day' => '11 ',
                 'month' => '12 ',
                 'year' => '1983 '
