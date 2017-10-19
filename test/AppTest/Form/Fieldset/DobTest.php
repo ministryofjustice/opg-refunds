@@ -364,6 +364,24 @@ class DobTest extends TestCase
 
     public function testStrangeDates()
     {
+        //---
+
+        $form = $this->getDobWrappedInForm();
+
+        $form->setData([
+            'dob' => [
+                'day' => '11 ',
+                'month' => '12 ',
+                'year' => '1983 '
+            ]
+        ]);
+
+        // We should allow blank spaces after values.
+
+        $this->assertTrue( $form->isValid() );
+
+        //---
+
         $form = $this->getDobWrappedInForm();
 
         $form->setData([

@@ -140,6 +140,11 @@ class Dob extends Fieldset
             if (count(array_filter($context)) != 3) {
                 return true;
             }
+
+            $context = array_map(function ($v) {
+                return (is_numeric(trim($v))) ? intval($v) : $v;
+            }, $context);
+
             return checkdate($context['month'], $context['day'], $context['year']) && ($context['year'] < 9999);
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }
@@ -155,7 +160,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
@@ -180,7 +185,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
@@ -206,7 +211,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
