@@ -67,7 +67,7 @@ class Poa extends AbstractForm
         }
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty())
+            ->attach(new Validator\NotEmpty(), true)
             ->attach(new Validator\Regex($caseNumberPattern));
 
         $input->setRequired(true);
@@ -85,7 +85,9 @@ class Poa extends AbstractForm
         $field = new Radio('original-payment-amount');
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        //$input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $input->setRequired(false);
 
         $field->setValueOptions([
             'orMore'   => 'orMore',
@@ -126,7 +128,9 @@ class Poa extends AbstractForm
         $field = new Radio($inputName);
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        //$input->getValidatorChain()->attach(new Validator\NotEmpty);
+
+        $input->setRequired(false);
 
         $field->setValueOptions([
             'yes' => 'yes',
