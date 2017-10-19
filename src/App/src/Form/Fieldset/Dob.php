@@ -11,7 +11,6 @@ use Zend\Validator\Callback;
 use Zend\Validator\ValidatorInterface;
 
 use App\Validator;
-use App\Filter\Sprintf as SprintfFilter;
 use App\Filter\StandardInput as StandardInputFilter;
 
 class Dob extends Fieldset
@@ -49,7 +48,6 @@ class Dob extends Fieldset
             ->attach(new Validator\NotEmpty(
                 Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
             ), true)
-            ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
@@ -72,7 +70,6 @@ class Dob extends Fieldset
             ->attach(new Validator\NotEmpty(
                 Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
             ), true)
-            ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
@@ -95,7 +92,6 @@ class Dob extends Fieldset
             ->attach(new Validator\NotEmpty(
                 Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
             ), true)
-            ->attach(new Validator\Digits, true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
             ->attach($this->getMaxAgeValidator(), true)
@@ -140,7 +136,16 @@ class Dob extends Fieldset
             if (count(array_filter($context)) != 3) {
                 return true;
             }
-            return checkdate($context['month'], $context['day'], $context['year']) && ($context['year'] < 9999);
+
+            foreach($context as $v){
+                if (!is_numeric(trim($v))) {
+                    return false;
+                }
+            }
+
+            return checkdate(
+                (int)$context['month'], (int)$context['day'], (int)$context['year']) && ((int)$context['year'] < 9999
+            );
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }
 
@@ -155,7 +160,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
@@ -180,7 +185,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {
@@ -206,7 +211,7 @@ class Dob extends Fieldset
             }
 
             $context = array_map(function ($v) {
-                return (is_numeric($v)) ? intval($v) : $v;
+                return (is_numeric(trim($v))) ? intval($v) : $v;
             }, $context);
 
             if (!checkdate($context['month'], $context['day'], $context['year'])) {

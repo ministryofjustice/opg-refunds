@@ -2,7 +2,7 @@
 $title = 'Did you pay fees between April 2013 and March 2017?';
 $this->layout('layout::standard', [
     'title' => $title,
-    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null
 ]);
 
 $form->setAttribute('method', 'get');

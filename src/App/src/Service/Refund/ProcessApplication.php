@@ -34,6 +34,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         // Remove unwanted data
         unset($data['meta']);
+        unset($data['deceased']);
         unset($data['case-number']['have-poa-case-number']);
         unset($data['contact']['contact-options']);
         unset($data['postcodes']['postcode-options']);

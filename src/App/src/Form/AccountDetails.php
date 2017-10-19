@@ -43,7 +43,11 @@ class AccountDetails extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            ->attach(new StandardInputFilter)
+            ->attach(new Filter\PregReplace([
+                'pattern'     => '/-|\s/',
+                'replacement' => '',
+            ]));
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)

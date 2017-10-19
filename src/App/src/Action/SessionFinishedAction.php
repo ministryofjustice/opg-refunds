@@ -16,7 +16,7 @@ class SessionFinishedAction extends AbstractAction
 
         // If there's a session, end it.
         if ($session instanceof Session) {
-            $session->exchangeArray([]);
+            $session->clear();
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::session-finished-page'));

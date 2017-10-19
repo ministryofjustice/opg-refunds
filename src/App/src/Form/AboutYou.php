@@ -31,5 +31,9 @@ class AboutYou extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
+
+        //---
+
+        $this->addCsrfElement($inputFilter);
     }
 }

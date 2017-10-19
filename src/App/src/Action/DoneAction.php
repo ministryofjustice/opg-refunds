@@ -26,7 +26,7 @@ class DoneAction extends AbstractAction
         $name = implode(' ', $session['donor']['current']['name']);
 
         // This will end the session.
-        $session->exchangeArray([]);
+        $session->clear();
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::done-page', [
             'name' => $name,

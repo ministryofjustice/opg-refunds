@@ -5,9 +5,6 @@ $this->layout('layout::standard', [
     'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 
-$form->setAttribute('method', 'get');
-$form->setAttribute('action', $this->url('eligibility.deceased.answer'));
-
 $this->addErrorMap([
     'donor-deceased' => [
         'required' => [
@@ -26,6 +23,8 @@ $this->addErrorMap([
 <p>This is because a refund can only be paid to the donor or to their estate.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <?php $this->insert('snippet::input-radio', [
         'formElement' => $form->get('donor-deceased'),

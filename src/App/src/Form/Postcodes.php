@@ -55,7 +55,7 @@ class Postcodes extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 30])));
+            ->attach((new Validator\StringLength(['max' => 20])));
 
         $this->add($field);
         $inputFilter->add($input);
