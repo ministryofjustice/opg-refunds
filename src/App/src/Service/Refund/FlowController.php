@@ -29,7 +29,7 @@ class FlowController
         ],
         [
             'name'      => 'apply.donor',
-            'requires'  => 'apply.who',
+            'requires'  => 'apply.donor',
         ],
         [
             'name'      => 'apply.attorney',
@@ -71,21 +71,24 @@ class FlowController
      */
     public static function routeAccessible(string $route, Session $session) : bool
     {
-        // Find what route this route is dependent on.
-        $requiredIndex = array_search(
+        // Determine the the index of the route they are trying to access is.
+        $requiredIndexTheyAreAccessing = array_search(
             $route,
             array_column(self::$routes, 'name')
         );
 
-        $requiredRoute = self::$routes[$requiredIndex]['requires'];
+        // Determine what page is required before they can access the route they are trying to access.
+        $requiredRoute = self::$routes[$requiredIndexTheyAreAccessing]['requires'];
 
         //---
 
+        // Find the index of the page required
         $requiredIndex = array_search(
             $requiredRoute,
             array_column(self::$routes, 'name')
         );
 
+        // Finds the index of the page that's accessible next.
         $allowedIndex = array_search(
             self::getNextRouteName($session),
             array_column(self::$routes, 'name')
@@ -125,10 +128,6 @@ class FlowController
 
         if (!isset($session['attorney']) || !is_array($session['attorney'])) {
             return 'apply.attorney';
-        }
-
-        if (!isset($session['case-number']) || !is_array($session['case-number'])) {
-            return 'apply.case';
         }
 
         if (!isset($session['case-number']) || !is_array($session['case-number'])) {
