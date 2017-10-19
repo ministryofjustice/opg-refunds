@@ -20,6 +20,6 @@ abstract class AbstractAction implements
 
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 
-        return FlowController::routeAccessible($matchedRoute, $session, $request->getAttribute('who'));
+        return FlowController::routeAccessible($matchedRoute, $session);
     }
 }
