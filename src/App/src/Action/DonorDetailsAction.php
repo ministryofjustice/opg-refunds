@@ -13,9 +13,13 @@ class DonorDetailsAction extends AbstractAction
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $session = $request->getAttribute('session');
+        if (!$this->isActionAccessible($request)) {
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
+        }
 
         //---
+
+        $session = $request->getAttribute('session');
 
         $form = new Form\DonorDetails([
             'csrf' => $session['meta']['csrf']
