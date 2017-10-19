@@ -26,7 +26,7 @@ class SpreadsheetFileNameFormatterTest extends TestCase
             '2017-10-06'
         );
 
-        $this->assertEquals('OPG Multi-SOP1 Refund Requests 2017-10-06.xls', $result);
+        $this->assertEquals('BulkSOP1 MOJ 2017-10-06.xls', $result);
     }
 
     public function testGetTempFileNameSsclXls()

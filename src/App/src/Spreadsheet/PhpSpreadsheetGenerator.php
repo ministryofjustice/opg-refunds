@@ -56,7 +56,7 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
             $reader = new XlsReader();
             //$reader->setReadDataOnly(true);
             $reader->setLoadSheetsOnly($spreadsheetWorksheet->getName());
-            $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'OPG Multi-SOP1 Refund Requests No Formatting.xlsx';
+            $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'BulkSOP1 MOJ No Formatting.xlsx';
             $ssclSourceSpreadsheet = $reader->load($ssclSourceSpreadsheetFilename);
 
             $dataSheet = $ssclSourceSpreadsheet->getSheetByName($spreadsheetWorksheet->getName());
