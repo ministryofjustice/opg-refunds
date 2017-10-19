@@ -44,7 +44,7 @@ class Poa extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(name="original_payment_amount", type="string")
+     * @ORM\Column(name="original_payment_amount", type="string", nullable=true)
      */
     protected $originalPaymentAmount;
 
@@ -61,7 +61,7 @@ class Poa extends AbstractEntity
      */
     protected $verifications;
 
-    public function __construct(string $system, string $caseNumber, DateTime $receivedDate, string $originalPaymentAmount, Claim $claim)
+    public function __construct(string $system, string $caseNumber, DateTime $receivedDate, $originalPaymentAmount, Claim $claim)
     {
         $this->system = $system;
         $this->caseNumber = $caseNumber;
@@ -129,7 +129,7 @@ class Poa extends AbstractEntity
     /**
      * @return string
      */
-    public function getOriginalPaymentAmount(): string
+    public function getOriginalPaymentAmount()
     {
         return $this->originalPaymentAmount;
     }
