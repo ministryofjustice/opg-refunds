@@ -85,6 +85,10 @@ class Poa
 
     private function allPoasComplete(ClaimModel $claim): bool
     {
+        if ($claim->getPoas() === null) {
+            return false;
+        }
+
         foreach ($claim->getPoas() as $poa) {
             if (!$poa->isComplete()) {
                 return false;
