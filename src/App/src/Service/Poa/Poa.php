@@ -121,6 +121,10 @@ class Poa
         }
 
         foreach ($claim->getPoas() as $poa) {
+            if ($poa->getVerifications() === null) {
+                continue;
+            }
+
             foreach ($poa->getVerifications() as $verification) {
                 if ($verification->getType() === $verificationType && $verification->isPasses()) {
                     return true;
