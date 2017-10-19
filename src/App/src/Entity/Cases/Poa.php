@@ -137,7 +137,7 @@ class Poa extends AbstractEntity
     /**
      * @param string $originalPaymentAmount
      */
-    public function setOriginalPaymentAmount(string $originalPaymentAmount)
+    public function setOriginalPaymentAmount($originalPaymentAmount)
     {
         $this->originalPaymentAmount = $originalPaymentAmount;
     }
