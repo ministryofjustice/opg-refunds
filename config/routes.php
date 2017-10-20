@@ -36,6 +36,7 @@ $app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck
 
 $app->get('/terms', App\Action\TermsPageAction::class, 'terms');
 $app->get('/cookies', App\Action\CookiesPageAction::class, 'cookies');
+$app->get('/contact-us', App\Action\ContactUsAction::class, 'contact');
 
 $app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session');
 
