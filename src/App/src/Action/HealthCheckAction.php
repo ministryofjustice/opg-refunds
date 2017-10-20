@@ -37,7 +37,7 @@ class HealthCheckAction implements ServerMiddlewareInterface
             'symmetric' => $this->canSessionKeysAreValid(),
             'asymmetric' => [
                 'number' => $keysFound,
-                'ok' => ($keysFound === 2)
+                'ok' => ($keysFound === 1)
             ],
         ];
 
