@@ -239,6 +239,24 @@ class DonorDetailsTest extends TestCase
     //---------------------------------------------
     // DOB Tests
 
+    public function testWithMissingDob()
+    {
+        $form = $this->getForm();
+        $data = $this->getValidData();
+
+        $data['dob'] = [
+            'day' => '',
+            'month' => '',
+            'year' => '',
+        ];
+
+        $form->setData(
+            ['secret' => $form->get('secret')->getValue()] + $data
+        );
+
+        $this->assertFalse( $form->isValid() );
+    }
+
     //------------------------------------------------
     // All DOB tests are now in Fieldset/DobTest.php
     //------------------------------------------------
