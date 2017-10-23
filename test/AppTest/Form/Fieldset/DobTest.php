@@ -339,7 +339,6 @@ class DobTest extends TestCase
         $testDate = clone $age120;
 
         while ($testDate < $age18) {
-
             $form->setData([
                 'dob' => [
                     'day' => $testDate->format('d'),
@@ -364,6 +363,22 @@ class DobTest extends TestCase
 
     public function testStrangeDates()
     {
+        //---
+
+        $form = $this->getDobWrappedInForm();
+
+        $form->setData([
+            'dob' => [
+                'day' => '',
+                'month' => '',
+                'year' => ''
+            ]
+        ]);
+
+        // Empty strings should fail
+
+        $this->assertFalse( $form->isValid() );
+
         //---
 
         $form = $this->getDobWrappedInForm();

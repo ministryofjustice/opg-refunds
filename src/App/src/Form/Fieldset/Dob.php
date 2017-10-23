@@ -46,7 +46,7 @@ class Dob extends Fieldset
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(
-                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO + Validator\NotEmpty::STRING
             ), true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -68,7 +68,7 @@ class Dob extends Fieldset
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(
-                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO + Validator\NotEmpty::STRING
             ), true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -90,7 +90,7 @@ class Dob extends Fieldset
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(
-                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO
+                Validator\NotEmpty::INTEGER + Validator\NotEmpty::ZERO + Validator\NotEmpty::STRING
             ), true)
             ->attach($this->getValidDateValidator(), true)
             ->attach($this->getFutureDateValidator(), true)
@@ -137,7 +137,7 @@ class Dob extends Fieldset
                 return true;
             }
 
-            foreach($context as $v){
+            foreach ($context as $v) {
                 if (!is_numeric(trim($v))) {
                     return false;
                 }

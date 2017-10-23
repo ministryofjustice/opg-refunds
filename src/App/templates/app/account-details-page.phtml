@@ -31,7 +31,7 @@ $this->addErrorMap([
             'field'     => 'Enter 8 numbers'
         ],
         'digits-required' => [
-            'summary'   => 'Account number can\'t contain letters',
+            'summary'   => 'Account number must be numbers only',
             'field'     => 'Enter 8 numbers'
         ],
     ],
@@ -82,7 +82,7 @@ $this->addErrorMap([
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('name'),
-        'formLabel' => 'Account holder name',
+        'formLabel' => 'Donor\'s account holder name',
         'formType' => 'text',
         'formLabelBold' => true
     ]) ?>
