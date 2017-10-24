@@ -10,17 +10,14 @@
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_jinja": "^0.22.3",
     "gulp": "gulpjs/gulp#4.0",
-    "gulp-concat": "^2.6.1",
+    "gulp-clean-css": "latest",
+    "gulp-concat": "latest",
+    "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
     "gulp-uglify": "latest",
-    "jquery": "~1.12.4",
-    "node-sass": "^4.5.3"
+    "jquery": "~1.12.4"
   },
   "scripts": {
-    "build": "yarn run build:js && yarn run build:css && yarn run copy:govuk_template && yarn run copy:govuk_frontend_toolkit:images",
-    "build:js": "gulp build",
-    "build:css": "node-sass -o public/assets/styles --include-path node_modules --output-style compressed src/scss/",
-    "copy:govuk_frontend_toolkit:images": "cp -rp node_modules/govuk_frontend_toolkit/images public/assets",
-    "copy:govuk_template": "cp -r node_modules/govuk_template_jinja/assets/ public/assets/govuk_template"
+    "build": "gulp build"
   }
 }

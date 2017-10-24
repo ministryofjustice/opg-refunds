@@ -35,10 +35,10 @@ $this->layout('layout::default', [
 
         <?php endif ?>
 
-        <h2 class="heading-medium">Just claim once</h2>
+        <h2 class="heading-medium">One claim per donor</h2>
 
-        <p>We know lots of people pay for more than one power of attorney, but you only need to make one claim per person.
-        We will search our records for all payments relating to <?= $this->e($name) ?>.</p>   
+        <p>We know lots of people have more than one power of attorney, but you only need to make one claim per donor.
+            We will search our records for all fees relating to <?= $this->e($name) ?>.</p>   
 
         <h2 class="heading-medium">What happens next</h2>
 
@@ -46,6 +46,8 @@ $this->layout('layout::default', [
         <p>We will contact you if we need more information.</p>
 
         <?php $this->insert('snippet::refunds-helpline');?>
+        <br>
+        <p><a href="https://www.surveymonkey.co.uk/r/Refundsfeedback">Tell us what you think about this service (short survey)</a></p>
 
     </div>
 </div>
