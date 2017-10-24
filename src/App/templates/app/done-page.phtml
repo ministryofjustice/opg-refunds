@@ -45,9 +45,9 @@ $this->layout('layout::default', [
         <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
         <p>We will contact you if we need more information.</p>
 
-        <?php $this->insert('snippet::refunds-helpline');?>
-        <br>
         <p><a href="https://www.surveymonkey.co.uk/r/Refundsfeedback">Tell us what you think about this service (short survey)</a></p>
 
+        <?php $this->insert('snippet::refunds-helpline');?>
+        
     </div>
 </div>
