@@ -32,12 +32,12 @@ const govukTemplateImages = `${paths.modules}/govuk_frontend_toolkit/images/**/*
 const vendorModules = [
   `${paths.modules}/govuk_template_jinja/assets/javascripts/govuk-template.js`,
   `${paths.modules}/jquery/dist/jquery.min.js`,
-  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js`
+  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js`,
+  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js`
 ];
 
 // Application JavaScript files
 const applicationModules = [
-  `${paths.src}/js/vendor/govuk_elements/details.polyfill.js`,
   `${paths.src}/js/app/back-link.js`,
   `${paths.src}/js/app/scroll-to-hash.js`,
   `${paths.src}/js/app/application.js`

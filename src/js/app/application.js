@@ -1,7 +1,10 @@
 $(document).ready(function () {
   $('.no-back-link').each(function (idx, elm) {
-    new GOVUK.BackLink(elm);
+    new GOVUK.BackLink(elm)
   });
+
+  // Details/summary polyfill from frontend toolkit
+  GOVUK.details.init()
 
   // Where .multiple-choice uses the data-target attribute
   // to toggle hidden content

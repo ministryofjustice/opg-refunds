@@ -884,23 +884,19 @@ glogg@^1.0.0:
   dependencies:
     sparkles "^1.0.0"
 
-govuk-elements-sass@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/govuk-elements-sass/-/govuk-elements-sass-3.1.1.tgz#4de8a6da98c36cf2bc9c1eeddf236cceab7f147e"
+govuk-elements-sass@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/govuk-elements-sass/-/govuk-elements-sass-3.1.2.tgz#4c79a6893c500e5c817ade8d5008e709f718a3c3"
   dependencies:
-    govuk_frontend_toolkit "^6.0.2"
+    govuk_frontend_toolkit "^7.1.0"
 
-govuk_frontend_toolkit@^6.0.2:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-6.0.4.tgz#fc4b741b16d27ec1a3cd1c4f3830972d333c7044"
+govuk_frontend_toolkit@^7.1.0:
+  version "7.1.0"
+  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-7.1.0.tgz#9c24ccbccd2b4df5ae9ecd3eeeac70b436597325"
 
-govuk_frontend_toolkit@^7.0.1:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/govuk_frontend_toolkit/-/govuk_frontend_toolkit-7.0.1.tgz#69518229c28d550f4d15e3f23879cf34ccb6fd4a"
-
-govuk_template_jinja@^0.22.3:
-  version "0.22.3"
-  resolved "https://registry.yarnpkg.com/govuk_template_jinja/-/govuk_template_jinja-0.22.3.tgz#d704cb2b7ce92682a8174be7d746668d4afad9d6"
+govuk_template_jinja@^0.23.0:
+  version "0.23.0"
+  resolved "https://registry.yarnpkg.com/govuk_template_jinja/-/govuk_template_jinja-0.23.0.tgz#9315ac403d1d85b01a62b7044cb95d8ec3e303a4"
 
 graceful-fs@4.X, graceful-fs@^4.0.0, graceful-fs@^4.1.2:
   version "4.1.11"
