@@ -2,7 +2,6 @@
 
 namespace Ingestion\Service;
 
-use App\Crypt\Hybrid as HybridCipher;
 use App\Entity\Cases\Claim;
 use App\Entity\Cases\Note;
 use Ingestion\Entity\Application;
@@ -32,23 +31,17 @@ class ApplicationIngestion
      */
     private $caseRepository;
 
-    /**
-     * @var HybridCipher
-     */
-    private $fullCipher;
 
     /**
      * DataMigration constructor.
      * @param EntityManager $applicationsEntityManager
-     * @param HybridCipher $fullCipher
      */
-    public function __construct(EntityManager $applicationsEntityManager, EntityManager $casesEntityManager, HybridCipher $fullCipher)
+    public function __construct(EntityManager $applicationsEntityManager, EntityManager $casesEntityManager)
     {
         $this->applicationsEntityManager = $applicationsEntityManager;
         $this->applicationRepository = $this->applicationsEntityManager->getRepository(Application::class);
         $this->casesEntityManager = $casesEntityManager;
         $this->caseRepository = $this->casesEntityManager->getRepository(Claim::class);
-        $this->fullCipher = $fullCipher;
     }
 
     /**
@@ -62,25 +55,24 @@ class ApplicationIngestion
     }
 
     /**
+     * Decompress data from Public Front.
+     *
      * @param Application $application
      * @return string Application JSON
      */
-    public function getDecryptedData(Application $application): string
+    public function getDecompressedData(Application $application): string
     {
-        $json = null;
-
         try{
-            $json = gzinflate($application->getData());
+            return gzinflate($application->getData());
         } catch ( \Throwable $e)
         {
+            /*
+             * Data used to be encrypted when it reached this point, but that's no longer the case.
+             * If decompression did fail, it's possible this function was trying to process legacy data.
+             * In reality, this should never be the case.
+             */
+            throw new \UnexpectedValueException('Unable to decompress payload. Maybe it was encrypted?');
         }
-
-        // If JSON is not a string, we'll assume the payload way encrypted.
-        if (!is_string($json)) {
-            $json = gzinflate($this->fullCipher->decrypt($application->getData()));
-        }
-
-        return $json;
     }
 
     /**
@@ -89,8 +81,8 @@ class ApplicationIngestion
      */
     public function getApplicationData(Application $application): array
     {
-        $decryptedData = $this->getDecryptedData($application);
-        $applicationData = json_decode($decryptedData, true);
+        $uncompressedData = $this->getDecompressedData($application);
+        $applicationData = json_decode($uncompressedData, true);
         return $applicationData;
     }
 
@@ -100,10 +92,10 @@ class ApplicationIngestion
      */
     public function getClaim(Application $application): Claim
     {
-        $decryptedData = $this->getDecryptedData($application);
-        $applicationData = json_decode($decryptedData, true);
+        $uncompressedData = $this->getDecompressedData($application);
+        $applicationData = json_decode($uncompressedData, true);
         $donorName = "{$applicationData['donor']['current']['name']['title']} {$applicationData['donor']['current']['name']['first']} {$applicationData['donor']['current']['name']['last']}";
-        $claim = new Claim($application->getId(), $application->getCreated(), $decryptedData, $donorName, $applicationData['account']['hash']);
+        $claim = new Claim($application->getId(), $application->getCreated(), $uncompressedData, $donorName, $applicationData['account']['hash']);
         return $claim;
     }
 
