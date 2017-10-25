@@ -6,6 +6,7 @@
   "author": "Nick Rowlands <nick.rowlands@digital.justice.gov.uk>",
   "license": "MIT",
   "devDependencies": {
+    "del": "latest",
     "govuk-elements-sass": "^3.1.1",
     "govuk_frontend_toolkit": "^7.0.1",
     "govuk_template_jinja": "^0.22.3",

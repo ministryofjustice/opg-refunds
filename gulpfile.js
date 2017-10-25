@@ -1,13 +1,14 @@
 // Utils
-var gulp = require('gulp');
+const gulp = require('gulp');
+const del = require('del');
 
 // JavaScript
 const concat = require('gulp-concat');
 const uglify = require('gulp-uglify');
 
 // CSS
-var cleanCSS = require('gulp-clean-css');
-var sass = require('gulp-sass');
+const cleanCSS = require('gulp-clean-css');
+const sass = require('gulp-sass');
 
 // Misc
 const sourcemaps = require('gulp-sourcemaps');
@@ -18,7 +19,7 @@ const sourcemaps = require('gulp-sourcemaps');
 
 // Paths
 const paths = {
-  build: `${__dirname}/public`,
+  build: `${__dirname}/public/assets`,
   src: `${__dirname}/src`,
   modules: `${__dirname}/node_modules`
 };
@@ -56,13 +57,13 @@ function clean() {
 // GOVUK Template
 function govuk_template() {
 	return gulp.src(govUKTemplateJinjaModule)
-		.pipe(gulp.dest(`${paths.build}/assets/govuk_template`));
+		.pipe(gulp.dest(`${paths.build}/govuk_template`));
 }
 
 // GOVUK Frontent Toolkit images
 function govuk_frontend_toolkit_images() {
 	return gulp.src(govukTemplateImages)
-		.pipe(gulp.dest(`${paths.build}/assets/images`));
+		.pipe(gulp.dest(`${paths.build}/images`));
 }
 
 // Scripts
@@ -76,7 +77,7 @@ function vendorScripts() {
         output: { ie8: true }
       }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(`${paths.build}/assets/javascripts`));
+    .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
 
 function appScripts() {
@@ -89,7 +90,7 @@ function appScripts() {
       output: { ie8: true }
     }))
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(`${paths.build}/assets/javascripts`));
+    .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
 
 // Styles
@@ -99,7 +100,7 @@ function styles() {
     .pipe(sass().on('error', sass.logError))
     .pipe(cleanCSS())
     .pipe(sourcemaps.write('./'))
-    .pipe(gulp.dest(`${paths.build}/assets/styles`));
+    .pipe(gulp.dest(`${paths.build}/styles`));
 }
 
 // Watch
@@ -110,7 +111,7 @@ function watch() {
 
 // Task sets
 const compile = gulp.series(clean, 
-  gulp.parallel(vendorScripts,appScripts,govuk_template,govuk_frontend_toolkit_images)
+  gulp.parallel(vendorScripts,appScripts,govuk_template,styles,govuk_frontend_toolkit_images)
 );
 
 gulp.task('build', gulp.series(compile));
