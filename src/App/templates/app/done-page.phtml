@@ -10,10 +10,10 @@ $this->layout('layout::default', [
     <div class="column-two-thirds">
 
         <div class="govuk-box-highlight">
-            <h1 class="bold-large"><?=$this->e($title) ?></h1>
-            <p>
-                Your claim code:
-                <strong class="heading-medium"><?= $this->e($reference) ?></strong>
+            <h1 class="heading-xlarge"><?=$this->e($title) ?></h1>
+            <p class="font-large">
+                Your claim code is<br>
+                <strong class="bold"><?= $this->e($reference) ?></strong>
             </p>
         </div>
 
