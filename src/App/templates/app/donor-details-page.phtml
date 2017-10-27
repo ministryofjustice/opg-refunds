@@ -99,7 +99,7 @@ $this->fetch('snippet::actor-errors', [
     ]) ?>
 
     <fieldset>
-        <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Address" : "Donor address" ?></legend>
+        <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Current address" : "Current donor address" ?></legend>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('address-1'),
