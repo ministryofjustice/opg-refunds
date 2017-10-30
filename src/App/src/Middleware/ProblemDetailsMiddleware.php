@@ -24,9 +24,9 @@ class ProblemDetailsMiddleware implements MiddlewareInterface
         } catch (AbstractApiException $ex) {
             //  Translate this exception type into response JSON
             $problem = [
-                'title'  => $ex->getTitle(),
-                'detail' => $ex->getMessage(),
-                'data'   => $ex->getAdditionalData(),
+                'title'   => $ex->getTitle(),
+                'details' => $ex->getMessage(),
+                'data'    => $ex->getAdditionalData(),
             ];
 
             return new JsonResponse($problem, $ex->getCode(), [
