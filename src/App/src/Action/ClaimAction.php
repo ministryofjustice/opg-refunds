@@ -2,9 +2,9 @@
 
 namespace App\Action;
 
+use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ResponseInterface;
@@ -59,7 +59,7 @@ class ClaimAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
+     * @throws InvalidInputException
      */
     public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -83,7 +83,7 @@ class ClaimAction extends AbstractRestfulAction
                 $this->claimService->setStatusAccepted($claimId, $user->getId());
             } elseif ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
                 if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
-                    throw new Exception('Rejection reason and description are required', 400);
+                    throw new InvalidInputException('Rejection reason and description are required');
                 }
 
                 $this->claimService->setStatusRejected($claimId, $user->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);

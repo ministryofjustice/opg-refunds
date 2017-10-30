@@ -23,10 +23,11 @@ class ProblemDetailsMiddleware implements MiddlewareInterface
             return $response;
         } catch (AbstractApiException $ex) {
             //  Translate this exception type into response JSON
-            $problem = array_merge([
-                'title' => $ex->getTitle(),
+            $problem = [
+                'title'  => $ex->getTitle(),
                 'detail' => $ex->getMessage(),
-            ], $ex->getAdditionalData());
+                'data'   => $ex->getAdditionalData(),
+            ];
 
             return new JsonResponse($problem, $ex->getCode(), [
                 'Content-Type' => 'application/problem+json',

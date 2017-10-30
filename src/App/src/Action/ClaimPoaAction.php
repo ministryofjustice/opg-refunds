@@ -78,7 +78,6 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -101,7 +100,6 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -125,7 +123,6 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {

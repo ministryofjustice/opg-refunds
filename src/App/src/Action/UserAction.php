@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -9,7 +10,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
-use Exception;
 
 /**
  * Class UserAction
@@ -95,7 +95,7 @@ class UserAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return JsonResponse
-     * @throws Exception
+     * @throws InvalidInputException
      */
     public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -109,7 +109,7 @@ class UserAction extends AbstractRestfulAction
             $user = $this->userService->getByToken($token);
 
             if ($user->getStatus() != UserModel::STATUS_PENDING) {
-                throw new Exception('Password can not be set by token only', 403);
+                throw new InvalidInputException('Password can not be set by token only');
             }
 
             $user = $this->userService->setPassword($user->getId(), $requestBody['password']);
