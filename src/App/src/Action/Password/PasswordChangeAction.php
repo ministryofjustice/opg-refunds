@@ -74,8 +74,6 @@ class PasswordChangeAction extends AbstractAction
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
 
-            //TODO - implement the correct password rules validation too!
-
             if ($form->isValid()) {
                 //  Set the password for the user
                 $password = $request->getParsedBody()['password'];

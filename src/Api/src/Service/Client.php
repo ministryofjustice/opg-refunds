@@ -214,7 +214,7 @@ class Client
     {
         $headerLines = [
             'Accept'        => 'application/json',
-            'Content-type'  => 'application/json',
+            'Content-Type'  => 'application/json',
         ];
 
         //  If the logged in user has an auth token already then set that in the header
@@ -238,7 +238,7 @@ class Client
 
         //  If the body isn't an array now then it wasn't JSON before
         if (!is_array($body)) {
-            throw new Exception\ApiException('Malformed JSON response from server', $response->getStatusCode(), $response);
+            throw new Exception\ApiException($response, 'Malformed JSON response from server');
         }
 
         return $body;
@@ -253,11 +253,6 @@ class Client
      */
     protected function handleErrorResponse(ResponseInterface $response)
     {
-        $body = json_decode($response->getBody(), true);
-
-        $message = 'HTTP:' . $response->getStatusCode() . ' - ';
-        $message .= (is_array($body) ? print_r($body, true) : 'Unexpected response from server');
-
-        throw new Exception\ApiException($message, $response->getStatusCode(), $response);
+        throw new Exception\ApiException($response);
     }
 }
