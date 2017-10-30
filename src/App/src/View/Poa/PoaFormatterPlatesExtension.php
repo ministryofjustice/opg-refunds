@@ -60,7 +60,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             case 'lessThan':
                 return 'Less than £110';
             case 'noRefund':
-                return 'No refund amount';
+                return 'No fee paid';
             default:
                 return '';
         }

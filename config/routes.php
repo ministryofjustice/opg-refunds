@@ -49,5 +49,3 @@ $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Act
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
 $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
-$app->route('/claim/assign/{claimId:\d+}', App\Action\Claim\ClaimAssignAction::class, ['GET', 'POST'], 'claim.assign');
-$app->route('/claim/unassign/{claimId:\d+}', App\Action\Claim\ClaimUnassignAction::class, ['GET', 'POST'], 'claim.unassign');
