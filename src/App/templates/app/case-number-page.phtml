@@ -1,5 +1,5 @@
 <?php
-$title = 'Can you give a reference number?';
+$title = 'Reference number';
 $this->layout('layout::standard', [
     'title' => $title,
     'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
@@ -41,12 +41,16 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>
 
+<div class="panel panel-border-wide">
+    <p>For the donor: <?= "{$donor['current']['name']['title']} {$donor['current']['name']['first']} {$donor['current']['name']['last']}" ?></p>
+</div>
+
 <p>Power of attorney reference numbers are:</p>
 
 <ul class="list list-bullet">
-    <li>on the registered document or related letters</li>
+    <li>on power of attorney documents or related letters</li>
     <li>7 or 12 numbers long (with or without dashes)</li>
-    <li>often marked ‘OPG reference number’ or ‘Our ref’</li>
+    <li>often marked 'OPG reference number' or 'Our ref' or 'Case number'</li>
 </ul>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
@@ -55,10 +59,11 @@ $this->addErrorMap([
 
     <?php $this->insert('snippet::input-radio', [
         'formElement' => $form->get('have-poa-case-number'),
-        'question' => $title,
+        'question' => "Can you give a reference number?",
+        'questionHidden' => true,
         'options' => [
             'yes' => [
-                'optionLabel' => "Yes, I have a reference number",
+                'optionLabel' => "Yes, I can give a reference number",
                 'dataTarget' => 'attorney-info',
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('poa-case-number'),
@@ -69,7 +74,7 @@ $this->addErrorMap([
                 ])
             ],
             'no' => [
-                'optionLabel' => "No, I can’t give a reference number"
+                'optionLabel' => "No, I can't give a reference number"
             ]
         ],
     ])
@@ -80,3 +85,12 @@ $this->addErrorMap([
     </div>
 
 </form>
+
+<?php $this->insert('snippet::help-text', [
+    'title' => 'I have more than one reference number',
+    'markup' => '
+        <p>We only need one reference number. We can use this to look up all of the 
+        powers of attorney an individual donor has made.</p>
+    '
+]);
+?>
