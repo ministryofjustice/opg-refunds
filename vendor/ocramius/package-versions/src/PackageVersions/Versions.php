@@ -11,7 +11,7 @@ namespace PackageVersions;
 final class Versions
 {
     const VERSIONS = array (
-  'aws/aws-sdk-php' => '3.36.26@96f2c1525d3fd17a0802329c309c76c01a78aa51',
+  'aws/aws-sdk-php' => '3.36.29@210958295921f0004d0fdc38bc9aefe33ef2a3de',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.0.0@a4833d25dcfa42165c4ddec0c7062528206eeadc',
   'doctrine/annotations' => 'v1.4.0@54cacc9b81758b14e3ce750f205a393d52339e97',
@@ -29,7 +29,7 @@ final class Versions
   'guzzlehttp/promises' => 'v1.3.1@a59da6cf61d80060647ff4d3eb2c03a2bc694646',
   'guzzlehttp/psr7' => '1.4.2@f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => '1.1.0@15a46c5621fdbdf8770336f698bb14d15de5dc22',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => '1.1.1@a4e2a1840e82230a220fb1ed8980b5841c4c9a5a',
   'ministryofjustice/opg-refunds-logger' => 'v1.1.0@84fb465fa7eddd22e47c46de8111a46cf54cacfa',
   'mtdowling/jmespath.php' => '2.4.0@adcc9531682cf87dfda21e1fd5d0e7a41d292fac',
   'nikic/fast-route' => 'v1.2.0@b5f95749071c82a8e0f58586987627054400cdf6',
@@ -44,10 +44,10 @@ final class Versions
   'roave/security-advisories' => 'dev-master@140175d0d4a71950b045fb87cc7d979340b9f16e',
   'symfony/console' => 'v3.3.10@116bc56e45a8e5572e51eb43ab58c769a352366c',
   'symfony/debug' => 'v3.3.10@eb95d9ce8f18dcc1b3dfff00cb624c402be78ffd',
-  'symfony/polyfill-mbstring' => 'v1.5.0@7c8fae0ac1d216eb54349e6a8baa57d515fe8803',
+  'symfony/polyfill-mbstring' => 'v1.6.0@2ec8b39c38cb16674bbf3fea2b6ce5bf117e1296',
   'symfony/yaml' => 'v3.3.10@8c7bf1e7d5d6b05a690b715729cb4cd0c0a99c46',
-  'webimpress/composer-extra-dependency' => '0.2.1@8722031102594a494e4eef1221f8a1a32f82830a',
-  'webimpress/http-middleware-compatibility' => '0.1.3@5839f5abf54346eafa6617434bd5f618c0cc7adb',
+  'webimpress/composer-extra-dependency' => '0.2.2@31fa56391d30f03b1180c87610cbe22254780ad9',
+  'webimpress/http-middleware-compatibility' => '0.1.4@8ed1c2c7523dce0035b98bc4f3a73ca9cd1d3717',
   'zendframework/zend-code' => '3.1.0@2899c17f83a7207f2d7f53ec2f421204d3beea27',
   'zendframework/zend-component-installer' => '1.0.0@0ca44807dbcf356b75a869c61b533f917ccbc5ae',
   'zendframework/zend-config-aggregator' => '1.0.0@9494f491db02112c48777f1948a3b7ef71d674ab',
@@ -80,7 +80,7 @@ final class Versions
   'phpunit/php-text-template' => '1.2.1@31f8b717e51d9a2afca6c9f046f5d69fc27c8686',
   'phpunit/php-timer' => '1.0.9@3dcf38ca72b158baf0bc245e9184d3fdffa9c46f',
   'phpunit/php-token-stream' => '2.0.1@9a02332089ac48e704c70f6cefed30c224e3c0b0',
-  'phpunit/phpunit' => '6.4.2@ae6e2e062ff55263c7b04374c190aca45872b26a',
+  'phpunit/phpunit' => '6.4.3@06b28548fd2b4a20c3cd6e247dc86331a7d4db13',
   'phpunit/phpunit-mock-objects' => '4.0.4@2f789b59ab89669015ad984afa350c4ec577ade0',
   'sebastian/code-unit-reverse-lookup' => '1.0.1@4419fcdb5eabb9caa61a27c7a1db532a6b55dd18',
   'sebastian/comparator' => '2.0.2@ae068fede81d06e7bb9bb46a367210a3d3e1fe6a',
@@ -99,7 +99,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-335-return_cases_on_user_delete@9a33918cfbac8054d67d79d4c0e18db2296fc365',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-407-partial-poa@57107e6ded2fccfa9886cd806921d581d8a010a9',
 );
 
     private function __construct()

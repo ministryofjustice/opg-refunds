@@ -415,9 +415,11 @@ class Claim
         $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
         $this->entityManager->persist($poa);
 
-        foreach ($poaModel->getVerifications() as $verificationModel) {
-            $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-            $this->entityManager->persist($verification);
+        if ($poaModel->getVerifications() !== null) {
+            foreach ($poaModel->getVerifications() as $verificationModel) {
+                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                $this->entityManager->persist($verification);
+            }
         }
 
         $this->flushPoaChanges($poaModel);
@@ -426,7 +428,7 @@ class Claim
             $claimId,
             $userId,
             'POA added',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details"
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully added to this claim"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -461,37 +463,45 @@ class Claim
         $poa->setOriginalPaymentAmount($poaModel->getOriginalPaymentAmount());
 
         //Remove any that are no longer present on supplied document
-        foreach ($poa->getVerifications() as $verificationEntity) {
-            $remove = true;
+        if ($poa->getVerifications() !== null) {
+            foreach ($poa->getVerifications() as $verificationEntity) {
+                $remove = true;
 
-            foreach ($poaModel->getVerifications() as $verificationModel) {
-                if ($verificationEntity->getType() === $verificationModel->getType()) {
-                    $remove = false;
-                    break;
+                if ($poaModel->getVerifications() !== null) {
+                    foreach ($poaModel->getVerifications() as $verificationModel) {
+                        if ($verificationEntity->getType() === $verificationModel->getType()) {
+                            $remove = false;
+                            break;
+                        }
+                    }
                 }
-            }
 
-            if ($remove) {
-                $this->entityManager->remove($verificationEntity);
+                if ($remove) {
+                    $this->entityManager->remove($verificationEntity);
+                }
             }
         }
 
         //Update existing verifications
-        foreach ($poaModel->getVerifications() as $verificationModel) {
-            //Default id to 0 so this can be detected as a new verification later
-            $verificationModel->setId(0);
+        if ($poaModel->getVerifications() !== null) {
+            foreach ($poaModel->getVerifications() as $verificationModel) {
+                //Default id to 0 so this can be detected as a new verification later
+                $verificationModel->setId(0);
 
-            foreach ($poa->getVerifications() as $verificationEntity) {
-                if ($verificationModel->getType() === $verificationEntity->getType()) {
-                    $verificationEntity->setPasses($verificationModel->isPasses());
-                    $verificationModel->setId($verificationEntity->getId());
+                if ($poa->getVerifications() !== null) {
+                    foreach ($poa->getVerifications() as $verificationEntity) {
+                        if ($verificationModel->getType() === $verificationEntity->getType()) {
+                            $verificationEntity->setPasses($verificationModel->isPasses());
+                            $verificationModel->setId($verificationEntity->getId());
+                        }
+                    }
                 }
-            }
 
-            if ($verificationModel->getId() === 0) {
-                //New verification so add
-                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-                $this->entityManager->persist($verification);
+                if ($verificationModel->getId() === 0) {
+                    //New verification so add
+                    $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                    $this->entityManager->persist($verification);
+                }
             }
         }
 
@@ -501,7 +511,7 @@ class Claim
             $claimId,
             $userId,
             'POA edited',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details"
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully edited"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -537,7 +547,7 @@ class Claim
             $claimId,
             $userId,
             'POA delete',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details"
+            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -673,5 +683,14 @@ class Claim
         if ($this->isReadOnly($claim, $userId)) {
             throw new Exception('You cannot edit this claim', 403);
         }
+    }
+
+    /**
+     * @param PoaModel $poaModel
+     * @return string
+     */
+    public function getCaseNumberNote(PoaModel $poaModel): string
+    {
+        return $poaModel->getCaseNumber() . ($poaModel->isComplete() ? '' : ' (incomplete)');
     }
 }
