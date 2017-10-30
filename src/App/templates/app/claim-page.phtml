@@ -48,7 +48,12 @@ $this->addErrorMap([
                     <?php if ($claim->isReadOnly()) { ?>
                         <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
+                        <td>
+                            <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
+                            <?php if (!$poa->isComplete()) { ?>
+                                <span>(incomplete)</span>
+                            <?php } ?>
+                        </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
                     <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
@@ -96,7 +101,12 @@ $this->addErrorMap([
                     <?php if ($claim->isReadOnly()) { ?>
                         <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
+                        <td>
+                            <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
+                            <?php if (!$poa->isComplete()) { ?>
+                                <span>(incomplete)</span>
+                            <?php } ?>
+                        </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
                     <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>

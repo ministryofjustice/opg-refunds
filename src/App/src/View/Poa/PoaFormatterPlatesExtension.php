@@ -87,6 +87,10 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
 
     public function getFormattedVerificationMatches(PoaModel $poa)
     {
+        if ($poa->getVerifications() === null) {
+            return '';
+        }
+
         $verificationStrings = [];
 
         foreach ($poa->getVerifications() as $verification) {
