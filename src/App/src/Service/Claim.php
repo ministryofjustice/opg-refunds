@@ -126,7 +126,7 @@ class Claim
         if (count($whereClauses) > 0) {
             $dql .= ' WHERE ' . join(' AND ', $whereClauses);
         }
-        $dql .= ' ORDER BY c.receivedDateTime ASC';
+        $dql .= ' ORDER BY c.receivedDateTime DESC';
         $query = $this->entityManager->createQuery($dql)
             ->setParameters($parameters)
             ->setFirstResult($offset)
