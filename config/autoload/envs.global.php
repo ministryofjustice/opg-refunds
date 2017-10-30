@@ -11,7 +11,6 @@ return [
         'rsa' => [
             'keys' => [
                 'private' => [
-                    'full' => getenv('OPG_REFUNDS_CASEWORKER_API_FULL_KEY_PRIVATE') ?: null,
                     'bank' => getenv('OPG_REFUNDS_CASEWORKER_API_BANK_KEY_PRIVATE') ?: null,
                 ],
             ],
