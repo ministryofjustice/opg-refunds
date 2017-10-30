@@ -17,11 +17,6 @@ class UnauthorizedException extends AbstractApiException
     protected $code = 401;
 
     /**
-     * @var string
-     */
-    protected $type = 'What should this be?';
-
-    /**
      * AlreadyExistsException constructor
      *
      * @param string $message
