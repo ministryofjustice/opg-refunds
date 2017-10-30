@@ -90,7 +90,7 @@
               "$ref": "#/definitions/fieldset/name"
             },
             "address": {
-              "required": ["address-1", "address-postcode"],
+              "required": ["address-1", "address-3", "address-postcode"],
               "additionalProperties": false,
               "properties": {
                 "address-1": {
