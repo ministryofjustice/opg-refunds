@@ -2,6 +2,7 @@
 
 namespace App\Middleware\Authorization;
 
+use Api\Exception\ApiException;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
@@ -75,9 +76,18 @@ class AuthorizationMiddleware implements MiddlewareInterface
         //  Check each role to see if the user has access to the route
         foreach ($roles as $role) {
             if ($this->rbac->hasRole($role) && $this->rbac->isGranted($role, $routeName)) {
-                return $delegate->process(
-                    $request->withAttribute('identity', $identity)
-                );
+                //  Catch any unauthorized exceptions and trigger a sign out if required
+                try {
+                    return $delegate->process(
+                        $request->withAttribute('identity', $identity)
+                    );
+                } catch (ApiException $ae) {
+                    if ($ae->getCode() === 401) {
+                        return new RedirectResponse($this->urlHelper->generate('sign.out'));
+                    } else {
+                        throw $ae;
+                    }
+                }
             }
         }
 
