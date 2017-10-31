@@ -1,0 +1,58 @@
+<?php
+
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+
+?>
+
+<h2 class="heading-medium heading-refunds">Outcome</h2>
+<dl class="details">
+
+    <div class="">
+        <dt class="details-term">Expected refund date</dt>
+        <dd class="details-definition"><?= $this->e($this->getDayAndFullTextMonth($claim->getApplication()->getExpected())) ?></dd>
+        <dd class="details-definition">
+            <?php if($this->isClaimComplete($claim) && !$claim->isReadOnly()) { ?>
+                <p>
+                    <?php if($this->isClaimVerified($claim)) { ?>
+                        <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
+                    <?php } else { ?>
+                        <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
+                    <?php } ?>
+                </p>
+            <?php } ?>
+        </dd>
+    </div>
+
+    <?php if($this->isClaimComplete($claim) && $claim->isReadOnly()) { ?>
+        
+        <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
+            <div class="">
+                <dt class="details-term">Claim approved:</dt>
+                <dd class="details-definition">
+                    <span>Claim was approved on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                    <?php if ($claim->getPayment() !== null) { ?>
+                        <br/><span>A payment of <?= $this->e($this->getMoneyString($claim->getPayment()->getAmount())) ?> was added to the spreadsheet on <?= $this->e($this->getFinishedDateString($claim->getPayment()->getAddedDateTime())) ?></span>
+                    <?php } ?>
+                </dd>
+            </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
+            <div class="">
+                <dt class="details-term">Claim rejected:</dt>
+                <dd class="details-definition">
+                    Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>' with description '<?= $this->e($claim->getRejectionReasonDescription()) ?>'
+                </dd>
+            </div>
+        <?php } ?>
+
+    <?php } ?>
+
+</dl>
