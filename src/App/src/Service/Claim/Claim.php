@@ -80,9 +80,11 @@ class Claim implements ApiClientInterface
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param string|null $orderBy
+     * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function searchClaims(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
+    public function searchClaims(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
     {
         $queryParameters = [];
         if ($page != null) {
@@ -102,6 +104,12 @@ class Claim implements ApiClientInterface
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
+        }
+        if ($orderBy != null) {
+            $queryParameters['orderBy'] = $orderBy;
+        }
+        if ($sort != null) {
+            $queryParameters['sort'] = $sort;
         }
 
         $url = '/v1/cases/claim/search';

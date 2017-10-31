@@ -31,7 +31,7 @@
 
         <?php if(count($searchParameters) > 0) { ?>
             <div>
-                <h3 class="heading-small">Search parameters <a href="<?= $this->generateUrl('claim.search') ?>">Clear all</a></h3>
+                <h3 class="heading-small">Search parameters <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>">Clear all</a></h3>
                 <p>
                     <?php foreach ($searchParameters as $key => $value) { ?>
                         <?php if ($key === 'donorName') {
