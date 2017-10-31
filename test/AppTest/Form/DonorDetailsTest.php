@@ -219,7 +219,7 @@ class DonorDetailsTest extends TestCase
         );
 
         // --- This is an optional field ---
-        $this->assertTrue( $form->isValid() );
+        $this->assertFalse( $form->isValid() );
     }
 
     public function testMissingAddressPostcode()
