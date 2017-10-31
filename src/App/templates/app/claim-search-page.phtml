@@ -60,9 +60,9 @@
                 <thead>
                 <tr>
                     <th>Claim code</th>
-                    <th>Donor name</th>
-                    <th>Received</th>
-                    <th>Modified</th>
+                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'donor'))) ?>">Donor name</a></th>
+                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'received'))) ?>">Received</a></th>
+                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'modified'))) ?>">Modified</a></th>
                     <th>Assigned To</th>
                     <th>Status</th>
                 </tr>
@@ -73,11 +73,11 @@
                     <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
                     <tr>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getReferenceNumber()) ?></a></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['donorName' => $claimSummary->getDonorName()])) ?>"><?= $this->e($claimSummary->getDonorName()) ?></td></a>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $this->e($claimSummary->getAssignedToName()) ?></td></a>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td></a>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $this->e($claimSummary->getAssignedToName()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></a></td>
                     </tr>
                 <?php } ?>
 

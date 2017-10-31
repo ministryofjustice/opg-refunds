@@ -57,7 +57,7 @@
                                     <a href="<?= $this->generateUrl('home') ?>" class="">Your claims</a>
                                 </li>
                                 <li>
-                                    <a href="<?= $this->generateUrl('claim.search') ?>" class="">Search</a>
+                                    <a href="<?= $this->generateUrl('claim.search', [], $this->getOrderByParameters([], 'received')) ?>" class="">Search</a>
                                 </li>
                                 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND, $identity->getRoles())) { ?>
                                     <li>
