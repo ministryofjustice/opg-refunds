@@ -77,9 +77,11 @@ class Claim
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param string|null $orderBy
+     * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
+    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
@@ -126,7 +128,19 @@ class Claim
         if (count($whereClauses) > 0) {
             $dql .= ' WHERE ' . join(' AND ', $whereClauses);
         }
-        $dql .= ' ORDER BY c.receivedDateTime DESC';
+
+        if (isset($orderBy)) {
+            if ($orderBy === 'donor') {
+                $dql .= ' ORDER BY c.donorName ';
+            } elseif ($orderBy === 'received') {
+                $dql .= ' ORDER BY c.receivedDateTime ';
+            } elseif ($orderBy === 'modified') {
+                $dql .= ' ORDER BY c.updatedDateTime ';
+            }
+
+            $dql .= strtoupper($sort ?: 'asc');
+        }
+
         $query = $this->entityManager->createQuery($dql)
             ->setParameters($parameters)
             ->setFirstResult($offset)
