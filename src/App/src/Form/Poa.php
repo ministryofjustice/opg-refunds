@@ -51,7 +51,10 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Donor checked field
-        $field = new Checkbox('donor-checked');
+        $field = new Checkbox('donor-checked', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -205,6 +208,8 @@ class Poa extends AbstractForm
         unset($poaArray['id']);
         unset($poaArray['system']);
         unset($poaArray['verifications']);
+
+        $poaArray['donor-checked'] = $poa->getId() > 0 ? 'yes' : 'no';
 
         $receivedDate = $poa->getReceivedDate();
         $poaArray['received-date'] = [

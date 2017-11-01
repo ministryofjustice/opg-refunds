@@ -14,7 +14,7 @@ $hasErrors = !empty($formElement->getMessages());
 
     <div class="multiple-choice">
 
-        <input type="checkbox" id="<?= $elementId ?>" name="<?= $formElement->getName() ?>">
+        <input type="checkbox" id="<?= $elementId ?>" name="<?= $formElement->getName() ?>" value="<?= $formElement->getCheckedValue() ?>" <?= ($formElement->getValue() == $formElement->getCheckedValue()) ? ' checked="checked"' : '' ?>>
         <label class="form-label" for="<?= $elementId ?>"><?= $this->e($formLabel) ?></label>
 
     </div>
