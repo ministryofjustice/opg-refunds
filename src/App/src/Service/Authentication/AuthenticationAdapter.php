@@ -79,10 +79,8 @@ class AuthenticationAdapter implements AdapterInterface
 
             return new Result(Result::SUCCESS, $user);
         } catch (ApiException $apiEx) {
-            $response = $apiEx->getResponse();
-
             return new Result(Result::FAILURE, null, [
-                $response->getReasonPhrase()
+                $apiEx->getMessage()
             ]);
        }
     }
