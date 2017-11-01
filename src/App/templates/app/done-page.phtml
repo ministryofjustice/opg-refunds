@@ -10,10 +10,10 @@ $this->layout('layout::default', [
     <div class="column-two-thirds">
 
         <div class="govuk-box-highlight">
-            <h1 class="bold-large"><?=$this->e($title) ?></h1>
-            <p>
-                Your claim code:
-                <strong class="heading-medium"><?= $this->e($reference) ?></strong>
+            <h1 class="heading-xlarge"><?=$this->e($title) ?></h1>
+            <p class="font-large">
+                Your claim code is<br>
+                <strong class="bold"><?= $this->e($reference) ?></strong>
             </p>
         </div>
 
@@ -45,9 +45,9 @@ $this->layout('layout::default', [
         <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
         <p>We will contact you if we need more information.</p>
 
-        <?php $this->insert('snippet::refunds-helpline');?>
-        <br>
         <p><a href="https://www.surveymonkey.co.uk/r/Refundsfeedback">Tell us what you think about this service (short survey)</a></p>
 
+        <?php $this->insert('snippet::refunds-helpline');?>
+        
     </div>
 </div>

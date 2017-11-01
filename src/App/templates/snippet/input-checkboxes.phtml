@@ -18,7 +18,7 @@ $vales = $formElement->getValue() ?? array();
     <fieldset>
 
         <legend id="<?= "{$elementId}" ?>">
-            <span class="heading-medium" style="display: block;"><?= $this->e($question) ?></span>
+            <span class="form-label-bold" style="display: block;"><?= $this->e($question) ?></span>
             
             <?php foreach($formElement->getMessages() as $message): ?>
             <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>

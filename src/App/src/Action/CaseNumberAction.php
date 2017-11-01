@@ -65,7 +65,8 @@ class CaseNumberAction extends AbstractAction
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::case-number-page', [
             'form' => $form,
-            'applicant' => $session['applicant']
+            'applicant' => $session['applicant'],
+            'donor' => $session['donor']
         ]));
     }
 }

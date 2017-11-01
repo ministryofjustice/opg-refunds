@@ -1,5 +1,5 @@
 <?php
-$title = 'Postcodes on the power of attorney';
+$title = 'Postcode';
 $this->layout('layout::standard', [
     'title' => $title,
     'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
@@ -8,8 +8,8 @@ $this->layout('layout::standard', [
 $this->addErrorMap([
     'postcode-options' => [
         'required' => [
-            'summary'   => 'You must answer this question',
-            'field'     => 'You must give at least one postcode'
+            'summary'   => 'You must give at least one postcode',
+            'field'     => 'Enter at least one postcode'
         ]
     ],
     'donor-postcode' => [
@@ -39,13 +39,9 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>
 
-<p>We need at least one postcode from <?= ($applicant == 'donor') ? "your" : "the donor's" ?> power of attorney, at the time it was registered.</p>
+<p>We need at least one postcode from the power of attorney documents.</p>
 
-<div class="panel panel-border-wide">
-    <p>We just need what was on one of the documents so we can look up 
-    <?= ($applicant == 'donor') ? "your" : "the donor's" ?> case.
-    So don't worry if you've moved or if there's more than one power of attorney.</p>
-</div>
+<p>Postcodes are checked against our records.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
@@ -53,22 +49,22 @@ $this->addErrorMap([
 
     <?php $this->insert('snippet::input-checkboxes', [
         'formElement' => $form->get('postcode-options'),
-        'question' => 'What postcodes can you give?',
+        'question' => 'What postcode can you give from the documents?',
         'options' => [
             'donor-postcode' => [
-                'optionLabel' => "Donor postcode on power of attorney document",
+                'optionLabel' => "Postcode of donor: {$donor['current']['name']['title']} {$donor['current']['name']['first']} {$donor['current']['name']['last']}",
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('donor-postcode'),
-                    'formLabel' => 'Donor postcode',
+                    'formLabel' => 'Donor postcode on power of attorney documents',
                     'formType' => 'text',
                     'formLabelBold' => true
                 ])
             ],
             'attorney-postcode' => [
-                'optionLabel' => "Attorney postcode on power of attorney document",
+                'optionLabel' => "Postcode of attorney: {$attorney['current']['name']['title']} {$attorney['current']['name']['first']} {$attorney['current']['name']['last']}",
                 'dataTargetMarkup' => $this->fetch('snippet::input-text', [
                     'formElement' => $form->get('attorney-postcode'),
-                    'formLabel' => 'Attorney postcode',
+                    'formLabel' => 'Attorney postcode on power of attorney documents',
                     'formType' => 'text',
                     'formLabelBold' => true
                 ])

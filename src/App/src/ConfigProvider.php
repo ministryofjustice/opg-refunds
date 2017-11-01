@@ -80,6 +80,7 @@ class ConfigProvider
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
+                Service\AssetsCache\AssetsCachePlatesExtension::class => Service\AssetsCache\AssetsCachePlatesExtensionFactory::class,
                 Service\ErrorMapper\ErrorMapperPlatesExtension::class => Service\ErrorMapper\ErrorMapperPlatesExtensionFactory::class,
                 Service\TemplateConfigInjection\TemplateConfigInjectionPlatesExtension::class => Service\TemplateConfigInjection\TemplateConfigInjectionPlatesExtensionFactory::class,
             ],

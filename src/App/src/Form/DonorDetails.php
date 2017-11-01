@@ -180,7 +180,7 @@ class DonorDetails extends AbstractForm
 
 
         //------------------------
-        // Address - line 3
+        // Address - line 3 (Town or city)
 
         $field = new Element\Text('address-3');
         $input = new Input($field->getName());
@@ -189,9 +189,8 @@ class DonorDetails extends AbstractForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
             ->attach((new Validator\StringLength(['max' => 300])));
-
-        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);
