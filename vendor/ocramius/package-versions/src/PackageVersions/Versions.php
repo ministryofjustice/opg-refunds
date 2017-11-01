@@ -62,6 +62,7 @@ final class Versions
   'zendframework/zend-expressive-template' => '1.0.4@23922f96b32ab6e64fc551ec06b81fd047828765',
   'zendframework/zend-log' => '2.9.2@bf7489578d092d6ff7508117d1d920a4764fbd6a',
   'zendframework/zend-math' => '3.0.0@fda3b4e6c3bb15c35adc6db38b2eacabaa243e65',
+  'zendframework/zend-permissions-rbac' => '2.5.1@4213a4889ae7d7607c7974124965d12d1c395115',
   'zendframework/zend-servicemanager' => '3.3.0@c3036efb81f71bfa36cc9962ee5d4474f36581d0',
   'zendframework/zend-stdlib' => '3.1.0@debedcfc373a293f9250cc9aa03cf121428c8e78',
   'zendframework/zend-stratigility' => '2.1.2@7dfec8dee92dad0d01e68365015f2848c250fe9f',
@@ -99,7 +100,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-419-sop1-update@a3d13699a1ee57c836fa28ffb4540240d4826352',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-330-implement_api_authorisation@021b6c34fb7683599a0035aee243ed38ffa55795',
 );
 
     private function __construct()
