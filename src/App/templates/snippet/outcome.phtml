@@ -22,7 +22,7 @@ Mandatory: claim
         <dd class="details-definition">
             <?php if($this->isClaimComplete($claim) && !$claim->isReadOnly()) { ?>
                 <p>
-                    <?php if($this->isClaimVerified($claim)) { ?>
+                    <?php if($this->isClaimVerified($claim) && $this->isClaimRefundNonZero($claim)) { ?>
                         <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
                     <?php } ?>
                     <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
@@ -47,7 +47,7 @@ Mandatory: claim
             <div class="">
                 <dt class="details-term">Claim rejected:</dt>
                 <dd class="details-definition">
-                    Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>' with description '<?= $this->e($claim->getRejectionReasonDescription()) ?>'
+                    Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>'<?= empty($claim->getRejectionReasonDescription()) ? '' : " with description '{$this->e($claim->getRejectionReasonDescription())}'" ?>
                 </dd>
             </div>
         <?php } ?>

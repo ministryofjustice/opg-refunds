@@ -46,8 +46,8 @@ class ClaimApproveAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$this->poaService->isClaimComplete($claim) || !$this->poaService->isClaimVerified($claim)) {
-            throw new Exception('Claim is not complete or verified', 400);
+        } elseif (!$this->poaService->isClaimComplete($claim) || !$this->poaService->isClaimVerified($claim) || !$this->poaService->isClaimRefundNonZero($claim)) {
+            throw new Exception('Claim is not complete or verified or has a total refund of £0.00', 400);
         }
 
         /** @var ClaimApprove $form */

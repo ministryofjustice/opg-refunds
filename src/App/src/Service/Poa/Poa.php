@@ -83,6 +83,17 @@ class Poa
             && ($claim->isNoMerisPoas() || $this->hasMerisPoas($claim));
     }
 
+    public function isClaimRefundNonZero(ClaimModel $claim)
+    {
+        $refundTotalAmount = 0.0;
+
+        foreach ($claim->getPoas() as $poa) {
+            $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
+        }
+
+        return $refundTotalAmount > 0;
+    }
+
     private function allPoasComplete(ClaimModel $claim): bool
     {
         if ($claim->getPoas() === null) {
