@@ -72,7 +72,7 @@ $this->addErrorMap([
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius']) ?>">Add Sirius POA</a>
                 <?php if (!$this->hasSiriusPoas($claim)) { ?>
-                    <input class="button-secondary" type="submit" value="I cannot find any Sirius POAs">
+                    <input class="button-secondary" type="submit" value="No eligible Sirius POAs found">
                 <?php } ?>
             <?php } ?>
         </form>
@@ -125,7 +125,7 @@ $this->addErrorMap([
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris']) ?>">Add Meris POA</a>
                 <?php if (!$this->hasMerisPoas($claim)) { ?>
-                    <input class="button-secondary" type="submit" value="I cannot find any Meris POAs">
+                    <input class="button-secondary" type="submit" value="No eligible Meris POAs found">
                 <?php } ?>
             <?php } ?>
         </form>
