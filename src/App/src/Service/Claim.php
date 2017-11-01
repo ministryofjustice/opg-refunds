@@ -91,7 +91,7 @@ class Claim
         }
 
         if ($pageSize === null) {
-            $pageSize = 10;
+            $pageSize = 25;
         } elseif ($pageSize > 50) {
             $pageSize = 50;
         }
