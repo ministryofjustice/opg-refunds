@@ -47,7 +47,7 @@ $app->pipe(Middleware\ProblemDetailsMiddleware::class);
 //  Add middleware to verify on the cases path
 foreach (['/v1/cases'] as $path) {
     $app->pipe($path, [
-        AuthMiddleware\AuthMiddleware::class,
+        AuthMiddleware\AuthenticationMiddleware::class,
     ]);
 }
 

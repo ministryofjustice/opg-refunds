@@ -6,18 +6,18 @@ use Auth\Service\Authentication;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class AuthMiddlewareFactory
+ * Class AuthenticationMiddlewareFactory
  * @package Auth\Middleware
  */
-class AuthMiddlewareFactory
+class AuthenticationMiddlewareFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return AuthMiddleware
+     * @return AuthenticationMiddleware
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new AuthMiddleware(
+        return new AuthenticationMiddleware(
             $container->get(Authentication::class)
         );
     }

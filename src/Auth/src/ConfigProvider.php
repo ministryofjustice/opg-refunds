@@ -41,7 +41,7 @@ class ConfigProvider
                 Action\AuthAction::class => Action\AuthActionFactory::class,
 
                 // Middleware
-                Middleware\AuthMiddleware::class => Middleware\AuthMiddlewareFactory::class,
+                Middleware\AuthenticationMiddleware::class => Middleware\AuthenticationMiddlewareFactory::class,
 
                 //  Services
                 Service\Authentication::class => Service\AuthenticationFactory::class,

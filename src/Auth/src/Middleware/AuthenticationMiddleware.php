@@ -10,10 +10,10 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * Class AuthMiddleware
+ * Class AuthenticationMiddleware
  * @package Auth\Middleware
  */
-class AuthMiddleware implements ServerMiddlewareInterface
+class AuthenticationMiddleware implements ServerMiddlewareInterface
 {
     /**
      * @var Authentication
@@ -21,7 +21,7 @@ class AuthMiddleware implements ServerMiddlewareInterface
     private $authService;
 
     /**
-     * AuthMiddleware constructor
+     * AuthenticationMiddleware constructor
      *
      * @param Authentication $authService
      */
