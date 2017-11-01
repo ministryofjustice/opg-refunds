@@ -23,11 +23,13 @@ class ClaimSearch extends AbstractForm
         //  Csrf field
         $this->addCsrfElement($inputFilter);
 
-        //  Donor name field
-        $field = new Text('donorName');
+        //  Search field
+        $field = new Text('search');
         $input = new Input($field->getName());
 
         $input->getFilterChain()->attach(new StandardInputFilter);
+
+        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);

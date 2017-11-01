@@ -76,7 +76,7 @@ class Claim implements ApiClientInterface
      *
      * @param int|null $page
      * @param int|null $pageSize
-     * @param string|null $donorName
+     * @param string|null $search
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
@@ -84,7 +84,7 @@ class Claim implements ApiClientInterface
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function searchClaims(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
+    public function searchClaims(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
     {
         $queryParameters = [];
         if ($page != null) {
@@ -93,8 +93,8 @@ class Claim implements ApiClientInterface
         if ($pageSize != null) {
             $queryParameters['pageSize'] = $pageSize;
         }
-        if ($donorName != null) {
-            $queryParameters['donorName'] = $donorName;
+        if ($search != null) {
+            $queryParameters['search'] = $search;
         }
         if ($assignedToId != null) {
             $queryParameters['assignedToId'] = $assignedToId;

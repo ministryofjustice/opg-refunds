@@ -17,8 +17,8 @@
             <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
             <?php $this->insert('snippet::input-text', [
-                'formElement' => $form->get('donorName'),
-                'formLabel' => 'Donor name',
+                'formElement' => $form->get('search'),
+                'formLabel' => 'Claim code or donor name',
                 'formType' => 'text',
                 'formLabelBold' => false
             ]) ?>
@@ -118,7 +118,25 @@
                         </a>
                     </th>
                     <th>Assigned To</th>
-                    <th>Status</th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'status'))) ?>">
+                            Status
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'status');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
