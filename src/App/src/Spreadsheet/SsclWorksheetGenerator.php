@@ -3,6 +3,7 @@
 namespace App\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use DateTime;
 
 class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
@@ -21,9 +22,10 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
 
     /**
      * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
+     * @param UserModel $user
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
-    public function generate(array $claims): SpreadsheetWorksheet
+    public function generate(array $claims, UserModel $user): SpreadsheetWorksheet
     {
         $rows = [];
 
@@ -94,8 +96,9 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(30, $rowIndex, 0);
             //Total Amount
             $cells[] = new SpreadsheetCell(31, $rowIndex, $payment->getAmount());
-            //Completer ID - From config
-            $cells[] = new SpreadsheetCell(32, $rowIndex, $this->ssclConfig['completer_id']);
+            //Completer ID - From passed in user or overridden by config
+            $completerId = !empty($this->ssclConfig['completer_id']) ? $this->ssclConfig['completer_id'] : $user->getName();
+            $cells[] = new SpreadsheetCell(32, $rowIndex, $completerId);
             //Approver ID - From config
             $cells[] = new SpreadsheetCell(33, $rowIndex, $this->ssclConfig['approver_id']);
 

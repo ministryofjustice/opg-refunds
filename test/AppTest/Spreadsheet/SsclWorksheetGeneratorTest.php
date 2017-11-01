@@ -14,6 +14,7 @@ use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
 use AppTest\DataModel\Cases\ClaimBuilder;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Opg\Refunds\Caseworker\DataModel\Common\Address;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PHPUnit\Framework\TestCase;
@@ -29,7 +30,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         'account' => '123450000',
         'objective' => '0',
         'analysis' => '12345678',
-        'completer_id' => 'completer@localhost.com',
+        'completer_id' => '',
         'approver_id' => 'approver@localhost.com',
     ];
     /**
@@ -51,6 +52,11 @@ class SsclWorksheetGeneratorTest extends TestCase
      * @var Claim
      */
     private $claim;
+
+    /**
+     * @var User
+     */
+    private $user;
 
     public function setUp()
     {
@@ -87,11 +93,14 @@ class SsclWorksheetGeneratorTest extends TestCase
             ->withApplication($application)
             ->withPayment($payment)
             ->build();
+
+        $this->user = new User();
+        $this->user->setName('Test User');
     }
 
     public function testEmptyArray()
     {
-        $result = $this->generator->generate([]);
+        $result = $this->generator->generate([], $this->user);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -109,7 +118,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->claim
         ];
 
-        $result = $this->generator->generate($claims);
+        $result = $this->generator->generate($claims, $this->user);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -243,7 +252,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Completer ID - From config
             $this->assertEquals(32, $cells[27]->getColumn());
-            $this->assertEquals('completer@localhost.com', $cells[27]->getData());
+            $this->assertEquals($this->user->getName(), $cells[27]->getData());
 
             //Approver ID - From config
             $this->assertEquals(33, $cells[28]->getColumn());
