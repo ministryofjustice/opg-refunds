@@ -60,9 +60,63 @@
                 <thead>
                 <tr>
                     <th>Claim code</th>
-                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'donor'))) ?>">Donor name</a></th>
-                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'received'))) ?>">Received</a></th>
-                    <th><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'modified'))) ?>">Modified</a></th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'donor'))) ?>">
+                            Donor name
+                            <?php
+                                $currentSort = $this->getCurrentSort($searchParameters, 'donor');
+                                if ($currentSort !== false) {
+                                    if ($currentSort === 'asc') { ?>
+                                        <i class="icon icon-sort-asc">
+                                            <span class="visually-hidden">Sort ascending</span>
+                                        </i>
+                                    <?php } elseif ($currentSort === 'desc') { ?>
+                                        <i class="icon icon-sort-desc">
+                                            <span class="visually-hidden">Sort descending</span>
+                                        </i>
+                                    <?php }
+                                }
+                            ?>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'received'))) ?>">
+                            Received
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'received');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'modified'))) ?>">
+                            Modified
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'modified');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
                     <th>Assigned To</th>
                     <th>Status</th>
                 </tr>
