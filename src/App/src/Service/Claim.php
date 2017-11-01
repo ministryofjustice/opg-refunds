@@ -73,13 +73,15 @@ class Claim
      *
      * @param int|null $page
      * @param int|null $pageSize
-     * @param string|null $donorName
+     * @param string|null $search
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param string|null $orderBy
+     * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
+    public function search(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
@@ -89,7 +91,7 @@ class Claim
         }
 
         if ($pageSize === null) {
-            $pageSize = 10;
+            $pageSize = 25;
         } elseif ($pageSize > 50) {
             $pageSize = 50;
         }
@@ -98,9 +100,19 @@ class Claim
         $whereClauses = [];
         $parameters = [];
 
-        if (isset($donorName)) {
-            $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
-            $parameters['donorName'] = "%{$donorName}%";
+        if (isset($search)) {
+            $donorName = $search;
+            $claimCode = str_replace(' ', '', $search);
+            $claimCode = str_ireplace('R', '', $claimCode);
+
+            if (is_numeric($claimCode)) {
+                $claimCode = (int)$claimCode;
+                $whereClauses[] = 'c.id = :claimCode';
+                $parameters['claimCode'] = $claimCode;
+            } else {
+                $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
+                $parameters['donorName'] = "%{$donorName}%";
+            }
         }
 
         if (isset($assignedToId)) {
@@ -126,7 +138,21 @@ class Claim
         if (count($whereClauses) > 0) {
             $dql .= ' WHERE ' . join(' AND ', $whereClauses);
         }
-        $dql .= ' ORDER BY c.receivedDateTime DESC';
+
+        if (isset($orderBy)) {
+            if ($orderBy === 'donor') {
+                $dql .= ' ORDER BY c.donorName ';
+            } elseif ($orderBy === 'received') {
+                $dql .= ' ORDER BY c.receivedDateTime ';
+            } elseif ($orderBy === 'modified') {
+                $dql .= ' ORDER BY c.updatedDateTime ';
+            } elseif ($orderBy === 'status') {
+                $dql .= ' ORDER BY c.status ';
+            }
+
+            $dql .= strtoupper($sort ?: 'asc');
+        }
+
         $query = $this->entityManager->createQuery($dql)
             ->setParameters($parameters)
             ->setFirstResult($offset)

@@ -86,7 +86,7 @@ class Claim extends AbstractEntity
     /**
      * @var Collection|Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"receivedDate" = "DESC"})
+     * @ORM\OrderBy({"receivedDate" = "ASC"})
      */
     protected $poas;
 
@@ -244,7 +244,17 @@ class Claim extends AbstractEntity
      */
     public function getAssignedTo()
     {
-        return $this->assignedTo;
+        //  If it's still asigned to a user return that user
+        if ($this->assignedTo !== null) {
+            return $this->assignedTo;
+        }
+
+        //  Otherwise return the user associated with the last note against this claim
+        if ($this->getNotes() !== null && isset($this->getNotes()[0])) {
+            return $this->getNotes()[0]->getUser();
+        }
+
+        return null;
     }
 
     /**
