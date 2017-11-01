@@ -42,9 +42,9 @@
 
             <p>
                 <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
-                    <?= $claimSummaryPage->getTotal() ?> results
+                    <?= $claimSummaryPage->getTotal() ?> result<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?>
                 <?php } else { ?>
-                    <?= $claimSummaryPage->getTotal() ?> total claims
+                    <?= $claimSummaryPage->getTotal() ?> total claim<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?>
                 <?php } ?>
             </p>
 
