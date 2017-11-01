@@ -53,6 +53,9 @@ class ClaimSearchAction extends AbstractAction
                 if ($searchParameters['search'] === '') {
                     unset($searchParameters['search']);
                 }
+                if ($searchParameters['status'] === '') {
+                    unset($searchParameters['status']);
+                }
 
                 //  Redirect to search with get params
                 return $this->redirectToRoute('claim.search', [], $searchParameters);

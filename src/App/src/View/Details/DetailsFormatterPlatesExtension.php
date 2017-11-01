@@ -89,7 +89,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         }
     }
 
-    public function getStatusText(string $status)
+    public static function getStatusText(string $status)
     {
         switch ($status) {
             case ClaimModel::STATUS_PENDING:

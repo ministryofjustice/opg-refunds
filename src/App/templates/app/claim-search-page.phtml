@@ -23,38 +23,30 @@
                 'formLabelBold' => false
             ]) ?>
 
+            <?php $this->insert('snippet::input-select', [
+                'formElement' => $form->get('status'),
+                'formLabel' => 'Status',
+                'formLabelBold' => false
+            ]) ?>
+
             <div class="form-group">
-                <input type='submit' class="button" name='submit' value='Search'>
+                <input type='submit' class="button button-search" name='submit' value='Search'>
+                <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
+                    <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>">Clear all</a>
+                <?php } ?>
             </div>
 
         </form>
 
-        <?php if(count($searchParameters) > 0) { ?>
-            <div>
-                <h3 class="heading-small">Search parameters <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>">Clear all</a></h3>
-                <p>
-                    <?php foreach ($searchParameters as $key => $value) { ?>
-                        <?php if ($key === 'donorName') {
-                            $clearSearchParameters = $searchParameters;
-                            unset($clearSearchParameters['donorName']); ?>
-                            <span>Donor name: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
-                        <?php } ?>
-                        <?php if ($key === 'assignedToId') {
-                            $clearSearchParameters = $searchParameters;
-                            unset($clearSearchParameters['assignedToId']); ?>
-                            <span>Assigned to id: <?= $value ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
-                        <?php } ?>
-                        <?php if ($key === 'status') {
-                            $clearSearchParameters = $searchParameters;
-                            unset($clearSearchParameters['status']); ?>
-                            <span>Status: <?= $this->getStatusText($value) ?> <a href="<?= $this->generateUrl('claim.search', [], $clearSearchParameters) ?>">Clear</a> </span>
-                        <?php } ?>
-                    <?php } ?>
-                </p>
-            </div>
-        <?php } ?>
+        <?php if ($claimSummaryPage->getTotal() > 0) { ?>
 
-        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
+            <p>
+                <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
+                    <?= $claimSummaryPage->getTotal() ?> results
+                <?php } else { ?>
+                    <?= $claimSummaryPage->getTotal() ?> total claims
+                <?php } ?>
+            </p>
 
             <table>
                 <thead>
@@ -117,7 +109,7 @@
                             ?>
                         </a>
                     </th>
-                    <th>Assigned To</th>
+                    <th>Assigned to</th>
                     <th>
                         <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'status'))) ?>">
                             Status
@@ -148,8 +140,8 @@
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToId' => $claimSummary->getAssignedToId()])) ?>"><?= $this->e($claimSummary->getAssignedToName()) ?></a></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></a></td>
+                        <td><?= $this->e($claimSummary->getAssignedToName()) ?></td>
+                        <td><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td>
                     </tr>
                 <?php } ?>
 

@@ -29,7 +29,11 @@ class ClaimReject extends AbstractForm
         $field = new Radio('rejection-reason');
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty);
 
         $field->setValueOptions([
             'notInDateRange'   => 'notInDateRange',
