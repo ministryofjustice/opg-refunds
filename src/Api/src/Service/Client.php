@@ -53,7 +53,7 @@ class Client
         //TODO: Add date or other unique identifier allowing for previous spreadsheets to be downloaded
 
         //  Not using httpGet because the response of this API endpoint is binary, specifically a .xls file
-        $url = new Uri($this->apiBaseUri . '/v1/cases/spreadsheet');
+        $url = new Uri($this->apiBaseUri . '/v1/spreadsheet');
 
         $request = new Request('GET', $url, $this->buildHeaders());
 
@@ -114,7 +114,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPost($path, array $payload)
+    public function httpPost($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -139,7 +139,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPut($path, array $payload)
+    public function httpPut($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -164,7 +164,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPatch($path, array $payload)
+    public function httpPatch($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 

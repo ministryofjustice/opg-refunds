@@ -23,7 +23,7 @@ class Claim implements ApiClientInterface
      */
     public function assignNextClaim(int $userId)
     {
-        $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim", []);
+        $result = $this->getApiClient()->httpPut("/v1/user/$userId/claim");
 
         return $result['assignedClaimId'];
     }
@@ -37,7 +37,7 @@ class Claim implements ApiClientInterface
      */
     public function assignClaim(int $claimId, int $userId)
     {
-        $result = $this->getApiClient()->httpPut("/v1/cases/user/$userId/claim/$claimId", []);
+        $result = $this->getApiClient()->httpPut("/v1/user/$userId/claim/$claimId");
 
         return $result['assignedClaimId'];
     }
@@ -50,7 +50,7 @@ class Claim implements ApiClientInterface
      */
     public function unAssignClaim(int $claimId, int $userId)
     {
-        $this->getApiClient()->httpDelete("/v1/cases/user/$userId/claim/$claimId");
+        $this->getApiClient()->httpDelete("/v1/user/$userId/claim/$claimId");
     }
 
     /**
@@ -60,7 +60,7 @@ class Claim implements ApiClientInterface
      */
     public function getClaim(int $claimId)
     {
-        $claimData = $this->getApiClient()->httpGet("/v1/cases/claim/$claimId");
+        $claimData = $this->getApiClient()->httpGet("/v1/claim/$claimId");
 
         $claim = $this->createDataModel($claimData);
 
@@ -112,7 +112,7 @@ class Claim implements ApiClientInterface
             $queryParameters['sort'] = $sort;
         }
 
-        $url = '/v1/cases/claim/search';
+        $url = '/v1/claim/search';
         if ($queryParameters) {
             $url .= '?' . http_build_query($queryParameters);
         }
@@ -131,7 +131,7 @@ class Claim implements ApiClientInterface
      */
     public function addNote(int $claimId, string $title, string $message)
     {
-        $noteArray = $this->getApiClient()->httpPost("/v1/cases/claim/$claimId/note", [
+        $noteArray = $this->getApiClient()->httpPost("/v1/claim/$claimId/note", [
             'title'   => $title,
             'message' => $message,
         ]);
@@ -150,7 +150,7 @@ class Claim implements ApiClientInterface
      */
     public function setNoSiriusPoas(int $claimId, bool $noSiriusPoas)
     {
-        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'noSiriusPoas' => $noSiriusPoas
         ]);
 
@@ -164,7 +164,7 @@ class Claim implements ApiClientInterface
      */
     public function setNoMerisPoas(int $claimId, bool $noMerisPoas)
     {
-        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'noMerisPoas' => $noMerisPoas
         ]);
 
@@ -180,7 +180,7 @@ class Claim implements ApiClientInterface
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $claimArray = $this->getApiClient()->httpPost("/v1/cases/claim/{$claim->getId()}/poa", $poa->getArrayCopy());
+        $claimArray = $this->getApiClient()->httpPost("/v1/claim/{$claim->getId()}/poa", $poa->getArrayCopy());
 
         return $this->createDataModel($claimArray);
     }
@@ -189,21 +189,21 @@ class Claim implements ApiClientInterface
     {
         $this->updatePoaCaseNumberVerification($claim, $poa);
 
-        $claimArray = $this->getApiClient()->httpPut("/v1/cases/claim/{$claim->getId()}/poa/{$poaId}", $poa->getArrayCopy());
+        $claimArray = $this->getApiClient()->httpPut("/v1/claim/{$claim->getId()}/poa/{$poaId}", $poa->getArrayCopy());
 
         return $this->createDataModel($claimArray);
     }
 
     public function deletePoa($claimId, $poaId)
     {
-        $claimArray = $this->getApiClient()->httpDelete("/v1/cases/claim/{$claimId}/poa/{$poaId}");
+        $claimArray = $this->getApiClient()->httpDelete("/v1/claim/{$claimId}/poa/{$poaId}");
 
         return $this->createDataModel($claimArray);
     }
 
     public function setRejectionReason(int $claimId, $rejectionReason, $rejectionReasonDescription)
     {
-        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'status'                     => ClaimModel::STATUS_REJECTED,
             'rejectionReason'            => $rejectionReason,
             'rejectionReasonDescription' => $rejectionReasonDescription
@@ -214,7 +214,7 @@ class Claim implements ApiClientInterface
 
     public function setStatusAccepted(int $claimId)
     {
-        $claimArray = $this->getApiClient()->httpPatch("/v1/cases/claim/$claimId", [
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'status' => ClaimModel::STATUS_ACCEPTED
         ]);
 
