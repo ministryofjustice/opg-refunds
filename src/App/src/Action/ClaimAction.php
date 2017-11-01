@@ -4,7 +4,6 @@ namespace App\Action;
 
 use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
-use App\Service\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ResponseInterface;
@@ -22,15 +21,9 @@ class ClaimAction extends AbstractRestfulAction
      */
     private $claimService;
 
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    public function __construct(ClaimService $claimService, UserService $userService)
+    public function __construct(ClaimService $claimService)
     {
         $this->claimService = $claimService;
-        $this->userService = $userService;
     }
 
     /**
@@ -44,11 +37,10 @@ class ClaimAction extends AbstractRestfulAction
     {
         $claimId = $request->getAttribute('id');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
         //  Return a specific claim
-        $claim = $this->claimService->get($claimId, $user->getId());
+        $claim = $this->claimService->get($claimId, $identity->getId());
 
         return new JsonResponse($claim->getArrayCopy());
     }
@@ -65,32 +57,31 @@ class ClaimAction extends AbstractRestfulAction
     {
         $claimId = $request->getAttribute('id');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
         $requestBody = $request->getParsedBody();
 
         if (isset($requestBody['noSiriusPoas'])) {
-            $this->claimService->setNoSiriusPoas($claimId, $user->getId(), $requestBody['noSiriusPoas']);
+            $this->claimService->setNoSiriusPoas($claimId, $identity->getId(), $requestBody['noSiriusPoas']);
         }
 
         if (isset($requestBody['noMerisPoas'])) {
-            $this->claimService->setNoMerisPoas($claimId, $user->getId(), $requestBody['noMerisPoas']);
+            $this->claimService->setNoMerisPoas($claimId, $identity->getId(), $requestBody['noMerisPoas']);
         }
 
         if (isset($requestBody['status'])) {
             if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
-                $this->claimService->setStatusAccepted($claimId, $user->getId());
+                $this->claimService->setStatusAccepted($claimId, $identity->getId());
             } elseif ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
                 if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
                     throw new InvalidInputException('Rejection reason and description are required');
                 }
 
-                $this->claimService->setStatusRejected($claimId, $user->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
+                $this->claimService->setStatusRejected($claimId, $identity->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
             }
         }
 
-        $claim = $this->claimService->get($claimId, $user->getId());
+        $claim = $this->claimService->get($claimId, $identity->getId());
 
         return new JsonResponse($claim->getArrayCopy());
     }
