@@ -50,6 +50,10 @@ class ClaimSearchAction extends AbstractAction
                 unset($searchParameters['secret']);
                 unset($searchParameters['submit']);
 
+                //  Unset page as this is a new search
+                unset($searchParameters['page']);
+
+                //  Unset blank search parameters
                 if ($searchParameters['search'] === '') {
                     unset($searchParameters['search']);
                 }

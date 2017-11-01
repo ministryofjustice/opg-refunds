@@ -38,7 +38,7 @@
 
         </form>
 
-        <?php if ($claimSummaryPage->getTotal() > 0) { ?>
+        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
 
             <p>
                 <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
