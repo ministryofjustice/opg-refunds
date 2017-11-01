@@ -36,6 +36,8 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                // Middleware
+                Middleware\ProblemDetailsMiddleware::class => Middleware\ProblemDetailsMiddleware::class,
             ],
             'factories'  => [
                 'doctrine.entity_manager.orm_cases' => [\ContainerInteropDoctrine\EntityManagerFactory::class, 'orm_cases'],
@@ -52,8 +54,6 @@ class ConfigProvider
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
-
-                // Middleware
 
                 //  Services
                 Service\Claim::class => Service\ClaimFactory::class,

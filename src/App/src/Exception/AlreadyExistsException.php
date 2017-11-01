@@ -2,23 +2,29 @@
 
 namespace App\Exception;
 
-use RuntimeException;
 use Throwable;
 
 /**
  * Class AlreadyExistsException
  * @package App\Exception
  */
-class AlreadyExistsException extends RuntimeException
+class AlreadyExistsException extends AbstractApiException
 {
+    /**
+     * @var int
+     */
+    protected $code = 409;
+
     /**
      * AlreadyExistsException constructor
      *
      * @param string $message
+     * @param string $title
+     * @param array $additionalData
      * @param Throwable|null $previous
      */
-    public function __construct($message = 'Entity already exists', Throwable $previous = null)
+    public function __construct(string $message = null, string $title = 'Entity already exists', array $additionalData = [], Throwable $previous = null)
     {
-        parent::__construct($message, 409);
+        parent::__construct($message, $title, $additionalData, $previous);
     }
 }

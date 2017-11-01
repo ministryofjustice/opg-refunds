@@ -1,6 +1,7 @@
 <?php
 
-use Auth\Middleware;
+use App\Middleware;
+use Auth\Middleware as AuthMiddleware;
 use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Middleware\ImplicitHeadMiddleware;
@@ -40,10 +41,13 @@ $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(BodyParamsMiddleware::class);
 
+//  Handle any API problem exception types
+$app->pipe(Middleware\ProblemDetailsMiddleware::class);
+
 //  Add middleware to verify on the cases path
 foreach (['/v1/cases'] as $path) {
     $app->pipe($path, [
-        Middleware\AuthMiddleware::class,
+        AuthMiddleware\AuthMiddleware::class,
     ]);
 }
 
