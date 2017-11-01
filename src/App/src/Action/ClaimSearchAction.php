@@ -41,7 +41,7 @@ class ClaimSearchAction extends AbstractRestfulAction
 
         $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
         $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
-        $donorName = isset($queryParameters['donorName']) ? $queryParameters['donorName'] : null;
+        $search = isset($queryParameters['search']) ? $queryParameters['search'] : null;
         $assignedToId = isset($queryParameters['assignedToId']) ? $queryParameters['assignedToId'] : null;
         $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
         $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
@@ -49,7 +49,7 @@ class ClaimSearchAction extends AbstractRestfulAction
         $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
 
         //  Search claims
-        $claimSummaryPage = $this->claimService->search($page, $pageSize, $donorName, $assignedToId, $status, $accountHash, $orderBy, $sort);
+        $claimSummaryPage = $this->claimService->search($page, $pageSize, $search, $assignedToId, $status, $accountHash, $orderBy, $sort);
 
         return new JsonResponse($claimSummaryPage->getArrayCopy());
     }
