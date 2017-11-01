@@ -45,7 +45,10 @@ $postcodes = $claim->getApplication()->getPostcodes();
     <input type="hidden" name="system" value="<?= $this->e($system) ?>">
 
     <div>
-        <h3 class="heading-small">Add power of attorney details</h3>
+        <?php $this->insert('snippet::input-checkbox', [
+            'formElement' => $form->get('donor-checked'),
+            'formLabel' => 'Donor name and date of birth checked'
+        ]) ?>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('case-number'),
@@ -54,11 +57,9 @@ $postcodes = $claim->getApplication()->getPostcodes();
             'formLabelBold' => false
         ]) ?>
 
-        <h3 class="heading-small">Received date - TBC?</h3>
-
         <?php $this->insert('snippet::input-received-date', [
             'formLabel' => 'Received date',
-            'formElement' => $form->get('received-date'),
+            'formElement' => $form->get('received-date')
         ]) ?>
     </div>
 

@@ -1,0 +1,22 @@
+<?php
+
+$elementId = "id-{$formElement->getName()}";
+
+$hasErrors = !empty($formElement->getMessages());
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+
+    <?php foreach($formElement->getMessages() as $message): ?>
+        <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
+    <?php endforeach ?>
+
+    <div class="multiple-choice">
+
+        <input type="checkbox" id="<?= $elementId ?>" name="<?= $formElement->getName() ?>">
+        <label class="form-label" for="<?= $elementId ?>"><?= $this->e($formLabel) ?></label>
+
+    </div>
+
+</div>
