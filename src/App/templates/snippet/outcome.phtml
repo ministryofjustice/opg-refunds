@@ -24,9 +24,8 @@ Mandatory: claim
                 <p>
                     <?php if($this->isClaimVerified($claim)) { ?>
                         <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
-                    <?php } else { ?>
-                        <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
                     <?php } ?>
+                    <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
                 </p>
             <?php } ?>
         </dd>
