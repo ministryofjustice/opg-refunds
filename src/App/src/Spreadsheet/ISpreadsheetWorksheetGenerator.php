@@ -9,8 +9,8 @@ interface ISpreadsheetWorksheetGenerator
 {
     /**
      * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
-     * @param UserModel $user
+     * @param UserModel $approver
      * @return SpreadsheetWorksheet worksheet that can be passed to a compatible ISpreadsheetGenerator instance
      */
-    public function generate(array $claims, UserModel $user): SpreadsheetWorksheet;
+    public function generate(array $claims, UserModel $approver): SpreadsheetWorksheet;
 }

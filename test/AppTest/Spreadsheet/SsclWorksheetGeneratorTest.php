@@ -31,7 +31,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         'objective' => '0',
         'analysis' => '12345678',
         'completer_id' => '',
-        'approver_id' => 'approver@localhost.com',
+        'approver_id' => '',
     ];
     /**
      * @var ISpreadsheetWorksheetGenerator
@@ -56,7 +56,7 @@ class SsclWorksheetGeneratorTest extends TestCase
     /**
      * @var User
      */
-    private $user;
+    private $approver;
 
     public function setUp()
     {
@@ -92,15 +92,16 @@ class SsclWorksheetGeneratorTest extends TestCase
         $this->claim = $this->claimBuilder
             ->withApplication($application)
             ->withPayment($payment)
+            ->withFinishedByName('Test FinishedBy')
             ->build();
 
-        $this->user = new User();
-        $this->user->setName('Test User');
+        $this->approver = new User();
+        $this->approver->setName('Test Approver');
     }
 
     public function testEmptyArray()
     {
-        $result = $this->generator->generate([], $this->user);
+        $result = $this->generator->generate([], $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -118,7 +119,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->claim
         ];
 
-        $result = $this->generator->generate($claims, $this->user);
+        $result = $this->generator->generate($claims, $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -252,11 +253,11 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Completer ID - From config
             $this->assertEquals(32, $cells[27]->getColumn());
-            $this->assertEquals($this->user->getName(), $cells[27]->getData());
+            $this->assertEquals($this->claim->getFinishedByName(), $cells[27]->getData());
 
             //Approver ID - From config
             $this->assertEquals(33, $cells[28]->getColumn());
-            $this->assertEquals('approver@localhost.com', $cells[28]->getData());
+            $this->assertEquals($this->approver->getName(), $cells[28]->getData());
         }
     }
 }

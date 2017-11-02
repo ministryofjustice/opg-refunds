@@ -22,10 +22,10 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
 
     /**
      * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
-     * @param UserModel $user
+     * @param UserModel $approver
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
-    public function generate(array $claims, UserModel $user): SpreadsheetWorksheet
+    public function generate(array $claims, UserModel $approver): SpreadsheetWorksheet
     {
         $rows = [];
 
@@ -97,10 +97,11 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             //Total Amount
             $cells[] = new SpreadsheetCell(31, $rowIndex, $payment->getAmount());
             //Completer ID - From passed in user or overridden by config
-            $completerId = !empty($this->ssclConfig['completer_id']) ? $this->ssclConfig['completer_id'] : $user->getName();
+            $completerId = !empty($this->ssclConfig['completer_id']) ? $this->ssclConfig['completer_id'] : $claim->getFinishedByName();
             $cells[] = new SpreadsheetCell(32, $rowIndex, $completerId);
-            //Approver ID - From config
-            $cells[] = new SpreadsheetCell(33, $rowIndex, $this->ssclConfig['approver_id']);
+            //Approver ID - From passed in user or overridden by config
+            $approverId = !empty($this->ssclConfig['approver_id']) ? $this->ssclConfig['approver_id'] : $approver->getName();
+            $cells[] = new SpreadsheetCell(33, $rowIndex, $approverId);
 
             $rows[] = new SpreadsheetRow($cells);
         }
