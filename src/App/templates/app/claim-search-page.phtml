@@ -139,7 +139,7 @@
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>
-                        <td><?= $this->e($claimSummary->getAssignedToName()) ?></td>
+                        <td><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></td>
                         <td><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td>
                     </tr>
                 <?php } ?>
