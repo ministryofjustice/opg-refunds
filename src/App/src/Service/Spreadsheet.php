@@ -67,9 +67,9 @@ class Spreadsheet
         $queryBuilder = $this->repository->createQueryBuilder('c');
 
         if ($date == new DateTime('today')) {
-            // Creating today's spreadsheet
+            // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today)')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
