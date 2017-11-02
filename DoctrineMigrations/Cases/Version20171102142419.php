@@ -21,6 +21,8 @@ class Version20171102142419 extends AbstractMigration
         $this->addSql('ALTER TABLE claim ADD finished_by_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE claim ADD CONSTRAINT FK_A769DE274A12CC70 FOREIGN KEY (finished_by_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('CREATE INDEX IDX_A769DE274A12CC70 ON claim (finished_by_id)');
+
+        $this->addSql('UPDATE claim c SET finished_by_id = (SELECT n.user_id FROM note n WHERE n.claim_id = c.id AND n.user_id IS NOT NULL AND (n.title LIKE \'%accepted\' OR n.title LIKE \'%rejected\') ORDER BY n.created_datetime ASC LIMIT 1) WHERE c.status IN (\'accepted\', \'rejected\')');
     }
 
     /**
