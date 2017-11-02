@@ -49,6 +49,21 @@ class ClaimSummary extends AbstractDataModel
     protected $assignedToStatus;
 
     /**
+     * @var int
+     */
+    protected $finishedById;
+
+    /**
+     * @var string
+     */
+    protected $finishedByName;
+
+    /**
+     * @var string
+     */
+    protected $finishedByStatus;
+
+    /**
      * @var string
      */
     protected $donorName;
@@ -194,6 +209,63 @@ class ClaimSummary extends AbstractDataModel
     public function setAssignedToStatus(string $assignedToStatus): ClaimSummary
     {
         $this->assignedToStatus = $assignedToStatus;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFinishedById()
+    {
+        return $this->finishedById;
+    }
+
+    /**
+     * @param int $finishedById
+     * @return $this
+     */
+    public function setFinishedById(int $finishedById)
+    {
+        $this->finishedById = $finishedById;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFinishedByName()
+    {
+        return $this->finishedByName;
+    }
+
+    /**
+     * @param string $finishedByName
+     * @return $this
+     */
+    public function setFinishedByName(string $finishedByName): ClaimSummary
+    {
+        $this->finishedByName = $finishedByName;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFinishedByStatus()
+    {
+        return $this->finishedByStatus;
+    }
+
+    /**
+     * @param string $finishedByStatus
+     * @return $this
+     */
+    public function setFinishedByStatus(string $finishedByStatus): ClaimSummary
+    {
+        $this->finishedByStatus = $finishedByStatus;
 
         return $this;
     }
