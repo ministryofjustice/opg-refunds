@@ -66,6 +66,13 @@ class Claim extends AbstractEntity
     protected $assignedDateTime;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="finished_by_id", referencedColumnName="id", nullable=true)
+     */
+    protected $finishedBy;
+
+    /**
      * @var DateTime
      * @ORM\Column(name="finished_datetime", type="datetimetz", nullable=true)
      */
@@ -250,8 +257,8 @@ class Claim extends AbstractEntity
         }
 
         //  Otherwise return the user associated with the last note against this claim
-        if ($this->getNotes() !== null && isset($this->getNotes()[0])) {
-            return $this->getNotes()[0]->getUser();
+        if ($this->getNotes() !== null && isset($this->getNotes()[1])) {
+            return $this->getNotes()[1]->getUser();
         }
 
         return null;

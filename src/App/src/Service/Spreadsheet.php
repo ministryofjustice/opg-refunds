@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Service\Claim as ClaimService;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\QueryBuilder;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
@@ -72,9 +73,9 @@ class Spreadsheet
      */
     public function getAllRefundable(DateTime $date, int $userId)
     {
-        $queryBuilder = $this->repository->createQueryBuilder('c');
-
         if ($date == new DateTime('today')) {
+            $queryBuilder = $this->repository->createQueryBuilder('c');
+
             // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
                 ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
@@ -82,17 +83,7 @@ class Spreadsheet
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
-            // Retrieving a previous spreadsheet
-            $startDateTime = clone $date;
-            $endDateTime = $date->add(new DateInterval('P1D'));
-            $queryBuilder->join('c.payment', 'p')
-                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
-                ->orderBy('c.finishedDateTime', 'ASC')
-                ->setParameters([
-                    'status' => ClaimModel::STATUS_ACCEPTED,
-                    'startDateTime' => $startDateTime,
-                    'endDateTime' => $endDateTime
-                ]);
+            $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($date);
         }
 
         $claims = $queryBuilder->getQuery()->getResult();
@@ -192,6 +183,34 @@ class Spreadsheet
 
     private function clearBlankDetails()
     {
+        $historicRefundDates = $this->getAllHistoricRefundDates();
 
+        $lastHistoricRefundDate = end($historicRefundDates);
+
+        $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($date);
+        $claims = $queryBuilder->getQuery()->getResult();
+    }
+
+    /**
+     * @param DateTime $date
+     * @return QueryBuilder
+     */
+    public function getPreviouslyRefundedClaimsQueryBuilder(DateTime $date)
+    {
+        $startDateTime = clone $date;
+        $endDateTime = $date->add(new DateInterval('P1D'));
+
+        $queryBuilder = $this->repository->createQueryBuilder('c');
+
+        $queryBuilder->join('c.payment', 'p')
+            ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
+            ->orderBy('c.finishedDateTime', 'ASC')
+            ->setParameters([
+                'status' => ClaimModel::STATUS_ACCEPTED,
+                'startDateTime' => $startDateTime,
+                'endDateTime' => $endDateTime
+            ]);
+
+        return $queryBuilder;
     }
 }
