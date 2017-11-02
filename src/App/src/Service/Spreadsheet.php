@@ -42,17 +42,25 @@ class Spreadsheet
     private $claimService;
 
     /**
+     * @var array
+     */
+    private $spreadsheetConfig;
+
+    /**
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
      * @param Rsa $bankCipher
+     * @param Claim $claimService
+     * @param array $spreadsheetConfig
      */
-    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService)
+    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
+        $this->spreadsheetConfig = $spreadsheetConfig;
     }
 
     /**
@@ -95,6 +103,8 @@ class Spreadsheet
             $refundableClaims[] = $this->getRefundable($claim, $userId);
         }
 
+        $this->clearBlankDetails();
+
         return $refundableClaims;
     }
 
@@ -102,8 +112,11 @@ class Spreadsheet
     {
         $historicRefundDates = [];
 
+        $maxHistoricalRefundDates = $this->spreadsheetConfig['max_historical_refund_dates'];
+
         $statement = $this->entityManager->getConnection()->executeQuery(
-            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE'
+            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE ORDER BY historic_refund_date DESC LIMIT ?',
+            [$maxHistoricalRefundDates]
         );
 
         $results = $statement->fetchAll();
@@ -175,5 +188,10 @@ class Spreadsheet
                 ->setSortCode($accountDetails['sort-code']);
 
         return $claim;
+    }
+
+    private function clearBlankDetails()
+    {
+
     }
 }

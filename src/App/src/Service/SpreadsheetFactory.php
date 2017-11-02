@@ -18,10 +18,13 @@ class SpreadsheetFactory
      */
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('config');
+
         return new Spreadsheet(
             $container->get('doctrine.entity_manager.orm_cases'),
             $container->get(Rsa::class),
-            $container->get(ClaimService::class)
+            $container->get(ClaimService::class),
+            $config['spreadsheet']
         );
     }
 }
