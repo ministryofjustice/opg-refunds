@@ -86,7 +86,7 @@ class Claim extends AbstractEntity
     /**
      * @var Collection|Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"receivedDate" = "ASC"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     protected $poas;
 
