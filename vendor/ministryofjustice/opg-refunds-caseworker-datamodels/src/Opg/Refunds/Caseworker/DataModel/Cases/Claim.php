@@ -64,6 +64,11 @@ class Claim extends AbstractDataModel
     protected $assignedDateTime;
 
     /**
+     * @var int
+     */
+    protected $finishedById;
+
+    /**
      * @var DateTime
      */
     protected $finishedDateTime;
@@ -283,6 +288,25 @@ class Claim extends AbstractDataModel
     public function setAssignedDateTime(DateTime $assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFinishedById()
+    {
+        return $this->finishedById;
+    }
+
+    /**
+     * @param int $finishedById
+     * @return $this
+     */
+    public function setFinishedById(int $finishedById)
+    {
+        $this->finishedById = $finishedById;
 
         return $this;
     }
