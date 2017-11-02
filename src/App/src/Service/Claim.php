@@ -214,10 +214,7 @@ class Claim
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestApplication();
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         //Using SQL directly to update claim in single atomic call to prevent race conditions
         $statement = $this->entityManager->getConnection()->executeQuery(
@@ -266,10 +263,7 @@ class Claim
             throw new Exception('You cannot assign this claim', 403);
         }
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setUpdatedDateTime(new DateTime());
@@ -409,10 +403,7 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         $note = new NoteEntity($title, $message, $claim, $user);
 
@@ -593,8 +584,11 @@ class Claim
 
         $this->checkCanEdit($claim, $userId);
 
+        $user = $this->getUser($userId);
+
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
         $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
@@ -619,10 +613,13 @@ class Claim
 
         $this->checkCanEdit($claim, $userId);
 
+        $user = $this->getUser($userId);
+
         $claim->setStatus(ClaimModel::STATUS_REJECTED);
         $claim->setRejectionReason($rejectionReason);
         $claim->setRejectionReasonDescription($rejectionReasonDescription);
         $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
@@ -718,5 +715,18 @@ class Claim
     public function getCaseNumberNote(PoaModel $poaModel): string
     {
         return $poaModel->getCaseNumber() . ($poaModel->isComplete() ? '' : ' (incomplete)');
+    }
+
+    /**
+     * @param int $userId
+     * @return UserEntity
+     */
+    public function getUser(int $userId)
+    {
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+        return $user;
     }
 }

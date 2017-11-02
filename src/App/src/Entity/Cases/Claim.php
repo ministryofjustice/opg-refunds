@@ -251,17 +251,7 @@ class Claim extends AbstractEntity
      */
     public function getAssignedTo()
     {
-        //  If it's still asigned to a user return that user
-        if ($this->assignedTo !== null) {
-            return $this->assignedTo;
-        }
-
-        //  Otherwise return the user associated with the last note against this claim
-        if ($this->getNotes() !== null && isset($this->getNotes()[1])) {
-            return $this->getNotes()[1]->getUser();
-        }
-
-        return null;
+        return $this->assignedTo;
     }
 
     /**
@@ -286,6 +276,22 @@ class Claim extends AbstractEntity
     public function setAssignedDateTime($assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
+    }
+
+    /**
+     * @return User
+     */
+    public function getFinishedBy()
+    {
+        return $this->finishedBy;
+    }
+
+    /**
+     * @param User $finishedBy
+     */
+    public function setFinishedBy(User $finishedBy)
+    {
+        $this->finishedBy = $finishedBy;
     }
 
     /**
@@ -473,6 +479,15 @@ class Claim extends AbstractEntity
             },
             'AssignedToStatus' => function () {
                 return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getStatus() : null);
+            },
+            'FinishedById' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getId() : null);
+            },
+            'FinishedByName' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getName() : null);
+            },
+            'FinishedByStatus' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getStatus() : null);
             },
         ]);
 
