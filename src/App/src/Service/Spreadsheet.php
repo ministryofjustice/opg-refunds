@@ -78,7 +78,7 @@ class Spreadsheet
         if ($date == new DateTime('today')) {
             // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today AND (c.json_data->\'account\'->\'details\') IS NOT NULL')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
@@ -86,7 +86,7 @@ class Spreadsheet
             $startDateTime = clone $date;
             $endDateTime = $date->add(new DateInterval('P1D'));
             $queryBuilder->join('c.payment', 'p')
-                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime AND (json_data->\'account\'->\'details\') IS NOT NULL')
+                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setParameters([
                     'status' => ClaimModel::STATUS_ACCEPTED,
@@ -196,7 +196,7 @@ class Spreadsheet
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
-                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND (status = \'rejected\' AND finished_datetime < ?) OR (status = \'accepted\' AND)',
+                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < ?) OR p.added_datetime < ?))',
                 [$deleteAfterHistoricalRefundDate]
             );
 
