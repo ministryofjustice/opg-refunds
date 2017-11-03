@@ -44,12 +44,8 @@ $app->pipe(BodyParamsMiddleware::class);
 //  Handle any API problem exception types
 $app->pipe(Middleware\ProblemDetailsMiddleware::class);
 
-//  Add middleware to verify on the cases path
-foreach (['/v1/cases'] as $path) {
-    $app->pipe($path, [
-        AuthMiddleware\AuthMiddleware::class,
-    ]);
-}
+// Authorization middleware to determine if the user can access the requested route
+$app->pipe(AuthMiddleware\AuthorizationMiddleware::class);
 
 // Register the dispatch middleware in the middleware pipeline
 $app->pipeDispatchMiddleware();

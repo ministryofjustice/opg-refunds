@@ -3,7 +3,6 @@
 namespace App\Action;
 
 use App\Service\Spreadsheet;
-use App\Service\User as UserService;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
@@ -37,23 +36,17 @@ class SpreadsheetAction extends AbstractRestfulAction
     private $spreadsheetGenerator;
 
     /**
-     * @var UserService
-     */
-    private $userService;
-
-    /**
      * SpreadsheetAction constructor
      *
      * @param Spreadsheet $spreadsheetService
      * @param ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator
      * @param ISpreadsheetGenerator $spreadsheetGenerator
      */
-    public function __construct(Spreadsheet $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator, UserService $userService)
+    public function __construct(Spreadsheet $spreadsheetService, ISpreadsheetWorksheetGenerator $spreadsheetWorksheetGenerator, ISpreadsheetGenerator $spreadsheetGenerator)
     {
         $this->spreadsheetService = $spreadsheetService;
         $this->spreadsheetWorksheetGenerator = $spreadsheetWorksheetGenerator;
         $this->spreadsheetGenerator = $spreadsheetGenerator;
-        $this->userService = $userService;
     }
 
     /**
@@ -70,10 +63,9 @@ class SpreadsheetAction extends AbstractRestfulAction
             $historicRefundDates = $this->spreadsheetService->getAllHistoricRefundDates();
             return new JsonResponse($historicRefundDates);
         } else {
-            $token = $request->getHeaderLine('token');
-            $user = $this->userService->getByToken($token);
+            $identity = $request->getAttribute('identity');
 
-            $claims = $this->spreadsheetService->getAllRefundable(new DateTime($dateString), $user->getId());
+            $claims = $this->spreadsheetService->getAllRefundable(new DateTime($dateString), $identity->getId());
 
             $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims);
 

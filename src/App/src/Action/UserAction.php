@@ -146,8 +146,7 @@ class UserAction extends AbstractRestfulAction
     {
         $userId = $request->getAttribute('id');
 
-        $token = $request->getHeaderLine('token');
-        $actioningUser = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
         //  Soft delete - set the status to deleted
         $userModel = $this->userService->setStatus($userId, UserModel::STATUS_DELETED);
@@ -156,7 +155,7 @@ class UserAction extends AbstractRestfulAction
         foreach ($userModel->getClaims() as $claim) {
             /** @var ClaimModel $claim */
             if ($claim->getStatus() == ClaimModel::STATUS_IN_PROGRESS) {
-                $this->claimService->removeClaim($claim->getId(), $actioningUser->getId());
+                $this->claimService->removeClaim($claim->getId(), $identity->getId());
             }
         }
 

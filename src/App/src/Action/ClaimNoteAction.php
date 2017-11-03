@@ -3,7 +3,6 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use App\Service\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Psr\Http\Message\ResponseInterface;
@@ -21,15 +20,9 @@ class ClaimNoteAction extends AbstractRestfulAction
      */
     private $claimService;
 
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    public function __construct(ClaimService $claimService, UserService $userService)
+    public function __construct(ClaimService $claimService)
     {
         $this->claimService = $claimService;
-        $this->userService = $userService;
     }
 
     /**
@@ -44,10 +37,9 @@ class ClaimNoteAction extends AbstractRestfulAction
     {
         $claimId = $request->getAttribute('claimId');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $claim = $this->claimService->get($claimId, $user->getId());
+        $claim = $this->claimService->get($claimId, $identity->getId());
 
         $noteId = $request->getAttribute('id');
         if ($noteId === null) {
@@ -85,10 +77,9 @@ class ClaimNoteAction extends AbstractRestfulAction
 
         $claimId = $request->getAttribute('claimId');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $note = $this->claimService->addNote($claimId, $user->getId(), $note->getTitle(), $note->getMessage());
+        $note = $this->claimService->addNote($claimId, $identity->getId(), $note->getTitle(), $note->getMessage());
 
         return new JsonResponse($note->getArrayCopy());
     }
