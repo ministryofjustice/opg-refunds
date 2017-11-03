@@ -166,7 +166,7 @@ class Spreadsheet
         $claim = $this->translateToDataModel($entity);
 
         //  Deserialize the application from the JSON data
-        $applicationArray = json_decode($entity->getJsonData(), true);
+        $applicationArray = $entity->getJsonData();
         $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
 
         //  Set the sort code and account number in the account

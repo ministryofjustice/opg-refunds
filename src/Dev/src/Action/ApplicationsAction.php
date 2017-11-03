@@ -54,10 +54,10 @@ class ApplicationsAction implements ServerMiddlewareInterface
         $rows = $this->db->query($sql);
         foreach ($rows as $row) {
             if ($row['data'] === null) {
-                //Data has been ingested to get from claims table
+                //Data has been ingested so get from claims table
                 /** @var Claim $claim */
                 $claim = $this->caseRepository->findOneBy(['id' => $row['id']]);
-                $application = json_decode($claim->getJsonData(), true);
+                $application = $claim->getJsonData();
             } else {
                 $application = json_decode(gzinflate($this->fullCipher->decrypt(stream_get_contents($row['data']))), true);
             }

@@ -41,7 +41,7 @@ class Claim extends AbstractEntity
     protected $receivedDateTime;
 
     /**
-     * @var resource|string
+     * @var array
      * @ORM\Column(name="json_data", type="json_array")
      */
     protected $jsonData;
@@ -135,7 +135,7 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
-    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
+    public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
@@ -206,26 +206,17 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * IMPORTANT - $this->jsonData is set as a PHP "resource" by Doctrine but leaving it like that means that
-     * repeated calls to this function will yield different results (i.e. the first call will return the full
-     * string and subsequent calls will return a blank string). Therefore on the first call the resource is set
-     * to a proper string value.
-     *
-     * @return string
+     * @return array
      */
     public function getJsonData()
     {
-        if (is_resource($this->jsonData)) {
-            $this->jsonData = stream_get_contents($this->jsonData);
-        }
-
         return $this->jsonData;
     }
 
     /**
-     * @param string $jsonData
+     * @param array $jsonData
      */
-    public function setJsonData(string $jsonData)
+    public function setJsonData(array $jsonData)
     {
         $this->jsonData = $jsonData;
     }
