@@ -18,7 +18,7 @@ class User implements ApiClientInterface
      */
     public function getUser(int $userId)
     {
-        $userData = $this->getApiClient()->httpGet('/v1/cases/user/' . $userId);
+        $userData = $this->getApiClient()->httpGet('/v1/user/' . $userId);
 
         return $this->createDataModel($userData);
     }
@@ -30,7 +30,7 @@ class User implements ApiClientInterface
      */
     public function getUsers()
     {
-        $usersData = $this->getApiClient()->httpGet('/v1/cases/user');
+        $usersData = $this->getApiClient()->httpGet('/v1/user');
 
         return $this->createModelCollection($usersData);
     }
@@ -43,7 +43,7 @@ class User implements ApiClientInterface
      */
     public function createUser(UserModel $user)
     {
-        $userData = $this->getApiClient()->httpPost('/v1/cases/user', $user->getArrayCopy());
+        $userData = $this->getApiClient()->httpPost('/v1/user', $user->getArrayCopy());
 
         return $this->createDataModel($userData);
     }
@@ -57,7 +57,7 @@ class User implements ApiClientInterface
      */
     public function updateUser(int $userId, array $data)
     {
-        $userData = $this->getApiClient()->httpPatch('/v1/cases/user/' . $userId, $data);
+        $userData = $this->getApiClient()->httpPatch('/v1/user/' . $userId, $data);
 
         return $this->createDataModel($userData);
     }
@@ -70,7 +70,7 @@ class User implements ApiClientInterface
      */
     public function deleteUser(int $userId)
     {
-        $userData = $this->getApiClient()->httpDelete('/v1/cases/user/' . $userId);
+        $userData = $this->getApiClient()->httpDelete('/v1/user/' . $userId);
 
         return $this->createDataModel($userData);
     }
@@ -83,7 +83,7 @@ class User implements ApiClientInterface
      */
     public function getUserByToken(string $token)
     {
-        $userData = $this->getApiClient()->httpGet('/v1/user/' . $token);
+        $userData = $this->getApiClient()->httpGet('/v1/user-by-token/' . $token);
 
         return $this->createDataModel($userData);
     }
@@ -97,7 +97,7 @@ class User implements ApiClientInterface
      */
     public function updatePassword($userId, $password)
     {
-        $userData = $this->getApiClient()->httpPatch('/v1/cases/user/' . $userId, [
+        $userData = $this->getApiClient()->httpPatch('/v1/user/' . $userId, [
             'password' => $password,
         ]);
 
@@ -113,7 +113,7 @@ class User implements ApiClientInterface
      */
     public function updatePasswordByToken($token, $password)
     {
-        $userData = $this->getApiClient()->httpPatch('/v1/user/' . $token, [
+        $userData = $this->getApiClient()->httpPatch('/v1/user-by-token/' . $token, [
             'password' => $password,
         ]);
 

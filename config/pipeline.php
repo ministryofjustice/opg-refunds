@@ -44,7 +44,7 @@ $app->pipe(Middleware\Session\SessionMiddleware::class);
 $app->pipe(Middleware\Session\CsrfMiddleware::class);
 $app->pipe(Middleware\Session\SlimFlashMiddleware::class);
 
-// Authorization middleware to detemine if the user can access the requested route
+// Authorization middleware to determine if the user can access the requested route
 $app->pipe(Middleware\Authorization\AuthorizationMiddleware::class);
 
 // Middleware to set any default data in the template renderer

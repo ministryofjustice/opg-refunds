@@ -16,7 +16,7 @@ class Refund implements ApiClientInterface
 
     public function getHistoricRefundDates()
     {
-        $historicRefundDates = $this->getApiClient()->httpGet('/v1/cases/spreadsheet');
+        $historicRefundDates = $this->getApiClient()->httpGet('/v1/spreadsheet');
 
         return $historicRefundDates;
     }
@@ -25,7 +25,7 @@ class Refund implements ApiClientInterface
     {
         $dateString = date('Y-m-d', $date->getTimestamp());
 
-        $response = $this->getApiClient()->httpGetResponse('/v1/cases/spreadsheet/' . $dateString);
+        $response = $this->getApiClient()->httpGetResponse('/v1/spreadsheet/' . $dateString);
 
         $fileContents = $response->getBody();
         $contentDisposition = $response->getHeaderLine('Content-Disposition');

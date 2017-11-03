@@ -46,7 +46,7 @@ class AuthorizationMiddlewareFactory
             }
         }
 
-        //  Pass an extra services into the authorization middleware
+        //  Pass any extra services into the authorization middleware
         $authenticationService = $container->get(AuthenticationService::class);
         $urlHelper = $container->get(UrlHelper::class);
 
