@@ -74,8 +74,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(18, $rowIndex, 'N/A');
             //Invoice Date
             $cells[] = new SpreadsheetCell(19, $rowIndex, (new DateTime('today'))->format('d/m/Y'));
-            //Invoice Number - Not required by SSCL (Georgia confirmed on 21/09/2017)
-            $cells[] = new SpreadsheetCell(20, $rowIndex, '');
+            //Invoice Number - Programme board instructed to use reference number on 02/11/2017
+            $cells[] = new SpreadsheetCell(20, $rowIndex, $claim->getReferenceNumber());
             //Description
             $cells[] = new SpreadsheetCell(21, $rowIndex, 'Lasting Power of Attorney');
             //Entity - From config

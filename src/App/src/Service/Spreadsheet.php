@@ -94,7 +94,7 @@ class Spreadsheet
             $refundableClaims[] = $this->getRefundable($claim, $userId);
         }
 
-        $this->clearBlankDetails();
+        $this->clearBankDetails();
 
         return $refundableClaims;
     }
@@ -103,11 +103,8 @@ class Spreadsheet
     {
         $historicRefundDates = [];
 
-        $maxHistoricalRefundDates = $this->spreadsheetConfig['max_historical_refund_dates'];
-
         $statement = $this->entityManager->getConnection()->executeQuery(
-            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE ORDER BY historic_refund_date DESC LIMIT ?',
-            [$maxHistoricalRefundDates]
+            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE ORDER BY historic_refund_date DESC'
         );
 
         $results = $statement->fetchAll();
@@ -181,14 +178,18 @@ class Spreadsheet
         return $claim;
     }
 
-    private function clearBlankDetails()
+    private function clearBankDetails()
     {
         $historicRefundDates = $this->getAllHistoricRefundDates();
 
-        $lastHistoricRefundDate = end($historicRefundDates);
+        $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
+        if (count($historicRefundDates) >= $deleteAfterHistoricalRefundDates) {
+            $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
+            $deleteAfterHistoricalRefundDate = $deleteAfterHistoricalRefundDate->sub(new DateInterval('P1D'));
 
-        $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($date);
-        $claims = $queryBuilder->getQuery()->getResult();
+            $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($deleteAfterHistoricalRefundDate);
+            $claims = $queryBuilder->getQuery()->getResult();
+        }
     }
 
     /**

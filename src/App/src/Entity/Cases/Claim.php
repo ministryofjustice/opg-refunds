@@ -42,7 +42,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var resource|string
-     * @ORM\Column(name="json_data", type="binary")
+     * @ORM\Column(name="json_data", type="json_array")
      */
     protected $jsonData;
 

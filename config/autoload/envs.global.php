@@ -50,7 +50,7 @@ return [
             'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: '',
             'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: '',
         ],
-        'max_historical_refund_dates' => 3
+        'delete_after_historical_refund_dates' => 3
     ],
 
 

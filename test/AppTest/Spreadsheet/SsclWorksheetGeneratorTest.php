@@ -207,9 +207,9 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(19, $cells[15]->getColumn());
             $this->assertEquals((new DateTime('today'))->format('d/m/Y'), $cells[15]->getData());
 
-            //Invoice Number - Not required by SSCL (Georgia confirmed on 21/09/2017)
+            //Invoice Number - Programme board instructed to use reference number on 02/11/2017
             $this->assertEquals(20, $cells[16]->getColumn());
-            $this->assertEquals('', $cells[16]->getData());
+            $this->assertEquals($claim->getReferenceNumber(), $cells[16]->getData());
 
             //Description
             $this->assertEquals(21, $cells[17]->getColumn());
