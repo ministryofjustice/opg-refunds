@@ -73,17 +73,26 @@ class Spreadsheet
      */
     public function getAllRefundable(DateTime $date, int $userId)
     {
-        if ($date == new DateTime('today')) {
-            $queryBuilder = $this->repository->createQueryBuilder('c');
+        $queryBuilder = $this->repository->createQueryBuilder('c');
 
+        if ($date == new DateTime('today')) {
             // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today AND (c.json_data->\'account\'->\'details\') IS NOT NULL')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
-            $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($date);
+            $startDateTime = clone $date;
+            $endDateTime = $date->add(new DateInterval('P1D'));
+            $queryBuilder->join('c.payment', 'p')
+                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime AND (json_data->\'account\'->\'details\') IS NOT NULL')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setParameters([
+                    'status' => ClaimModel::STATUS_ACCEPTED,
+                    'startDateTime' => $startDateTime,
+                    'endDateTime' => $endDateTime
+                ]);
         }
 
         $claims = $queryBuilder->getQuery()->getResult();
@@ -104,7 +113,7 @@ class Spreadsheet
         $historicRefundDates = [];
 
         $statement = $this->entityManager->getConnection()->executeQuery(
-            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE ORDER BY historic_refund_date DESC'
+            'SELECT DISTINCT date_trunc(\'day\', p.added_datetime) AS historic_refund_date FROM claim c JOIN payment p ON c.payment_id = p.id WHERE p.added_datetime < CURRENT_DATE AND (c.json_data->\'account\'->\'details\') IS NOT NULL ORDER BY historic_refund_date DESC'
         );
 
         $results = $statement->fetchAll();
@@ -185,33 +194,16 @@ class Spreadsheet
         $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
         if (count($historicRefundDates) >= $deleteAfterHistoricalRefundDates) {
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
-            $deleteAfterHistoricalRefundDate = $deleteAfterHistoricalRefundDate->sub(new DateInterval('P1D'));
 
-            $queryBuilder = $this->getPreviouslyRefundedClaimsQueryBuilder($deleteAfterHistoricalRefundDate);
-            $claims = $queryBuilder->getQuery()->getResult();
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND (status = \'rejected\' AND finished_datetime < ?) OR (status = \'accepted\' AND)',
+                [$deleteAfterHistoricalRefundDate]
+            );
+
+            $result = $statement->fetchAll();
+            $updateCount = count($result);
+
+            //TODO: log number of bank details deleted
         }
-    }
-
-    /**
-     * @param DateTime $date
-     * @return QueryBuilder
-     */
-    public function getPreviouslyRefundedClaimsQueryBuilder(DateTime $date)
-    {
-        $startDateTime = clone $date;
-        $endDateTime = $date->add(new DateInterval('P1D'));
-
-        $queryBuilder = $this->repository->createQueryBuilder('c');
-
-        $queryBuilder->join('c.payment', 'p')
-            ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
-            ->orderBy('c.finishedDateTime', 'ASC')
-            ->setParameters([
-                'status' => ClaimModel::STATUS_ACCEPTED,
-                'startDateTime' => $startDateTime,
-                'endDateTime' => $endDateTime
-            ]);
-
-        return $queryBuilder;
     }
 }
