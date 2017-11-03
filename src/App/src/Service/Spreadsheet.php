@@ -14,12 +14,15 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Zend\Crypt\PublicKey\Rsa;
 
+use Opg\Refunds\Log\Initializer;
+
 /**
  * Class Spreadsheet
  * @package App\Service
  */
-class Spreadsheet
+class Spreadsheet implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
     use EntityToModelTrait;
 
     /**
@@ -196,14 +199,16 @@ class Spreadsheet
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
-                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < ?) OR p.added_datetime < ?))',
-                [$deleteAfterHistoricalRefundDate]
+                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
+                ['date' => $deleteAfterHistoricalRefundDate->format('Y-m-d')]
             );
 
             $result = $statement->fetchAll();
             $updateCount = count($result);
 
-            //TODO: log number of bank details deleted
+            if ($updateCount > 0) {
+                $this->getLogger()->alert("Bank details for $updateCount claim(s) were deleted");
+            }
         }
     }
 }
