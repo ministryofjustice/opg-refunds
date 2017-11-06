@@ -67,7 +67,7 @@ class SpreadsheetAction extends AbstractRestfulAction
 
             $claims = $this->spreadsheetService->getAllRefundable(new DateTime($dateString), $identity->getId());
 
-            $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims, $user);
+            $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims, $identity);
 
             $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
             $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;
