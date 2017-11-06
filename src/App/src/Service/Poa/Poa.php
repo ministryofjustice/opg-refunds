@@ -78,8 +78,35 @@ class Poa
 
     public function isClaimComplete(ClaimModel $claim)
     {
-        return ($claim->isNoSiriusPoas() || $this->hasSiriusPoas($claim))
+        return $this->allPoasComplete($claim)
+            && ($claim->isNoSiriusPoas() || $this->hasSiriusPoas($claim))
             && ($claim->isNoMerisPoas() || $this->hasMerisPoas($claim));
+    }
+
+    public function isClaimRefundNonZero(ClaimModel $claim)
+    {
+        $refundTotalAmount = 0.0;
+
+        foreach ($claim->getPoas() as $poa) {
+            $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
+        }
+
+        return $refundTotalAmount > 0;
+    }
+
+    private function allPoasComplete(ClaimModel $claim): bool
+    {
+        if ($claim->getPoas() === null) {
+            return true;
+        }
+
+        foreach ($claim->getPoas() as $poa) {
+            if (!$poa->isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function hasSystemPoas(ClaimModel $claim, string $system)
@@ -121,6 +148,10 @@ class Poa
         }
 
         foreach ($claim->getPoas() as $poa) {
+            if ($poa->getVerifications() === null) {
+                continue;
+            }
+
             foreach ($poa->getVerifications() as $verification) {
                 if ($verification->getType() === $verificationType && $verification->isPasses()) {
                     return true;

@@ -8,6 +8,7 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
 use Zend\Form\Element\Text;
@@ -49,6 +50,24 @@ class Poa extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+        //  Donor checked field
+        $field = new Checkbox('donor-checked', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
         //  Case number field
         $field = new Text('case-number');
         $input = new Input($field->getName());
@@ -67,7 +86,7 @@ class Poa extends AbstractForm
         }
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty())
+            ->attach(new Validator\NotEmpty(), true)
             ->attach(new Validator\Regex($caseNumberPattern));
 
         $input->setRequired(true);
@@ -85,7 +104,7 @@ class Poa extends AbstractForm
         $field = new Radio('original-payment-amount');
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        $input->setRequired(false);
 
         $field->setValueOptions([
             'orMore'   => 'orMore',
@@ -126,7 +145,7 @@ class Poa extends AbstractForm
         $field = new Radio($inputName);
         $input = new Input($field->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        $input->setRequired(false);
 
         $field->setValueOptions([
             'yes' => 'yes',
@@ -159,19 +178,19 @@ class Poa extends AbstractForm
         }
 
         $verifications = [];
-        if (array_key_exists('attorney', $formData)) {
+        if (array_key_exists('attorney', $formData) && !empty($formData['attorney'])) {
             $verifications[] = [
                 'type'   => VerificationModel::TYPE_ATTORNEY,
                 'passes' => $formData['attorney'] === 'yes',
             ];
         }
-        if (array_key_exists('donor-postcode', $formData)) {
+        if (array_key_exists('donor-postcode', $formData) && !empty($formData['donor-postcode'])) {
             $verifications[] = [
                 'type'   => VerificationModel::TYPE_DONOR_POSTCODE,
                 'passes' => $formData['donor-postcode'] === 'yes',
             ];
         }
-        if (array_key_exists('attorney-postcode', $formData)) {
+        if (array_key_exists('attorney-postcode', $formData) && !empty($formData['attorney-postcode'])) {
             $verifications[] = [
                 'type'   => VerificationModel::TYPE_ATTORNEY_POSTCODE,
                 'passes' => $formData['attorney-postcode'] === 'yes',
@@ -190,6 +209,8 @@ class Poa extends AbstractForm
         unset($poaArray['system']);
         unset($poaArray['verifications']);
 
+        $poaArray['donor-checked'] = $poa->getId() > 0 ? 'yes' : 'no';
+
         $receivedDate = $poa->getReceivedDate();
         $poaArray['received-date'] = [
             'day' => $receivedDate->format('d'),
@@ -197,10 +218,12 @@ class Poa extends AbstractForm
             'year' => $receivedDate->format('Y')
         ];
 
-        foreach ($poa->getVerifications() as $verification) {
-            //Case number verification is automatic and is not displayed on the page so do not include it
-            if ($verification->getType() !== VerificationModel::TYPE_CASE_NUMBER) {
-                $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+        if ($poa->getVerifications() !== null) {
+            foreach ($poa->getVerifications() as $verification) {
+                //Case number verification is automatic and is not displayed on the page so do not include it
+                if ($verification->getType() !== VerificationModel::TYPE_CASE_NUMBER) {
+                    $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+                }
             }
         }
 

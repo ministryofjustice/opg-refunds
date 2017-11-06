@@ -26,12 +26,16 @@ class ClaimReject extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  Rejection reason
-        $field = new Radio('rejection-reason');
-        $input = new Input($field->getName());
+        $radioElement = new Radio('rejection-reason');
+        $input = new Input($radioElement->getName());
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
 
-        $field->setValueOptions([
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty);
+
+        $radioElement->setValueOptions([
             'notInDateRange'   => 'notInDateRange',
             'noDonorLpaFound' => 'noDonorLpaFound',
             'previouslyRefunded' => 'previouslyRefunded',
@@ -40,7 +44,7 @@ class ClaimReject extends AbstractForm
             'other' => 'other',
         ]);
 
-        $this->add($field);
+        $this->add($radioElement);
         $inputFilter->add($input);
 
         //  Rejection reason description field
@@ -51,9 +55,7 @@ class ClaimReject extends AbstractForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
-
-        $input->setRequired(true);
+            ->attach(new Validator\NotEmptyIfRadioSelected($radioElement, ['other']));
 
         $this->add($field);
         $inputFilter->add($input);

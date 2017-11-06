@@ -45,7 +45,10 @@ $postcodes = $claim->getApplication()->getPostcodes();
     <input type="hidden" name="system" value="<?= $this->e($system) ?>">
 
     <div>
-        <h3 class="heading-small">Add power of attorney details</h3>
+        <?php $this->insert('snippet::input-checkbox', [
+            'formElement' => $form->get('donor-checked'),
+            'formLabel' => 'Donor name and date of birth checked'
+        ]) ?>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('case-number'),
@@ -54,11 +57,9 @@ $postcodes = $claim->getApplication()->getPostcodes();
             'formLabelBold' => false
         ]) ?>
 
-        <h3 class="heading-small">Received date - TBC?</h3>
-
         <?php $this->insert('snippet::input-received-date', [
             'formLabel' => 'Received date',
-            'formElement' => $form->get('received-date'),
+            'formElement' => $form->get('received-date')
         ]) ?>
     </div>
 
@@ -73,7 +74,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
                 'optionLabel' => 'Less than £110'
             ],
             'noRefund' => [
-                'optionLabel' => 'No refund amount'
+                'optionLabel' => 'No fee paid'
             ],
         ],
     ])
@@ -128,7 +129,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
     ?>
 
     <div class="form-group">
-        <input id='return-submit' type='submit' class="button" name='submit' value='Save and return to claim'>
+        <input id='return-submit' type='submit' class="button" name='submit' value='Save'>
         <input id='add-submit' type='submit' class="button button-secondary" name='submit' value='Save and add another'>
         <?php if (isset($poaId)) { ?>
             <a class="button button-link" href="<?= $this->generateUrl('claim.poa.delete', ['claimId' => $claim->getId(), 'system'  => $system, 'id' => $poaId]); ?>">Delete</a>

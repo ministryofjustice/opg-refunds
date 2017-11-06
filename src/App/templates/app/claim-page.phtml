@@ -21,8 +21,7 @@ $this->addErrorMap([
 
 <?php $this->start('right-sidebar') ?>
 <?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
-<?php $this->insert('snippet::assign-claim-buttons', ['claim' => $claim]) ?>
-<?php $this->insert('snippet::approve-reject-buttons', ['claim' => $claim]) ?>
+<?php $this->insert('snippet::outcome', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
@@ -48,7 +47,12 @@ $this->addErrorMap([
                     <?php if ($claim->isReadOnly()) { ?>
                         <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
+                        <td>
+                            <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
+                            <?php if (!$poa->isComplete()) { ?>
+                                <span>(incomplete)</span>
+                            <?php } ?>
+                        </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
                     <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
@@ -68,7 +72,7 @@ $this->addErrorMap([
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius']) ?>">Add Sirius POA</a>
                 <?php if (!$this->hasSiriusPoas($claim)) { ?>
-                    <input class="button-secondary" type="submit" value="I cannot find any Sirius POAs">
+                    <input class="button-secondary" type="submit" value="No eligible Sirius POAs found">
                 <?php } ?>
             <?php } ?>
         </form>
@@ -96,7 +100,12 @@ $this->addErrorMap([
                     <?php if ($claim->isReadOnly()) { ?>
                         <td><?= $this->e($this->getFormattedCaseNumber($poa)) ?></td>
                     <?php } else { ?>
-                        <td><a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a></td>
+                        <td>
+                            <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
+                            <?php if (!$poa->isComplete()) { ?>
+                                <span>(incomplete)</span>
+                            <?php } ?>
+                        </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
                     <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
@@ -116,7 +125,7 @@ $this->addErrorMap([
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris']) ?>">Add Meris POA</a>
                 <?php if (!$this->hasMerisPoas($claim)) { ?>
-                    <input class="button-secondary" type="submit" value="I cannot find any Meris POAs">
+                    <input class="button-secondary" type="submit" value="No eligible Meris POAs found">
                 <?php } ?>
             <?php } ?>
         </form>

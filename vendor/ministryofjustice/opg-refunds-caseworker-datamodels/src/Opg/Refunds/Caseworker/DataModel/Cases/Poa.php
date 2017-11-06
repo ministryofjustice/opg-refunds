@@ -133,7 +133,7 @@ class Poa extends AbstractDataModel
     /**
      * @return string
      */
-    public function getOriginalPaymentAmount(): string
+    public function getOriginalPaymentAmount()
     {
         return $this->originalPaymentAmount;
     }
@@ -204,6 +204,14 @@ class Poa extends AbstractDataModel
         $this->refundInterestAmount = $refundInterestAmount;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isComplete(): bool
+    {
+        return !empty($this->caseNumber) && !empty($this->receivedDate) && !empty($this->originalPaymentAmount);
     }
 
     /**

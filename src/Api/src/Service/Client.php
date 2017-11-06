@@ -53,7 +53,7 @@ class Client
         //TODO: Add date or other unique identifier allowing for previous spreadsheets to be downloaded
 
         //  Not using httpGet because the response of this API endpoint is binary, specifically a .xls file
-        $url = new Uri($this->apiBaseUri . '/v1/cases/spreadsheet');
+        $url = new Uri($this->apiBaseUri . '/v1/spreadsheet');
 
         $request = new Request('GET', $url, $this->buildHeaders());
 
@@ -114,7 +114,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPost($path, array $payload)
+    public function httpPost($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -139,7 +139,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPut($path, array $payload)
+    public function httpPut($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -164,7 +164,7 @@ class Client
      * @return array
      * @throw RuntimeException | Exception\ApiException
      */
-    public function httpPatch($path, array $payload)
+    public function httpPatch($path, array $payload = [])
     {
         $url = new Uri($this->apiBaseUri . $path);
 
@@ -214,7 +214,7 @@ class Client
     {
         $headerLines = [
             'Accept'        => 'application/json',
-            'Content-type'  => 'application/json',
+            'Content-Type'  => 'application/json',
         ];
 
         //  If the logged in user has an auth token already then set that in the header
@@ -238,7 +238,7 @@ class Client
 
         //  If the body isn't an array now then it wasn't JSON before
         if (!is_array($body)) {
-            throw new Exception\ApiException('Malformed JSON response from server', $response->getStatusCode(), $response);
+            throw new Exception\ApiException($response, 'Malformed JSON response from server');
         }
 
         return $body;
@@ -253,11 +253,6 @@ class Client
      */
     protected function handleErrorResponse(ResponseInterface $response)
     {
-        $body = json_decode($response->getBody(), true);
-
-        $message = 'HTTP:' . $response->getStatusCode() . ' - ';
-        $message .= (is_array($body) ? print_r($body, true) : 'Unexpected response from server');
-
-        throw new Exception\ApiException($message, $response->getStatusCode(), $response);
+        throw new Exception\ApiException($response);
     }
 }

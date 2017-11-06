@@ -50,6 +50,17 @@ class ClaimSearchAction extends AbstractAction
                 unset($searchParameters['secret']);
                 unset($searchParameters['submit']);
 
+                //  Unset page as this is a new search
+                unset($searchParameters['page']);
+
+                //  Unset blank search parameters
+                if ($searchParameters['search'] === '') {
+                    unset($searchParameters['search']);
+                }
+                if ($searchParameters['status'] === '') {
+                    unset($searchParameters['status']);
+                }
+
                 //  Redirect to search with get params
                 return $this->redirectToRoute('claim.search', [], $searchParameters);
             }
@@ -57,12 +68,14 @@ class ClaimSearchAction extends AbstractAction
 
         $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
         $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
-        $donorName = isset($searchParameters['donorName']) ? $searchParameters['donorName'] : null;
+        $search = isset($searchParameters['search']) ? $searchParameters['search'] : null;
         $assignedToId = isset($searchParameters['assignedToId']) ? $searchParameters['assignedToId'] : null;
         $status = isset($searchParameters['status']) ? $searchParameters['status'] : null;
         $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
+        $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
+        $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
 
-        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $donorName, $assignedToId, $status, $accountHash);
+        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $search, $assignedToId, $status, $accountHash, $orderBy, $sort);
 
         //  Unset page so it isn't added to search links
         unset($searchParameters['page']);
