@@ -8,6 +8,7 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
 use Zend\Form\Element\Text;
@@ -36,6 +37,24 @@ class Poa extends AbstractForm
 
         //  System field
         $field = new Hidden('system');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  Donor checked field
+        $field = new Checkbox('donor-checked', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -189,6 +208,8 @@ class Poa extends AbstractForm
         unset($poaArray['id']);
         unset($poaArray['system']);
         unset($poaArray['verifications']);
+
+        $poaArray['donor-checked'] = $poa->getId() > 0 ? 'yes' : 'no';
 
         $receivedDate = $poa->getReceivedDate();
         $poaArray['received-date'] = [
