@@ -117,6 +117,10 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
             'Dflydev\\FigCookies\\' => 19,
             'DeepCopy\\' => 9,
         ),
+        'B' => 
+        array (
+            'Base64Url\\' => 10,
+        ),
         'A' => 
         array (
             'Aws\\' => 4,
@@ -353,6 +357,10 @@ class ComposerStaticInit01d01a7c1d8c2c170aa55707087a0e6d
         'DeepCopy\\' => 
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
+        ),
+        'Base64Url\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/spomky-labs/base64url/src',
         ),
         'Aws\\' => 
         array (

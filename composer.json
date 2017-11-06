@@ -24,6 +24,7 @@
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
+        "spomky-labs/base64url": "^1.0",
         "zendframework/zend-component-installer": "^1.0",
         "zendframework/zend-config-aggregator": "^1.0",
         "zendframework/zend-crypt": "^3.2",
