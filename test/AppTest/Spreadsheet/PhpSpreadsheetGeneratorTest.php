@@ -13,6 +13,7 @@ use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
 use AppTest\DataModel\Cases\ClaimBuilder;
 use InvalidArgumentException;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Opg\Refunds\Caseworker\DataModel\Common\Address;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
@@ -92,8 +93,11 @@ class PhpSpreadsheetGeneratorTest extends TestCase
             ->withPayment($payment)
             ->build();
 
+        $user = new User();
+        $user->setName('Test User');
+
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator($this->ssclConfig);
-        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$claim]);
+        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$claim], $user);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use DateTime;
 
 class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
@@ -21,9 +22,10 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
 
     /**
      * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
+     * @param UserModel $approver
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
-    public function generate(array $claims): SpreadsheetWorksheet
+    public function generate(array $claims, UserModel $approver): SpreadsheetWorksheet
     {
         $rows = [];
 
@@ -72,8 +74,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(18, $rowIndex, 'N/A');
             //Invoice Date
             $cells[] = new SpreadsheetCell(19, $rowIndex, (new DateTime('today'))->format('d/m/Y'));
-            //Invoice Number - Not required by SSCL (Georgia confirmed on 21/09/2017)
-            $cells[] = new SpreadsheetCell(20, $rowIndex, '');
+            //Invoice Number - Programme board instructed to use reference number on 02/11/2017
+            $cells[] = new SpreadsheetCell(20, $rowIndex, $claim->getReferenceNumber());
             //Description
             $cells[] = new SpreadsheetCell(21, $rowIndex, 'Lasting Power of Attorney');
             //Entity - From config
@@ -94,10 +96,12 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(30, $rowIndex, 0);
             //Total Amount
             $cells[] = new SpreadsheetCell(31, $rowIndex, $payment->getAmount());
-            //Completer ID - From config
-            $cells[] = new SpreadsheetCell(32, $rowIndex, $this->ssclConfig['completer_id']);
-            //Approver ID - From config
-            $cells[] = new SpreadsheetCell(33, $rowIndex, $this->ssclConfig['approver_id']);
+            //Completer ID - From passed in user or overridden by config
+            $completerId = !empty($this->ssclConfig['completer_id']) ? $this->ssclConfig['completer_id'] : $claim->getFinishedByName();
+            $cells[] = new SpreadsheetCell(32, $rowIndex, $completerId);
+            //Approver ID - From passed in user or overridden by config
+            $approverId = !empty($this->ssclConfig['approver_id']) ? $this->ssclConfig['approver_id'] : $approver->getName();
+            $cells[] = new SpreadsheetCell(33, $rowIndex, $approverId);
 
             $rows[] = new SpreadsheetRow($cells);
         }

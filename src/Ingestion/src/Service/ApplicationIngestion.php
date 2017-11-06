@@ -95,7 +95,7 @@ class ApplicationIngestion
         $uncompressedData = $this->getDecompressedData($application);
         $applicationData = json_decode($uncompressedData, true);
         $donorName = "{$applicationData['donor']['current']['name']['title']} {$applicationData['donor']['current']['name']['first']} {$applicationData['donor']['current']['name']['last']}";
-        $claim = new Claim($application->getId(), $application->getCreated(), $uncompressedData, $donorName, $applicationData['account']['hash']);
+        $claim = new Claim($application->getId(), $application->getCreated(), $applicationData, $donorName, $applicationData['account']['hash']);
         return $claim;
     }
 

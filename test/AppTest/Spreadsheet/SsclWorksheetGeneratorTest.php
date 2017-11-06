@@ -14,6 +14,7 @@ use App\Spreadsheet\SsclWorksheetGenerator;
 use AppTest\DataModel\Applications\ApplicationBuilder;
 use AppTest\DataModel\Cases\ClaimBuilder;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Opg\Refunds\Caseworker\DataModel\Common\Address;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PHPUnit\Framework\TestCase;
@@ -29,8 +30,8 @@ class SsclWorksheetGeneratorTest extends TestCase
         'account' => '123450000',
         'objective' => '0',
         'analysis' => '12345678',
-        'completer_id' => 'completer@localhost.com',
-        'approver_id' => 'approver@localhost.com',
+        'completer_id' => '',
+        'approver_id' => '',
     ];
     /**
      * @var ISpreadsheetWorksheetGenerator
@@ -51,6 +52,11 @@ class SsclWorksheetGeneratorTest extends TestCase
      * @var Claim
      */
     private $claim;
+
+    /**
+     * @var User
+     */
+    private $approver;
 
     public function setUp()
     {
@@ -86,12 +92,16 @@ class SsclWorksheetGeneratorTest extends TestCase
         $this->claim = $this->claimBuilder
             ->withApplication($application)
             ->withPayment($payment)
+            ->withFinishedByName('Test FinishedBy')
             ->build();
+
+        $this->approver = new User();
+        $this->approver->setName('Test Approver');
     }
 
     public function testEmptyArray()
     {
-        $result = $this->generator->generate([]);
+        $result = $this->generator->generate([], $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -109,7 +119,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->claim
         ];
 
-        $result = $this->generator->generate($claims);
+        $result = $this->generator->generate($claims, $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -197,9 +207,9 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(19, $cells[15]->getColumn());
             $this->assertEquals((new DateTime('today'))->format('d/m/Y'), $cells[15]->getData());
 
-            //Invoice Number - Not required by SSCL (Georgia confirmed on 21/09/2017)
+            //Invoice Number - Programme board instructed to use reference number on 02/11/2017
             $this->assertEquals(20, $cells[16]->getColumn());
-            $this->assertEquals('', $cells[16]->getData());
+            $this->assertEquals($claim->getReferenceNumber(), $cells[16]->getData());
 
             //Description
             $this->assertEquals(21, $cells[17]->getColumn());
@@ -243,11 +253,11 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Completer ID - From config
             $this->assertEquals(32, $cells[27]->getColumn());
-            $this->assertEquals('completer@localhost.com', $cells[27]->getData());
+            $this->assertEquals($this->claim->getFinishedByName(), $cells[27]->getData());
 
             //Approver ID - From config
             $this->assertEquals(33, $cells[28]->getColumn());
-            $this->assertEquals('approver@localhost.com', $cells[28]->getData());
+            $this->assertEquals($this->approver->getName(), $cells[28]->getData());
         }
     }
 }
