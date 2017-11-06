@@ -65,6 +65,7 @@ class ConfigProvider
                 Action\HealthCheckAction::class => Action\Factory\HealthCheckFactory::class,
                 Action\SummaryAction::class => Action\Factory\SummaryFactory::class,
                 Action\BetaAction::class => Action\Factory\BetaFactory::class,
+                Action\AssistedDigitalAction::class => Action\Factory\AssistedDigitalFactory::class,
 
                 // Middleware
                 Middleware\Beta\BetaCheckMiddleware::class => Middleware\Beta\BetaCheckMiddlewareFactory::class,
@@ -77,6 +78,7 @@ class ConfigProvider
                 Service\Refund\Data\DataHandlerInterface::class => Service\Refund\Data\DataHandlerFactory::class,
                 Service\Refund\Data\BankDetailsHandler::class => Service\Refund\Data\BankDetailsHandlerFactory::class,
                 Service\Refund\Beta\BetaLinkChecker::class => Service\Refund\Beta\BetaLinkCheckerFactory::class,
+                Service\Refund\AssistedDigital\LinkToken::class => Service\Refund\AssistedDigital\LinkTokenFactory::class,
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
                 // View Helper
