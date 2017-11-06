@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Service\Claim as ClaimService;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\QueryBuilder;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use App\Entity\Cases\Claim as ClaimEntity;
@@ -13,12 +14,15 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Zend\Crypt\PublicKey\Rsa;
 
+use Opg\Refunds\Log\Initializer;
+
 /**
  * Class Spreadsheet
  * @package App\Service
  */
-class Spreadsheet
+class Spreadsheet implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
     use EntityToModelTrait;
 
     /**
@@ -42,17 +46,25 @@ class Spreadsheet
     private $claimService;
 
     /**
+     * @var array
+     */
+    private $spreadsheetConfig;
+
+    /**
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
      * @param Rsa $bankCipher
+     * @param Claim $claimService
+     * @param array $spreadsheetConfig
      */
-    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService)
+    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
+        $this->spreadsheetConfig = $spreadsheetConfig;
     }
 
     /**
@@ -67,14 +79,13 @@ class Spreadsheet
         $queryBuilder = $this->repository->createQueryBuilder('c');
 
         if ($date == new DateTime('today')) {
-            // Creating today's spreadsheet
+            // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today)')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
-            // Retrieving a previous spreadsheet
             $startDateTime = clone $date;
             $endDateTime = $date->add(new DateInterval('P1D'));
             $queryBuilder->join('c.payment', 'p')
@@ -95,6 +106,8 @@ class Spreadsheet
             $refundableClaims[] = $this->getRefundable($claim, $userId);
         }
 
+        $this->clearBankDetails();
+
         return $refundableClaims;
     }
 
@@ -103,7 +116,7 @@ class Spreadsheet
         $historicRefundDates = [];
 
         $statement = $this->entityManager->getConnection()->executeQuery(
-            'SELECT DISTINCT date_trunc(\'day\', added_datetime) AS historic_refund_date FROM payment WHERE added_datetime < CURRENT_DATE'
+            'SELECT DISTINCT date_trunc(\'day\', p.added_datetime) AS historic_refund_date FROM claim c JOIN payment p ON c.payment_id = p.id WHERE p.added_datetime < CURRENT_DATE AND (c.json_data->\'account\'->\'details\') IS NOT NULL ORDER BY historic_refund_date DESC'
         );
 
         $results = $statement->fetchAll();
@@ -165,7 +178,7 @@ class Spreadsheet
         $claim = $this->translateToDataModel($entity);
 
         //  Deserialize the application from the JSON data
-        $applicationArray = json_decode($entity->getJsonData(), true);
+        $applicationArray = $entity->getJsonData();
         $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
 
         //  Set the sort code and account number in the account
@@ -175,5 +188,27 @@ class Spreadsheet
                 ->setSortCode($accountDetails['sort-code']);
 
         return $claim;
+    }
+
+    private function clearBankDetails()
+    {
+        $historicRefundDates = $this->getAllHistoricRefundDates();
+
+        $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
+        if (count($historicRefundDates) >= $deleteAfterHistoricalRefundDates) {
+            $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                'UPDATE claim SET json_data = (json_data::jsonb #- \'{account,details}\')::json WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
+                ['date' => $deleteAfterHistoricalRefundDate->format('Y-m-d')]
+            );
+
+            $result = $statement->fetchAll();
+            $updateCount = count($result);
+
+            if ($updateCount > 0) {
+                $this->getLogger()->alert("Bank details for $updateCount claim(s) were deleted");
+            }
+        }
     }
 }

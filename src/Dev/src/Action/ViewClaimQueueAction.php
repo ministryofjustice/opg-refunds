@@ -32,7 +32,7 @@ class ViewClaimQueueAction implements ServerMiddlewareInterface
             return new JsonResponse([]);
         }
 
-        $decryptedData = $this->applicationIngestionService->getDecryptedData($application);
+        $decryptedData = $this->applicationIngestionService->getDecompressedData($application);
 
         $payload = json_decode($decryptedData, true);
 

@@ -73,13 +73,15 @@ class Claim
      *
      * @param int|null $page
      * @param int|null $pageSize
-     * @param string|null $donorName
+     * @param string|null $search
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param string|null $orderBy
+     * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function search(int $page = null, int $pageSize = null, string $donorName = null, int $assignedToId = null, string $status = null, string $accountHash = null)
+    public function search(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
     {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
@@ -89,7 +91,7 @@ class Claim
         }
 
         if ($pageSize === null) {
-            $pageSize = 10;
+            $pageSize = 25;
         } elseif ($pageSize > 50) {
             $pageSize = 50;
         }
@@ -98,9 +100,19 @@ class Claim
         $whereClauses = [];
         $parameters = [];
 
-        if (isset($donorName)) {
-            $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
-            $parameters['donorName'] = "%{$donorName}%";
+        if (isset($search)) {
+            $donorName = $search;
+            $claimCode = str_replace(' ', '', $search);
+            $claimCode = str_ireplace('R', '', $claimCode);
+
+            if (is_numeric($claimCode)) {
+                $claimCode = (int)$claimCode;
+                $whereClauses[] = 'c.id = :claimCode';
+                $parameters['claimCode'] = $claimCode;
+            } else {
+                $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
+                $parameters['donorName'] = "%{$donorName}%";
+            }
         }
 
         if (isset($assignedToId)) {
@@ -126,7 +138,21 @@ class Claim
         if (count($whereClauses) > 0) {
             $dql .= ' WHERE ' . join(' AND ', $whereClauses);
         }
-        $dql .= ' ORDER BY c.receivedDateTime ASC';
+
+        if (isset($orderBy)) {
+            if ($orderBy === 'donor') {
+                $dql .= ' ORDER BY c.donorName ';
+            } elseif ($orderBy === 'received') {
+                $dql .= ' ORDER BY c.receivedDateTime ';
+            } elseif ($orderBy === 'modified') {
+                $dql .= ' ORDER BY c.updatedDateTime ';
+            } elseif ($orderBy === 'status') {
+                $dql .= ' ORDER BY c.status ';
+            }
+
+            $dql .= strtoupper($sort ?: 'asc');
+        }
+
         $query = $this->entityManager->createQuery($dql)
             ->setParameters($parameters)
             ->setFirstResult($offset)
@@ -188,10 +214,7 @@ class Claim
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestApplication();
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         //Using SQL directly to update claim in single atomic call to prevent race conditions
         $statement = $this->entityManager->getConnection()->executeQuery(
@@ -240,10 +263,7 @@ class Claim
             throw new Exception('You cannot assign this claim', 403);
         }
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setUpdatedDateTime(new DateTime());
@@ -383,10 +403,7 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
-        /** @var UserEntity $user */
-        $user = $this->userRepository->findOneBy([
-            'id' => $userId,
-        ]);
+        $user = $this->getUser($userId);
 
         $note = new NoteEntity($title, $message, $claim, $user);
 
@@ -415,9 +432,11 @@ class Claim
         $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
         $this->entityManager->persist($poa);
 
-        foreach ($poaModel->getVerifications() as $verificationModel) {
-            $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-            $this->entityManager->persist($verification);
+        if ($poaModel->getVerifications() !== null) {
+            foreach ($poaModel->getVerifications() as $verificationModel) {
+                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                $this->entityManager->persist($verification);
+            }
         }
 
         $this->flushPoaChanges($poaModel);
@@ -426,7 +445,7 @@ class Claim
             $claimId,
             $userId,
             'POA added',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully added to this claim, changing verification details"
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully added to this claim"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -461,37 +480,45 @@ class Claim
         $poa->setOriginalPaymentAmount($poaModel->getOriginalPaymentAmount());
 
         //Remove any that are no longer present on supplied document
-        foreach ($poa->getVerifications() as $verificationEntity) {
-            $remove = true;
+        if ($poa->getVerifications() !== null) {
+            foreach ($poa->getVerifications() as $verificationEntity) {
+                $remove = true;
 
-            foreach ($poaModel->getVerifications() as $verificationModel) {
-                if ($verificationEntity->getType() === $verificationModel->getType()) {
-                    $remove = false;
-                    break;
+                if ($poaModel->getVerifications() !== null) {
+                    foreach ($poaModel->getVerifications() as $verificationModel) {
+                        if ($verificationEntity->getType() === $verificationModel->getType()) {
+                            $remove = false;
+                            break;
+                        }
+                    }
                 }
-            }
 
-            if ($remove) {
-                $this->entityManager->remove($verificationEntity);
+                if ($remove) {
+                    $this->entityManager->remove($verificationEntity);
+                }
             }
         }
 
         //Update existing verifications
-        foreach ($poaModel->getVerifications() as $verificationModel) {
-            //Default id to 0 so this can be detected as a new verification later
-            $verificationModel->setId(0);
+        if ($poaModel->getVerifications() !== null) {
+            foreach ($poaModel->getVerifications() as $verificationModel) {
+                //Default id to 0 so this can be detected as a new verification later
+                $verificationModel->setId(0);
 
-            foreach ($poa->getVerifications() as $verificationEntity) {
-                if ($verificationModel->getType() === $verificationEntity->getType()) {
-                    $verificationEntity->setPasses($verificationModel->isPasses());
-                    $verificationModel->setId($verificationEntity->getId());
+                if ($poa->getVerifications() !== null) {
+                    foreach ($poa->getVerifications() as $verificationEntity) {
+                        if ($verificationModel->getType() === $verificationEntity->getType()) {
+                            $verificationEntity->setPasses($verificationModel->isPasses());
+                            $verificationModel->setId($verificationEntity->getId());
+                        }
+                    }
                 }
-            }
 
-            if ($verificationModel->getId() === 0) {
-                //New verification so add
-                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-                $this->entityManager->persist($verification);
+                if ($verificationModel->getId() === 0) {
+                    //New verification so add
+                    $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                    $this->entityManager->persist($verification);
+                }
             }
         }
 
@@ -501,7 +528,7 @@ class Claim
             $claimId,
             $userId,
             'POA edited',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully edited, changing verification details"
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully edited"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -537,7 +564,7 @@ class Claim
             $claimId,
             $userId,
             'POA delete',
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted, changing verification details"
+            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -557,8 +584,11 @@ class Claim
 
         $this->checkCanEdit($claim, $userId);
 
+        $user = $this->getUser($userId);
+
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
         $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
@@ -583,10 +613,13 @@ class Claim
 
         $this->checkCanEdit($claim, $userId);
 
+        $user = $this->getUser($userId);
+
         $claim->setStatus(ClaimModel::STATUS_REJECTED);
         $claim->setRejectionReason($rejectionReason);
         $claim->setRejectionReasonDescription($rejectionReasonDescription);
         $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
@@ -673,5 +706,27 @@ class Claim
         if ($this->isReadOnly($claim, $userId)) {
             throw new Exception('You cannot edit this claim', 403);
         }
+    }
+
+    /**
+     * @param PoaModel $poaModel
+     * @return string
+     */
+    public function getCaseNumberNote(PoaModel $poaModel): string
+    {
+        return $poaModel->getCaseNumber() . ($poaModel->isComplete() ? '' : ' (incomplete)');
+    }
+
+    /**
+     * @param int $userId
+     * @return UserEntity
+     */
+    public function getUser(int $userId)
+    {
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+        return $user;
     }
 }

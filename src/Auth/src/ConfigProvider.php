@@ -21,6 +21,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencies(),
+            'rbac'         => include __DIR__ . '/../config/rbac.php',
         ];
     }
 
@@ -41,7 +42,7 @@ class ConfigProvider
                 Action\AuthAction::class => Action\AuthActionFactory::class,
 
                 // Middleware
-                Middleware\AuthMiddleware::class => Middleware\AuthMiddlewareFactory::class,
+                Middleware\AuthorizationMiddleware::class => Middleware\AuthorizationMiddlewareFactory::class,
 
                 //  Services
                 Service\Authentication::class => Service\AuthenticationFactory::class,

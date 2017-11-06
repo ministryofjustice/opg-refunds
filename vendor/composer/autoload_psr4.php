@@ -10,6 +10,7 @@ return array(
     'Zend\\Stratigility\\' => array($vendorDir . '/zendframework/zend-stratigility/src'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
     'Zend\\ServiceManager\\' => array($vendorDir . '/zendframework/zend-servicemanager/src'),
+    'Zend\\Permissions\\Rbac\\' => array($vendorDir . '/zendframework/zend-permissions-rbac/src'),
     'Zend\\Math\\' => array($vendorDir . '/zendframework/zend-math/src'),
     'Zend\\Log\\' => array($vendorDir . '/zendframework/zend-log/src'),
     'Zend\\Expressive\\Tooling\\' => array($vendorDir . '/zendframework/zend-expressive-tooling/src'),

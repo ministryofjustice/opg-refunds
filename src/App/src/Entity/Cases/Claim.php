@@ -41,8 +41,8 @@ class Claim extends AbstractEntity
     protected $receivedDateTime;
 
     /**
-     * @var resource|string
-     * @ORM\Column(name="json_data", type="binary")
+     * @var array
+     * @ORM\Column(name="json_data", type="json_array")
      */
     protected $jsonData;
 
@@ -66,6 +66,13 @@ class Claim extends AbstractEntity
     protected $assignedDateTime;
 
     /**
+     * @var User
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(name="finished_by_id", referencedColumnName="id", nullable=true)
+     */
+    protected $finishedBy;
+
+    /**
      * @var DateTime
      * @ORM\Column(name="finished_datetime", type="datetimetz", nullable=true)
      */
@@ -86,7 +93,7 @@ class Claim extends AbstractEntity
     /**
      * @var Collection|Poa[]
      * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
-     * @ORM\OrderBy({"receivedDate" = "DESC"})
+     * @ORM\OrderBy({"id" = "ASC"})
      */
     protected $poas;
 
@@ -128,7 +135,7 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
-    public function __construct(int $id, DateTime $receivedDateTime, string $jsonData, string $donorName, string $accountHash)
+    public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, string $accountHash)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
@@ -199,26 +206,17 @@ class Claim extends AbstractEntity
     }
 
     /**
-     * IMPORTANT - $this->jsonData is set as a PHP "resource" by Doctrine but leaving it like that means that
-     * repeated calls to this function will yield different results (i.e. the first call will return the full
-     * string and subsequent calls will return a blank string). Therefore on the first call the resource is set
-     * to a proper string value.
-     *
-     * @return string
+     * @return array
      */
     public function getJsonData()
     {
-        if (is_resource($this->jsonData)) {
-            $this->jsonData = stream_get_contents($this->jsonData);
-        }
-
         return $this->jsonData;
     }
 
     /**
-     * @param string $jsonData
+     * @param array $jsonData
      */
-    public function setJsonData(string $jsonData)
+    public function setJsonData(array $jsonData)
     {
         $this->jsonData = $jsonData;
     }
@@ -269,6 +267,22 @@ class Claim extends AbstractEntity
     public function setAssignedDateTime($assignedDateTime)
     {
         $this->assignedDateTime = $assignedDateTime;
+    }
+
+    /**
+     * @return User
+     */
+    public function getFinishedBy()
+    {
+        return $this->finishedBy;
+    }
+
+    /**
+     * @param User $finishedBy
+     */
+    public function setFinishedBy(User $finishedBy)
+    {
+        $this->finishedBy = $finishedBy;
     }
 
     /**
@@ -456,6 +470,15 @@ class Claim extends AbstractEntity
             },
             'AssignedToStatus' => function () {
                 return ($this->getAssignedTo() instanceof User ? $this->getAssignedTo()->getStatus() : null);
+            },
+            'FinishedById' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getId() : null);
+            },
+            'FinishedByName' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getName() : null);
+            },
+            'FinishedByStatus' => function () {
+                return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getStatus() : null);
             },
         ]);
 

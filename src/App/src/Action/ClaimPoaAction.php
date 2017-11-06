@@ -22,15 +22,9 @@ class ClaimPoaAction extends AbstractRestfulAction
      */
     private $claimService;
 
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    public function __construct(ClaimService $claimService, UserService $userService)
+    public function __construct(ClaimService $claimService)
     {
         $this->claimService = $claimService;
-        $this->userService = $userService;
     }
 
     /**
@@ -45,10 +39,9 @@ class ClaimPoaAction extends AbstractRestfulAction
     {
         $claimId = $request->getAttribute('claimId');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $claim = $this->claimService->get($claimId, $user->getId());
+        $claim = $this->claimService->get($claimId, $identity->getId());
 
         $poaId = $request->getAttribute('id');
         if ($poaId === null) {
@@ -78,7 +71,6 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -87,10 +79,9 @@ class ClaimPoaAction extends AbstractRestfulAction
 
         $claimId = $request->getAttribute('claimId');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $claimModel = $this->claimService->addPoa($claimId, $user->getId(), $poaModel);
+        $claimModel = $this->claimService->addPoa($claimId, $identity->getId(), $poaModel);
 
         return new JsonResponse($claimModel->getArrayCopy());
     }
@@ -101,7 +92,6 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -111,10 +101,9 @@ class ClaimPoaAction extends AbstractRestfulAction
         $claimId = $request->getAttribute('claimId');
         $poaId = $request->getAttribute('id');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $claimModel = $this->claimService->editPoa($claimId, $poaId, $user->getId(), $poaModel);
+        $claimModel = $this->claimService->editPoa($claimId, $poaId, $identity->getId(), $poaModel);
 
         return new JsonResponse($claimModel->getArrayCopy());
     }
@@ -125,17 +114,15 @@ class ClaimPoaAction extends AbstractRestfulAction
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return ResponseInterface
-     * @throws Exception
      */
     public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claimId = $request->getAttribute('claimId');
         $poaId = $request->getAttribute('id');
 
-        $token = $request->getHeaderLine('token');
-        $user = $this->userService->getByToken($token);
+        $identity = $request->getAttribute('identity');
 
-        $claimModel = $this->claimService->deletePoa($claimId, $poaId, $user->getId());
+        $claimModel = $this->claimService->deletePoa($claimId, $poaId, $identity->getId());
 
         return new JsonResponse($claimModel->getArrayCopy());
     }

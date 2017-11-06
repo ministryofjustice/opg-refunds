@@ -16,10 +16,10 @@ class RefundCalculator
      * @param $receivedDate
      * @return float
      */
-    public static function getRefundAmount(string $originalPaymentAmount, DateTime $receivedDate): float
+    public static function getRefundAmount($originalPaymentAmount, DateTime $receivedDate): float
     {
         //TODO: Use Neil's calculations
-        if ($originalPaymentAmount === 'noRefund') {
+        if (empty($originalPaymentAmount) || $originalPaymentAmount === 'noRefund') {
             return 0.0;
         }
 
@@ -47,7 +47,7 @@ class RefundCalculator
      * @return float
      */
     public static function getRefundInterestAmount(
-        string $originalPaymentAmount,
+        $originalPaymentAmount,
         DateTime $receivedDate,
         int $refundTime
     ): float {

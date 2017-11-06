@@ -11,7 +11,6 @@ return [
         'rsa' => [
             'keys' => [
                 'private' => [
-                    'full' => getenv('OPG_REFUNDS_CASEWORKER_API_FULL_KEY_PRIVATE') ?: null,
                     'bank' => getenv('OPG_REFUNDS_CASEWORKER_API_BANK_KEY_PRIVATE') ?: null,
                 ],
             ],
@@ -43,14 +42,15 @@ return [
         'source_folder' => __DIR__.'/../../assets',
         'temp_folder' => '/tmp',
         'sscl' => [
-            'entity' => getenv('OPG_REFUNDS_SSCL_ENTITY') ?: '0123',
-            'cost_centre' => getenv('OPG_REFUNDS_SSCL_COST_CENTRE') ?: '99999999',
-            'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '123450000',
-            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '0',
-            'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '12345678',
-            'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: 'completer@localhost.com',
-            'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: 'approver@localhost.com',
-        ]
+            'entity' => getenv('OPG_REFUNDS_SSCL_ENTITY') ?: '',
+            'cost_centre' => getenv('OPG_REFUNDS_SSCL_COST_CENTRE') ?: '',
+            'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '',
+            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '',
+            'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '',
+            'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: '',
+            'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: '',
+        ],
+        'delete_after_historical_refund_dates' => getenv('OPG_REFUNDS_DELETE_AFTER_HISTORICAL_REFUND_DATES') ?: 1
     ],
 
 

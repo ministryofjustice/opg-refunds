@@ -78,6 +78,24 @@ class User
     /**
      * Get a specific user
      *
+     * @param array $ids
+     * @return UserModel[]
+     */
+    public function getByIds(array $ids)
+    {
+        $criteria = new Criteria();
+        $criteria->where(Criteria::expr()->in('id', $ids))
+            ->orderBy(['name' => 'ASC']);
+
+        $result = $this->repository->matching($criteria);
+        $users = $result->getValues();
+
+        return $this->translateToDataModelArray($users);
+    }
+
+    /**
+     * Get a specific user
+     *
      * @param string $token
      * @return UserModel
      */
