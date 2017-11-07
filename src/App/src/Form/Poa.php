@@ -125,21 +125,24 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Validation
-
-        //  Attorney details (always present)
-        $this->addVerificationRadio('attorney', $inputFilter);
-
         if (isset($options['claim'])) {
             /** @var ClaimModel $claim */
             $claim = $options['claim'];
 
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
+            //  Attorney details. Only present if not already verified
+            if ($this->poaService->isAttorneyVerified($claim)) {
+                $this->addVerificationRadio('attorney', $inputFilter);
+            }
+
+            //  Donor postcode. Only if supplied by claimant and not already verified
+            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
+                !$this->poaService->isDonorPostcodeVerified($claim)) {
                 $this->addVerificationRadio('donor-postcode', $inputFilter);
             }
 
             //  Attorney postcode
-            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
+            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
+                !$this->poaService->isAttorneyPostcodeVerified($claim)) {
                 $this->addVerificationRadio('attorney-postcode', $inputFilter);
             }
         }
@@ -180,8 +183,13 @@ class Poa extends AbstractForm
         if (array_key_exists('received-date', $formData)) {
             $receivedDateDateArr = $formData['received-date'];
             $receivedDateDateStr = null;
-            if (!empty($receivedDateDateArr['year']) && !empty($receivedDateDateArr['month']) && !empty($receivedDateDateArr['day'])) {
-                $receivedDateDateStr = $receivedDateDateArr['year'] . '-' . $receivedDateDateArr['month'] . '-' . $receivedDateDateArr['day'];
+            if (!empty($receivedDateDateArr['year']) &&
+                !empty($receivedDateDateArr['month']) &&
+                !empty($receivedDateDateArr['day'])) {
+                $receivedDateDateStr =
+                    $receivedDateDateArr['year'] . '-' .
+                    $receivedDateDateArr['month'] . '-' .
+                    $receivedDateDateArr['day'];
             }
             $formData['received-date'] = $receivedDateDateStr;
         }
