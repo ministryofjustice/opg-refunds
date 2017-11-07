@@ -4,8 +4,10 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
-use DateTime;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use DateTime;
 
 /**
  * Class Claim
@@ -561,6 +563,198 @@ class Claim extends AbstractDataModel
         $this->readOnly = $readOnly;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSiriusPoas()
+    {
+        return $this->hasSystemPoas(PoaModel::SYSTEM_SIRIUS);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasMerisPoas()
+    {
+        return $this->hasSystemPoas(PoaModel::SYSTEM_MERIS);
+    }
+
+    /**
+     * @return array
+     */
+    public function getSiriusPoas()
+    {
+        return $this->getSystemPoas(PoaModel::SYSTEM_SIRIUS);
+    }
+
+    /**
+     * @return array
+     */
+    public function getMerisPoas()
+    {
+        return $this->getSystemPoas(PoaModel::SYSTEM_MERIS);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCaseNumberVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_CASE_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDonorPostcodeVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_DONOR_POSTCODE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyPostcodeVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_POSTCODE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClaimVerified()
+    {
+        $verificationCount = 0;
+
+        if ($this->isAttorneyVerified()) {
+            //Means that both the attorney's name and dob have been verified so counts for 2
+            $verificationCount+=2;
+        }
+
+        if ($this->isCaseNumberVerified()) {
+            $verificationCount++;
+        }
+
+        if ($this->isDonorPostcodeVerified()) {
+            $verificationCount++;
+        }
+
+        if ($this->isAttorneyPostcodeVerified()) {
+            $verificationCount++;
+        }
+
+        return $verificationCount >= 3;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClaimComplete()
+    {
+        return $this->allPoasComplete()
+            && ($this->isNoSiriusPoas() || $this->hasSiriusPoas())
+            && ($this->isNoMerisPoas() || $this->hasMerisPoas());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClaimRefundNonZero()
+    {
+        $refundTotalAmount = 0.0;
+
+        foreach ($this->getPoas() as $poa) {
+            $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
+        }
+
+        return $refundTotalAmount > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    private function allPoasComplete(): bool
+    {
+        if ($this->getPoas() === null) {
+            return true;
+        }
+
+        foreach ($this->getPoas() as $poa) {
+            if (!$poa->isComplete()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $system
+     * @return bool
+     */
+    private function hasSystemPoas(string $system)
+    {
+        if ($this->getPoas() === null) {
+            return false;
+        }
+
+        foreach ($this->getPoas() as $poa) {
+            if ($poa->getSystem() === $system) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $system
+     * @return array
+     */
+    private function getSystemPoas(string $system)
+    {
+        $poas = [];
+
+        if ($this->getPoas() === null) {
+            return $poas;
+        }
+
+        foreach ($this->getPoas() as $poa) {
+            if ($poa->getSystem() === $system) {
+                $poas[] = $poa;
+            }
+        }
+
+        return $poas;
+    }
+
+    /**
+     * @param string $verificationType
+     * @return bool
+     */
+    private function isVerified(string $verificationType): bool
+    {
+        if ($this->getPoas() === null) {
+            return false;
+        }
+
+        foreach ($this->getPoas() as $poa) {
+            if ($poa->isVerified($verificationType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
