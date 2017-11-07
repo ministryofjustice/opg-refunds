@@ -4,6 +4,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 
 /**
  * Class Poa
@@ -204,6 +205,100 @@ class Poa extends AbstractDataModel
         $this->refundInterestAmount = $refundInterestAmount;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCaseNumberVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_CASE_NUMBER);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDonorPostcodeVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_DONOR_POSTCODE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyPostcodeVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_POSTCODE);
+    }
+
+    /**
+     * @param string $verificationType
+     * @return bool
+     */
+    public function isVerified(string $verificationType): bool
+    {
+        if ($this->getVerifications() === null) {
+            return false;
+        }
+
+        foreach ($this->getVerifications() as $verification) {
+            if ($verification->getType() === $verificationType && $verification->isPasses()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyVerification(): bool
+    {
+        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDonorPostcodeVerification(): bool
+    {
+        return $this->hasVerification(VerificationModel::TYPE_DONOR_POSTCODE);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyPostcodeVerification(): bool
+    {
+        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY_POSTCODE);
+    }
+
+    /**
+     * @param string $verificationType
+     * @return bool
+     */
+    public function hasVerification(string $verificationType): bool
+    {
+        if ($this->getVerifications() === null) {
+            return false;
+        }
+
+        foreach ($this->getVerifications() as $verification) {
+            if ($verification->getType() === $verificationType) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
