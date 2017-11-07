@@ -125,27 +125,32 @@ class Poa extends AbstractForm
         $inputFilter->add($input);
 
         //  Validation
-        if (isset($options['claim'])) {
-            /** @var ClaimModel $claim */
-            $claim = $options['claim'];
 
-            //  Attorney details. Only present if not already verified
-            if ($this->poaService->isAttorneyVerified($claim)) {
-                $this->addVerificationRadio('attorney', $inputFilter);
-            }
+        /** @var ClaimModel $claim */
+        $claim = $options['claim'];
+        /** @var PoaModel $poa */
+        $poa = $options['poa'];
 
-            //  Donor postcode. Only if supplied by claimant and not already verified
-            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
-                !$this->poaService->isDonorPostcodeVerified($claim)) {
-                $this->addVerificationRadio('donor-postcode', $inputFilter);
-            }
-
-            //  Attorney postcode
-            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
-                !$this->poaService->isAttorneyPostcodeVerified($claim)) {
-                $this->addVerificationRadio('attorney-postcode', $inputFilter);
-            }
+        //  Attorney details. Only present if not already verified
+        if (!$this->poaService->isAttorneyVerified($claim) || $this->poaService->hasAttorneyVerification($poa)) {
+            $this->addVerificationRadio('attorney', $inputFilter);
         }
+
+        //  Donor postcode. Only if supplied by claimant and not already verified
+        if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
+            (!$this->poaService->isDonorPostcodeVerified($claim) ||
+                $this->poaService->hasDonorPostcodeVerification($poa))) {
+            $this->addVerificationRadio('donor-postcode', $inputFilter);
+        }
+
+        //  Attorney postcode
+        if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
+            (!$this->poaService->isAttorneyPostcodeVerified($claim) ||
+                $this->poaService->hasAttorneyPostcodeVerification($poa))) {
+            $this->addVerificationRadio('attorney-postcode', $inputFilter);
+        }
+
+        $this->bindModelData($poa);
     }
 
     /**
@@ -219,8 +224,12 @@ class Poa extends AbstractForm
         return $formData;
     }
 
-    public function bindModelData(PoaModel $poa)
+    private function bindModelData(PoaModel $poa = null)
     {
+        if ($poa === null) {
+            return;
+        }
+
         $poaArray = $poa->getArrayCopy();
         unset($poaArray['id']);
         unset($poaArray['system']);

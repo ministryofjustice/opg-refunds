@@ -42,9 +42,7 @@ class PoaAction extends AbstractPoaAction
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         $claim = $this->getClaim($request);
-
-        /** @var Poa $form */
-        $form = $this->getForm($request, $claim);
+        $poa = null;
 
         if ($this->modelId !== null) {
             //Edit page
@@ -53,9 +51,10 @@ class PoaAction extends AbstractPoaAction
             if ($poa === null) {
                 throw new Exception('POA not found', 404);
             }
-
-            $form->bindModelData($poa);
         }
+
+        /** @var Poa $form */
+        $form = $this->getForm($request, $claim, $poa);
 
         $system = $request->getAttribute('system');
 
@@ -172,14 +171,16 @@ class PoaAction extends AbstractPoaAction
     /**
      * @param ServerRequestInterface $request
      * @param ClaimModel $claim
+     * @param PoaModel|null $poa
      * @return AbstractForm
      */
-    protected function getForm(ServerRequestInterface $request, ClaimModel $claim): AbstractForm
+    protected function getForm(ServerRequestInterface $request, ClaimModel $claim, PoaModel $poa = null): AbstractForm
     {
         $session = $request->getAttribute('session');
 
         $form = new Poa($this->poaService, [
             'claim'  => $claim,
+            'poa'    => $poa,
             'system' => $request->getAttribute('system'),
             'csrf'   => $session['meta']['csrf'],
         ]);

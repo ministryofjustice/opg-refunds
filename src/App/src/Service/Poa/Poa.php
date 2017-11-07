@@ -52,6 +52,21 @@ class Poa
         return $this->isVerified($claim, VerificationModel::TYPE_ATTORNEY_POSTCODE);
     }
 
+    public function hasAttorneyVerification(PoaModel $poa = null): bool
+    {
+        return $this->hasVerification($poa, VerificationModel::TYPE_ATTORNEY);
+    }
+
+    public function hasDonorPostcodeVerification(PoaModel $poa = null): bool
+    {
+        return $this->hasVerification($poa, VerificationModel::TYPE_DONOR_POSTCODE);
+    }
+
+    public function hasAttorneyPostcodeVerification(PoaModel $poa = null): bool
+    {
+        return $this->hasVerification($poa, VerificationModel::TYPE_ATTORNEY_POSTCODE);
+    }
+
     public function isClaimVerified(ClaimModel $claim)
     {
         $verificationCount = 0;
@@ -156,6 +171,21 @@ class Poa
                 if ($verification->getType() === $verificationType && $verification->isPasses()) {
                     return true;
                 }
+            }
+        }
+
+        return false;
+    }
+
+    private function hasVerification(PoaModel $poa = null, string $verificationType): bool
+    {
+        if ($poa === null || $poa->getVerifications() === null) {
+            return false;
+        }
+
+        foreach ($poa->getVerifications() as $verification) {
+            if ($verification->getType() === $verificationType) {
+                return true;
             }
         }
 
