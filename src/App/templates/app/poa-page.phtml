@@ -9,7 +9,7 @@
 $this->addErrorMap([
     'case-number' => [
         'not-match' => [
-            'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus an optional sequence number'),
+            'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus a sequence number separated by a \'/\' e.g. 1234567/1'),
             'field'     => 'Invalid case number'
         ]
     ]

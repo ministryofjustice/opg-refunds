@@ -138,8 +138,6 @@ class Poa extends AbstractForm
             (!$claim->isAttorneyPostcodeVerified() || ($poa !== null && $poa->hasAttorneyPostcodeVerification()))) {
             $this->addVerificationRadio('attorney-postcode', $inputFilter);
         }
-
-        $this->bindModelData($poa);
     }
 
     /**
@@ -213,7 +211,7 @@ class Poa extends AbstractForm
         return $formData;
     }
 
-    private function bindModelData(PoaModel $poa = null)
+    public function bindModelData(PoaModel $poa = null)
     {
         if ($poa === null) {
             return;
