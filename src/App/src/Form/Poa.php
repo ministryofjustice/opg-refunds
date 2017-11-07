@@ -8,6 +8,7 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use App\Service\Poa\Poa as PoaService;
 use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
@@ -22,12 +23,20 @@ use Zend\InputFilter\InputFilter;
 class Poa extends AbstractForm
 {
     /**
+     * @var PoaService
+     */
+    private $poaService;
+
+    /**
      * Poa constructor.
+     * @param PoaService $poaService
      * @param array $options
      */
-    public function __construct(array $options = [])
+    public function __construct(PoaService $poaService, array $options = [])
     {
         parent::__construct(self::class, $options);
+
+        $this->poaService = $poaService;
 
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
@@ -81,7 +90,7 @@ class Poa extends AbstractForm
                 $caseNumberPattern = '/^\d{4}-?\d{4}-?\d{4}$/';
                 break;
             case PoaModel::SYSTEM_MERIS:
-                $caseNumberPattern = '/^\d{7}(\/\d{1,2})?$/';
+                $caseNumberPattern = '/^\d{7}\/\d{1,2}$/';
                 break;
         }
 
