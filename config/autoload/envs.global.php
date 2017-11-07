@@ -70,6 +70,7 @@ return [
         'kms' => [
             'client' => [
                 'version' => '2014-11-01',
+                'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_ENDPOINT') ?: null,
                 'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION') ?: null,
             ],
             'settings' => [
