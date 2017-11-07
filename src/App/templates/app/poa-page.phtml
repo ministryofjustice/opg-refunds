@@ -63,22 +63,6 @@ $postcodes = $claim->getApplication()->getPostcodes();
         ]) ?>
     </div>
 
-    <?php $this->insert('snippet::input-multi', [
-        'formElement' => $form->get('original-payment-amount'),
-        'question' => 'Original payment amount',
-        'options' => [
-            'orMore' => [
-                'optionLabel' => '£110 or more'
-            ],
-            'lessThan' => [
-                'optionLabel' => 'Less than £110'
-            ],
-            'noRefund' => [
-                'optionLabel' => 'No fee paid'
-            ],
-        ],
-    ]) ?>
-
     <?php if ($form->has('attorney') || $form->has('donor-postcode') || $form->has('attorney-postcode')) { ?>
         <h3 class="heading-small">Check verification details</h3>
 
@@ -127,6 +111,22 @@ $postcodes = $claim->getApplication()->getPostcodes();
             ]);
         } ?>
     <?php } ?>
+
+    <?php $this->insert('snippet::input-multi', [
+        'formElement' => $form->get('original-payment-amount'),
+        'question' => 'Original payment amount',
+        'options' => [
+            'orMore' => [
+                'optionLabel' => '£110 or more'
+            ],
+            'lessThan' => [
+                'optionLabel' => 'Less than £110'
+            ],
+            'noRefund' => [
+                'optionLabel' => 'No fee paid'
+            ],
+        ],
+    ]) ?>
 
     <div class="form-group">
         <input id='return-submit' type='submit' class="button" name='submit' value='Save'>
