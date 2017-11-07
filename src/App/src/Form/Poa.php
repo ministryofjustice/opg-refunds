@@ -8,7 +8,6 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
-use App\Service\Poa\Poa as PoaService;
 use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
@@ -23,20 +22,12 @@ use Zend\InputFilter\InputFilter;
 class Poa extends AbstractForm
 {
     /**
-     * @var PoaService
-     */
-    private $poaService;
-
-    /**
      * Poa constructor.
-     * @param PoaService $poaService
      * @param array $options
      */
-    public function __construct(PoaService $poaService, array $options = [])
+    public function __construct(array $options = [])
     {
         parent::__construct(self::class, $options);
-
-        $this->poaService = $poaService;
 
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
@@ -132,21 +123,19 @@ class Poa extends AbstractForm
         $poa = $options['poa'];
 
         //  Attorney details. Only present if not already verified
-        if (!$this->poaService->isAttorneyVerified($claim) || $this->poaService->hasAttorneyVerification($poa)) {
+        if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
             $this->addVerificationRadio('attorney', $inputFilter);
         }
 
         //  Donor postcode. Only if supplied by claimant and not already verified
         if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
-            (!$this->poaService->isDonorPostcodeVerified($claim) ||
-                $this->poaService->hasDonorPostcodeVerification($poa))) {
+            (!$claim->isDonorPostcodeVerified() || ($poa !== null && $poa->hasDonorPostcodeVerification()))) {
             $this->addVerificationRadio('donor-postcode', $inputFilter);
         }
 
         //  Attorney postcode
         if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
-            (!$this->poaService->isAttorneyPostcodeVerified($claim) ||
-                $this->poaService->hasAttorneyPostcodeVerification($poa))) {
+            (!$claim->isAttorneyPostcodeVerified() || ($poa !== null && $poa->hasAttorneyPostcodeVerification()))) {
             $this->addVerificationRadio('attorney-postcode', $inputFilter);
         }
 

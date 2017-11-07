@@ -20,9 +20,9 @@ Mandatory: claim
         <dt class="details-term">Expected refund date</dt>
         <dd class="details-definition"><?= $this->e($this->getDayAndFullTextMonth($claim->getApplication()->getExpected())) ?></dd>
         <dd class="details-definition">
-            <?php if($this->isClaimComplete($claim) && !$claim->isReadOnly()) { ?>
+            <?php if ($claim->isClaimComplete() && !$claim->isReadOnly()) { ?>
                 <p>
-                    <?php if($this->isClaimVerified($claim) && $this->isClaimRefundNonZero($claim)) { ?>
+                    <?php if ($claim->isClaimVerified() && $claim->isClaimRefundNonZero()) { ?>
                         <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
                     <?php } ?>
                     <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
@@ -31,7 +31,7 @@ Mandatory: claim
         </dd>
     </div>
 
-    <?php if($this->isClaimComplete($claim) && $claim->isReadOnly()) { ?>
+    <?php if($claim->isClaimComplete() && $claim->isReadOnly()) { ?>
         
         <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
             <div class="">

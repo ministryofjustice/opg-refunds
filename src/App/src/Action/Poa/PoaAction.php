@@ -8,8 +8,6 @@ use App\Form\Poa;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
-use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\Poa as PoaService;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
@@ -21,18 +19,6 @@ use RuntimeException;
  */
 class PoaAction extends AbstractPoaAction
 {
-    /**
-     * @var PoaService
-     */
-    private $poaService;
-
-    public function __construct(ClaimService $claimService, PoaService $poaService)
-    {
-        parent::__construct($claimService);
-
-        $this->poaService = $poaService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -178,7 +164,7 @@ class PoaAction extends AbstractPoaAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new Poa($this->poaService, [
+        $form = new Poa([
             'claim'  => $claim,
             'poa'    => $poa,
             'system' => $request->getAttribute('system'),

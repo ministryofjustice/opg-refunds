@@ -46,7 +46,6 @@ class ConfigProvider
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
                 Service\Refund\Refund::class => Service\Refund\Refund::class,
-                Service\Poa\Poa::class => Service\Poa\Poa::class,
                 Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
@@ -80,7 +79,6 @@ class ConfigProvider
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
 
                 // View Helper
-                View\Poa\PoaFormatterPlatesExtension::class => View\Poa\PoaFormatterPlatesExtensionFactory::class,
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],
             'initializers' => [
