@@ -5,6 +5,9 @@ namespace App\Action\Claim;
 use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
 use App\Form\ClaimApprove;
+use App\Service\Claim\Claim as ClaimService;
+use App\View\Details\DetailsFormatterPlatesExtension;
+use App\View\Poa\PoaFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -81,18 +84,27 @@ class ClaimApproveAction extends AbstractClaimAction
             }
 
             $contact = $claim->getApplication()->getContact();
+            $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
+                DetailsFormatterPlatesExtension::getFormattedName(
+                    $claim->getApplication()->getAttorney()->getCurrent()->getName()
+                ) : $claim->getDonorName();
+
             if ($contact->getEmail() !== null) {
-                //TODO: Send claim accepted email
                 $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
-                    'amount-including-interest' => $claim->get(),
-                    'donor-name' => $claim->getDonorName()
+                    'person-completing' => $contactName,
+                    'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
+                    'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
+                    'donor-name' => $claim->getDonorName(),
+                    'claim-code' => $claim->getReferenceNumber()
                 ]);
             }
+
             if ($contact->getPhone() !== null) {
                 //TODO: Find out if we're checking number is a mobile
-                //TODO: Send claim accepted text
-                $this->notifyClient->sendSms($contact->getPhone(), '', [
-                    'donor-name' => $claim->getDonorName()
+                $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
+                    'amount' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
+                    'donor-name' => $claim->getDonorName(),
+                    'claim-code' => $claim->getReferenceNumber()
                 ]);
             }
 

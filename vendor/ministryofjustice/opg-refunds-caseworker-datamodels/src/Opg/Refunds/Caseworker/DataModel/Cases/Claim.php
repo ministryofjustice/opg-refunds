@@ -667,9 +667,9 @@ class Claim extends AbstractDataModel
     }
 
     /**
-     * @return bool
+     * @return float
      */
-    public function isClaimRefundNonZero()
+    public function getRefundTotalAmount()
     {
         $refundTotalAmount = 0.0;
 
@@ -677,7 +677,29 @@ class Claim extends AbstractDataModel
             $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
         }
 
-        return $refundTotalAmount > 0;
+        return $refundTotalAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getRefundInterestAmount()
+    {
+        $refundInterestAmount = 0.0;
+
+        foreach ($this->getPoas() as $poa) {
+            $refundInterestAmount += $poa->getRefundInterestAmount();
+        }
+
+        return $refundInterestAmount;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClaimRefundNonZero()
+    {
+        return $this->getRefundTotalAmount() > 0;
     }
 
     /**

@@ -25,7 +25,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getStatusText', [$this, 'getStatusText']);
     }
 
-    public function getFormattedName(NameModel $name)
+    public static function getFormattedName(NameModel $name)
     {
         return "{$name->getTitle()} {$name->getFirst()} {$name->getLast()}";
     }

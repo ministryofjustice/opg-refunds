@@ -5,6 +5,7 @@ namespace App\Action\Claim;
 use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
 use App\Form\ClaimReject;
+use App\Service\Claim\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
