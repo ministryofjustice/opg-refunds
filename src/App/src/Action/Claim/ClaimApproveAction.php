@@ -2,11 +2,13 @@
 
 namespace App\Action\Claim;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
 use App\Form\ClaimApprove;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
+use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
 
@@ -16,6 +18,22 @@ use Exception;
  */
 class ClaimApproveAction extends AbstractClaimAction
 {
+    /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
+     * ClaimApproveAction constructor
+     * @param ClaimService $claimService
+     * @param NotifyClient $notifyClient
+     */
+    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
+    {
+        parent::__construct($claimService);
+        $this->notifyClient = $notifyClient;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -56,7 +74,27 @@ class ClaimApproveAction extends AbstractClaimAction
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $this->claimService->setStatusAccepted($claim->getId());
+            $claim = $this->claimService->setStatusAccepted($claim->getId());
+
+            if ($claim === null) {
+                throw new RuntimeException('Failed to accept claim with id: ' . $this->modelId);
+            }
+
+            $contact = $claim->getApplication()->getContact();
+            if ($contact->getEmail() !== null) {
+                //TODO: Send claim accepted email
+                $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
+                    'amount-including-interest' => $claim->get(),
+                    'donor-name' => $claim->getDonorName()
+                ]);
+            }
+            if ($contact->getPhone() !== null) {
+                //TODO: Find out if we're checking number is a mobile
+                //TODO: Send claim accepted text
+                $this->notifyClient->sendSms($contact->getPhone(), '', [
+                    'donor-name' => $claim->getDonorName()
+                ]);
+            }
 
             return $this->redirectToRoute('home');
         }

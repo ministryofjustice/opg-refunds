@@ -2,6 +2,7 @@
 
 namespace App\Action\Claim;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
 use App\Form\ClaimReject;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -17,6 +18,22 @@ use RuntimeException;
  */
 class ClaimRejectAction extends AbstractClaimAction
 {
+    /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
+     * ClaimRejectAction constructor
+     * @param ClaimService $claimService
+     * @param NotifyClient $notifyClient
+     */
+    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
+    {
+        parent::__construct($claimService);
+        $this->notifyClient = $notifyClient;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -68,6 +85,8 @@ class ClaimRejectAction extends AbstractClaimAction
             if ($claim === null) {
                 throw new RuntimeException('Failed to set rejection reason on claim with id: ' . $this->modelId);
             }
+
+            //TODO: Send claim accepted email
 
             return $this->redirectToRoute('home');
         }
