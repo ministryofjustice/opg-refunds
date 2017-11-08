@@ -3,7 +3,6 @@
 namespace App\Action\Claim;
 
 use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\Poa as PoaService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -19,8 +18,7 @@ class ClaimApproveActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new ClaimApproveAction(
-            $container->get(ClaimService::class),
-            $container->get(PoaService::class)
+            $container->get(ClaimService::class)
         );
     }
 }

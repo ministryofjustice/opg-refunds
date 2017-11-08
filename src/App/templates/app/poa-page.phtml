@@ -9,7 +9,7 @@
 $this->addErrorMap([
     'case-number' => [
         'not-match' => [
-            'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus an optional sequence number'),
+            'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus a sequence number separated by a \'/\' e.g. 1234567/1'),
             'field'     => 'Invalid case number'
         ]
     ]
@@ -63,6 +63,51 @@ $postcodes = $claim->getApplication()->getPostcodes();
         ]) ?>
     </div>
 
+    <?php if ($form->has('attorney')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('attorney'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$attorneyName}</strong> and <strong class=\"bold-small\">{$this->getDateOfBirthString($attorney->getCurrent()->getDob())}</strong> match one attorney's details on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    } ?>
+
+    <?php if ($form->has('donor-postcode')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('donor-postcode'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getDonorPostcode()}</strong> match the donor's address on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    } ?>
+
+    <?php if ($form->has('attorney-postcode')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('attorney-postcode'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getAttorneyPostcode()}</strong> match any of the attorney addresses on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    } ?>
+
     <?php $this->insert('snippet::input-multi', [
         'formElement' => $form->get('original-payment-amount'),
         'question' => 'Original payment amount',
@@ -77,56 +122,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
                 'optionLabel' => 'No fee paid'
             ],
         ],
-    ])
-    ?>
-
-    <h3 class="heading-small">Check verification details</h3>
-
-    <?php $this->insert('snippet::input-multi', [
-        'formElement' => $form->get('attorney'),
-        'question' => "Does {$attorneyName} and {$this->getDateOfBirthString($attorney->getCurrent()->getDob())} match one attorney's details on the POA?",
-        'options' => [
-            'yes' => [
-                'optionLabel' => 'Yes'
-            ],
-            'no' => [
-                'optionLabel' => 'No'
-            ],
-        ],
-    ])
-    ?>
-
-    <?php if ($form->has('donor-postcode')) {
-        $this->insert('snippet::input-multi', [
-            'formElement' => $form->get('donor-postcode'),
-            'question' => "Does {$postcodes->getDonorPostcode()} match the donor's address on the POA?",
-            'options' => [
-                'yes' => [
-                    'optionLabel' => 'Yes'
-                ],
-                'no' => [
-                    'optionLabel' => 'No'
-                ],
-            ],
-        ]);
-    }
-    ?>
-
-    <?php if ($form->has('attorney-postcode')) {
-        $this->insert('snippet::input-multi', [
-            'formElement' => $form->get('attorney-postcode'),
-            'question' => "Does {$postcodes->getAttorneyPostcode()} match any of the attorney addresses on the POA?",
-            'options' => [
-                'yes' => [
-                    'optionLabel' => 'Yes'
-                ],
-                'no' => [
-                    'optionLabel' => 'No'
-                ],
-            ],
-        ]);
-    }
-    ?>
+    ]) ?>
 
     <div class="form-group">
         <input id='return-submit' type='submit' class="button" name='submit' value='Save'>

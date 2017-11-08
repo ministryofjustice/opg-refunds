@@ -17,7 +17,7 @@ $attorney = $claim->getApplication()->getAttorney();
 
 <h2 class="heading-medium heading-refunds">Verification details</h2>
 <h2 class="notice notice-heading">
-    <?php if ($this->isClaimVerified($claim)) { ?>
+    <?php if ($claim->isClaimVerified()) { ?>
         <strong class="bold-small">Claim verified</strong>
         <i class="icon icon-tick" title="Verified">
             <span class="visually-hidden">Verified</span>
@@ -45,7 +45,7 @@ $attorney = $claim->getApplication()->getAttorney();
                 <li>DOB: <?= $this->e($this->getDateOfBirthString($attorney->getCurrent()->getDob())) ?></li>
             </ul>
         </dd>
-        <?php if ($this->isAttorneyVerified($claim)) { ?>
+        <?php if ($claim->isAttorneyVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
@@ -58,7 +58,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <div class="">
         <dt class="details-term">Case reference:</dt>
         <dd class="details-definition"><?= $this->e($caseNumber->getPoaCaseNumber()) ?></dd>
-        <?php if ($this->isCaseNumberVerified($claim)) { ?>
+        <?php if ($claim->isCaseNumberVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
@@ -72,7 +72,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <div class="">
         <dt class="heading-small">Donor postcode:</dt>
         <dd class="details-definition"><?= $this->e($postcodes->getDonorPostcode()) ?></dd>
-        <?php if ($this->isDonorPostcodeVerified($claim)) { ?>
+        <?php if ($claim->isDonorPostcodeVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
@@ -86,7 +86,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <div class="">
         <dt class="heading-small">Attorney postcode:</dt>
         <dd class="details-definition"><?= $this->e($postcodes->getAttorneyPostcode()) ?></dd>
-        <?php if ($this->isAttorneyPostcodeVerified($claim)) { ?>
+        <?php if ($claim->isAttorneyPostcodeVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
