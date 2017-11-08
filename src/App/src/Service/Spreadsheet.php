@@ -13,6 +13,7 @@ use App\Entity\Cases\Payment as PaymentEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Zend\Crypt\PublicKey\Rsa;
+use Aws\Kms\KmsClient;
 
 use Opg\Refunds\Log\Initializer;
 
@@ -41,6 +42,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private $bankCipher;
 
     /**
+     * @var KmsClient
+     */
+    private $kmsClient;
+
+    /**
      * @var ClaimService
      */
     private $claimService;
@@ -54,14 +60,16 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
+     * @param KmsClient $kmsClient
      * @param Rsa $bankCipher
      * @param Claim $claimService
      * @param array $spreadsheetConfig
      */
-    public function __construct(EntityManager $entityManager, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
+    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->entityManager = $entityManager;
+        $this->kmsClient = $kmsClient;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
         $this->spreadsheetConfig = $spreadsheetConfig;
@@ -179,7 +187,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         //  Deserialize the application from the JSON data
         $applicationArray = $entity->getJsonData();
-        $accountDetails = json_decode($this->bankCipher->decrypt($applicationArray['account']['details']), true);
+        $accountDetails = json_decode($this->decryptBankDetails($applicationArray['account']['details']), true);
 
         //  Set the sort code and account number in the account
         $account = $claim->getApplication()
@@ -210,5 +218,32 @@ class Spreadsheet implements Initializer\LogSupportInterface
                 $this->getLogger()->alert("Bank details for $updateCount claim(s) were deleted");
             }
         }
+    }
+
+    /**
+     * Decrypts bank details. First it tries AWS KMS.
+     * If that fails it falls back to the original public/private key.
+     *
+     * @param $ciphertext
+     * @return string
+     */
+    private function decryptBankDetails($ciphertext)
+    {
+        try {
+
+            $clearText = $this->kmsClient->decrypt([
+                'CiphertextBlob' => base64_decode($ciphertext)
+            ]);
+
+            return $clearText->get('Plaintext');
+
+        } catch ( \Exception $e ){
+        }
+
+        // else fall back to old style encryption
+
+        $this->getLogger()->warn('RSA decryption still used');
+
+        return $this->bankCipher->decrypt($ciphertext);
     }
 }
