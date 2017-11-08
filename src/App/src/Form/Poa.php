@@ -81,7 +81,7 @@ class Poa extends AbstractForm
                 $caseNumberPattern = '/^\d{4}-?\d{4}-?\d{4}$/';
                 break;
             case PoaModel::SYSTEM_MERIS:
-                $caseNumberPattern = '/^\d{7}(\/\d{1,2})?$/';
+                $caseNumberPattern = '/^\d{7}\/\d{1,2}$/';
                 break;
         }
 
@@ -117,22 +117,26 @@ class Poa extends AbstractForm
 
         //  Validation
 
-        //  Attorney details (always present)
-        $this->addVerificationRadio('attorney', $inputFilter);
+        /** @var ClaimModel $claim */
+        $claim = $options['claim'];
+        /** @var PoaModel $poa */
+        $poa = $options['poa'];
 
-        if (isset($options['claim'])) {
-            /** @var ClaimModel $claim */
-            $claim = $options['claim'];
+        //  Attorney details. Only present if not already verified
+        if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
+            $this->addVerificationRadio('attorney', $inputFilter);
+        }
 
-            //  Donor postcode
-            if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null) {
-                $this->addVerificationRadio('donor-postcode', $inputFilter);
-            }
+        //  Donor postcode. Only if supplied by claimant and not already verified
+        if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
+            (!$claim->isDonorPostcodeVerified() || ($poa !== null && $poa->hasDonorPostcodeVerification()))) {
+            $this->addVerificationRadio('donor-postcode', $inputFilter);
+        }
 
-            //  Attorney postcode
-            if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null) {
-                $this->addVerificationRadio('attorney-postcode', $inputFilter);
-            }
+        //  Attorney postcode
+        if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
+            (!$claim->isAttorneyPostcodeVerified() || ($poa !== null && $poa->hasAttorneyPostcodeVerification()))) {
+            $this->addVerificationRadio('attorney-postcode', $inputFilter);
         }
     }
 
@@ -171,8 +175,13 @@ class Poa extends AbstractForm
         if (array_key_exists('received-date', $formData)) {
             $receivedDateDateArr = $formData['received-date'];
             $receivedDateDateStr = null;
-            if (!empty($receivedDateDateArr['year']) && !empty($receivedDateDateArr['month']) && !empty($receivedDateDateArr['day'])) {
-                $receivedDateDateStr = $receivedDateDateArr['year'] . '-' . $receivedDateDateArr['month'] . '-' . $receivedDateDateArr['day'];
+            if (!empty($receivedDateDateArr['year']) &&
+                !empty($receivedDateDateArr['month']) &&
+                !empty($receivedDateDateArr['day'])) {
+                $receivedDateDateStr =
+                    $receivedDateDateArr['year'] . '-' .
+                    $receivedDateDateArr['month'] . '-' .
+                    $receivedDateDateArr['day'];
             }
             $formData['received-date'] = $receivedDateDateStr;
         }
@@ -202,8 +211,12 @@ class Poa extends AbstractForm
         return $formData;
     }
 
-    public function bindModelData(PoaModel $poa)
+    public function bindModelData(PoaModel $poa = null)
     {
+        if ($poa === null) {
+            return;
+        }
+
         $poaArray = $poa->getArrayCopy();
         unset($poaArray['id']);
         unset($poaArray['system']);

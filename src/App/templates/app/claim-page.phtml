@@ -29,7 +29,7 @@ $this->addErrorMap([
 <div>
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
-    <?php if ($this->hasSiriusPoas($claim)) { ?>
+    <?php if ($claim->hasSiriusPoas()) { ?>
         <table class="poa-table">
             <thead>
             <tr>
@@ -41,7 +41,7 @@ $this->addErrorMap([
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getSiriusPoas($claim) as $poa) {
+            <?php foreach ($claim->getSiriusPoas() as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
                     <?php if ($claim->isReadOnly()) { ?>
@@ -71,7 +71,7 @@ $this->addErrorMap([
                 <input class="button" type="submit" value="Cancel and return to add Sirius POA">
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius']) ?>">Add Sirius POA</a>
-                <?php if (!$this->hasSiriusPoas($claim)) { ?>
+                <?php if (!$claim->hasSiriusPoas()) { ?>
                     <input class="button-secondary" type="submit" value="No eligible Sirius POAs found">
                 <?php } ?>
             <?php } ?>
@@ -82,7 +82,7 @@ $this->addErrorMap([
 <div>
     <h2 class="heading-medium">Meris power of attorneys</h2>
 
-    <?php if ($this->hasMerisPoas($claim)) { ?>
+    <?php if ($claim->hasMerisPoas()) { ?>
         <table class="poa-table">
             <thead>
             <tr>
@@ -94,7 +94,7 @@ $this->addErrorMap([
             </tr>
             </thead>
             <tbody>
-            <?php foreach ($this->getMerisPoas($claim) as $poa) {
+            <?php foreach ($claim->getMerisPoas() as $poa) {
                 /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa */?>
                 <tr>
                     <?php if ($claim->isReadOnly()) { ?>
@@ -124,7 +124,7 @@ $this->addErrorMap([
                 <input class="button" type="submit" value="Cancel and return to add Meris POA">
             <?php } else { ?>
                 <a class="button" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris']) ?>">Add Meris POA</a>
-                <?php if (!$this->hasMerisPoas($claim)) { ?>
+                <?php if (!$claim->hasMerisPoas()) { ?>
                     <input class="button-secondary" type="submit" value="No eligible Meris POAs found">
                 <?php } ?>
             <?php } ?>

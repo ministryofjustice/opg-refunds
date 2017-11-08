@@ -4,8 +4,6 @@ namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
 use App\Form\ClaimReject;
-use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\Poa as PoaService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,22 +18,6 @@ use RuntimeException;
 class ClaimRejectAction extends AbstractClaimAction
 {
     /**
-     * @var PoaService
-     */
-    private $poaService;
-
-    /**
-     * ClaimRejectAction constructor
-     * @param ClaimService $claimService
-     * @param PoaService $poaService
-     */
-    public function __construct(ClaimService $claimService, PoaService $poaService)
-    {
-        parent::__construct($claimService);
-        $this->poaService = $poaService;
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse
@@ -47,7 +29,7 @@ class ClaimRejectAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$this->poaService->isClaimComplete($claim)) {
+        } elseif (!$claim->isClaimComplete()) {
             throw new Exception('Claim is not complete', 400);
         }
 

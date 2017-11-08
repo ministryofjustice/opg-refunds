@@ -4,8 +4,6 @@ namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
 use App\Form\ClaimApprove;
-use App\Service\Claim\Claim as ClaimService;
-use App\Service\Poa\Poa as PoaService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -19,22 +17,6 @@ use Exception;
 class ClaimApproveAction extends AbstractClaimAction
 {
     /**
-     * @var PoaService
-     */
-    private $poaService;
-
-    /**
-     * ClaimApproveAction constructor
-     * @param ClaimService $claimService
-     * @param PoaService $poaService
-     */
-    public function __construct(ClaimService $claimService, PoaService $poaService)
-    {
-        parent::__construct($claimService);
-        $this->poaService = $poaService;
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse
@@ -46,7 +28,7 @@ class ClaimApproveAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$this->poaService->isClaimComplete($claim) || !$this->poaService->isClaimVerified($claim) || !$this->poaService->isClaimRefundNonZero($claim)) {
+        } elseif (!$claim->isClaimComplete() || !$claim->isClaimVerified() || !$claim->isClaimRefundNonZero()) {
             throw new Exception('Claim is not complete or verified or has a total refund of £0.00', 400);
         }
 
