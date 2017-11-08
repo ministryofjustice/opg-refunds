@@ -3,6 +3,7 @@
 namespace Dev\Action;
 
 use PDO;
+use Aws\Kms\KmsClient;
 use App\Crypt\Hybrid as HybridCipher;
 use Zend\Crypt\PublicKey\Rsa;
 use Zend\Crypt\BlockCipher;
@@ -48,25 +49,25 @@ class ApplicationsActionFactory
             'private_key' => $keyPath,
         ]);
 
-
         //-------------------------------------
-        // Encryption - Everything
+        // KMS Setup
 
-        if (!isset($config['security']['rsa']['keys']['private']['full'])) {
-            throw new \UnexpectedValueException('RSA public key is not configured');
+        if (!isset($config['security']['kms'])) {
+            throw new \UnexpectedValueException('AWS KMS is not configured');
         }
 
-        $keyPath = $config['security']['rsa']['keys']['private']['full'];
+        $kmsConfig = $config['security']['kms'];
 
-        $hybrid = new HybridCipher(
-            BlockCipher::factory('openssl', ['algo' => 'aes']),
-            Rsa::factory(['private_key'=> $keyPath])
-        );
+        if (!isset($kmsConfig['client'])) {
+            throw new \UnexpectedValueException('AWS KMS Client is not configured');
+        }
+
+        $kmsClient = new KmsClient($kmsConfig['client']);
 
         //---
 
         $casesEntityManager = $container->get('doctrine.entity_manager.orm_cases');
 
-        return new ApplicationsAction($db, $casesEntityManager, $rsa, $hybrid);
+        return new ApplicationsAction($db, $casesEntityManager, $rsa, $kmsClient);
     }
 }
