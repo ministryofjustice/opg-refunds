@@ -72,17 +72,17 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getRejectionReasonsText(string $rejectionReason)
     {
         switch ($rejectionReason) {
-            case 'notInDateRange':
+            case ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE:
                 return 'Not in date range';
-            case 'noDonorLpaFound':
+            case ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND:
                 return 'LPA for associated donor could not be found';
-            case 'previouslyRefunded':
+            case ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED:
                 return 'Refund already given';
-            case 'noFeesPaid':
+            case ClaimModel::REJECTION_REASON_NO_FEES_PAID:
                 return 'No fees paid';
-            case 'claimNotVerified':
+            case ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED:
                 return 'Claim isn’t verified';
-            case 'other':
+            case ClaimModel::REJECTION_REASON_OTHER:
                 return 'Other';
             default:
                 return 'Unknown';

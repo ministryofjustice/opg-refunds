@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Zend\Form\Element\Radio;
 use Zend\Form\Element\Textarea;
 use Zend\InputFilter\Input;
@@ -36,12 +37,12 @@ class ClaimReject extends AbstractForm
             ->attach(new Validator\NotEmpty);
 
         $radioElement->setValueOptions([
-            'notInDateRange'   => 'notInDateRange',
-            'noDonorLpaFound' => 'noDonorLpaFound',
-            'previouslyRefunded' => 'previouslyRefunded',
-            'noFeesPaid' => 'noFeesPaid',
-            'claimNotVerified' => 'claimNotVerified',
-            'other' => 'other',
+            ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE   => ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE,
+            ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND  => ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND,
+            ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED => ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED,
+            ClaimModel::REJECTION_REASON_NO_FEES_PAID        => ClaimModel::REJECTION_REASON_NO_FEES_PAID,
+            ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED  => ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED,
+            ClaimModel::REJECTION_REASON_OTHER               => ClaimModel::REJECTION_REASON_OTHER
         ]);
 
         $this->add($radioElement);

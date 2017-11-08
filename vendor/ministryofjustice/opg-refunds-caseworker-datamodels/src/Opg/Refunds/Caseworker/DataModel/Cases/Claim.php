@@ -20,6 +20,13 @@ class Claim extends AbstractDataModel
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
+    const REJECTION_REASON_NOT_IN_DATE_RANGE = 'notInDateRange';
+    const REJECTION_REASON_NO_DONOR_LPA_FOUND = 'noDonorLpaFound';
+    const REJECTION_REASON_PREVIOUSLY_REFUNDED = 'previouslyRefunded';
+    const REJECTION_REASON_NO_FEES_PAID = 'noFeesPaid';
+    const REJECTION_REASON_CLAIM_NOT_VERIFIED = 'claimNotVerified';
+    const REJECTION_REASON_OTHER = 'other';
+
     /**
      * @var int
      */
