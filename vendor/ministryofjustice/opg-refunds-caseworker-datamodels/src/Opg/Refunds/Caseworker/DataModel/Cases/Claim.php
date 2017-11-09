@@ -20,13 +20,6 @@ class Claim extends AbstractDataModel
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
-    const REJECTION_REASON_NOT_IN_DATE_RANGE = 'notInDateRange';
-    const REJECTION_REASON_NO_DONOR_LPA_FOUND = 'noDonorLpaFound';
-    const REJECTION_REASON_PREVIOUSLY_REFUNDED = 'previouslyRefunded';
-    const REJECTION_REASON_NO_FEES_PAID = 'noFeesPaid';
-    const REJECTION_REASON_CLAIM_NOT_VERIFIED = 'claimNotVerified';
-    const REJECTION_REASON_OTHER = 'other';
-
     /**
      * @var int
      */
@@ -674,9 +667,9 @@ class Claim extends AbstractDataModel
     }
 
     /**
-     * @return float
+     * @return bool
      */
-    public function getRefundTotalAmount()
+    public function isClaimRefundNonZero()
     {
         $refundTotalAmount = 0.0;
 
@@ -684,29 +677,7 @@ class Claim extends AbstractDataModel
             $refundTotalAmount += $poa->getRefundAmount() + $poa->getRefundInterestAmount();
         }
 
-        return $refundTotalAmount;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRefundInterestAmount()
-    {
-        $refundInterestAmount = 0.0;
-
-        foreach ($this->getPoas() as $poa) {
-            $refundInterestAmount += $poa->getRefundInterestAmount();
-        }
-
-        return $refundInterestAmount;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isClaimRefundNonZero()
-    {
-        return $this->getRefundTotalAmount() > 0;
+        return $refundTotalAmount > 0;
     }
 
     /**
