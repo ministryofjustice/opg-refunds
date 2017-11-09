@@ -136,7 +136,7 @@ class ClaimRejectAction extends AbstractClaimAction
                     ]));
                 }
 
-                if ($contact->getPhone() !== null && substr(0, 2) === '07' && $smsTemplate) {
+                if ($contact->getPhone() !== null && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
                         'donor-name' => $claim->getDonorName(),
                         'claim-code' => $claim->getReferenceNumber()
