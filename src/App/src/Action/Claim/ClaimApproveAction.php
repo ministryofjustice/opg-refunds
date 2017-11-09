@@ -102,7 +102,8 @@ class ClaimApproveAction extends AbstractClaimAction
             if ($contact->getPhone() !== null) {
                 //TODO: Find out if we're checking number is a mobile
                 $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
-                    'amount' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
+                    'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
+                    'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
                     'donor-name' => $claim->getDonorName(),
                     'claim-code' => $claim->getReferenceNumber()
                 ]);
