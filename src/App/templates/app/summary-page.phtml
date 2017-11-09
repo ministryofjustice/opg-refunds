@@ -101,33 +101,46 @@ $this->layout('layout::default', [
 
 </dl>
 
-<h2 class="heading-medium">Statement of truth</h2>
-
-<p>By submitting this claim you confirm that to the best of your knowledge:</p>
-
-<ul class="list list-bullet">
-    <li>you're entitled to claim a refund</li>
-    <li>the details you've given are correct</li>
-    <li>the bank details are the donor's</li>
-</ul>
-
-<p class="text">
-    You agree to the <a href="/terms">terms and conditions</a> and that details 
-    you've given will be securely stored and used to process a refund. 
-</p>
-
-<div class="notice">
-    <p>
-        <i class="icon icon-important">
-            <span class="visually-hidden">Warning</span>
-        </i>
-        <strong class="bold-small">
-        You could be breaking the law if you deliberately give untrue or misleading information.
-        </strong>
-    </p>
-</div>
-
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <fieldset>
+        <?php
+            if (!(empty($ad))){
+                $this->insert('snippet::input-textarea', [
+                    'formElement' => $form->get('notes'),
+                    'formLabel' => 'Assisted digital notes',
+                    'formType' => 'text',
+                    'formLabelBold' => false,
+                ]);
+            }
+        ?>
+    </fieldset>
+
+    <h2 class="heading-medium">Statement of truth</h2>
+
+    <p>By submitting this claim you confirm that to the best of your knowledge:</p>
+
+    <ul class="list list-bullet">
+        <li>you're entitled to claim a refund</li>
+        <li>the details you've given are correct</li>
+        <li>the bank details are the donor's</li>
+    </ul>
+
+    <p class="text">
+        You agree to the <a href="/terms">terms and conditions</a> and that details
+        you've given will be securely stored and used to process a refund.
+    </p>
+
+    <div class="notice">
+        <p>
+            <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">
+            You could be breaking the law if you deliberately give untrue or misleading information.
+            </strong>
+        </p>
+    </div>
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     

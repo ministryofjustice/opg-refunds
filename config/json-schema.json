@@ -214,6 +214,11 @@
     "version": {
       "description": "Version of JSON Schema",
       "type": "number"
+    },
+
+    "ad": {
+      "description": "Assisted Digital detail",
+      "type": "object"
     }
   },
   "type": "object"

@@ -7,15 +7,26 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 
 use App\Service\Refund\AssistedDigital\LinkToken;
 
+use League\Plates\Engine as PlatesEngine;
+
+/**
+ * Checks for and verifies an Assisted Digital cookie.
+ * If all is good, the token's payload is added into the ServerRequest.
+ *
+ * Class AssistedDigitalMiddleware
+ * @package App\Middleware\AssistedDigital
+ */
 class AssistedDigitalMiddleware implements ServerMiddlewareInterface
 {
     private $checker;
     private $cookieName;
+    private $plates;
 
-    public function __construct(LinkToken $checker, string $cookieName)
+    public function __construct(LinkToken $checker, string $cookieName, PlatesEngine $plates)
     {
         $this->checker = $checker;
         $this->cookieName = $cookieName;
+        $this->plates = $plates;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -36,6 +47,10 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
 
         } catch (\Exception $e) {
         }
+
+        $this->plates->addData([
+            'ad'=> ($payload) ?? []
+        ]);
 
         return $delegate->process($request);
     }
