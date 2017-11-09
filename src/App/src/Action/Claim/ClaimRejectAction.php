@@ -105,12 +105,12 @@ class ClaimRejectAction extends AbstractClaimAction
                     $smsTemplate = 'f90cdca8-cd8b-4e22-ac66-d328b219f53e';
                     break;
                 case ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED:
-                    $emailPersonalisation['no-fees-paid'] = 'yes';
-                    $smsTemplate = '80b81c91-667e-47d8-bd8e-b87fdfa1b3de';
-                    break;
-                case ClaimModel::REJECTION_REASON_NO_FEES_PAID:
                     $emailPersonalisation['poas-already-refunded'] = 'yes';
                     $smsTemplate = '5ccfdd66-0040-423a-8426-1458f912d41a';
+                    break;
+                case ClaimModel::REJECTION_REASON_NO_FEES_PAID:
+                    $emailPersonalisation['no-fees-paid'] = 'yes';
+                    $smsTemplate = '80b81c91-667e-47d8-bd8e-b87fdfa1b3de';
                     break;
                 case ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED:
                     $emailPersonalisation['details-not-verified'] = 'yes';
