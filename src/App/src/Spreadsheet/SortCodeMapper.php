@@ -16,6 +16,7 @@ class SortCodeMapper
         $group2 = substr($sortCode, 2, 2);
         $group3 = substr($sortCode, 4, 2);
 
+        //Logic from https://en.wikipedia.org/wiki/Sort_code#List_of_sort_codes_of_the_United_Kingdom
         switch ($group1) {
             case '01':
                 return 'National Westminster Bank';
@@ -68,8 +69,33 @@ class SortCodeMapper
             case '18':
                 return 'The Royal Bank of Scotland';
             case '20':
+            case '21':
+            case '22':
             case '23':
+                if ($group2 === '05' && $group3 === '80') {
+                    return 'Metro Bank';
+                } elseif ($group2 === '14' && $group3 === '70') {
+                    return 'TransferWise';
+                } elseif ($group2 === '22' && $group3 === '21') {
+                    return 'Fire Financial Services';
+                } elseif ($group2 === '32' && $group3 === '72') {
+                    return 'Pockit';
+                } elseif ($group2 === '69' && $group3 === '72') {
+                    return 'Prepay Technologies';
+                }
+                return 'Barclays Bank';
+            case '24':
+            case '25':
+            case '26':
+            case '27':
+            case '28':
+            case '29':
+                return 'Barclays Bank';
             case '30':
+                if ($group2 === '00' && $group3 === '66') {
+                    return 'Arbuthnot Latham';
+                }
+                return 'Lloyds Bank';
             case '31':
             case '32':
             case '33':
@@ -79,7 +105,24 @@ class SortCodeMapper
             case '37':
             case '38':
             case '39':
+                return 'Lloyds Bank';
             case '40':
+                if ($group2 === '12' && $group3 >= 50 && $group3 < 55) {
+                    return 'M&S Bank';
+                } elseif ($group2 === '51' && $group3 === '98') {
+                    return 'Turkish Bank UK';
+                } elseif ($group2 === '60' && $group3 === '80') {
+                    return 'CashFlows';
+                } elseif ($group2 === '63' && $group3 === '01') {
+                    return 'The Coventry Building Society';
+                } elseif ($group2 === '63' && $group3 === '77') {
+                    return 'Bank of Cyprus UK';
+                } elseif ($group2 === '64' && $group3 === '25') {
+                    return 'Virgin Money PLC';
+                } elseif ($group2 === '65' && $group3 === '00') {
+                    return 'Norwich & Peterborough Building Society';
+                }
+                return 'HSBC Bank';
             case '41':
             case '42':
             case '43':
@@ -89,6 +132,10 @@ class SortCodeMapper
             case '47':
             case '48':
             case '49':
+                if ($group2 === '99' && $group3 >= 79) {
+                    return 'Deutsche Bank';
+                }
+                return 'HSBC Bank';
             case '50':
             case '51':
             case '52':
@@ -100,32 +147,57 @@ class SortCodeMapper
             case '58':
             case '59':
             case '60':
+                if ($group2 === '83' && $group3 === '12') {
+                    return 'Atom Bank';
+                } elseif ($group2 === '83' && $group3 === '66') {
+                    return 'Fidor Bank UK';
+                } elseif ($group2 === '83' && $group3 === '71') {
+                    return 'Starling Bank';
+                }
+                return 'National Westminster Bank';
             case '61':
             case '62':
             case '63':
             case '64':
             case '65':
             case '66':
-            case '70':
+                return 'National Westminster Bank';
+            //case '70':
             case '71':
+                return 'National Savings Bank';
             case '72':
+                return 'Santander UK';
             case '77':
+                return 'TSB';
             case '80':
             case '81':
+                return 'Bank of Scotland';
             case '82':
+                return 'Clydesdale Bank';
             case '83':
             case '84':
             case '86':
+                return 'The Royal Bank of Scotland';
             case '87':
+                return 'TSB';
             case '89':
+                return 'Santander UK';
             case '90':
+                return 'Bank of Ireland';
             case '91':
+                return 'Danske Bank';
             case '92':
+                return 'Central Bank of Ireland';
             case '93':
+                return 'Allied Irish Banks';
             case '94':
+                return 'Bank of Ireland';
             case '95':
+                return 'Danske Bank';
             case '98':
+                return 'Ulster Bank';
             case '99':
+                return 'Permanent TSB';
                 break;
         }
     }
