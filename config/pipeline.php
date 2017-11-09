@@ -40,6 +40,7 @@ $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
 // Apply caching headers to non-personalised responses
+$app->pipe(App\Middleware\AssistedDigital\AssistedDigitalMiddleware::class);
 $app->pipe(App\Middleware\Beta\BetaCheckMiddleware::class);
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
 $app->pipe(App\Middleware\ProcessingTime\ProcessingTimeMiddleware::class);

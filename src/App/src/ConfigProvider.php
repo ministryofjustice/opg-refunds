@@ -71,6 +71,7 @@ class ConfigProvider
                 Middleware\Beta\BetaCheckMiddleware::class => Middleware\Beta\BetaCheckMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
                 Middleware\ProcessingTime\ProcessingTimeMiddleware::class => Middleware\ProcessingTime\ProcessingTimeMiddlewareFactory::class,
+                Middleware\AssistedDigital\AssistedDigitalMiddleware::class => Middleware\AssistedDigital\AssistedDigitalMiddlewareFactory::class,
 
                 // Services
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,
