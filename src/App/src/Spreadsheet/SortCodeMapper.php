@@ -200,5 +200,7 @@ class SortCodeMapper
                 return 'Permanent TSB';
                 break;
         }
+
+        return '';
     }
 }
