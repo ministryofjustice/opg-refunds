@@ -136,9 +136,7 @@ class ClaimRejectAction extends AbstractClaimAction
                     ]));
                 }
 
-                if ($contact->getPhone() !== null && $smsTemplate) {
-                    //TODO: Find out if we're checking number is a mobile
-                    //TODO: Map rejection reason to text
+                if ($contact->getPhone() !== null && substr(0, 2) === '07' && $smsTemplate) {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
                         'donor-name' => $claim->getDonorName(),
                         'claim-code' => $claim->getReferenceNumber()
