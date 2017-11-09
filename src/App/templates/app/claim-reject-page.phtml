@@ -1,4 +1,6 @@
-<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+$this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
@@ -26,23 +28,23 @@
         'formElement' => $form->get('rejection-reason'),
         'question' => '',
         'options' => [
-            'notInDateRange' => [
-                'optionLabel' => $this->getRejectionReasonsText('notInDateRange')
+            ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE)
             ],
-            'noDonorLpaFound' => [
-                'optionLabel' => $this->getRejectionReasonsText('noDonorLpaFound')
+            ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND)
             ],
-            'previouslyRefunded' => [
-                'optionLabel' => $this->getRejectionReasonsText('previouslyRefunded')
+            ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED)
             ],
-            'noFeesPaid' => [
-                'optionLabel' => $this->getRejectionReasonsText('noFeesPaid')
+            ClaimModel::REJECTION_REASON_NO_FEES_PAID => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_FEES_PAID)
             ],
-            'claimNotVerified' => [
-                'optionLabel' => $this->getRejectionReasonsText('claimNotVerified')
+            ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED)
             ],
-            'other' => [
-                'optionLabel' => $this->getRejectionReasonsText('other')
+            ClaimModel::REJECTION_REASON_OTHER => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_OTHER)
             ],
         ],
     ])
