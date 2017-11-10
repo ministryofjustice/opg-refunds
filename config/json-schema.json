@@ -224,6 +224,11 @@
     "deceased": {
       "description": "If the donor is deceased. Can only be true if it's via assisted digital",
       "type": "boolean"
+    },
+
+    "cheque": {
+      "description": "Refund should be paid by cheque. Can only be true if it's via assisted digital",
+      "type": "boolean"
     }
   },
   "type": "object"

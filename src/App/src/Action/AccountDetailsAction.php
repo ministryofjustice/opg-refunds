@@ -35,17 +35,37 @@ class AccountDetailsAction extends AbstractAction
         ]);
 
         if ($request->getMethod() == 'POST') {
-            $form->setData($request->getParsedBody());
+            $data = $request->getParsedBody();
+
+            //---------------------
+            // Check for cheque
+
+            if (isset($data['cheque']) && $request->getAttribute('ad') != null) {
+                $session['cheque'] = true;
+
+                if (isset($session['account'])) {
+                    unset($session['account']);
+                }
+                
+                return new Response\RedirectResponse(
+                    $this->getUrlHelper()->generate(
+                        FlowController::getNextRouteName($session))
+                );
+            }
+
+            //---------------------
+
+            $form->setData($data);
 
             if ($form->isValid()) {
                 // Prep the account before storage.
                 $session['account'] = $this->bankDetailsHandlerService->process($form->getData());
 
+                $session['cheque'] = false;
+
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session),
-                        ['who'=>$session['applicant']]
-                    )
+                        FlowController::getNextRouteName($session))
                 );
             }
         }

@@ -94,7 +94,7 @@ $this->layout('layout::default', [
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor bank details',
         'fields' => [
-            [ 'value' => 'Bank details hidden for your security' ]
+            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the donor details' : 'Bank details hidden for your security' ]
         ],
         'changeURL' => $this->url('apply.account', ['who'=>$applicant])
     ]) ?>
