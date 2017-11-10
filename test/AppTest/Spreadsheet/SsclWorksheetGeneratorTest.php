@@ -28,7 +28,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         'entity' => '0123',
         'cost_centre' => '99999999',
         'account' => '123450000',
-        'objective' => '0',
+        'objective' => '00000000',
         'analysis' => '12345678',
         'completer_id' => '',
         'approver_id' => '',
@@ -199,9 +199,9 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(17, $cells[13]->getColumn());
             $this->assertEquals($account->getName(), $cells[13]->getData());
 
-            //Roll Number
+            //Roll Number - Should be blank rather than N/A - SSCL confirmed on 10/11/2017
             $this->assertEquals(18, $cells[14]->getColumn());
-            $this->assertEquals('N/A', $cells[14]->getData());
+            $this->assertEquals('', $cells[14]->getData());
 
             //Invoice Date
             $this->assertEquals(19, $cells[15]->getColumn());
