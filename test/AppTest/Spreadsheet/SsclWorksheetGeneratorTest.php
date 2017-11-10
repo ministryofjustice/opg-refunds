@@ -28,7 +28,7 @@ class SsclWorksheetGeneratorTest extends TestCase
         'entity' => '0123',
         'cost_centre' => '99999999',
         'account' => '123450000',
-        'objective' => '0',
+        'objective' => '00000000',
         'analysis' => '12345678',
         'completer_id' => '',
         'approver_id' => '',
