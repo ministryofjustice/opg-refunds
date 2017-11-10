@@ -66,8 +66,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(14, $rowIndex, $account->getSortCode());
             //Account Number
             $cells[] = new SpreadsheetCell(15, $rowIndex, $account->getAccountNumber());
-            //Name of Bank - Not required by SSCL (Georgia confirmed on 21/09/2017)
-            $cells[] = new SpreadsheetCell(16, $rowIndex, '');
+            //Name of Bank
+            $cells[] = new SpreadsheetCell(16, $rowIndex, SortCodeMapper::getNameOfBank($account->getSortCode()));
             //Account Name
             $cells[] = new SpreadsheetCell(17, $rowIndex, $account->getName());
             //Roll Number
