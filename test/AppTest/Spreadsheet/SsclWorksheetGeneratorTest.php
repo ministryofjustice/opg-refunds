@@ -191,9 +191,9 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(15, $cells[11]->getColumn());
             $this->assertEquals($account->getAccountNumber(), $cells[11]->getData());
 
-            //Name of Bank - Not required by SSCL (Georgia confirmed on 21/09/2017)
+            //Name of Bank
             $this->assertEquals(16, $cells[12]->getColumn());
-            $this->assertEquals('', $cells[12]->getData());
+            $this->assertEquals('Halifax', $cells[12]->getData());
 
             //Account Name
             $this->assertEquals(17, $cells[13]->getColumn());
