@@ -70,8 +70,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(16, $rowIndex, SortCodeMapper::getNameOfBank($account->getSortCode()));
             //Account Name
             $cells[] = new SpreadsheetCell(17, $rowIndex, $account->getName());
-            //Roll Number
-            $cells[] = new SpreadsheetCell(18, $rowIndex, 'N/A');
+            //Roll Number - Should be blank rather than N/A - SSCL confirmed on 10/11/2017
+            $cells[] = new SpreadsheetCell(18, $rowIndex, '');
             //Invoice Date
             $cells[] = new SpreadsheetCell(19, $rowIndex, (new DateTime('today'))->format('d/m/Y'));
             //Invoice Number - Programme board instructed to use reference number on 02/11/2017

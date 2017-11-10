@@ -45,7 +45,7 @@ return [
             'entity' => getenv('OPG_REFUNDS_SSCL_ENTITY') ?: '',
             'cost_centre' => getenv('OPG_REFUNDS_SSCL_COST_CENTRE') ?: '',
             'account' => getenv('OPG_REFUNDS_SSCL_ACCOUNT') ?: '',
-            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '',
+            'objective' => getenv('OPG_REFUNDS_SSCL_OBJECTIVE') ?: '00000000',
             'analysis' => getenv('OPG_REFUNDS_SSCL_ANALYSIS') ?: '',
             'completer_id' => getenv('OPG_REFUNDS_SSCL_COMPLETER_ID') ?: '',
             'approver_id' => getenv('OPG_REFUNDS_SSCL_APPROVER_ID') ?: '',
