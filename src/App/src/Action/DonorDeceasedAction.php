@@ -27,8 +27,8 @@ class DonorDeceasedAction extends AbstractAction
             if ($form->isValid()) {
                 $session['deceased'] = (bool)($form->getData()['donor-deceased'] === 'yes');
 
-                // If they are deceased, return page.
-                if ($session['deceased']) {
+                // If they are deceased, and it's not an AD session, return page.
+                if ($session['deceased'] && $request->getAttribute('ad') == null) {
                     return new Response\HtmlResponse(
                         $this->getTemplateRenderer()->render('app::ineligible-deceased-page')
                     );
