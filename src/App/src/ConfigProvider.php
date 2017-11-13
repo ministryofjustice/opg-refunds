@@ -66,6 +66,7 @@ class ConfigProvider
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
+                Action\AssistedDigitalRedirectAction::class => Action\AssistedDigitalRedirectActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
@@ -77,6 +78,7 @@ class ConfigProvider
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\AssistedDigital\LinkToken::class => Service\AssistedDigital\LinkTokenFactory::class,
 
                 // View Helper
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,

@@ -12,6 +12,16 @@ return [
         ],
     ],
 
+    // Assisted digital
+    'ad' => [
+        'link' => [
+            'domain' => getenv('OPG_REFUNDS_PUBLIC_FRONT_URL') ?: null,
+            'signature' => [
+                'key' => getenv('OPG_REFUNDS_AD_LINK_SIGNATURE_KEY') ?: null,
+            ]
+        ],
+    ],
+
     'session' => [
 
         // ini session.* settings...
