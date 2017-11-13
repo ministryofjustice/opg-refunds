@@ -31,14 +31,16 @@ class BetaCheckMiddlewareTest extends TestCase
         $this->betaLinkChecker = $this->prophesize(BetaLinkChecker::class);
         $this->templateRenderer = $this->prophesize(TemplateRendererInterface::class);
 
-        $this->betaLinkChecker->isLinkValid(Argument::any(),Argument::any(),Argument::any())
+        $this->betaLinkChecker->isLinkValid(Argument::any(), Argument::any(), Argument::any())
             ->willReturn(self::TEST_ERROR_SLUG);
 
         $this->request->getCookieParams()->willReturn([]);
+        $this->request->getAttribute('ad')->willReturn(null);
         $this->request->getAttribute('Zend\Expressive\Router\RouteResult')->willReturn(null);
     }
 
-    private function getInstance( bool $betaEnabled ){
+    private function getInstance(bool $betaEnabled)
+    {
         return new BetaCheckMiddleware(
             $this->templateRenderer->reveal(),
             $this->betaLinkChecker->reveal(),
@@ -69,7 +71,6 @@ class BetaCheckMiddlewareTest extends TestCase
             $request,
             $this->delegateInterface->reveal()
         );
-
     }
 
     /**
@@ -155,7 +156,7 @@ class BetaCheckMiddlewareTest extends TestCase
             self::TEST_COOKIE_NAME => 'valid-cookie-content'
         ]);
 
-        $this->betaLinkChecker->isLinkValid(Argument::any(),Argument::any(),Argument::any())->willReturn(true);
+        $this->betaLinkChecker->isLinkValid(Argument::any(), Argument::any(), Argument::any())->willReturn(true);
         $this->betaLinkChecker->hasLinkBeenUsed(Argument::any())->willReturn(true);
 
         //---
@@ -180,7 +181,7 @@ class BetaCheckMiddlewareTest extends TestCase
             self::TEST_COOKIE_NAME => 'valid-cookie-content'
         ]);
 
-        $this->betaLinkChecker->isLinkValid(Argument::any(),Argument::any(),Argument::any())->willReturn(true);
+        $this->betaLinkChecker->isLinkValid(Argument::any(), Argument::any(), Argument::any())->willReturn(true);
         $this->betaLinkChecker->hasLinkBeenUsed(Argument::any())->willReturn(false);
 
         $this->request->withAttribute('betaId', Argument::type('string'))
@@ -194,5 +195,4 @@ class BetaCheckMiddlewareTest extends TestCase
             $this->delegateInterface->reveal()
         );
     }
-
 }

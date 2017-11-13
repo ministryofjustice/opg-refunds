@@ -34,9 +34,7 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
         $cookies = $request->getCookieParams();
 
         try {
-
             if (isset($cookies[$this->cookieName])) {
-
                 $value = $cookies[$this->cookieName];
 
                 $payload = $this->checker->verify($value);
@@ -54,5 +52,4 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
 
         return $delegate->process($request);
     }
-
 }
