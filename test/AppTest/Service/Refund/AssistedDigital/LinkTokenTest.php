@@ -28,6 +28,20 @@ class LinkTokenTest extends TestCase
         $this->assertInstanceOf(LinkToken::class, $instance);
     }
 
+    public function testCannotMakeTokenWithEmptyPayload()
+    {
+        $this->expectException(\UnexpectedValueException::class);
+        $this->expectExceptionMessageRegExp( '/empty/' );
+
+        //---
+
+        $payload = [];
+
+        $instance = new LinkToken($this->testKey);
+
+        $instance->generate($payload);
+    }
+
     /*
      * Tests both the generation and verification of a token
      */

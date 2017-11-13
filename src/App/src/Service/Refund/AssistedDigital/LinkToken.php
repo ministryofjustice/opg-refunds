@@ -33,6 +33,12 @@ class LinkToken
      */
     public function generate(array $payload) : string
     {
+        if (empty($payload)) {
+            throw new UnexpectedValueException('$payload cannot be empty');
+        }
+
+        //---
+
         // Added metadata to payload.
         $payload = [
             'app' => $payload,
