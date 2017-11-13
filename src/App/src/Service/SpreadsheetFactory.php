@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Service\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 use Zend\Crypt\PublicKey\Rsa;
+use Aws\Kms\KmsClient;
 
 /**
  * Class SpreadsheetFactory
@@ -22,6 +23,7 @@ class SpreadsheetFactory
 
         return new Spreadsheet(
             $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(KmsClient::class),
             $container->get(Rsa::class),
             $container->get(ClaimService::class),
             $config['spreadsheet']

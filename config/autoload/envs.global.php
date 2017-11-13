@@ -8,6 +8,14 @@ return [
 
     'security' => [
 
+        'kms' => [
+            'client' => [
+                'version' => '2014-11-01',
+                'region' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_REGION') ?: null,
+                'endpoint' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT') ?: null,
+            ],
+        ],
+
         'rsa' => [
             'keys' => [
                 'private' => [
