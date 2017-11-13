@@ -194,6 +194,12 @@
           "description": "Applicant's phone number.",
           "type": "string",
           "pattern": "^[+]?[0-9]+$"
+        },
+        "address": {
+          "description": "Applicant's postal address.",
+          "type": "string",
+          "maxLength": 300,
+          "pattern": "^[^<>\"]*$"
         }
       },
       "type": "object"

@@ -89,3 +89,27 @@ $this->addErrorMap([
     </div>
 
 </form>
+
+<?php if (!(empty($ad) && !is_null($adForm))): ?>
+    <br>
+
+    <form action="" method="post" class="form">
+
+        <?php $this->insert('snippet::form-csrf', [ 'form'=>$adForm ]) ?>
+
+        <?php
+            $this->insert('snippet::input-textarea', [
+                'formElement' => $adForm->get('address'),
+                'formLabel' => 'Postal address',
+                'formType' => 'text',
+                'formLabelBold' => false,
+            ]);
+        ?>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+
+    </form>
+<?php endif ?>
+
