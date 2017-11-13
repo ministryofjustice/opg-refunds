@@ -149,7 +149,8 @@
             "psr-7",
             "request",
             "response"
-        ]
+        ],
+        "abandoned": "http-interop/http-server-middleware"
     },
     {
         "name": "zendframework/zend-escaper",
@@ -5097,7 +5098,7 @@
         "version_normalized": "1.2.2.0",
         "source": {
             "type": "git",
-            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
+            "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
             "reference": "e3aad5793f112fde9a7762b122811509ea026df0"
         },
         "dist": {
@@ -5128,5 +5129,59 @@
             "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
+    },
+    {
+        "name": "spomky-labs/base64url",
+        "version": "v1.0.2",
+        "version_normalized": "1.0.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Spomky-Labs/base64url.git",
+            "reference": "ef6d5fb93894063d9cee996022259fd08d6646ea"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Spomky-Labs/base64url/zipball/ef6d5fb93894063d9cee996022259fd08d6646ea",
+            "reference": "ef6d5fb93894063d9cee996022259fd08d6646ea",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^5.3|^7.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.0|^5.0",
+            "satooshi/php-coveralls": "^1.0"
+        },
+        "time": "2016-01-21T19:50:30+00:00",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Base64Url\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Florent Morselli",
+                "homepage": "https://github.com/Spomky-Labs/base64url/contributors"
+            }
+        ],
+        "description": "Base 64 URL Safe Encoding/decoding PHP Library",
+        "homepage": "https://github.com/Spomky-Labs/base64url",
+        "keywords": [
+            "base64",
+            "rfc4648",
+            "safe",
+            "url"
+        ]
     }
 ]
