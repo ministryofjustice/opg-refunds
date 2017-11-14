@@ -6,6 +6,7 @@ use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
+use Zend\Form\Element\Text;
 use Zend\Filter;
 use Zend\Validator\Identical;
 
@@ -30,9 +31,8 @@ class ResetPassword extends AbstractForm
         $this->setInputFilter($inputFilter);
 
         //  Email field
-        $field = new Element\Email('email');
+        $field = new Text('email');
         $input = new Input($field->getName());
-        $input->setErrorMessage('invalid-email');
 
         $input->getFilterChain()
             ->attach(new StandardInputFilter())
@@ -40,6 +40,7 @@ class ResetPassword extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty(), true)
+            ->attach(new Validator\Email(), true)
             ->attach(new Identical([
                 'token' => 'confirm-email',
                 'messages' => [
@@ -53,18 +54,16 @@ class ResetPassword extends AbstractForm
         $inputFilter->add($input);
 
         //  Confirm email field
-        $field = new Element\Email('confirm-email');
+        $field = new Text('confirm-email');
         $input = new Input($field->getName());
-        $input->setErrorMessage('invalid-email');
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter)
+            ->attach(new StandardInputFilter())
             ->attach(new Filter\StringToLower());
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
-
-        $input->setRequired(true);
+        //  Only set the validation rules on the main password field to avoid duplicate messages
+        //  The "Identical" validation rule will ensure that the password confirmation ends up being an acceptable value
+        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);

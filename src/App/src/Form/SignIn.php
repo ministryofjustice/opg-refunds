@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Zend\Filter;
+use Zend\Form\Element\Text;
 use Zend\Form\Element\Password;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -30,16 +31,16 @@ class SignIn extends AbstractForm
         $this->setInputFilter($inputFilter);
 
         //  Email field
-        $field = new Element\Email('email');
+        $field = new Text('email');
         $input = new Input($field->getName());
-        $input->setErrorMessage('invalid-email');
 
         $input->getFilterChain()
             ->attach(new StandardInputFilter())
             ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
+            ->attach(new Validator\NotEmpty(), true)
+            ->attach(new Validator\Email());
 
         $input->setRequired(true);
 
