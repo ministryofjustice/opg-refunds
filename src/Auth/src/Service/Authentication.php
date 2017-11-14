@@ -6,7 +6,6 @@ use App\Entity\Cases\User as UserEntity;
 use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
 use App\Service\User as UserService;
-use App\Service\TokenGenerator;
 use Auth\Exception\UnauthorizedException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -78,7 +77,7 @@ class Authentication
         }
 
         //  Use the user service to set a token for the user
-        return $this->userService->setToken($user->getId(), time() + $this->tokenTtl);
+        return $this->userService->refreshToken($user->getId(), time() + $this->tokenTtl);
     }
 
     /**
@@ -100,17 +99,12 @@ class Authentication
             throw new UnauthorizedException('Bad token');
         }
 
-        //  Confirm that the user is active
-        if ($user->getStatus() !== User::STATUS_ACTIVE) {
-            throw new UnauthorizedException('User is inactive');
-        }
-
         //  Check to see if the token has expired
         if (time() > $user->getTokenExpires()) {
             throw new UnauthorizedException('Token expired');
         }
 
         //  Increase the token expires value - and return the user model
-        return $this->userService->setToken($user->getId(), $user->getToken(),  time() + $this->tokenTtl);
+        return $this->userService->refreshToken($user->getId(), time() + $this->tokenTtl, false);
     }
 }

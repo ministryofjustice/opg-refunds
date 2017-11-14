@@ -226,16 +226,22 @@ class User
     }
 
     /**
+     * Refresh the user token by updating the value or adjusting the expiry (or both)
+     *
      * @param $userId
      * @param $tokenExpires
+     * @param bool $generateNew
      * @return UserModel
      */
-    public function setToken($userId, $tokenExpires)
+    public function refreshToken($userId, $tokenExpires, $generateNew = true)
     {
         $user = $this->getUserEntity($userId);
 
-        //  Generate a token value with the service
-        $user->setToken($this->tokenGenerator->generate());
+        //  If required generate a new token value
+        if ($generateNew) {
+            $user->setToken($this->tokenGenerator->generate());
+        }
+
         $user->setTokenExpires($tokenExpires);
 
         $this->entityManager->flush();

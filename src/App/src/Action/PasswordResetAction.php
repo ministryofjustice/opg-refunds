@@ -44,7 +44,7 @@ class PasswordResetAction extends AbstractRestfulAction
         //  Get the user by email address and update the token
         $user = $this->userService->getByEmail($requestBody['email']);
 
-        $user = $this->userService->setToken($user->getId(), -1);
+        $user = $this->userService->refreshToken($user->getId(), -1);
 
         //  Get the user details excluding the claims
         $userData = $user->getArrayCopy([
