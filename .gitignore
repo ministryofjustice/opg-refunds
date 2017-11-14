@@ -2,5 +2,6 @@
 node_modules/
 public/assets/govuk_elements/stylesheets/elements*
 /local
+/local-staff
 /coverage
 yarn-error.log

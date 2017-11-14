@@ -74,12 +74,62 @@ for($i = $startFrom; $i < ($numberToGenerate+$startFrom); $i++){
     $details = "{$i}/{$expire}";
     $signature = hash_hmac('sha256', $details, $hash);
 
-    echo '/beta/'.$details . '/' . hexTobase62(bin2hex($iv).$signature)."\n";
+    $path = $details . '/' . hexTobase62(bin2hex($iv).$signature);
 
+    //---
+
+    $test = explode('/', $path);
+    $result = isLinkValid($test[0],$test[1],$test[2], $key);
+
+    if( $result !== true ){
+        $i--;
+        continue;
+    }
+
+    //---
+
+    echo '/beta/'.$path."\n";
 }
 
 //------------------------------------------
 
 function hexTobase62( $value ){
     return BigInteger::factory('bcmath')->baseConvert( $value, 16, 62 );
+}
+
+
+function isLinkValid($id, $expires, $signature, $key)
+{
+    if (empty($id) || empty($expires) || empty($signature)) {
+        return 'missing-data';
+    }
+
+    if (!is_numeric($expires) || time() > $expires) {
+        return 'expired';
+    }
+
+    //---
+
+    // Validate signature
+
+    $signature = BigInteger::factory('bcmath')->baseConvert($signature, 62, 16);
+    $iv = hex2bin(mb_substr($signature, 0, 64, '8bit'));
+    $hmac = mb_substr($signature, 64, null, '8bit');
+
+    $hash = Pbkdf2::calc(
+        'sha256',
+        $key,
+        $iv,
+        5000,
+        256 * 2
+    );
+
+    $details = "{$id}/{$expires}";
+    $generatedHmac = hash_hmac('sha256', $details, $hash);
+
+    if (!hash_equals($generatedHmac, $hmac)) {
+        return 'invalid-signature';
+    }
+
+    return true;
 }
