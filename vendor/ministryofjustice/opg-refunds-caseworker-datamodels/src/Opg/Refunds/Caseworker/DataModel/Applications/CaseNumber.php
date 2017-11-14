@@ -33,4 +33,12 @@ class CaseNumber extends AbstractDataModel
 
         return $this;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasPoaCaseNumber()
+    {
+        return !empty($this->poaCaseNumber);
+    }
 }

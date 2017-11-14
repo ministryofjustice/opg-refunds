@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "9fd2308387383bf8477c20c63b20300e",
+    "content-hash": "ad856b55bb915f78d5e2f3c259e9e843",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -1111,20 +1111,21 @@
                 "request",
                 "response"
             ],
+            "abandoned": "http-interop/http-server-middleware",
             "time": "2017-01-14T15:23:42+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "1.2.2",
+            "version": "dev-assisted-digital",
             "source": {
                 "type": "git",
-                "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "e3aad5793f112fde9a7762b122811509ea026df0"
+                "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
+                "reference": "5aba8d5ec7b36abd99180bbe1aa8687c12e01429"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/e3aad5793f112fde9a7762b122811509ea026df0",
-                "reference": "e3aad5793f112fde9a7762b122811509ea026df0",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/5aba8d5ec7b36abd99180bbe1aa8687c12e01429",
+                "reference": "5aba8d5ec7b36abd99180bbe1aa8687c12e01429",
                 "shasum": ""
             },
             "require": {
@@ -1144,10 +1145,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/master",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/assisted-digital",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-11-09T09:48:03+00:00"
+            "time": "2017-11-14T11:41:49+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
@@ -4994,6 +4995,7 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
         "phpoffice/phpspreadsheet": 10,
         "roave/security-advisories": 20
     },

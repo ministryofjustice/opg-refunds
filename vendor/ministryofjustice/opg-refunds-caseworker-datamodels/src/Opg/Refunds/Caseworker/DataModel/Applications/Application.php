@@ -56,14 +56,20 @@ class Application extends AbstractDataModel
      */
     protected $expected;
 
-    public function __construct($data = null)
-    {
-        //Make sure caseNumber and postcode objects are not null;
-        $this->caseNumber = new CaseNumber();
-        $this->postcodes = new Postcodes();
+    /**
+     * @var AssistedDigital
+     */
+    protected $ad;
 
-        parent::__construct($data);
-    }
+    /**
+     * @var bool
+     */
+    protected $cheque;
+
+    /**
+     * @var bool
+     */
+    protected $deceased;
 
     /**
      * @return string
@@ -144,7 +150,7 @@ class Application extends AbstractDataModel
     /**
      * @return CaseNumber
      */
-    public function getCaseNumber(): CaseNumber
+    public function getCaseNumber()
     {
         return $this->caseNumber;
     }
@@ -161,9 +167,17 @@ class Application extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasCaseNumber(): bool
+    {
+        return $this->caseNumber !== null && $this->caseNumber->hasPoaCaseNumber();
+    }
+
+    /**
      * @return Postcodes
      */
-    public function getPostcodes(): Postcodes
+    public function getPostcodes()
     {
         return $this->postcodes;
     }
@@ -180,9 +194,37 @@ class Application extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasPostcodes(): bool
+    {
+        return $this->postcodes !== null
+            && $this->postcodes->hasDonorPostcode()
+            && $this->postcodes->hasAttorneyPostcode();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDonorPostcode(): bool
+    {
+        return $this->postcodes !== null
+            && $this->postcodes->hasDonorPostcode();
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyPostcode(): bool
+    {
+        return $this->postcodes !== null
+            && $this->postcodes->hasAttorneyPostcode();
+    }
+
+    /**
      * @return Account
      */
-    public function getAccount(): Account
+    public function getAccount()
     {
         return $this->account;
     }
@@ -196,6 +238,14 @@ class Application extends AbstractDataModel
         $this->account = $account;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccount(): bool
+    {
+        return $this->account !== null;
     }
 
     /**
@@ -237,6 +287,71 @@ class Application extends AbstractDataModel
     }
 
     /**
+     * @return AssistedDigital
+     */
+    public function getAssistedDigital()
+    {
+        return $this->ad;
+    }
+
+    /**
+     * @param AssistedDigital $assistedDigital
+     * @return $this
+     */
+    public function setAssistedDigital(AssistedDigital $assistedDigital)
+    {
+        $this->ad = $assistedDigital;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAssistedDigital(): bool
+    {
+        return $this->ad !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRefundByCheque(): bool
+    {
+        return $this->cheque;
+    }
+
+    /**
+     * @param bool $refundByCheque
+     * @return $this
+     */
+    public function setRefundByCheque(bool $refundByCheque)
+    {
+        $this->cheque = $refundByCheque;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getDonorDeceased(): bool
+    {
+        return $this->deceased;
+    }
+
+    /**
+     * @param bool $donorDeceased
+     * @return $this
+     */
+    public function setDonorDeceased(bool $donorDeceased)
+    {
+        $this->deceased = $donorDeceased;
+
+        return $this;
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property
@@ -261,6 +376,8 @@ class Application extends AbstractDataModel
             case 'submitted':
             case 'expected':
                 return (($value instanceof DateTime || is_null($value)) ? $value : new DateTime($value));
+            case 'ad':
+                return (($value instanceof AssistedDigital || is_null($value)) ? $value : new AssistedDigital($value));
             default:
                 return parent::map($property, $value);
         }

@@ -62,10 +62,9 @@ class ApplicationIngestion
      */
     public function getDecompressedData(Application $application): string
     {
-        try{
+        try {
             return gzinflate($application->getData());
-        } catch ( \Throwable $e)
-        {
+        } catch (\Throwable $e) {
             /*
              * Data used to be encrypted when it reached this point, but that's no longer the case.
              * If decompression did fail, it's possible this function was trying to process legacy data.
