@@ -2,7 +2,6 @@
 
 namespace Auth\Service;
 
-use App\Service\TokenGenerator;
 use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 
@@ -25,7 +24,6 @@ class AuthenticationFactory
         return new Authentication(
             $container->get('doctrine.entity_manager.orm_cases'),
             $container->get(UserService::class),
-            $container->get(TokenGenerator::class),
             $config['token_ttl']
         );
     }

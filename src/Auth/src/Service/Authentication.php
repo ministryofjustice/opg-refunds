@@ -32,11 +32,6 @@ class Authentication
     private $userService;
 
     /**
-     * @var TokenGenerator
-     */
-    private $tokenGeneratorService;
-
-    /**
      * The number of seconds before an auth token expires
      *
      * @var int
@@ -48,14 +43,12 @@ class Authentication
      *
      * @param EntityManager $entityManager
      * @param UserService $userService
-     * @param TokenGenerator $tokenGeneratorService
      * @param int $tokenTtl
      */
-    public function __construct(EntityManager $entityManager, UserService $userService, TokenGenerator $tokenGeneratorService, int $tokenTtl)
+    public function __construct(EntityManager $entityManager, UserService $userService, int $tokenTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->userService = $userService;
-        $this->tokenGeneratorService = $tokenGeneratorService;
         $this->tokenTtl = $tokenTtl;
     }
 
@@ -86,9 +79,7 @@ class Authentication
 
         //  Attempt to generate a token for the user
         do {
-            $token = $this->tokenGeneratorService->generate();
-
-            $user = $this->userService->setToken($user->getId(), $token, time() + $this->tokenTtl);
+            $user = $this->userService->setToken($user->getId(), time() + $this->tokenTtl);
         } while (!$user instanceof User);
 
         return $user;

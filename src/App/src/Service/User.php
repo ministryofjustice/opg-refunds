@@ -31,19 +31,19 @@ class User
     /**
      * @var TokenGenerator
      */
-    private $tokenGeneratorService;
+    private $tokenGenerator;
 
     /**
      * User constructor
      *
      * @param EntityManager $entityManager
-     * @param TokenGenerator $tokenGeneratorService
+     * @param TokenGenerator $tokenGenerator
      */
-    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGeneratorService)
+    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGenerator)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
-        $this->tokenGeneratorService = $tokenGeneratorService;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -130,7 +130,7 @@ class User
         $user->setFromDataModel($userModel);
 
         //  Set the new user with a token that can be used to set the password the first time
-        $user->setToken($this->tokenGeneratorService->generate());
+        $user->setToken($this->tokenGenerator->generate());
         $user->setTokenExpires(-1);
 
         $this->entityManager->persist($user);
@@ -210,15 +210,15 @@ class User
 
     /**
      * @param $userId
-     * @param $token
      * @param $tokenExpires
      * @return UserModel
      */
-    public function setToken($userId, $token, $tokenExpires)
+    public function setToken($userId, $tokenExpires)
     {
         $user = $this->getUserEntity($userId);
 
-        $user->setToken($token);
+        //  Generate a token value with the service
+        $user->setToken($this->tokenGenerator->generate());
         $user->setTokenExpires($tokenExpires);
 
         $this->entityManager->flush();
