@@ -26,16 +26,17 @@ class SignIn extends AbstractForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter;
+        $inputFilter = new InputFilter();
         $this->setInputFilter($inputFilter);
 
-        //  Username/email field
+        //  Email field
         $field = new Element\Email('email');
         $input = new Input($field->getName());
+        $input->setErrorMessage('invalid-email');
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter)
-            ->attach(new Filter\StringToLower);
+            ->attach(new StandardInputFilter())
+            ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty());
@@ -63,18 +64,14 @@ class SignIn extends AbstractForm
     }
 
     /**
-     * Set the authentication errors against the email for display
-     *
-     * @param mixed $errorMessages
+     * Set the authentication error reference
      */
-    public function setAuthErrors($errorMessages)
+    public function setAuthError()
     {
-        if (!is_array($errorMessages)) {
-            $errorMessages = [$errorMessages];
-        }
-
         $this->setMessages([
-            'email' => $errorMessages
+            'email' => [
+                'auth-error' => 'auth-error',
+            ],
         ]);
     }
 }
