@@ -3,9 +3,13 @@
 namespace App\Action\Password;
 
 use App\Action\AbstractAction;
+use App\Form\ResetPassword;
+use App\Service\User\User as UserService;
+use Alphagov\Notifications\Client as NotifyClient;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Slim\Flash\Messages;
+use Zend\Diactoros\Response;
 
 /**
  * Class PasswordResetAction
@@ -14,12 +18,69 @@ use Zend\Diactoros\Response\HtmlResponse;
 class PasswordResetAction extends AbstractAction
 {
     /**
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
+     * UserUpdateAction constructor.
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService, NotifyClient $notifyClient)
+    {
+        $this->userService = $userService;
+        $this->notifyClient = $notifyClient;
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return Response\HtmlResponse|Response\RedirectResponse
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-page'));
+        $session = $request->getAttribute('session');
+
+        $form = new ResetPassword([
+            'csrf' => $session['meta']['csrf']
+        ]);
+
+        if ($request->getMethod() == 'POST') {
+            $form->setData($request->getParsedBody());
+
+            if ($form->isValid()) {
+                $email = $form->get('email')->getValue();
+
+//  TODO - Reset the token in the user and set the token expires to -1. See existing user create code for this
+$token = '123ABC';
+
+                //  Generate the change password URL
+                $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
+
+                $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
+                    'token' => $token,
+                ]);
+
+                //  Send the set password email to the new user
+                $this->notifyClient->sendEmail($email, '0f993cd8-41d4-4274-9a60-b35dcadad1a9', [
+                    'change-password-url' => $changePasswordUrl,
+                ]);
+
+                /** @var Messages $flash */
+                $flash = $request->getAttribute('flash');
+                $flash->addMessage('info', 'Password reset email sent');
+
+                return $this->redirectToRoute('sign.in');
+           }
+        }
+
+        return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-page', [
+            'form'  => $form,
+        ]));
     }
 }

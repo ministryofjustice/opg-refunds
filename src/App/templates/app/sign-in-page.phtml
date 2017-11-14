@@ -35,6 +35,8 @@ $this->addErrorMap([
                     <h1 class="heading-xlarge">Sign in</h1>
                 </legend>
 
+                <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
                 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
                 <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>

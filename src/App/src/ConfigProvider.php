@@ -41,7 +41,6 @@ class ConfigProvider
                 //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
-                Action\Password\PasswordResetAction::class => Action\Password\PasswordResetAction::class,
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
@@ -56,6 +55,7 @@ class ConfigProvider
                 Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
+                Action\Password\PasswordResetAction::class => Action\Password\PasswordResetActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
