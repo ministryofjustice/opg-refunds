@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Aws\Kms\KmsClient;
 use Zend\Crypt\PublicKey\Rsa;
 
 /**
@@ -63,6 +64,7 @@ class ConfigProvider
                 //Crypt
                 Crypt\Hybrid::class => Crypt\HybridFactory::class,
                 Rsa::class => Crypt\RsaFactory::class,
+                KmsClient::class => Crypt\AwsKmsFactory::class,
             ],
         ];
     }
