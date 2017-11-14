@@ -55,7 +55,7 @@ class UserAction extends AbstractRestfulAction
 
             return new JsonResponse($user->getArrayCopy());
         } elseif (!empty($token)) {
-            $user = $this->userService->getByToken($token);
+            $user = $this->userService->getByToken($token, true);
 
             return new JsonResponse($user->getArrayCopy());
         }
@@ -105,12 +105,9 @@ class UserAction extends AbstractRestfulAction
         $requestBody = $request->getParsedBody();
 
         if (!empty($token)) {
-            //  If a token value has been provided then we are attempting to set the password for a pending user
-            $user = $this->userService->getByToken($token);
-
-            if ($user->getStatus() != UserModel::STATUS_PENDING) {
-                throw new InvalidInputException('Password can not be set by token only');
-            }
+            //  If a token value has been provided then we are attempting to set the password for a user
+            //  This can only be done if the token expires value has been set to -1 also
+            $user = $this->userService->getByToken($token, true);
 
             $user = $this->userService->setPassword($user->getId(), $requestBody['password']);
         } else {

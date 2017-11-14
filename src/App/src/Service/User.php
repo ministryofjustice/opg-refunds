@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Cases\User as UserEntity;
 use App\Exception\AlreadyExistsException;
+use App\Exception\InvalidInputException;
 use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
@@ -97,14 +98,20 @@ class User
      * Get a specific user
      *
      * @param string $token
+     * @param bool $asPasswordToken
      * @return UserModel
      */
-    public function getByToken(string $token)
+    public function getByToken(string $token, bool $asPasswordToken = false)
     {
         /** @var UserEntity $user */
         $user = $this->repository->findOneBy([
             'token' => $token,
         ]);
+
+        //  If the token is being treated as a password token then ensure that the token expiry value is set as -1
+        if ($asPasswordToken && $user instanceof UserEntity && $user->getTokenExpires() > 0) {
+            throw new InvalidInputException('Token can not be used as a password token');
+        }
 
         return $this->translateToDataModel($user);
     }
