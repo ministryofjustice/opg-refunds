@@ -191,10 +191,12 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
-        $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
-        $accountHashCount = $this->entityManager->createQuery($dql)
-            ->setParameter(1, $claim->getAccountHash())
-            ->getSingleScalarResult();
+        if ($claim->getAccountHash() !== null) {
+            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
+            $accountHashCount = $this->entityManager->createQuery($dql)
+                ->setParameter(1, $claim->getAccountHash())
+                ->getSingleScalarResult();
+        }
 
         /** @var ClaimModel $claimModel */
         $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);

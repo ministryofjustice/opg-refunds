@@ -385,7 +385,7 @@ class Claim extends AbstractDataModel
     /**
      * @return string
      */
-    public function getAccountHash(): string
+    public function getAccountHash()
     {
         return $this->accountHash;
     }

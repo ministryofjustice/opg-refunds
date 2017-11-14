@@ -4,6 +4,7 @@ namespace Ingestion\Service;
 
 use App\Entity\Cases\Claim;
 use App\Entity\Cases\Note;
+use App\Entity\Cases\User;
 use Ingestion\Entity\Application;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
@@ -29,19 +30,25 @@ class ApplicationIngestion
     /**
      * @var EntityRepository
      */
-    private $caseRepository;
+    private $claimRepository;
 
+    /**
+     * @var EntityRepository
+     */
+    private $userRepository;
 
     /**
      * DataMigration constructor.
      * @param EntityManager $applicationsEntityManager
+     * @param EntityManager $casesEntityManager
      */
     public function __construct(EntityManager $applicationsEntityManager, EntityManager $casesEntityManager)
     {
         $this->applicationsEntityManager = $applicationsEntityManager;
         $this->applicationRepository = $this->applicationsEntityManager->getRepository(Application::class);
         $this->casesEntityManager = $casesEntityManager;
-        $this->caseRepository = $this->casesEntityManager->getRepository(Claim::class);
+        $this->claimRepository = $this->casesEntityManager->getRepository(Claim::class);
+        $this->userRepository = $this->casesEntityManager->getRepository(User::class);
     }
 
     /**
@@ -93,8 +100,20 @@ class ApplicationIngestion
     {
         $uncompressedData = $this->getDecompressedData($application);
         $applicationData = json_decode($uncompressedData, true);
-        $donorName = "{$applicationData['donor']['current']['name']['title']} {$applicationData['donor']['current']['name']['first']} {$applicationData['donor']['current']['name']['last']}";
-        $claim = new Claim($application->getId(), $application->getCreated(), $applicationData, $donorName, $applicationData['account']['hash']);
+
+        $donorCurrentName = $applicationData['donor']['current']['name'];
+        $donorName = "{$donorCurrentName['title']} {$donorCurrentName['first']} {$donorCurrentName['last']}";
+
+        $accountHash = isset($applicationData['account']) ? $applicationData['account']['hash'] : null;
+
+        $claim = new Claim(
+            $application->getId(),
+            $application->getCreated(),
+            $applicationData,
+            $donorName,
+            $accountHash
+        );
+
         return $claim;
     }
 
@@ -121,9 +140,11 @@ class ApplicationIngestion
             $claim = $this->getClaim($application);
             $this->casesEntityManager->persist($claim);
 
-            if ($this->caseRepository->findOneBy(['id' => $claim->getId()]) === null) {
+            if ($this->claimRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
                     $applicationData = $this->getApplicationData($application);
+
+                    $isAssistedDigital = isset($applicationData['ad']);
 
                     $applicantName = '';
                     if ($applicationData['applicant'] === 'donor') {
@@ -134,12 +155,24 @@ class ApplicationIngestion
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
                     $note = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
-
                     $this->casesEntityManager->persist($note);
+
+                    if ($isAssistedDigital) {
+                        $adUserId = $applicationData['ad']['meta']['userId'];
+
+                        /** @var User $user */
+                        $adUser = $this->userRepository->findOneBy([
+                            'id' => $adUserId,
+                        ]);
+
+                        $adNotes = $applicationData['ad']['notes'];
+                        $adNote = new Note('Assisted Digital', $adNotes, $claim, $adUser);
+                        $this->casesEntityManager->persist($adNote);
+                    }
+
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);
-
                 } catch (UniqueConstraintViolationException $ex) {
                     $this->setProcessed($application);
                 }
