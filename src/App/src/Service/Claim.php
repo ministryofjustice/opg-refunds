@@ -191,6 +191,8 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
+        $accountHashCount = null;
+
         if ($claim->getAccountHash() !== null) {
             $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
             $accountHashCount = $this->entityManager->createQuery($dql)
@@ -351,7 +353,7 @@ class Claim
                 $claimId,
                 $userId,
                 'No Sirius POAs',
-                "Caseworker confirmed that they could not find any Sirius POAs for this claim"
+                "Caseworker confirmed that there were no eligible Sirius POAs for this claim"
             );
         } else {
             $this->addNote(
@@ -382,7 +384,7 @@ class Claim
                 $claimId,
                 $userId,
                 'No Meris POAs',
-                "Caseworker confirmed that they could not find any Meris POAs for this claim"
+                "Caseworker confirmed that there were no eligible Meris POAs for this claim"
             );
         } else {
             $this->addNote(
@@ -671,7 +673,7 @@ class Claim
      * @param int $userId
      * @return array
      */
-    private function getClaimModelToEntityMappings(int $accountHashCount, ClaimEntity $claim, int $userId): array
+    private function getClaimModelToEntityMappings($accountHashCount, ClaimEntity $claim, int $userId): array
     {
         return [
             'AccountHashCount' => function () use ($accountHashCount) {

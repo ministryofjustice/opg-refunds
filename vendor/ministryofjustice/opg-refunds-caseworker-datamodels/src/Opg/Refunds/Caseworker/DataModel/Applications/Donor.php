@@ -65,7 +65,7 @@ class Donor extends AbstractDataModel
      */
     public function hasPoaName(): bool
     {
-        return $this->poa !== null;
+        return $this->poa !== null && $this->poa->hasName();
     }
 
     /**
