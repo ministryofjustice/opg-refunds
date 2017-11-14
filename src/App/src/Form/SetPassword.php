@@ -26,7 +26,7 @@ class SetPassword extends AbstractForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter;
+        $inputFilter = new InputFilter();
         $this->setInputFilter($inputFilter);
 
         //  Password field
@@ -34,7 +34,7 @@ class SetPassword extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-              ->attach(new StandardInputFilter);
+              ->attach(new StandardInputFilter());
 
         $input->getValidatorChain()
               ->attach(new NotEmpty(), true)
@@ -56,12 +56,11 @@ class SetPassword extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-              ->attach(new StandardInputFilter);
+              ->attach(new StandardInputFilter());
 
-        $input->getValidatorChain()
-              ->attach(new NotEmpty());
-
-        $input->setRequired(true);
+        //  Only set the validation rules on the main password field to avoid duplicate messages
+        //  The "Identical" validation rule will ensure that the password confirmation ends up being an acceptable value
+        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);
