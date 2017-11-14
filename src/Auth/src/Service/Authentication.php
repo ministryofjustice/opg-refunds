@@ -6,8 +6,8 @@ use App\Entity\Cases\User as UserEntity;
 use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
 use App\Service\User as UserService;
+use App\Service\TokenGenerator;
 use Auth\Exception\UnauthorizedException;
-use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
@@ -32,7 +32,7 @@ class Authentication
     private $userService;
 
     /**
-     * @var TokenGeneratorService
+     * @var TokenGenerator
      */
     private $tokenGeneratorService;
 
@@ -46,11 +46,12 @@ class Authentication
     /**
      * Authentication constructor
      *
-     * @param UserService $userService
      * @param EntityManager $entityManager
+     * @param UserService $userService
+     * @param TokenGenerator $tokenGeneratorService
      * @param int $tokenTtl
      */
-    public function __construct(EntityManager $entityManager, UserService $userService, TokenGeneratorService $tokenGeneratorService, int $tokenTtl)
+    public function __construct(EntityManager $entityManager, UserService $userService, TokenGenerator $tokenGeneratorService, int $tokenTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->userService = $userService;

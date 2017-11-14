@@ -33,10 +33,6 @@ class ConfigProvider
     public function getDependencies()
     {
         return [
-            'invokables' => [
-                //  Services
-                Service\TokenGenerator::class => Service\TokenGenerator::class,
-            ],
             'factories'  => [
                 //  Actions
                 Action\AuthAction::class => Action\AuthActionFactory::class,

@@ -2,6 +2,7 @@
 
 namespace Auth\Service;
 
+use App\Service\TokenGenerator;
 use App\Service\User as UserService;
 use Interop\Container\ContainerInterface;
 

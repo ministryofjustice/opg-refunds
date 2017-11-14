@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\Cases\User as UserEntity;
 use App\Exception\AlreadyExistsException;
 use App\Exception\InvalidInputException;
-use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -30,7 +29,7 @@ class User
     private $entityManager;
 
     /**
-     * @var TokenGeneratorService
+     * @var TokenGenerator
      */
     private $tokenGeneratorService;
 
@@ -38,8 +37,9 @@ class User
      * User constructor
      *
      * @param EntityManager $entityManager
+     * @param TokenGenerator $tokenGeneratorService
      */
-    public function __construct(EntityManager $entityManager, TokenGeneratorService $tokenGeneratorService)
+    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGeneratorService)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
