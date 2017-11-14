@@ -40,6 +40,14 @@ class Postcodes extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasDonorPostcode(): bool
+    {
+        return !empty($this->donorPostcode);
+    }
+
+    /**
      * @return string
      */
     public function getAttorneyPostcode()
@@ -56,5 +64,13 @@ class Postcodes extends AbstractDataModel
         $this->attorneyPostcode = $attorneyPostcode;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyPostcode(): bool
+    {
+        return !empty($this->attorneyPostcode);
     }
 }

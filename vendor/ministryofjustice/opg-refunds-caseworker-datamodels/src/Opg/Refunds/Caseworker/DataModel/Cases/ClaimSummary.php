@@ -69,6 +69,11 @@ class ClaimSummary extends AbstractDataModel
     protected $donorName;
 
     /**
+     * @var bool;
+     */
+    protected $assistedDigital;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -285,6 +290,25 @@ class ClaimSummary extends AbstractDataModel
     public function setDonorName(string $donorName)
     {
         $this->donorName = $donorName;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAssistedDigital(): bool
+    {
+        return $this->assistedDigital;
+    }
+
+    /**
+     * @param bool $assistedDigital
+     * @return $this
+     */
+    public function setAssistedDigital(bool $assistedDigital)
+    {
+        $this->assistedDigital = $assistedDigital;
 
         return $this;
     }

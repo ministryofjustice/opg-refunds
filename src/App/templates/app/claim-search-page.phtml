@@ -135,7 +135,16 @@
                 <?php foreach ($claimSummaryPage->getClaimSummaries() as $claimSummary) { ?>
                     <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
                     <tr>
-                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getReferenceNumber()) ?></a></td>
+                        <td>
+                            <div>
+                                <a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getReferenceNumber()) ?></a>
+                            </div>
+                            <?php if ($claimSummary->isAssistedDigital()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Assisted digital</strong>
+                                </div>
+                            <?php } ?>
+                        </td>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>

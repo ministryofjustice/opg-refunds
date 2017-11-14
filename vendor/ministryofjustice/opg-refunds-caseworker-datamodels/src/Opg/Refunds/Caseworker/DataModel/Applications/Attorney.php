@@ -61,6 +61,14 @@ class Attorney extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasPoaName(): bool
+    {
+        return $this->poa !== null;
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property

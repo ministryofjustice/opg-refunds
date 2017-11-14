@@ -13,28 +13,30 @@ Mandatory: claim
 <dl class="details">
     <div class="">
         <dt class="details-term">Refund made via:</dt>
-        <dd class="details-definition">Bank transfer</dd>
+        <dd class="details-definition"><?= $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer' ?></dd>
     </div>
     <div class="">
         <dt class="details-term">Total refund amount:</dt>
         <dd class="details-definition"><?= $this->e($this->getRefundTotalAmountString($claim)) ?></dd>
     </div>
 
-    <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
-    <div class="details-warning">
-        <dt class="details-term">Warning</dt>
-    <?php } else { ?>
-    <div class="">
-    <?php } ?>
+    <?php if ($claim->hasAccountHash() && $claim->hasAccountHashCount()) { ?>
+        <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+        <div class="details-warning">
+            <dt class="details-term">Warning</dt>
+        <?php } else { ?>
+        <div class="">
+        <?php } ?>
 
-    <div class="">
-        <dt class="details-term">
-            <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
-                <i class="icon icon-important">
-                    <span class="visually-hidden">Warning</span>
-                </i>
-            <?php } ?>
-            <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $this->e($claim->getAccountHash())]) ?>"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></a>
-        </dt>
-    </div>
+        <div class="">
+            <dt class="details-term">
+                <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+                    <i class="icon icon-important">
+                        <span class="visually-hidden">Warning</span>
+                    </i>
+                <?php } ?>
+                <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $this->e($claim->getAccountHash())]) ?>"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></a>
+            </dt>
+        </div>
+    <?php } ?>
 </dl>

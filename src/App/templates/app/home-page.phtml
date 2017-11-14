@@ -20,6 +20,11 @@
             <input type='submit' class="button" name='submit' value='Process new claim'>
 
         </form>
+
+        <h2 class="heading-medium heading-refunds">Assisted digital</h2>
+        <p>Help a user with their claim</p>
+
+        <a class="button-secondary" href="<?= $this->generateUrl('assisted-digital.start') ?>" target="_blank">Begin assisted digital claim</a>
     </div>
     <div class="column-four-fifths">
 
@@ -43,8 +48,17 @@
             <?php foreach ($user->getClaims() as $claim) { ?>
                 <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
                 <tr>
-                    <td><a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getReferenceNumber()) ?></a></td>
-                    <td><?= $this->e($claim->getDonorName()) ?></td>
+                    <td>
+                        <div>
+                            <a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getReferenceNumber()) ?></a>
+                        </div>
+                        <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
+                            <div>
+                                <strong class="phase-tag">Assisted digital</strong>
+                            </div>
+                        <?php } ?>
+                    </td>
+                    <td><a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getDonorName()) ?></a></td>
                     <td><?= $this->e($this->getDayAndFullTextMonth($claim->getReceivedDateTime())) ?></td>
                     <td><?= $this->e($this->getTimeIntervalBetween($claim->getUpdatedDateTime())) ?></td>
                 </tr>
