@@ -13,6 +13,7 @@
     "gulp": "gulpjs/gulp#4.0",
     "gulp-clean-css": "latest",
     "gulp-concat": "latest",
+    "gulp-jasmine-browser": "^1.9.1",
     "gulp-sass": "latest",
     "gulp-sourcemaps": "latest",
     "gulp-uglify": "latest",

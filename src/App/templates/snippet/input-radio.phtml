@@ -13,10 +13,9 @@ $value = $formElement->getValue();
     <fieldset>
 
         <legend id="<?= "{$elementId}" ?>">
-            <?php if (!isset($questionHidden)): ?><span class="visually-hidden"><?php endif ?>
+            <span class="<?php if (!isset($questionHidden)): ?>visually-hidden<?php endif ?> question-text">
                 <span class="form-label-bold"><?= $this->e($question) ?></span>
-            <?php if (isset($questionHidden)): ?></span><?php endif ?>
-            
+            </span>
             <?php foreach($formElement->getMessages() as $message): ?>
             <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
             <?php endforeach ?>

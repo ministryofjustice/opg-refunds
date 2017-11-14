@@ -1,6 +1,7 @@
 // Utils
 const gulp = require('gulp');
 const del = require('del');
+const jasmineBrowser = require('gulp-jasmine-browser');
 
 // JavaScript
 const concat = require('gulp-concat');
@@ -21,7 +22,8 @@ const sourcemaps = require('gulp-sourcemaps');
 const paths = {
   build: `${__dirname}/public/assets`,
   src: `${__dirname}/src`,
-  modules: `${__dirname}/node_modules`
+  modules: `${__dirname}/node_modules`,
+  specs: `${__dirname}/test/js`,
 };
 
 // GOVUK assets
@@ -42,6 +44,21 @@ const applicationModules = [
   `${paths.src}/js/app/scroll-to-hash.js`,
   `${paths.src}/js/app/application.js`
 ];
+
+// Analytics JavaScript files
+const analyticsModules = [
+  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/google-analytics-universal-tracker.js`,
+  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/govuk-tracker.js`,
+  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/analytics.js`,
+  `${paths.src}/js/app/analytics/form-error-tracker.js`,
+  `${paths.src}/js/app/analytics/analytics.js`
+];
+
+const specsModules = [
+  `${paths.build}/javascripts/vendor.js`,
+  `${paths.build}/javascripts/custom-analytics.js`,
+  `${paths.specs}/app/**/*.spec.js`
+]
 
 const stylesPath = `${paths.src}/scss/**/*.scss`;
 
@@ -93,6 +110,19 @@ function appScripts() {
     .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
 
+function analyticScripts() {
+  return gulp.src(analyticsModules)
+    .pipe(sourcemaps.init())
+    .pipe(concat('custom-analytics.js'))
+    .pipe(uglify({
+      compress: { ie8: true },
+      mangle: { ie8: true },
+      output: { ie8: true }
+    }))
+    .pipe(sourcemaps.write('./'))
+    .pipe(gulp.dest(`${paths.build}/javascripts`));
+}
+
 // Styles
 function styles() {
   return gulp.src(stylesPath)
@@ -103,16 +133,24 @@ function styles() {
     .pipe(gulp.dest(`${paths.build}/styles`));
 }
 
+function test() {
+  return gulp.src(specsModules)
+    .pipe(jasmineBrowser.specRunner())
+    .pipe(jasmineBrowser.server({port: 8888}));
+}
+
 // Watch
 function watch() {
+  gulp.watch(vendorModules, vendorScripts);
   gulp.watch(applicationModules, appScripts);
-  gulp.watch(vendorScripts, vendorModules);
+  gulp.watch(analyticsModules, analyticScripts);
 }
 
 // Task sets
 const compile = gulp.series(clean, 
-  gulp.parallel(vendorScripts,appScripts,govuk_template,styles,govuk_frontend_toolkit_images)
+  gulp.parallel(vendorScripts,appScripts,analyticScripts,govuk_template,styles,govuk_frontend_toolkit_images)
 );
 
 gulp.task('build', gulp.series(compile));
 gulp.task('dev', gulp.series(compile, watch));
+gulp.task('test', gulp.series(analyticScripts, test))

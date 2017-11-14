@@ -32,9 +32,9 @@ $formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormCont
 <div class="<?= $this->e($formGroup) ?>">
     <label class="form-label" for="<?= $formId ?>">
 
-        <?php if (isset($formLabelBold) && $formLabelBold): ?><span class="form-label-bold"><?php endif ?>
+        <span class="question-text<?php if (isset($formLabelBold) && $formLabelBold): ?> form-label-bold<?php endif ?>">
             <?= $this->e($formLabel) ?>
-        <?php if (isset($formLabelBold) && $formLabelBold): ?></span><?php endif ?>
+        </span>
 
         <?php if (isset($formHint)): ?>
             <span class="form-hint"><?= $this->e($formHint) ?></span>
