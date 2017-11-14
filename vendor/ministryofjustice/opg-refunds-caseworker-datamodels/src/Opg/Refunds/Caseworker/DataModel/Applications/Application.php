@@ -335,7 +335,7 @@ class Application extends AbstractDataModel
     /**
      * @return bool
      */
-    public function getDonorDeceased(): bool
+    public function isDonorDeceased(): bool
     {
         return $this->deceased !== null && $this->deceased;
     }
