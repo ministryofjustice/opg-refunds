@@ -45,10 +45,12 @@ $postcodes = $claim->getApplication()->getPostcodes();
     <input type="hidden" name="system" value="<?= $this->e($system) ?>">
 
     <div>
-        <?php $this->insert('snippet::input-checkbox', [
-            'formElement' => $form->get('donor-checked'),
-            'formLabel' => 'Donor name and date of birth checked'
-        ]) ?>
+        <?php if ($form->has('donor-checked')) {
+            $this->insert('snippet::input-checkbox', [
+                'formElement' => $form->get('donor-checked'),
+                'formLabel' => 'Donor name and date of birth checked'
+            ]);
+        } ?>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('case-number'),

@@ -12,11 +12,11 @@ Mandatory: claim
 <h2 class="heading-medium heading-refunds">Payment details</h2>
 <dl class="details">
     <div class="">
-        <dt class="details-term">Refund made via:</dt>
+        <dt class="details-term">Refund made via</dt>
         <dd class="details-definition"><?= $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer' ?></dd>
     </div>
     <div class="">
-        <dt class="details-term">Total refund amount:</dt>
+        <dt class="details-term">Total refund amount</dt>
         <dd class="details-definition"><?= $this->e($this->getRefundTotalAmountString($claim)) ?></dd>
     </div>
 

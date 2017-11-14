@@ -591,6 +591,14 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function hasPoas()
+    {
+        return $this->getPoas() !== null && count($this->getPoas()) > 0;
+    }
+
+    /**
+     * @return bool
+     */
     public function hasSiriusPoas()
     {
         return $this->hasSystemPoas(PoaModel::SYSTEM_SIRIUS);

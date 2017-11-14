@@ -9,9 +9,9 @@ Mandatory: claim
  */
 ?>
 
-<?php $this->insert('snippet::donor-details', ['donor' => $claim->getApplication()->getDonor()]) ?>
+<?php $this->insert('snippet::donor-details', ['claim'=> $claim, 'donor' => $claim->getApplication()->getDonor()]) ?>
 
-<?php $this->insert('snippet::attorney-details', ['attorney' => $claim->getApplication()->getAttorney()]) ?>
+<?php $this->insert('snippet::attorney-details', ['claim'=> $claim, 'attorney' => $claim->getApplication()->getAttorney()]) ?>
 
 <?php $this->insert('snippet::verification-details', [
     'claim'      => $claim,
