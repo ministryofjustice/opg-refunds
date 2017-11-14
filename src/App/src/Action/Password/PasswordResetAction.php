@@ -2,6 +2,7 @@
 
 namespace App\Action\Password;
 
+use Api\Exception\ApiException;
 use App\Action\AbstractAction;
 use App\Form\ResetPassword;
 use App\Service\User\User as UserService;
@@ -28,7 +29,6 @@ class PasswordResetAction extends AbstractAction
     private $notifyClient;
 
     /**
-     * UserUpdateAction constructor.
      * @param UserService $userService
      */
     public function __construct(UserService $userService, NotifyClient $notifyClient)
@@ -63,20 +63,22 @@ class PasswordResetAction extends AbstractAction
             if ($form->isValid()) {
                 $email = $form->get('email')->getValue();
 
-//  TODO - Reset the token in the user and set the token expires to -1. See existing user create code for this
-$token = '123ABC';
+                try {
+                    //  Reset the password and set the token in the email to the user
+                    $user = $this->userService->resetPassword($email);
 
-                //  Generate the change password URL
-                $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
+                    //  Generate the change password URL
+                    $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
 
-                $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
-                    'token' => $token,
-                ]);
+                    $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
+                        'token' => $user->getToken(),
+                    ]);
 
-                //  Send the set password email to the new user
-                $this->notifyClient->sendEmail($email, '0f993cd8-41d4-4274-9a60-b35dcadad1a9', [
-                    'change-password-url' => $changePasswordUrl,
-                ]);
+                    //  Send the set password email to the new user
+                    $this->notifyClient->sendEmail($email, '0f993cd8-41d4-4274-9a60-b35dcadad1a9', [
+                        'change-password-url' => $changePasswordUrl,
+                    ]);
+                } catch (ApiException $ignore) {}
 
                 /** @var Messages $flash */
                 $flash = $request->getAttribute('flash');
