@@ -44,6 +44,13 @@ class PasswordResetAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $identity = $request->getAttribute('identity');
+
+        //  Users can not reset passwords while logged in
+        if (!is_null($identity)) {
+            return $this->redirectToRoute('home');
+        }
+
         $session = $request->getAttribute('session');
 
         $form = new ResetPassword([

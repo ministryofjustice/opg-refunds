@@ -13,7 +13,7 @@ class PasswordResetActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return PasswordChangeAction
+     * @return PasswordResetAction
      */
     public function __invoke(ContainerInterface $container)
     {
