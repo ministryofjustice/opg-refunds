@@ -95,6 +95,23 @@ class User
     }
 
     /**
+     * Get a specific active user by email address
+     *
+     * @param string $email
+     * @return UserModel
+     */
+    public function getByEmail(string $email)
+    {
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
+            'email'  => $email,
+            'status' => UserModel::STATUS_ACTIVE,
+        ]);
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
      * Get a specific user
      *
      * @param string $token

@@ -29,6 +29,7 @@
 //  Unauthenticated routes
 $app->post('/v1/auth', Auth\Action\AuthAction::class, 'auth');
 $app->route('/v1/user-by-token/{token}', App\Action\UserAction::class, ['GET', 'PATCH'], 'user.by.token');
+$app->patch('/v1/reset-password', App\Action\PasswordResetAction::class, 'password.reset');
 $app->get('/ping', App\Action\PingAction::class, 'ping');
 
 //  Authenticated routes

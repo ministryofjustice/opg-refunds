@@ -11,6 +11,7 @@ return [
         'guest' => [
             'auth',
             'user.by.token',
+            'password.reset',
             'ping',
         ],
         'authenticated-user' => [

@@ -77,12 +77,8 @@ class Authentication
             throw new UnauthorizedException('User is inactive');
         }
 
-        //  Attempt to generate a token for the user
-        do {
-            $user = $this->userService->setToken($user->getId(), time() + $this->tokenTtl);
-        } while (!$user instanceof User);
-
-        return $user;
+        //  Use the user service to set a token for the user
+        return $this->userService->setToken($user->getId(), time() + $this->tokenTtl);
     }
 
     /**
