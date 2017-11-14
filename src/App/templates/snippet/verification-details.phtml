@@ -54,7 +54,7 @@ $attorney = $claim->getApplication()->getAttorney();
         <?php } ?>
     </div>
 
-    <?php if ($caseNumber->getPoaCaseNumber() !== null) { ?>
+    <?php if ($claim->getApplication()->hasCaseNumber()) { ?>
     <div class="">
         <dt class="details-term">Case reference:</dt>
         <dd class="details-definition"><?= $this->e($caseNumber->getPoaCaseNumber()) ?></dd>
@@ -68,7 +68,7 @@ $attorney = $claim->getApplication()->getAttorney();
     </div>
     <?php } ?>
 
-    <?php if ($postcodes->getDonorPostcode() !== null) { ?>
+    <?php if ($claim->getApplication()->hasDonorPostcode()) { ?>
     <div class="">
         <dt class="heading-small">Donor postcode:</dt>
         <dd class="details-definition"><?= $this->e($postcodes->getDonorPostcode()) ?></dd>
@@ -82,7 +82,7 @@ $attorney = $claim->getApplication()->getAttorney();
     </div>
     <?php } ?>
 
-    <?php if ($postcodes->getAttorneyPostcode() !== null) { ?>
+    <?php if ($claim->getApplication()->hasAttorneyPostcode()) { ?>
     <div class="">
         <dt class="heading-small">Attorney postcode:</dt>
         <dd class="details-definition"><?= $this->e($postcodes->getAttorneyPostcode()) ?></dd>

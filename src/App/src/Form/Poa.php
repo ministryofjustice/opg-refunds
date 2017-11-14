@@ -128,13 +128,13 @@ class Poa extends AbstractForm
         }
 
         //  Donor postcode. Only if supplied by claimant and not already verified
-        if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
+        if ($claim->getApplication()->hasDonorPostcode() &&
             (!$claim->isDonorPostcodeVerified() || ($poa !== null && $poa->hasDonorPostcodeVerification()))) {
             $this->addVerificationRadio('donor-postcode', $inputFilter);
         }
 
         //  Attorney postcode
-        if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
+        if ($claim->getApplication()->hasAttorneyPostcode() !== null &&
             (!$claim->isAttorneyPostcodeVerified() || ($poa !== null && $poa->hasAttorneyPostcodeVerification()))) {
             $this->addVerificationRadio('attorney-postcode', $inputFilter);
         }

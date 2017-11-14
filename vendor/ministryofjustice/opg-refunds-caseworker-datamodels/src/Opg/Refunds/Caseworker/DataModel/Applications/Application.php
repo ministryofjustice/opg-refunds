@@ -318,7 +318,7 @@ class Application extends AbstractDataModel
      */
     public function isRefundByCheque(): bool
     {
-        return $this->cheque;
+        return $this->cheque !== null && $this->cheque;
     }
 
     /**
@@ -337,7 +337,7 @@ class Application extends AbstractDataModel
      */
     public function getDonorDeceased(): bool
     {
-        return $this->deceased;
+        return $this->deceased !== null && $this->deceased;
     }
 
     /**

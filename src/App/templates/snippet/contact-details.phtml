@@ -15,16 +15,22 @@ Mandatory: application
         <dt class="details-term">Applicant:</dt>
         <dd class="details-definition"><?= $this->e($this->getApplicantName($application)) ?></dd>
     </div>
-    <?php if ($application->getContact()->getEmail() !== null) { ?>
+    <?php if ($application->getContact()->hasEmail()) { ?>
         <div class="">
             <dt class="details-term">Email:</dt>
             <dd class="details-definition"><?= $this->e($application->getContact()->getEmail()) ?></dd>
         </div>
     <?php } ?>
-    <?php if ($application->getContact()->getPhone() !== null) { ?>
+    <?php if ($application->getContact()->hasPhone()) { ?>
         <div class="">
             <dt class="details-term">Telephone:</dt>
             <dd class="details-definition"><?= $this->e($application->getContact()->getPhone()) ?></dd>
+        </div>
+    <?php } ?>
+    <?php if ($application->getContact()->hasAddress()) { ?>
+        <div class="">
+            <dt class="details-term">Address:</dt>
+            <dd class="details-definition"><?= nl2br($this->e($application->getContact()->getAddress())) ?></dd>
         </div>
     <?php } ?>
 </dl>
