@@ -227,9 +227,8 @@ class Claim implements ApiClientInterface
      */
     private function updatePoaCaseNumberVerification(ClaimModel $claim, PoaModel $poa)
     {
-        $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
-
-        if ($poaCaseNumber !== null) {
+        if ($claim->getApplication()->hasCaseNumber()) {
+            $poaCaseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
             $caseNumber = $poa->getCaseNumber();
 
             //Strip out meris sequence number if present

@@ -5,6 +5,7 @@ Mandatory: attorney
 */
 
 /**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  * @var \Opg\Refunds\Caseworker\DataModel\Applications\Attorney $attorney
  */
 ?>
@@ -12,17 +13,38 @@ Mandatory: attorney
 <h2 class="heading-medium heading-refunds">Attorney details</h2>
 <dl class="details">
     <div class="">
-        <dt class="details-term">Name:</dt>
+        <dt class="details-term">Name</dt>
         <dd class="details-definition"><?= $this->e($this->getFormattedName($attorney->getCurrent()->getName())) ?></dd>
+        <?php if (!$attorney->hasPoaName() && $claim->isAttorneyVerified()) { ?>
+            <dd class="details-verified">
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
+                </i>
+            </dd>
+        <?php } ?>
     </div>
     <div class="">
-        <dt class="details-term">Date of birth:</dt>
+        <dt class="details-term">Date of birth</dt>
         <dd class="details-definition"><?= $this->e($this->getDateOfBirthString($attorney->getCurrent()->getDob())) ?></dd>
+        <?php if ($claim->isAttorneyVerified()) { ?>
+            <dd class="details-verified">
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
+                </i>
+            </dd>
+        <?php } ?>
     </div>
-    <?php if ($attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null) { ?>
+    <?php if ($attorney->hasPoaName()) { ?>
         <div class="">
-            <dt class="details-term">Name on power attorney documents:</dt>
+            <dt class="details-term">Name on power attorney documents</dt>
             <dd class="details-definition"><?= $this->e($this->getFormattedName($attorney->getPoa()->getName())) ?></dd>
+            <?php if ($claim->isAttorneyVerified()) { ?>
+                <dd class="details-verified">
+                    <i class="icon icon-tick" title="Verified">
+                        <span class="visually-hidden">Verified</span>
+                    </i>
+                </dd>
+            <?php } ?>
         </div>
     <?php } ?>
 </dl>

@@ -159,7 +159,7 @@ $this->addErrorMap([
             <li>
                 <p class="timeline-reference"><?= $this->e($this->getNoteDateString($note->getCreatedDateTime())) ?> <span class="time"><?= $this->e($this->getNoteTimeString($note->getCreatedDateTime())) ?></span></p>
                 <h2><?= $this->e($note->getTitle()) ?></h2>
-                <p><?= $this->e($note->getMessage()) ?></p>
+                <p><?= nl2br($this->e($note->getMessage())) ?></p>
                 <?php if ($note->getUserName() !== null) { ?>
                     <p>by <?= $this->e($note->getUserName()) ?></p>
                 <?php } ?>

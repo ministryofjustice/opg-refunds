@@ -15,7 +15,7 @@ Mandatory: claim
     <?php if ($claim->getPoas() !== null) {
         foreach ($claim->getPoas() as $poa) { ?>
             <div class="">
-                <dt class="details-term">Case number:</dt>
+                <dt class="details-term">Case number</dt>
                 <dd class="details-definition"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></dd>
             </div>
         <?php }

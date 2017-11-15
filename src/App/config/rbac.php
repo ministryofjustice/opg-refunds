@@ -41,6 +41,7 @@ return [
             'claim.search',
             'claim.assign',
             'claim.unassign',
+            'assisted-digital.start',
         ],
         User::ROLE_REPORTING => [
             'reporting',
