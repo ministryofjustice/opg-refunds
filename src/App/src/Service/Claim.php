@@ -640,6 +640,37 @@ class Claim
 
     /**
      * @param $claimId
+     * @param $userId
+     * @param $reason
+     * @throws Exception
+     */
+    public function setStatusPending($claimId, $userId, $reason)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        if (!$this->isReadOnly($claim, $userId) && $claim->getPayment() !== null) {
+            throw new Exception('You cannot set this claim\'s status back to pending', 403);
+        }
+
+        $claim->setStatus(ClaimModel::STATUS_PENDING);
+        $claim->setRejectionReason(null);
+        $claim->setRejectionReasonDescription(null);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy(null);
+        $claim->setFinishedDateTime(null);
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            'Claim outcome changed',
+            "Administrator changed the claim outcome due to: '{$reason}'"
+        );
+    }
+
+    /**
+     * @param $claimId
      * @return ClaimEntity
      */
     public function getClaimEntity($claimId): ClaimEntity
