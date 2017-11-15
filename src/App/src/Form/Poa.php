@@ -104,25 +104,23 @@ class Poa extends AbstractForm
         /** @var PoaModel $poa */
         $poa = $options['poa'];
 
-        //  Donor checked. Only present for first POA
-        if (!$claim->hasPoas()) {
-            $field = new Checkbox('donor-checked', [
-                'checked_value' => 'yes',
-                'unchecked_value' => 'no'
-            ]);
-            $input = new Input($field->getName());
+        //  Donor checked
+        $field = new Checkbox('donor-checked', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
 
-            $input->getFilterChain()
-                ->attach(new StandardInputFilter);
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
 
-            $input->getValidatorChain()
-                ->attach(new Validator\NotEmpty());
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
 
-            $input->setRequired(true);
+        $input->setRequired(true);
 
-            $this->add($field);
-            $inputFilter->add($input);
-        }
+        $this->add($field);
+        $inputFilter->add($input);
 
         //  Attorney details. Only present if not already verified
         if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
