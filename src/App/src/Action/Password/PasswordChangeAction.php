@@ -2,6 +2,7 @@
 
 namespace App\Action\Password;
 
+use Api\Exception\ApiException;
 use App\Action\AbstractAction;
 use App\Form\SetPassword;
 use App\Service\User\User as UserService;
@@ -56,11 +57,11 @@ class PasswordChangeAction extends AbstractAction
 
         //  If a token was provided then get the user details now
         if (!empty($token)) {
-            //  If a token was provided get the user details and check that they are pending
-            $user = $this->userService->getUserByToken($token);
-
-            if ($user->getStatus() != User::STATUS_PENDING) {
-                throw new Exception('Token has been used', 403);
+            //  The checks to determine if the user is in the correct state (i.e. token expires = -1) will take place in the API
+            try {
+                $user = $this->userService->getUserByToken($token);
+            } catch (ApiException $aex) {
+                throw new Exception($aex->getMessage(), 403);
             }
         }
 

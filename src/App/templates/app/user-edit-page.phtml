@@ -1,4 +1,18 @@
-<?php $this->layout('layout::default', ['title' => 'Users']) ?>
+<?php $this->layout('layout::default', ['title' => 'Users']);
+
+$this->addErrorMap([
+    'email' => [
+        'required' => [
+            'summary'   => 'Please enter a valid public guardian or digital justice email address',
+            'field'     => 'Please enter a valid public guardian or digital justice email address',
+        ],
+        'invalid-email' => [
+            'summary'   => 'Please enter a valid public guardian or digital justice email address',
+            'field'     => 'Please enter a valid public guardian or digital justice email address',
+        ],
+    ],
+]);
+?>
 
 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 

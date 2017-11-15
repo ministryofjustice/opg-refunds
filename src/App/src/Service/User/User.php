@@ -105,7 +105,7 @@ class User implements ApiClientInterface
     }
 
     /**
-     * Update password using a token value - for pending users only
+     * Update password using a token value
      *
      * @param $token
      * @param $password
@@ -115,6 +115,21 @@ class User implements ApiClientInterface
     {
         $userData = $this->getApiClient()->httpPatch('/v1/user-by-token/' . $token, [
             'password' => $password,
+        ]);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
+     * Reset a password for a user - this will generate a token against the user that can then be used for this purpose
+     *
+     * @param $email
+     * @return null|UserModel
+     */
+    public function resetPassword($email)
+    {
+        $userData = $this->getApiClient()->httpPatch('/v1/reset-password', [
+            'email' => $email,
         ]);
 
         return $this->createDataModel($userData);

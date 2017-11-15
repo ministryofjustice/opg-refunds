@@ -50,7 +50,7 @@ class User extends AbstractForm
         $inputFilter->add($input);
 
         //  Email field
-        $field = new Element\Email('email');
+        $field = new Text('email');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -58,7 +58,8 @@ class User extends AbstractForm
               ->attach(new Filter\StringToLower);
 
         $input->getValidatorChain()
-              ->attach(new Validator\NotEmpty());
+            ->attach(new Validator\NotEmpty(), true)
+            ->attach(new Validator\Email());
 
         $input->setRequired(true);
 

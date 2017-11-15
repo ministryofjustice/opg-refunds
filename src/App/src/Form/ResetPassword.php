@@ -2,23 +2,24 @@
 
 namespace App\Form;
 
-use App\Validator\NotEmpty;
+use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element\Password;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
+use Zend\Form\Element\Text;
+use Zend\Filter;
 use Zend\Validator\Identical;
 
 /**
- * Form for setting a password
+ * Form for resetting a password
  *
- * Class SetPassword
+ * Class ResetPassword
  * @package App\Form
  */
-class SetPassword extends AbstractForm
+class ResetPassword extends AbstractForm
 {
     /**
-     * SetPassword constructor
+     * ResetPassword constructor
      *
      * @param array $options
      */
@@ -29,34 +30,36 @@ class SetPassword extends AbstractForm
         $inputFilter = new InputFilter();
         $this->setInputFilter($inputFilter);
 
-        //  Password field
-        $field = new Password('password');
+        //  Email field
+        $field = new Text('email');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-              ->attach(new StandardInputFilter());
+            ->attach(new StandardInputFilter())
+            ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
-              ->attach(new NotEmpty(), true)
-              ->attach(new Validator\Password())
-              ->attach(new Identical([
-                  'token' => 'confirm-password',
-                  'messages' => [
-                      Identical::NOT_SAME => 'password-mismatch',
-                  ],
-              ]));
+            ->attach(new Validator\NotEmpty(), true)
+            ->attach(new Validator\Email(), true)
+            ->attach(new Identical([
+                'token' => 'confirm-email',
+                'messages' => [
+                    Identical::NOT_SAME => 'email-mismatch',
+                ],
+            ]));
 
         $input->setRequired(true);
 
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Confirm password field
-        $field = new Password('confirm-password');
+        //  Confirm email field
+        $field = new Text('confirm-email');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-              ->attach(new StandardInputFilter());
+            ->attach(new StandardInputFilter())
+            ->attach(new Filter\StringToLower());
 
         //  Only set the validation rules on the main password field to avoid duplicate messages
         //  The "Identical" validation rule will ensure that the password confirmation ends up being an acceptable value

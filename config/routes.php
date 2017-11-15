@@ -29,7 +29,7 @@
 //  Unauthenticated routes
 $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
-$app->get('/reset-password', App\Action\Password\PasswordResetAction::class, 'password.reset');
+$app->route('/reset-password', App\Action\Password\PasswordResetAction::class, ['GET', 'POST'], 'password.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\Home\HomeAction::class, 'home');
