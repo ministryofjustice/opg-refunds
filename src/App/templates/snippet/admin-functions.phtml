@@ -17,7 +17,7 @@ Mandatory: claim
     <h2 class="heading-medium heading-refunds">Administrator</h2>
     <dl class="details">
 
-        <?php if($claim->isClaimComplete() && $claim->isReadOnly()) { ?>
+        <?php if(($claim->getStatus() === ClaimModel::STATUS_ACCEPTED && $claim->getPayment() === null) || $claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
 
             <div class="">
                 <dt class="details-term">Outcome</dt>
