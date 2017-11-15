@@ -51,6 +51,7 @@ class ConfigProvider
                 //  Actions
                 Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
+                Action\Claim\ClaimChangeOutcomeAction::class => Action\Claim\ClaimChangeOutcomeActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
                 Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,

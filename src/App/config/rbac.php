@@ -39,8 +39,7 @@ return [
             'claim.approve',
             'claim.reject',
             'claim.search',
-            'claim.assign',
-            'claim.unassign',
+            'claim.change.outcome',
             'assisted-digital.start',
         ],
         User::ROLE_REPORTING => [
