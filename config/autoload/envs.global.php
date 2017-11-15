@@ -36,6 +36,21 @@ return [
         ]
     ],
 
+    // Assisted digital
+    'ad' => [
+
+        'cookie' => [
+            'name' => 'ad'
+        ],
+
+        'link' => [
+            'signature' => [
+                'key' => getenv('OPG_REFUNDS_AD_LINK_SIGNATURE_KEY') ?: null,
+            ]
+        ],
+
+    ],
+
     'beta' => [
 
         // Set to false when we move out of beta

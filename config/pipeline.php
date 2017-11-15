@@ -40,12 +40,13 @@ $app->pipe(ImplicitOptionsMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
 // Apply caching headers to non-personalised responses
+$app->pipe(App\Middleware\AssistedDigital\AssistedDigitalMiddleware::class);
 $app->pipe(App\Middleware\Beta\BetaCheckMiddleware::class);
 $app->pipe(App\Middleware\CacheControlMiddleware::class);
 $app->pipe(App\Middleware\ProcessingTime\ProcessingTimeMiddleware::class);
 
 // Add session support to required path prefixes
-foreach (['/session-finished', '/application', '/beta'] as $path) {
+foreach (['/session-finished', '/application', '/assisted-digital', '/beta'] as $path) {
     $app->pipe($path, [
         App\Middleware\Session\SessionMiddleware::class,
         App\Middleware\Session\CsrfMiddleware::class

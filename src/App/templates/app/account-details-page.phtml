@@ -107,7 +107,8 @@ $this->addErrorMap([
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">
+        <?php if (!(empty($ad))): ?>
+            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Send cheque to donor" name="cheque" >
+        <?php endif ?>
     </div>
-
 </form>
-

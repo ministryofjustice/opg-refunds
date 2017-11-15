@@ -194,6 +194,12 @@
           "description": "Applicant's phone number.",
           "type": "string",
           "pattern": "^[+]?[0-9]+$"
+        },
+        "address": {
+          "description": "Applicant's postal address.",
+          "type": "string",
+          "maxLength": 300,
+          "pattern": "^[^<>\"]*$"
         }
       },
       "type": "object"
@@ -214,6 +220,21 @@
     "version": {
       "description": "Version of JSON Schema",
       "type": "number"
+    },
+
+    "ad": {
+      "description": "Assisted Digital detail",
+      "type": "object"
+    },
+
+    "deceased": {
+      "description": "If the donor is deceased. Can only be true if it's via assisted digital",
+      "type": "boolean"
+    },
+
+    "cheque": {
+      "description": "Refund should be paid by cheque. Can only be true if it's via assisted digital",
+      "type": "boolean"
     }
   },
   "type": "object"

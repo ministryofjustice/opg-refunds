@@ -26,6 +26,9 @@
  * );
  */
 
+//Assisted digital entry point
+$app->get('/assisted-digital/{token}', App\Action\AssistedDigitalAction::class, 'ad');
+
 $app->get('/beta/{betaId:\d+}/{betaExpires:\d+}/{betaSignature:[A-Za-z0-9]+}', App\Action\BetaAction::class, 'beta');
 
 //---

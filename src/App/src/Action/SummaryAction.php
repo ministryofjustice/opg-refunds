@@ -32,7 +32,7 @@ class SummaryAction extends AbstractAction
 
         $session = $request->getAttribute('session');
 
-        $form = new Form\Csrf([
+        $form = new Form\Summary([
             'csrf' => $session['meta']['csrf']
         ]);
 
@@ -42,6 +42,15 @@ class SummaryAction extends AbstractAction
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
+
+                // Add AD details if we have some.
+                if (($ad = $request->getAttribute('ad')) != null) {
+                    $session['ad'] = [
+                        'meta' => $ad,
+                        'notes' => $form->getData()['notes']
+                    ];
+                }
+
                 // Add the date a respond will be expected.
                 $session['expected'] = date('Y-m-d', strtotime($request->getAttribute('processingTime')));
 
