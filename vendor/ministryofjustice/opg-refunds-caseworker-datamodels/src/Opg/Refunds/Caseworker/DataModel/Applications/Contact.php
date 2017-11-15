@@ -16,9 +16,14 @@ class Contact extends AbstractDataModel
     protected $email;
 
     /**
-     * @var string;
+     * @var string
      */
     protected $phone;
+
+    /**
+     * @var string
+     */
+    protected $address;
 
     /**
      * @return string
@@ -40,6 +45,14 @@ class Contact extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasEmail(): bool
+    {
+        return !empty($this->email);
+    }
+
+    /**
      * @return string
      */
     public function getPhone()
@@ -56,5 +69,40 @@ class Contact extends AbstractDataModel
         $this->phone = $phone;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPhone(): bool
+    {
+        return !empty($this->phone);
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     * @return $this
+     */
+    public function setAddress(string $address)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAddress(): bool
+    {
+        return !empty($this->address);
     }
 }
