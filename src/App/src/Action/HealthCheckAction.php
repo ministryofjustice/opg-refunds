@@ -31,17 +31,11 @@ class HealthCheckAction implements ServerMiddlewareInterface
 
         //---
 
-        $keysFound = $this->numberOfValidAsymmetricKeys();
-
         $result['keys'] = [
             'symmetric' => $this->canSessionKeysAreValid(),
-            'asymmetric' => [
-                'number' => $keysFound,
-                'ok' => ($keysFound === 1)
-            ],
         ];
 
-        $result['keys']['ok'] = $result['keys']['symmetric']['ok'] && $result['keys']['asymmetric']['ok'];
+        $result['keys']['ok'] = $result['keys']['symmetric']['ok'];
 
         //---
 
@@ -157,31 +151,4 @@ class HealthCheckAction implements ServerMiddlewareInterface
         return false;
     }
 
-    private function numberOfValidAsymmetricKeys()
-    {
-
-        if (!isset($this->config['security']['rsa']['keys']['public'])) {
-            return 0;
-        }
-
-        $paths = $this->config['security']['rsa']['keys']['public'];
-
-        if (!is_array($paths)) {
-            return 0;
-        }
-
-        //---
-
-        $found = 0;
-        foreach ($paths as $path) {
-            try {
-                // This will exception if the file can't be found or if it's not valid as a key
-                \Zend\Crypt\PublicKey\Rsa\PublicKey::fromFile($path);
-                $found++;
-            } catch (Throwable $e) {
-            }
-        }
-
-        return $found;
-    }
 }
