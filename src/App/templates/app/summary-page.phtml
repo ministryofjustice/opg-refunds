@@ -106,18 +106,19 @@ $this->layout('layout::default', [
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
-    <fieldset>
-        <?php
-            if (!(empty($ad))){
+    <?php if (!(empty($ad))): ?>
+        <div style="margin-top: 2em; width: 75%;">
+            <?php
                 $this->insert('snippet::input-textarea', [
                     'formElement' => $form->get('notes'),
-                    'formLabel' => 'Assisted digital notes',
+                    'formLabel' => 'Caseworker notes',
                     'formType' => 'text',
-                    'formLabelBold' => false,
+                    'formLabelBold' => true,
+                    'additionFormControlClass' => 'form-control-3-4'
                 ]);
-            }
-        ?>
-    </fieldset>
+            ?>
+        </div>
+    <?php endif ?>
 
     <h2 class="heading-medium">Statement of truth</h2>
 

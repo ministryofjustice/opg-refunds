@@ -47,5 +47,5 @@ $formControlClasses .= (isset($additionFormControlClass)) ? " {$additionFormCont
         <?php endif ?>
 
     </label>
-    <textarea class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" id="<?= $formId ?>"><?=$this->e( $formElement->getValue() )?></textarea>
+    <textarea rows="5" class="<?= $this->e($formControlClasses) ?>" name="<?=$this->e( $formName )?>" id="<?= $formId ?>"><?=$this->e( $formElement->getValue() )?></textarea>
 </div>
