@@ -37,6 +37,9 @@ class ConfigProvider
     {
         return [
             'invokables' => [
+                //  Services
+                Service\TokenGenerator::class => Service\TokenGenerator::class,
+
                 // Middleware
                 Middleware\ProblemDetailsMiddleware::class => Middleware\ProblemDetailsMiddleware::class,
             ],
@@ -51,10 +54,11 @@ class ConfigProvider
                 Action\ClaimNoteAction::class => Action\ClaimNoteActionFactory::class,
                 Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
-                Action\UserAction::class => Action\UserActionFactory::class,
-                Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
+                Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
+                Action\UserAction::class => Action\UserActionFactory::class,
+                Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
 
                 //  Services
                 Service\Claim::class => Service\ClaimFactory::class,

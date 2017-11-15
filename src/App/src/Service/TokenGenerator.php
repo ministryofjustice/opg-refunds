@@ -1,13 +1,13 @@
 <?php
 
-namespace Auth\Service;
+namespace App\Service;
 
 use Zend\Math\BigInteger\BigInteger;
 use Exception;
 
 /**
  * Class TokenGenerator
- * @package Auth\Service
+ * @package App\Service
  */
 class TokenGenerator
 {

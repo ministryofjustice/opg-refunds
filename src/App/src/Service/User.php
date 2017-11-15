@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Entity\Cases\User as UserEntity;
 use App\Exception\AlreadyExistsException;
-use Auth\Service\TokenGenerator as TokenGeneratorService;
+use App\Exception\InvalidInputException;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -29,20 +29,21 @@ class User
     private $entityManager;
 
     /**
-     * @var TokenGeneratorService
+     * @var TokenGenerator
      */
-    private $tokenGeneratorService;
+    private $tokenGenerator;
 
     /**
      * User constructor
      *
      * @param EntityManager $entityManager
+     * @param TokenGenerator $tokenGenerator
      */
-    public function __construct(EntityManager $entityManager, TokenGeneratorService $tokenGeneratorService)
+    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGenerator)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
-        $this->tokenGeneratorService = $tokenGeneratorService;
+        $this->tokenGenerator = $tokenGenerator;
     }
 
     /**
@@ -94,17 +95,40 @@ class User
     }
 
     /**
+     * Get a specific active user by email address
+     *
+     * @param string $email
+     * @return UserModel
+     */
+    public function getByEmail(string $email)
+    {
+        /** @var UserEntity $user */
+        $user = $this->repository->findOneBy([
+            'email'  => $email,
+            'status' => UserModel::STATUS_ACTIVE,
+        ]);
+
+        return $this->translateToDataModel($user);
+    }
+
+    /**
      * Get a specific user
      *
      * @param string $token
+     * @param bool $asPasswordToken
      * @return UserModel
      */
-    public function getByToken(string $token)
+    public function getByToken(string $token, bool $asPasswordToken = false)
     {
         /** @var UserEntity $user */
         $user = $this->repository->findOneBy([
             'token' => $token,
         ]);
+
+        //  If the token is being treated as a password token then ensure that the token expiry value is set as -1
+        if ($asPasswordToken && $user instanceof UserEntity && $user->getTokenExpires() > 0) {
+            throw new InvalidInputException('Token can not be used as a password token');
+        }
 
         return $this->translateToDataModel($user);
     }
@@ -123,7 +147,7 @@ class User
         $user->setFromDataModel($userModel);
 
         //  Set the new user with a token that can be used to set the password the first time
-        $user->setToken($this->tokenGeneratorService->generate());
+        $user->setToken($this->tokenGenerator->generate());
         $user->setTokenExpires(-1);
 
         $this->entityManager->persist($user);
@@ -202,16 +226,22 @@ class User
     }
 
     /**
+     * Refresh the user token by updating the value or adjusting the expiry (or both)
+     *
      * @param $userId
-     * @param $token
      * @param $tokenExpires
+     * @param bool $generateNew
      * @return UserModel
      */
-    public function setToken($userId, $token, $tokenExpires)
+    public function refreshToken($userId, $tokenExpires, $generateNew = true)
     {
         $user = $this->getUserEntity($userId);
 
-        $user->setToken($token);
+        //  If required generate a new token value
+        if ($generateNew) {
+            $user->setToken($this->tokenGenerator->generate());
+        }
+
         $user->setTokenExpires($tokenExpires);
 
         $this->entityManager->flush();

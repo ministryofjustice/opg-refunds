@@ -24,7 +24,6 @@ class AuthenticationFactory
         return new Authentication(
             $container->get('doctrine.entity_manager.orm_cases'),
             $container->get(UserService::class),
-            $container->get(TokenGenerator::class),
             $config['token_ttl']
         );
     }

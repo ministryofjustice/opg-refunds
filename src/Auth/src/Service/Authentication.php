@@ -7,7 +7,6 @@ use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
 use App\Service\User as UserService;
 use Auth\Exception\UnauthorizedException;
-use Auth\Service\TokenGenerator as TokenGeneratorService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
@@ -32,11 +31,6 @@ class Authentication
     private $userService;
 
     /**
-     * @var TokenGeneratorService
-     */
-    private $tokenGeneratorService;
-
-    /**
      * The number of seconds before an auth token expires
      *
      * @var int
@@ -46,15 +40,14 @@ class Authentication
     /**
      * Authentication constructor
      *
-     * @param UserService $userService
      * @param EntityManager $entityManager
+     * @param UserService $userService
      * @param int $tokenTtl
      */
-    public function __construct(EntityManager $entityManager, UserService $userService, TokenGeneratorService $tokenGeneratorService, int $tokenTtl)
+    public function __construct(EntityManager $entityManager, UserService $userService, int $tokenTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->userService = $userService;
-        $this->tokenGeneratorService = $tokenGeneratorService;
         $this->tokenTtl = $tokenTtl;
     }
 
@@ -83,14 +76,8 @@ class Authentication
             throw new UnauthorizedException('User is inactive');
         }
 
-        //  Attempt to generate a token for the user
-        do {
-            $token = $this->tokenGeneratorService->generate();
-
-            $user = $this->userService->setToken($user->getId(), $token, time() + $this->tokenTtl);
-        } while (!$user instanceof User);
-
-        return $user;
+        //  Use the user service to set a token for the user
+        return $this->userService->refreshToken($user->getId(), time() + $this->tokenTtl);
     }
 
     /**
@@ -112,17 +99,12 @@ class Authentication
             throw new UnauthorizedException('Bad token');
         }
 
-        //  Confirm that the user is active
-        if ($user->getStatus() !== User::STATUS_ACTIVE) {
-            throw new UnauthorizedException('User is inactive');
-        }
-
         //  Check to see if the token has expired
         if (time() > $user->getTokenExpires()) {
             throw new UnauthorizedException('Token expired');
         }
 
         //  Increase the token expires value - and return the user model
-        return $this->userService->setToken($user->getId(), $user->getToken(),  time() + $this->tokenTtl);
+        return $this->userService->refreshToken($user->getId(), time() + $this->tokenTtl, false);
     }
 }

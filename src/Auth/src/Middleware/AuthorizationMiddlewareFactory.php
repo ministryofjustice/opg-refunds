@@ -2,7 +2,7 @@
 
 namespace Auth\Middleware;
 
-use App\Service\User;
+use Auth\Service\Authentication as AuthenticationService;
 use Interop\Container\ContainerInterface;
 use Zend\Permissions\Rbac\Rbac;
 use Exception;
@@ -46,8 +46,8 @@ class AuthorizationMiddlewareFactory
         }
 
         //  Pass any extra services into the authorization middleware
-        $userService = $container->get(User::class);
+        $authenticationService = $container->get(AuthenticationService::class);
 
-        return new AuthorizationMiddleware($rbac, $userService);
+        return new AuthorizationMiddleware($rbac, $authenticationService);
     }
 }
