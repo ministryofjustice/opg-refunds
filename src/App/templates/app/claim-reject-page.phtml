@@ -28,11 +28,8 @@ $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
         'formElement' => $form->get('rejection-reason'),
         'question' => '',
         'options' => [
-            ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE => [
-                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE)
-            ],
-            ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND => [
-                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND)
+            ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND)
             ],
             ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED => [
                 'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED)
