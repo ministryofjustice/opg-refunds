@@ -11,7 +11,6 @@ function expectTrackEvent(eventAction, eventLabel) {
 
 describe('GOVUK.analyticsPlugins.formErrorTracker', function () {
   'use strict'
-  var GOVUK = window.GOVUK
 
   var $errorSummary
   var $inputField
@@ -81,8 +80,6 @@ describe('GOVUK.analyticsPlugins.formErrorTracker', function () {
   })
 
   afterEach(function () {
-    // $errorSummary.remove()
-    // $inputField.remove()
     GOVUK.analytics.trackEvent.calls.reset()
     delete GOVUK.analytics
   })
