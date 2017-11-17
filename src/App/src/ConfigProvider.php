@@ -57,6 +57,7 @@ class ConfigProvider
                 Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
+                Action\StatsAction::class => Action\StatsActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
 
