@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\Reporting\Reporting as ReportingService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -13,12 +14,26 @@ use Zend\Diactoros\Response\HtmlResponse;
 class ReportingAction extends AbstractAction
 {
     /**
+     * @var ReportingService
+     */
+    private $reportingService;
+
+    public function __construct(ReportingService $reportingService)
+    {
+        $this->reportingService = $reportingService;
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::reporting-page'));
+        $stats = $this->reportingService->getStats();
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::reporting-page', [
+            'stats' => $stats
+        ]));
     }
 }

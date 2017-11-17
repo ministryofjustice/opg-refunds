@@ -1,9 +1,325 @@
-<?php $this->layout('layout::default', ['title' => 'Reporting']) ?>
+<?php $this->layout('layout::default', ['title' => 'Reporting'])
+
+/**
+ * @var array $stats
+ */
+
+?>
 
 <div class="grid-row">
     <div class="column-full">
 
-        <h2 class="heading-medium heading-refunds">Reporting</h2>
+        <h1 class="heading-medium heading-refunds">Reporting</h1>
+
+        <p>Generated <?= $stats['generated'] ?></p>
+
+        <h2 class="heading-small heading-refunds">Claims</h2>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="numeric">All time</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By Day - last 30 days</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $day = new DateTime('today');
+            for ($i = 31; $i > 0; $i--) {
+                $day = $day->sub(new DateInterval('P1D')) ?>
+                <tr>
+                    <td class="numeric"><?= date('d/m/y', $day->getTimestamp()) ?></td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By week - last 12 weeks</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $endOfWeek = new DateTime('last sunday');
+            $startOfWeek = (new DateTime('last sunday'))->sub(new DateInterval('P1W'));
+            for ($i = 0; $i < 12; $i++) { ?>
+                <tr>
+                    <td class="numeric"><?= date('d/m/y', $startOfWeek->getTimestamp()) ?> - <?= date('d/m/y', $endOfWeek->getTimestamp()) ?></td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                </tr>
+            <?php
+                $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+                $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
+            } ?>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By month - last 12 months</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+            $month = new DateTime('last month');
+            for ($i = 0; $i < 12; $i++) { ?>
+                <tr>
+                    <td class="numeric"><?= date('F Y', $month->getTimestamp()) ?></td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                </tr>
+                <?php
+                $month = $month->sub(new DateInterval('P1M'));
+            } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Claim source</h2>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Assisted digital</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By month - last 12 months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Assisted digital</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $month = new DateTime('last month');
+            for ($i = 0; $i < 12; $i++) { ?>
+                <tr>
+                    <td class="numeric"><?= date('F Y', $month->getTimestamp()) ?></td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                    <td class="numeric">0</td>
+                </tr>
+                <?php
+                $month = $month->sub(new DateInterval('P1M'));
+            } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Rejection reasons</h2>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">No eligible POAs found</th>
+                <th class="numeric" style="width: 20%">POA already refunded</th>
+                <th class="numeric" style="width: 20%">No fees paid</th>
+                <th class="numeric" style="width: 20%">Details not verified</th>
+                <th class="numeric" style="width: 20%">Other</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+                <td class="numeric">0</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Duplicate bank details</h2>
+
+        <h3 class="heading-small">Total</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 50%">Number of times bank details used</th>
+                <th class="numeric" style="width: 50%">Frequency</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php for ($i = 0; $i < 12; $i++) { ?>
+            <tr>
+                <td class="numeric"><?= $i + 1 ?></td>
+                <td class="numeric"><?= 12 - $i ?></td>
+            </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Refunds</h2>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 25%">Number of refunds</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric">30</td>
+                <td class="numeric">500</td>
+                <td class="numeric">£12345.00</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By Day - last 30 SOP1 forms</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 33%">Date</th>
+                <th class="numeric" style="width: 33%">Number of refunds</th>
+                <th class="numeric" style="width: 33%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $day = new DateTime('today');
+            for ($i = 31; $i > 0; $i--) {
+                $day = $day->sub(new DateInterval('P1D')) ?>
+                <tr>
+                    <td class="numeric"><?= date('d/m/Y', $day->getTimestamp()) ?></td>
+                    <td class="numeric">20</td>
+                    <td class="numeric">£1234.00</td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By week - last 12 weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 25%">Number of refunds</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $endOfWeek = new DateTime('last sunday');
+            $startOfWeek = (new DateTime('last sunday'))->sub(new DateInterval('P1W'));
+            for ($i = 0; $i < 12; $i++) { ?>
+                <tr>
+                    <td class="numeric"><?= date('d/m/Y', $startOfWeek->getTimestamp()) ?> - <?= date('d/m/Y', $endOfWeek->getTimestamp()) ?></td>
+                    <td class="numeric">5</td>
+                    <td class="numeric">100</td>
+                    <td class="numeric">£3456.00</td>
+                </tr>
+                <?php
+                $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+                $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
+            } ?>
+            </tbody>
+        </table>
+
+        <h3 class="heading-small">By month - last 12 months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 25%">Number of refunds</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php
+            $month = new DateTime('last month');
+            for ($i = 0; $i < 12; $i++) { ?>
+                <tr>
+                    <td class="numeric"><?= date('F Y', $month->getTimestamp()) ?></td>
+                    <td class="numeric">20</td>
+                    <td class="numeric">500</td>
+                    <td class="numeric">£12345.00</td>
+                </tr>
+                <?php
+                $month = $month->sub(new DateInterval('P1M'));
+            } ?>
+            </tbody>
+        </table>
 
     </div>
 </div>
