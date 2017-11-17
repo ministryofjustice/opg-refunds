@@ -128,7 +128,6 @@ class FlowControllerTest extends TestCase
     {
         $data = $this->getTestSession();
 
-        unset($data['case-number']['poa-case-number']);
         unset($data['postcodes']);
 
         $this->assertEquals('apply.postcode', FlowController::getNextRouteName($data));

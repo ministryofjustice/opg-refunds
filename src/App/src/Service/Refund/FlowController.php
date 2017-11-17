@@ -134,11 +134,8 @@ class FlowController
             return 'apply.case';
         }
 
-        // If they didn't enter a case number, display the postcode page.
-        if (isset($session['case-number']) && !isset($session['case-number']['poa-case-number'])) {
-            if (!isset($session['postcodes']) || !is_array($session['postcodes'])) {
-                return 'apply.postcode';
-            }
+        if (!isset($session['postcodes']) || !is_array($session['postcodes'])) {
+            return 'apply.postcode';
         }
 
         if (!isset($session['contact']) || !is_array($session['contact'])) {
