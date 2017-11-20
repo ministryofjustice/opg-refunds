@@ -40,14 +40,12 @@ class SignInAction extends AbstractAction
             return $this->redirectToRoute('home');
         }
 
+        //  There is no active session so continue
         $session = $request->getAttribute('session');
 
-        //  There is no active session so continue
         $form = new SignIn([
             'csrf' => $session['meta']['csrf']
         ]);
-
-        $authenticationError = null;
 
         if ($request->getMethod() == 'POST') {
             $form->setData($request->getParsedBody());
@@ -64,12 +62,16 @@ class SignInAction extends AbstractAction
                     return $this->redirectToRoute('home');
                 }
 
-                $form->setAuthErrors('Email and password combination not recognised');
+                $form->setAuthError();
             }
         }
 
+        $flash = $request->getAttribute('flash');
+        $messages = $flash->getMessages();
+
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::sign-in-page', [
-            'form'  => $form,
+            'form'      => $form,
+            'messages'  => $messages,
         ]));
     }
 }

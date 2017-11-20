@@ -128,7 +128,7 @@ class ClaimRejectAction extends AbstractClaimAction
                         $claim->getApplication()->getAttorney()->getCurrent()->getName()
                     ) : $claim->getDonorName();
 
-                if ($contact->getEmail() !== null) {
+                if ($contact->hasEmail()) {
                     $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
                         'donor-name' => $claim->getDonorName(),
@@ -136,7 +136,7 @@ class ClaimRejectAction extends AbstractClaimAction
                     ]));
                 }
 
-                if ($contact->getPhone() !== null && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
+                if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
                         'donor-name' => $claim->getDonorName(),
                         'claim-code' => $claim->getReferenceNumber()

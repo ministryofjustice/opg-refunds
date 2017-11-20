@@ -41,7 +41,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         return '';
     }
 
-    public function getPaymentDetailsUsedText(int $accountHashCount)
+    public function getPaymentDetailsUsedText($accountHashCount)
     {
         if ($accountHashCount === null) {
             throw new InvalidArgumentException('Account hash count must be set');
@@ -64,7 +64,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         }
     }
 
-    public function shouldShowPaymentDetailsUsedCountWarning(int $accountHashCount)
+    public function shouldShowPaymentDetailsUsedCountWarning($accountHashCount)
     {
         return $accountHashCount > 2;
     }

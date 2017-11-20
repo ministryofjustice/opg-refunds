@@ -41,7 +41,6 @@ class ConfigProvider
                 //  Actions
                 Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
-                Action\Password\PasswordResetAction::class => Action\Password\PasswordResetAction::class,
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
@@ -56,6 +55,7 @@ class ConfigProvider
                 Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
+                Action\Password\PasswordResetAction::class => Action\Password\PasswordResetActionFactory::class,
                 Action\Poa\PoaAction::class => Action\Poa\PoaActionFactory::class,
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
@@ -66,6 +66,7 @@ class ConfigProvider
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
+                Action\AssistedDigitalRedirectAction::class => Action\AssistedDigitalRedirectActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,
@@ -77,6 +78,7 @@ class ConfigProvider
                 Service\Authentication\AuthenticationAdapter::class => Service\Authentication\AuthenticationAdapterFactory::class,
                 AuthenticationService::class => Service\Authentication\AuthenticationServiceFactory::class,
                 SessionManager::class => Service\Session\SessionManagerFactory::class,
+                Service\AssistedDigital\LinkToken::class => Service\AssistedDigital\LinkTokenFactory::class,
 
                 // View Helper
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,

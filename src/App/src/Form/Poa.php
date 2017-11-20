@@ -50,24 +50,6 @@ class Poa extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Donor checked field
-        $field = new Checkbox('donor-checked', [
-            'checked_value' => 'yes',
-            'unchecked_value' => 'no'
-        ]);
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
-
-        $input->setRequired(true);
-
-        $this->add($field);
-        $inputFilter->add($input);
-
         //  Case number field
         $field = new Text('case-number');
         $input = new Input($field->getName());
@@ -122,19 +104,37 @@ class Poa extends AbstractForm
         /** @var PoaModel $poa */
         $poa = $options['poa'];
 
+        //  Donor checked
+        $field = new Checkbox('donor-checked', [
+            'checked_value' => 'yes',
+            'unchecked_value' => 'no'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty());
+
+        $input->setRequired(true);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
         //  Attorney details. Only present if not already verified
         if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
             $this->addVerificationRadio('attorney', $inputFilter);
         }
 
         //  Donor postcode. Only if supplied by claimant and not already verified
-        if ($claim->getApplication()->getPostcodes()->getDonorPostcode() !== null &&
+        if ($claim->getApplication()->hasDonorPostcode() &&
             (!$claim->isDonorPostcodeVerified() || ($poa !== null && $poa->hasDonorPostcodeVerification()))) {
             $this->addVerificationRadio('donor-postcode', $inputFilter);
         }
 
         //  Attorney postcode
-        if ($claim->getApplication()->getPostcodes()->getAttorneyPostcode() !== null &&
+        if ($claim->getApplication()->hasAttorneyPostcode() &&
             (!$claim->isAttorneyPostcodeVerified() || ($poa !== null && $poa->hasAttorneyPostcodeVerification()))) {
             $this->addVerificationRadio('attorney-postcode', $inputFilter);
         }

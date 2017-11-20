@@ -9,6 +9,9 @@
 
 <h2 class="heading-large">
     <span><?= $this->e($claim->getReferenceNumber()) ?> <?= $this->e($claim->getDonorName()) ?></span>
+    <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
+        <span class="heading-secondary"><strong class="phase-tag">Assisted digital</strong></span>
+    <?php } ?>
     <?php if ($claim->isReadOnly()) { ?>
         <span class="heading-secondary"><?= $this->e($this->getStatusText($claim->getStatus())) ?> (Read Only)</span>
     <?php } ?>

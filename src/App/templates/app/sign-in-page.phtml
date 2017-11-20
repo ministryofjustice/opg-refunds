@@ -1,15 +1,41 @@
-<?php $this->layout('layout::default', ['title' => 'Sign in']) ?>
+<?php $this->layout('layout::default', ['title' => 'Sign in']);
+
+$this->addErrorMap([
+    'email' => [
+        'required' => [
+            'summary'   => 'Please enter a valid public guardian or digital justice email address',
+            'field'     => 'Please enter a valid public guardian or digital justice email address',
+        ],
+        'invalid-email' => [
+            'summary'   => 'Please enter a valid public guardian or digital justice email address',
+            'field'     => 'Please enter a valid public guardian or digital justice email address',
+        ],
+        'auth-error' => [
+            'summary'   => 'Email and password combination not recognised',
+            'field'     => 'Email and password combination not recognised',
+        ],
+    ],
+    'password' => [
+        'required' => [
+            'summary'   => 'Please enter a password',
+            'field'     => 'Please enter a password',
+        ],
+    ],
+]);
+?>
 
 <div class="grid-row">
     <div class="column-full">
 
-        <form method="post" class="form">
+        <form method="post" class="form" action="<?= $this->generateUrl('sign.in') ?>">
 
             <fieldset>
 
                 <legend>
                     <h1 class="heading-xlarge">Sign in</h1>
                 </legend>
+
+                <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
                 <?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
 
@@ -35,8 +61,9 @@
                 <input class="button" type="submit" value="Continue">
             </div>
 
-            <a class="button button-link" href="<?= $this->generateUrl('password.reset') ?>">Forgotten your password?</a>
-
         </form>
+
+        <a href="<?= $this->generateUrl('password.reset') ?>">Forgotten your password?</a>
+
     </div>
 </div>

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
 use Zend\Filter;
+use Zend\Form\Element\Text;
 use Zend\Form\Element\Password;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
@@ -26,19 +27,20 @@ class SignIn extends AbstractForm
     {
         parent::__construct(self::class, $options);
 
-        $inputFilter = new InputFilter;
+        $inputFilter = new InputFilter();
         $this->setInputFilter($inputFilter);
 
-        //  Username/email field
-        $field = new Element\Email('email');
+        //  Email field
+        $field = new Text('email');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter)
-            ->attach(new Filter\StringToLower);
+            ->attach(new StandardInputFilter())
+            ->attach(new Filter\StringToLower());
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty());
+            ->attach(new Validator\NotEmpty(), true)
+            ->attach(new Validator\Email());
 
         $input->setRequired(true);
 
@@ -63,18 +65,14 @@ class SignIn extends AbstractForm
     }
 
     /**
-     * Set the authentication errors against the email for display
-     *
-     * @param mixed $errorMessages
+     * Set the authentication error reference
      */
-    public function setAuthErrors($errorMessages)
+    public function setAuthError()
     {
-        if (!is_array($errorMessages)) {
-            $errorMessages = [$errorMessages];
-        }
-
         $this->setMessages([
-            'email' => $errorMessages
+            'email' => [
+                'auth-error' => 'auth-error',
+            ],
         ]);
     }
 }

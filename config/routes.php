@@ -29,7 +29,7 @@
 //  Unauthenticated routes
 $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
-$app->get('/reset-password', App\Action\Password\PasswordResetAction::class, 'password.reset');
+$app->route('/reset-password', App\Action\Password\PasswordResetAction::class, ['GET', 'POST'], 'password.reset');
 
 //  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\Home\HomeAction::class, 'home');
@@ -49,3 +49,4 @@ $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Act
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
 $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
+$app->get('/start-assisted-digital', App\Action\AssistedDigitalRedirectAction::class, 'assisted-digital.start');

@@ -14,6 +14,21 @@ Mandatory: claim
 ?>
 
 <h2 class="heading-medium heading-refunds">Outcome</h2>
+
+<h2 class="notice notice-heading">
+    <?php if ($claim->isClaimVerified()) { ?>
+        <strong class="bold-small">Claim verified</strong>
+        <i class="icon icon-tick" title="Verified">
+            <span class="visually-hidden">Verified</span>
+        </i>
+    <?php } else { ?>
+        <i class="icon icon-important">
+            <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">Claim unverified</strong>
+    <?php } ?>
+</h2>
+
 <dl class="details">
 
     <div class="">
