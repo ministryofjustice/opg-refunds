@@ -8,17 +8,10 @@
     <title><?= (isset($pageTitle)) ? $this->e($pageTitle).' | ' : '' ?><?= ($pageTitle!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
     <?php if ( isset($this->config()['analytics']['google']['id']) ): ?>
-        <?php $gaId = $this->config()['analytics']['google']['id']; ?>
-
-        <!-- Global Site Tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=<?= $this->e($gaId) ?>"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments)};
-            gtag('js', new Date());
-
-            gtag('config', '<?= $this->e($gaId) ?>');
-        </script>
+    <script>
+        var GA_TRACKING_ID;
+        GA_TRACKING_ID = '<?= $this->config()['analytics']['google']['id'] ?>';
+    </script>
     <?php endif ?>
 
     <!--[if gt IE 8]><!--><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template.css') ?>" media="screen" rel="stylesheet" /><!--<![endif]-->
@@ -93,7 +86,7 @@
 
     <div class="phase-banner">
         <p>
-            <strong class="phase-tag">PRIVATE BETA</strong>
+            <strong class="phase-tag"><?= (empty($ad)) ? 'PRIVATE BETA' : 'ASSISTED DIGITAL' ?></strong>
             <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/Refundsfeedback" rel="external" target="_blank">feedback</a> will help us to improve it.</span>
         </p>
         </div>
@@ -135,6 +128,7 @@
 
     <script src="<?= $this->static('/assets/javascripts/vendor.js') ?>"></script>
     <script src="<?= $this->static('/assets/javascripts/app.js') ?>"></script>
+    <script src="<?= $this->static('/assets/javascripts/custom-analytics.js') ?>"></script>
 
     <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
 

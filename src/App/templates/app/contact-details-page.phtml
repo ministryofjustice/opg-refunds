@@ -38,12 +38,23 @@ $this->addErrorMap([
             'summary'   => 'Check your phone number',
             'field'     => 'Enter a valid phone number'
         ]
-    ]
+    ],
+    'address' => [
+        'required' => [
+            'summary'   => 'You haven\'t entered a postal address',
+            'field'     => 'Enter the postal address'
+        ],
+        'too-long' => [
+            'summary'   => 'Postal address is too long',
+            'field'     => 'Enter a valid postal address'
+        ],
+    ],
 ]);
 ?>
 
 <?php $this->start('error-summary') ?>
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$adForm ]) ?>
 <?php $this->stop() ?>
 
 <p>We will use these details to:</p>
@@ -89,3 +100,29 @@ $this->addErrorMap([
     </div>
 
 </form>
+
+<?php if (!(empty($ad) && !is_null($adForm))): ?>
+
+    <h2 class="heading-medium">Can't supply email or phone number?</h2>
+
+    <form action="" method="post" class="form">
+
+        <?php $this->insert('snippet::form-csrf', [ 'form'=>$adForm ]) ?>
+
+        <?php
+            $this->insert('snippet::input-textarea', [
+                'formElement' => $adForm->get('address'),
+                'formLabel' => 'Postal address',
+                'formType' => 'text',
+                'formLabelBold' => false,
+                'additionFormControlClass' => 'form-control-3-4'
+            ]);
+        ?>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+
+    </form>
+<?php endif ?>
+

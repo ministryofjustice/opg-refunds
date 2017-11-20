@@ -21,3 +21,7 @@ $path: "../images/";
     width: 100%;
   }
 }
+
+.button-secondary{
+  @include button($grey-3);
+}

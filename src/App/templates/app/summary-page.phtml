@@ -3,6 +3,15 @@ $title = 'Check your refund claim';
 $this->layout('layout::default', [
     'pageTitle' => $title,
 ]);
+
+$this->addErrorMap([
+    'notes' => [
+        'too-long' => [
+            'summary'   => 'Your caseworker notes are too long',
+            'field'     => 'Enter a valid set of caseworker notes'
+        ],
+    ],
+]);
 ?>
 
 <h1 class="heading-xlarge">
@@ -57,24 +66,20 @@ $this->layout('layout::default', [
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
 
-    <?php if (!isset($details['case-number']['poa-case-number'])): ?>
-
-        <?php $this->insert('snippet::check-your-details-section', [
-            'title' => 'Power of attorney postcodes',
-            'fields' => [
-                [
-                    'label' => 'Donor postcode',
-                    'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
-                ],
-                [
-                    'label' => 'Attorney postcode',
-                    'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
-                ]
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Power of attorney postcodes',
+        'fields' => [
+            [
+                'label' => 'Donor postcode',
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
             ],
-            'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
-        ]) ?>
-
-    <?php endif ?>
+            [
+                'label' => 'Attorney postcode',
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
+            ]
+        ],
+        'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
+    ]) ?>
 
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Your contact details',
@@ -86,6 +91,9 @@ $this->layout('layout::default', [
             [
                 'label' => 'Phone number',
                 'value' => ($details['contact']['phone']) ?? 'Not entered'
+            ],
+            [
+                'value' => isset($details['contact']['address']) ? $details['contact']['address'] : null,
             ]
         ],
         'changeURL' => $this->url('apply.contact', ['who'=>$applicant])
@@ -94,40 +102,54 @@ $this->layout('layout::default', [
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor bank details',
         'fields' => [
-            [ 'value' => 'Bank details hidden for your security' ]
+            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the donor details' : 'Bank details hidden for your security' ]
         ],
         'changeURL' => $this->url('apply.account', ['who'=>$applicant])
     ]) ?>
 
 </dl>
 
-<h2 class="heading-medium">Statement of truth</h2>
-
-<p>By submitting this claim you confirm that to the best of your knowledge:</p>
-
-<ul class="list list-bullet">
-    <li>you're entitled to claim a refund</li>
-    <li>the details you've given are correct</li>
-    <li>the bank details are the donor's</li>
-</ul>
-
-<p class="text">
-    You agree to the <a href="/terms">terms and conditions</a> and that details 
-    you've given will be securely stored and used to process a refund. 
-</p>
-
-<div class="notice">
-    <p>
-        <i class="icon icon-important">
-            <span class="visually-hidden">Warning</span>
-        </i>
-        <strong class="bold-small">
-        You could be breaking the law if you deliberately give untrue or misleading information.
-        </strong>
-    </p>
-</div>
-
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php if (!(empty($ad))): ?>
+        <div style="margin-top: 2em; width: 75%;">
+            <?php
+                $this->insert('snippet::input-textarea', [
+                    'formElement' => $form->get('notes'),
+                    'formLabel' => 'Caseworker notes',
+                    'formType' => 'text',
+                    'formLabelBold' => true,
+                    'additionFormControlClass' => 'form-control-3-4'
+                ]);
+            ?>
+        </div>
+    <?php endif ?>
+
+    <h2 class="heading-medium">Statement of truth</h2>
+
+    <p>By submitting this claim you confirm that to the best of your knowledge:</p>
+
+    <ul class="list list-bullet">
+        <li>you're entitled to claim a refund</li>
+        <li>the details you've given are correct</li>
+        <li>the bank details are the donor's</li>
+    </ul>
+
+    <p class="text">
+        You agree to the <a href="/terms">terms and conditions</a> and that details
+        you've given will be securely stored and used to process a refund.
+    </p>
+
+    <div class="notice">
+        <p>
+            <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">
+            You could be breaking the law if you deliberately give untrue or misleading information.
+            </strong>
+        </p>
+    </div>
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
     

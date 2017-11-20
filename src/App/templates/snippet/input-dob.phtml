@@ -5,15 +5,15 @@ $hasErrors = !empty($formElement->getMessages());
 ?>
 <div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
     <fieldset>
-        <legend class="form-label-bold">
-            <?= $this->e($formLabel) ?>
+        <legend class="form-label-bold" id="id-<?=  $this->e($formElement->getName()) ?>">
+            <span class="question-text"><?= $this->e($formLabel) ?></span>
             <span class="form-hint">For example, 31 3 1980</span>
             <?php foreach($formElement->getMessages() as $message): ?>
                 <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
             <?php endforeach ?>
         </legend>
 
-        <div id="id-<?=  $this->e($formElement->getName()) ?>" class="form-date">
+        <div class="form-date">
             <div class="form-group form-group-day">
                 <?php $this->insert('snippet::input-text', [
                     'formSet' => $formElement->getName(),

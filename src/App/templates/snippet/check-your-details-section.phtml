@@ -6,7 +6,7 @@
         <?php foreach($fields as $field): ?>
             <?php if( empty($field['label']) && empty($field['value']) ){ continue; } ?>
             <?= (isset($field['label'])) ? $this->e($field['label'].': ') : '' ?>
-            <?= (isset($field['value'])) ? $this->e($field['value'].'') : '' ?>
+            <?= (isset($field['value'])) ? nl2br($this->e($field['value'].'')) : '' ?>
             <br>
         <?php endforeach ?>
     </dd>

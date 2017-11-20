@@ -19,6 +19,11 @@ $this->addErrorMap([
 
 ?>
 
+<script>
+    var GOVUK = GOVUK || {}
+    GOVUK.pageviewOptions = { sessionControl: 'start' }
+</script>
+
 <?php $this->start('error-summary') ?>
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>

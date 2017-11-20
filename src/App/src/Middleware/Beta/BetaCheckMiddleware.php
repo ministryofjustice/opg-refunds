@@ -36,6 +36,11 @@ class BetaCheckMiddleware implements ServerMiddlewareInterface
             return $delegate->process($request);
         }
 
+        // Always allow AD sessions past
+        if ($request->getAttribute('ad') != null) {
+            return $delegate->process($request);
+        }
+
         //---
 
         $routeResult = $request->getAttribute('Zend\Expressive\Router\RouteResult');
