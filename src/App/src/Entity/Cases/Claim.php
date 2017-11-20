@@ -86,7 +86,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(name="account_hash", type="string")
+     * @ORM\Column(name="account_hash", type="string", nullable=true)
      */
     protected $accountHash;
 
@@ -135,7 +135,7 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
-    public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, string $accountHash)
+    public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, $accountHash)
     {
         $this->id = $id;
         $this->receivedDateTime = $receivedDateTime;
@@ -320,7 +320,7 @@ class Claim extends AbstractEntity
     /**
      * @return string
      */
-    public function getAccountHash(): string
+    public function getAccountHash()
     {
         return $this->accountHash;
     }
@@ -479,6 +479,9 @@ class Claim extends AbstractEntity
             },
             'FinishedByStatus' => function () {
                 return ($this->getFinishedBy() instanceof User ? $this->getFinishedBy()->getStatus() : null);
+            },
+            'AssistedDigital' => function () {
+                return isset($this->getJsonData()['ad']);
             },
         ]);
 

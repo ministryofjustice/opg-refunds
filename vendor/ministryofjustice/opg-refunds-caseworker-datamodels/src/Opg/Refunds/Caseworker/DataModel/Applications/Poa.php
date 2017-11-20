@@ -32,6 +32,14 @@ class Poa extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function hasName(): bool
+    {
+        return !empty($this->name);
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property

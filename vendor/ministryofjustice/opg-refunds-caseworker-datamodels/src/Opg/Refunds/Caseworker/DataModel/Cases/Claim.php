@@ -385,7 +385,7 @@ class Claim extends AbstractDataModel
     /**
      * @return string
      */
-    public function getAccountHash(): string
+    public function getAccountHash()
     {
         return $this->accountHash;
     }
@@ -399,6 +399,14 @@ class Claim extends AbstractDataModel
         $this->accountHash = $accountHash;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAccountHash(): bool
+    {
+        return $this->accountHash !== null;
     }
 
     /**
@@ -556,6 +564,14 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function hasAccountHashCount(): bool
+    {
+        return $this->accountHashCount !== null;
+    }
+
+    /**
+     * @return bool
+     */
     public function isReadOnly(): bool
     {
         return $this->readOnly;
@@ -570,6 +586,14 @@ class Claim extends AbstractDataModel
         $this->readOnly = $readOnly;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPoas()
+    {
+        return $this->getPoas() !== null && count($this->getPoas()) > 0;
     }
 
     /**

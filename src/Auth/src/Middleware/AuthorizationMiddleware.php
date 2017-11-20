@@ -3,8 +3,8 @@
 namespace Auth\Middleware;
 
 use App\Exception\InvalidInputException;
-use App\Service\User as UserService;
 use Auth\Exception\UnauthorizedException;
+use Auth\Service\Authentication as AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
@@ -26,20 +26,20 @@ class AuthorizationMiddleware implements MiddlewareInterface
     private $rbac;
 
     /**
-     * @var UserService
+     * @var AuthenticationService
      */
-    private $userService;
+    private $authenticationService;
 
     /**
      * AuthorizationMiddleware constructor
      *
      * @param Rbac $rbac
-     * @param UserService $userService
+     * @param AuthenticationService $authenticationService
      */
-    public function __construct(Rbac $rbac, UserService $userService)
+    public function __construct(Rbac $rbac, AuthenticationService $authenticationService)
     {
         $this->rbac = $rbac;
-        $this->userService = $userService;
+        $this->authenticationService = $authenticationService;
     }
 
     /**
@@ -55,10 +55,12 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
         $token = $request->getHeaderLine('token');
 
-        //  If a token is provided then try to get the user it belongs to
+        //  If a token is provided (in the header) then try to get the user it belongs to
         if (!empty($token)) {
             try {
-                $user = $this->userService->getByToken($token);
+                //  Use the token to prove the user is authenticated
+                //  If the response is negative then an exception will be thrown to allow the front to sign out the session
+                $user = $this->authenticationService->validateToken($token);
 
                 if ($user instanceof User) {
                     $role = 'authenticated-user';
