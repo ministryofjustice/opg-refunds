@@ -39,7 +39,7 @@ Mandatory: donor
     </div>
     <?php if ($donor->hasPoaName()) { ?>
         <div class="">
-            <dt class="details-term">Name on power attorney documents</dt>
+            <dt class="details-term">Name on POA</dt>
             <dd class="details-definition"><?= $this->e($this->getFormattedName($donor->getPoa()->getName())) ?></dd>
             <?php if ($claim->hasPoas()) { ?>
                 <dd class="details-verified">
