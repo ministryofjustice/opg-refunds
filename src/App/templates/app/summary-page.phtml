@@ -57,24 +57,20 @@ $this->layout('layout::default', [
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
 
-    <?php if (!isset($details['case-number']['poa-case-number'])): ?>
-
-        <?php $this->insert('snippet::check-your-details-section', [
-            'title' => 'Power of attorney postcodes',
-            'fields' => [
-                [
-                    'label' => 'Donor postcode',
-                    'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
-                ],
-                [
-                    'label' => 'Attorney postcode',
-                    'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
-                ]
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Power of attorney postcodes',
+        'fields' => [
+            [
+                'label' => 'Donor postcode',
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
             ],
-            'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
-        ]) ?>
-
-    <?php endif ?>
+            [
+                'label' => 'Attorney postcode',
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
+            ]
+        ],
+        'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
+    ]) ?>
 
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Your contact details',
