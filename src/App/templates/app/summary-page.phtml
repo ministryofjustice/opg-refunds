@@ -3,6 +3,15 @@ $title = 'Check your refund claim';
 $this->layout('layout::default', [
     'pageTitle' => $title,
 ]);
+
+$this->addErrorMap([
+    'notes' => [
+        'too-long' => [
+            'summary'   => 'Your caseworker notes are too long',
+            'field'     => 'Enter a valid set of caseworker notes'
+        ],
+    ],
+]);
 ?>
 
 <h1 class="heading-xlarge">
