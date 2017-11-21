@@ -39,7 +39,6 @@ class ConfigProvider
         return [
             'invokables' => [
                 //  Actions
-                Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
                 Action\ReportingAction::class => Action\ReportingAction::class,
 
                 // Services

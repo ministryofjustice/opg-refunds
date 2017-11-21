@@ -55,6 +55,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('case-number'),
             'formLabel' => 'Case number',
+            'formHint' => $system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus a sequence number separated by a \'/\' e.g. 1234567/1',
             'formType' => 'text',
             'formLabelBold' => false
         ]) ?>
