@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\Reporting as ReportingService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -17,7 +18,7 @@ class StatsActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new StatsAction(
-            $container->get('doctrine.entity_manager.orm_cases')
+            $container->get(ReportingService::class)
         );
     }
 }

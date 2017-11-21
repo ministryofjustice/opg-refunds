@@ -64,6 +64,7 @@ class ConfigProvider
                 //  Services
                 Service\Claim::class => Service\ClaimFactory::class,
                 Service\User::class => Service\UserFactory::class,
+                Service\Reporting::class => Service\ReportingFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt

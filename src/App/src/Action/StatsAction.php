@@ -2,10 +2,8 @@
 
 namespace App\Action;
 
-use DateTime;
-use Doctrine\ORM\EntityManager;
+use App\Service\Reporting as ReportingService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -18,13 +16,13 @@ use Zend\Diactoros\Response\JsonResponse;
 class StatsAction extends AbstractRestfulAction
 {
     /**
-     * @var EntityManager
+     * @var ReportingService
      */
-    private $claimsEntityManager;
+    private $reportingService;
 
-    public function __construct(EntityManager $claimsEntityManager)
+    public function __construct(ReportingService $reportingService)
     {
-        $this->claimsEntityManager = $claimsEntityManager;
+        $this->reportingService = $reportingService;
     }
 
     /**
@@ -34,10 +32,8 @@ class StatsAction extends AbstractRestfulAction
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $generated = new DateTime();
+        $reports = $this->reportingService->getAllReports();
 
-        return new JsonResponse([
-            'generated' => date('d/m/Y H:i:s', $generated->getTimestamp())
-        ]);
+        return new JsonResponse($reports);
     }
 }
