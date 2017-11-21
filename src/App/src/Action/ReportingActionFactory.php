@@ -6,18 +6,18 @@ use App\Service\Reporting as ReportingService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class StatsActionFactory
+ * Class ReportingActionFactory
  * @package App\Action
  */
-class StatsActionFactory
+class ReportingActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return StatsAction
+     * @return ReportingAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new StatsAction(
+        return new ReportingAction(
             $container->get(ReportingService::class)
         );
     }

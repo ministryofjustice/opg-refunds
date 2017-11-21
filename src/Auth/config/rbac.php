@@ -22,7 +22,7 @@ return [
             'user',
             'user.claim',
             'spreadsheet',
-            'stats'
+            'report'
         ],
     ],
 ];

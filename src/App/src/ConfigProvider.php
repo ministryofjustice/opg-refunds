@@ -56,8 +56,8 @@ class ConfigProvider
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
                 Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
+                Action\ReportingAction::class => Action\ReportingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
-                Action\StatsAction::class => Action\StatsActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
 

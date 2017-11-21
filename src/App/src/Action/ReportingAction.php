@@ -10,10 +10,10 @@ use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class StatsAction
+ * Class ReportingAction
  * @package App\Action
  */
-class StatsAction extends AbstractRestfulAction
+class ReportingAction extends AbstractRestfulAction
 {
     /**
      * @var ReportingService
