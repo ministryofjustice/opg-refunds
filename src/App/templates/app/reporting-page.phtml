@@ -1,10 +1,13 @@
-<?php $this->layout('layout::default', ['title' => 'Reporting']);
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+$this->layout('layout::default', ['title' => 'Reporting']);
 
 /**
  * @var array $reports
  */
 
 $claim = $reports['claim'];
+$rejectionReason = $reports['rejectionReason'];
 ?>
 
 <div class="grid-row">
@@ -16,9 +19,9 @@ $claim = $reports['claim'];
 
         <h2 class="heading-small heading-refunds">Claims</h2>
 
-        <h3 class="heading-small">Totals</h3>
-
         <?php $claimAllTime = $claim['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
 
         <table>
             <thead>
@@ -35,10 +38,10 @@ $claim = $reports['claim'];
                 <tr>
                     <td class="numeric">All time</td>
                     <td class="numeric"><?= $claimAllTime['total'] ?></td>
-                    <td class="numeric"><?= $claimAllTime['pending'] ?></td>
-                    <td class="numeric"><?= $claimAllTime['in_progress'] ?></td>
-                    <td class="numeric"><?= "{$claimAllTime['accepted']} ({$this->getPercentage($claimAllTime['total'], $claimAllTime['accepted'])})" ?></td>
-                    <td class="numeric"><?= "{$claimAllTime['rejected']} ({$this->getPercentage($claimAllTime['total'], $claimAllTime['rejected'])})" ?></td>
+                    <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></td>
+                    <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
+                    <td class="numeric"><?= "{$claimAllTime[ClaimModel::STATUS_ACCEPTED]} ({$this->getPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED])})" ?></td>
+                    <td class="numeric"><?= "{$claimAllTime[ClaimModel::STATUS_REJECTED]} ({$this->getPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED])})" ?></td>
                 </tr>
             </tbody>
         </table>
@@ -61,8 +64,8 @@ $claim = $reports['claim'];
                 <tr>
                     <td class="numeric"><?= $day ?></td>
                     <td class="numeric"><?= $counts['total'] ?></td>
-                    <td class="numeric"><?= $counts['accepted'] ?></td>
-                    <td class="numeric"><?= $counts['rejected'] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -86,8 +89,8 @@ $claim = $reports['claim'];
                 <tr>
                     <td class="numeric"><?= $week ?></td>
                     <td class="numeric"><?= $counts['total'] ?></td>
-                    <td class="numeric"><?= $counts['accepted'] ?></td>
-                    <td class="numeric"><?= $counts['rejected'] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -111,8 +114,8 @@ $claim = $reports['claim'];
                 <tr>
                     <td class="numeric"><?= $month ?></td>
                     <td class="numeric"><?= $counts['total'] ?></td>
-                    <td class="numeric"><?= $counts['accepted'] ?></td>
-                    <td class="numeric"><?= $counts['rejected'] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -174,6 +177,8 @@ $claim = $reports['claim'];
 
         <h2 class="heading-small heading-refunds">Rejection reasons</h2>
 
+        <?php $rejectionReasonAllTime = $rejectionReason['allTime']; ?>
+
         <h3 class="heading-small">Totals</h3>
 
         <table>
@@ -188,11 +193,11 @@ $claim = $reports['claim'];
             </thead>
             <tbody>
             <tr>
-                <td class="numeric">0</td>
-                <td class="numeric">0</td>
-                <td class="numeric">0</td>
-                <td class="numeric">0</td>
-                <td class="numeric">0</td>
+                <td class="numeric"><?= $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND] ?></td>
+                <td class="numeric"><?= $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED] ?></td>
+                <td class="numeric"><?= $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_FEES_PAID] ?></td>
+                <td class="numeric"><?= $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED] ?></td>
+                <td class="numeric"><?= $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_OTHER] ?></td>
             </tr>
             </tbody>
         </table>
