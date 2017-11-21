@@ -99,8 +99,7 @@ class ClaimRejectAction extends AbstractClaimAction
             ];
 
             switch ($claim->getRejectionReason()) {
-                case ClaimModel::REJECTION_REASON_NOT_IN_DATE_RANGE:
-                case ClaimModel::REJECTION_REASON_NO_DONOR_LPA_FOUND:
+                case ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND:
                     $emailPersonalisation['no-poas-found'] = 'yes';
                     $smsTemplate = 'f90cdca8-cd8b-4e22-ac66-d328b219f53e';
                     break;
