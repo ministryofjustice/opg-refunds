@@ -49,7 +49,8 @@ $app->pipe(App\Middleware\ProcessingTime\ProcessingTimeMiddleware::class);
 foreach (['/session-finished', '/application', '/assisted-digital', '/beta'] as $path) {
     $app->pipe($path, [
         App\Middleware\Session\SessionMiddleware::class,
-        App\Middleware\Session\CsrfMiddleware::class
+        App\Middleware\Session\CsrfMiddleware::class,
+        App\Middleware\Tracking\TrackingMiddleware::class,
     ]);
 }
 

@@ -76,6 +76,12 @@ describe('GOVUK.analyticsPlugins.formErrorTracker', function () {
       '</div>'
     )
 
+    beforeEach(function() {
+      window.gaConfig = {
+        universalId: 'universal_id'
+      }
+    })
+
     GOVUK.analytics = {trackEvent: function () {}}
   })
 
