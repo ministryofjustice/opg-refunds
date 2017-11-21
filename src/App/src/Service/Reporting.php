@@ -2,12 +2,11 @@
 
 namespace App\Service;
 
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateInterval;
 use DateTime;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\EntityManager;
 use Ingestion\Service\ApplicationIngestion;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
  * Class Reporting
@@ -147,25 +146,25 @@ class Reporting
         ];
     }
 
-    private function addStatusColumns(array $statusCounts)
+    private function addStatusColumns(array $counts)
     {
-        if (empty($statusCounts['pending'])) {
-            $statusCounts['pending'] = 0;
+        if (empty($counts[ClaimModel::STATUS_PENDING])) {
+            $counts[ClaimModel::STATUS_PENDING] = 0;
         }
-        if (empty($statusCounts['in_progress'])) {
-            $statusCounts['in_progress'] = 0;
+        if (empty($counts[ClaimModel::STATUS_IN_PROGRESS])) {
+            $counts[ClaimModel::STATUS_IN_PROGRESS] = 0;
         }
-        if (empty($statusCounts['rejected'])) {
-            $statusCounts['rejected'] = 0;
+        if (empty($counts[ClaimModel::STATUS_REJECTED])) {
+            $counts[ClaimModel::STATUS_REJECTED] = 0;
         }
-        if (empty($statusCounts['accepted'])) {
-            $statusCounts['accepted'] = 0;
+        if (empty($counts[ClaimModel::STATUS_ACCEPTED])) {
+            $counts[ClaimModel::STATUS_ACCEPTED] = 0;
         }
-        if (empty($statusCounts['total'])) {
-            $statusCounts['total'] = 0;
+        if (empty($counts['total'])) {
+            $counts['total'] = 0;
         }
 
-        return $statusCounts;
+        return $counts;
     }
 
     public function getClaimSourceReport(DateTime $dateOfFirstClaim)
@@ -175,7 +174,38 @@ class Reporting
 
     public function getRejectionReasonReport(DateTime $dateOfFirstClaim)
     {
-        return [];
+        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $this->addRejectionReasonColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+        return [
+            'allTime' => $allTime
+        ];
+    }
+
+    private function addRejectionReasonColumns(array $counts)
+    {
+        if (empty($counts[ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND])) {
+            $counts[ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND] = 0;
+        }
+        if (empty($counts[ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED])) {
+            $counts[ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED] = 0;
+        }
+        if (empty($counts[ClaimModel::REJECTION_REASON_NO_FEES_PAID])) {
+            $counts[ClaimModel::REJECTION_REASON_NO_FEES_PAID] = 0;
+        }
+        if (empty($counts[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED])) {
+            $counts[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED] = 0;
+        }
+        if (empty($counts[ClaimModel::REJECTION_REASON_OTHER])) {
+            $counts[ClaimModel::REJECTION_REASON_OTHER] = 0;
+        }
+
+        return $counts;
     }
 
     public function getDuplicateBankDetailReport(DateTime $dateOfFirstClaim)
