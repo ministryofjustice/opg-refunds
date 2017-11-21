@@ -225,6 +225,118 @@ class Reporting
 
     public function getRefundReport(DateTime $dateOfFirstClaim)
     {
-        return [];
+        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment
+                UNION ALL
+                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method
+                UNION ALL
+                SELECT \'total_refund_amount\', SUM(amount) FROM payment';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay
+                UNION ALL
+                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay GROUP BY method
+                UNION ALL
+                SELECT \'total_refund_amount\', SUM(amount) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay';
+
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        while (count($byDay) < 30) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            if ((int)$day['number_of_spreadsheets'] === 1) {
+                $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $this->formatRefundReport($day);
+            } elseif ((int)$day['number_of_spreadsheets'] > 0) {
+                throw new \Exception("There should never be more than one spreadsheet per day. Found {$day['number_of_spreadsheets']}");
+            }
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
+        $byWeek = [];
+        $startOfWeek = new DateTime('last sunday');
+        $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfWeek < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfWeek->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfWeek->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp())] = $this->formatRefundReport($week);
+
+            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
+            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+        }
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $this->formatRefundReport($month);
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byDay'   => $byDay,
+            'byWeek'  => $byWeek,
+            'byMonth' => $byMonth
+        ];
+    }
+
+    private function formatRefundReport(array $report)
+    {
+        if (empty($report['bank_transfer'])) {
+            $report['bank_transfer'] = 0;
+        }
+        if (empty($report['cheque'])) {
+            $report['cheque'] = 0;
+        }
+        $report['total_refund_amount'] = money_format('£%i', $report['total_refund_amount']);
+
+        return $report;
     }
 }
