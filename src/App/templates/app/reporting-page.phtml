@@ -9,6 +9,7 @@ $this->layout('layout::default', ['title' => 'Reporting']);
 $claim = $reports['claim'];
 $rejectionReason = $reports['rejectionReason'];
 $duplicateBankDetail = $reports['duplicateBankDetail'];
+$refund = $reports['refund'];
 ?>
 
 <div class="grid-row">
@@ -228,104 +229,107 @@ $duplicateBankDetail = $reports['duplicateBankDetail'];
 
         <h2 class="heading-small heading-refunds">Refunds</h2>
 
+        <?php $refundAllTime = $refund['allTime']; ?>
+
         <h3 class="heading-small">Totals</h3>
 
         <table>
             <thead>
             <tr>
-                <th class="numeric" style="width: 25%">Date</th>
-                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
-                <th class="numeric" style="width: 25%">Number of refunds</th>
-                <th class="numeric" style="width: 25%">Total refund value</th>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
             </tr>
             </thead>
             <tbody>
             <tr>
                 <td class="numeric">All time</td>
-                <td class="numeric">30</td>
-                <td class="numeric">500</td>
-                <td class="numeric">£12345.00</td>
+                <td class="numeric"><?= $refundAllTime['number_of_spreadsheets'] ?></td>
+                <td class="numeric"><?= $refundAllTime['bank_transfer'] ?></td>
+                <td class="numeric"><?= $refundAllTime['cheque'] ?></td>
+                <td class="numeric"><?= $refundAllTime['total_refund_amount'] ?></td>
             </tr>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By Day - last 30 SOP1 forms</h3>
+        <?php $refundByDay = $refund['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($refundByDay) ?> SOP1 forms</h3>
 
         <table>
             <thead>
             <tr>
-                <th class="numeric" style="width: 33%">Date</th>
-                <th class="numeric" style="width: 33%">Number of refunds</th>
-                <th class="numeric" style="width: 33%">Total refund value</th>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 25%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
             </tr>
             </thead>
             <tbody>
-            <?php
-            $day = new DateTime('today');
-            for ($i = 31; $i > 0; $i--) {
-                $day = $day->sub(new DateInterval('P1D')) ?>
+            <?php foreach ($refundByDay as $day => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('d/m/Y', $day->getTimestamp()) ?></td>
-                    <td class="numeric">20</td>
-                    <td class="numeric">£1234.00</td>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $counts['bank_transfer'] ?></td>
+                    <td class="numeric"><?= $counts['cheque'] ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By week - last 12 weeks</h3>
+        <?php $refundByWeek = $refund['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
 
         <table>
             <thead>
             <tr>
-                <th class="numeric" style="width: 25%">Date</th>
-                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
-                <th class="numeric" style="width: 25%">Number of refunds</th>
-                <th class="numeric" style="width: 25%">Total refund value</th>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
             </tr>
             </thead>
             <tbody>
-            <?php
-            $endOfWeek = new DateTime('last sunday');
-            $startOfWeek = (new DateTime('last sunday'))->sub(new DateInterval('P1W'));
-            for ($i = 0; $i < 12; $i++) { ?>
+            <?php foreach ($refundByWeek as $week => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('d/m/Y', $startOfWeek->getTimestamp()) ?> - <?= date('d/m/Y', $endOfWeek->getTimestamp()) ?></td>
-                    <td class="numeric">5</td>
-                    <td class="numeric">100</td>
-                    <td class="numeric">£3456.00</td>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $counts['bank_transfer'] ?></td>
+                    <td class="numeric"><?= $counts['cheque'] ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
                 </tr>
-                <?php
-                $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
-                $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            } ?>
+            <?php } ?>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By month - last 12 months</h3>
+        <?php $refundByMonth = $refund['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($refundByMonth) ?> months</h3>
 
         <table>
             <thead>
             <tr>
-                <th class="numeric" style="width: 25%">Date</th>
-                <th class="numeric" style="width: 25%">Number of spreadsheets</th>
-                <th class="numeric" style="width: 25%">Number of refunds</th>
-                <th class="numeric" style="width: 25%">Total refund value</th>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
             </tr>
             </thead>
             <tbody>
-            <?php
-            $month = new DateTime('last month');
-            for ($i = 0; $i < 12; $i++) { ?>
+            <?php foreach ($refundByMonth as $month => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('F Y', $month->getTimestamp()) ?></td>
-                    <td class="numeric">20</td>
-                    <td class="numeric">500</td>
-                    <td class="numeric">£12345.00</td>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $counts['bank_transfer'] ?></td>
+                    <td class="numeric"><?= $counts['cheque'] ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
                 </tr>
-                <?php
-                $month = $month->sub(new DateInterval('P1M'));
-            } ?>
+            <?php } ?>
             </tbody>
         </table>
 
