@@ -210,7 +210,17 @@ class Reporting
 
     public function getDuplicateBankDetailReport(DateTime $dateOfFirstClaim)
     {
-        return [];
+        $sql = 'SELECT times_used, count(*) AS frequency FROM (SELECT count(*) AS times_used FROM claim WHERE account_hash IS NOT NULL GROUP BY account_hash) AS hash_duplication GROUP BY times_used ORDER BY times_used';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        return [
+            'allTime' => $allTime
+        ];
     }
 
     public function getRefundReport(DateTime $dateOfFirstClaim)
