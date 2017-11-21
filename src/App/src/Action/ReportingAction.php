@@ -30,10 +30,10 @@ class ReportingAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $stats = $this->reportingService->getStats();
+        $reports = $this->reportingService->getAllReports();
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::reporting-page', [
-            'stats' => $stats
+            'reports' => $reports
         ]));
     }
 }

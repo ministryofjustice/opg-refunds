@@ -9,10 +9,10 @@ class Reporting implements ApiClientInterface
 {
     use ApiClientTrait;
 
-    public function getStats()
+    public function getAllReports()
     {
-        $stats = $this->getApiClient()->httpGet('/v1/stats');
+        $reports = $this->getApiClient()->httpGet('/v1/report');
 
-        return $stats;
+        return $reports;
     }
 }
