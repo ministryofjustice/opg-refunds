@@ -8,6 +8,7 @@ $this->layout('layout::default', ['title' => 'Reporting']);
 
 $claim = $reports['claim'];
 $rejectionReason = $reports['rejectionReason'];
+$duplicateBankDetail = $reports['duplicateBankDetail'];
 ?>
 
 <div class="grid-row">
@@ -204,6 +205,8 @@ $rejectionReason = $reports['rejectionReason'];
 
         <h2 class="heading-small heading-refunds">Duplicate bank details</h2>
 
+        <?php $duplicateBankDetailAllTime = $duplicateBankDetail['allTime']; ?>
+
         <h3 class="heading-small">Total</h3>
 
         <table>
@@ -214,11 +217,11 @@ $rejectionReason = $reports['rejectionReason'];
             </tr>
             </thead>
             <tbody>
-            <?php for ($i = 0; $i < 12; $i++) { ?>
-            <tr>
-                <td class="numeric"><?= $i + 1 ?></td>
-                <td class="numeric"><?= 12 - $i ?></td>
-            </tr>
+            <?php foreach ($duplicateBankDetailAllTime as $timesUsed => $frequency){ ?>
+                <tr>
+                    <td class="numeric"><?= $timesUsed ?></td>
+                    <td class="numeric"><?= $frequency ?></td>
+                </tr>
             <?php } ?>
             </tbody>
         </table>
