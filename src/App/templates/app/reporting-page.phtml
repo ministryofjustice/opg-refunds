@@ -1,9 +1,10 @@
-<?php $this->layout('layout::default', ['title' => 'Reporting'])
+<?php $this->layout('layout::default', ['title' => 'Reporting']);
 
 /**
  * @var array $reports
  */
 
+$claim = $reports['claim'];
 ?>
 
 <div class="grid-row">
@@ -17,104 +18,103 @@
 
         <h3 class="heading-small">Totals</h3>
 
+        <?php $claimAllTime = $claim['allTime']; ?>
+
         <table>
             <thead>
                 <tr>
-                    <th class="numeric" style="width: 25%">Date</th>
-                    <th class="numeric" style="width: 25%">Received</th>
-                    <th class="numeric" style="width: 25%">Approved</th>
-                    <th class="numeric" style="width: 25%">Rejected</th>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Pending</th>
+                    <th class="numeric">In progress</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td class="numeric">All time</td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
+                    <td class="numeric"><?= $claimAllTime['total'] ?></td>
+                    <td class="numeric"><?= $claimAllTime['pending'] ?></td>
+                    <td class="numeric"><?= $claimAllTime['in_progress'] ?></td>
+                    <td class="numeric"><?= "{$claimAllTime['accepted']} ({$this->getPercentage($claimAllTime['total'], $claimAllTime['accepted'])})" ?></td>
+                    <td class="numeric"><?= "{$claimAllTime['rejected']} ({$this->getPercentage($claimAllTime['total'], $claimAllTime['rejected'])})" ?></td>
                 </tr>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By Day - last 30 days</h3>
+        <?php $claimByDay = $claim['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($claimByDay) ?> days</h3>
 
         <table>
             <thead>
                 <tr>
                     <th class="numeric" style="width: 25%">Date</th>
                     <th class="numeric" style="width: 25%">Received</th>
-                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
                     <th class="numeric" style="width: 25%">Rejected</th>
                 </tr>
             </thead>
             <tbody>
-            <?php
-            $day = new DateTime('today');
-            for ($i = 31; $i > 0; $i--) {
-                $day = $day->sub(new DateInterval('P1D')) ?>
+            <?php foreach ($claimByDay as $day => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('d/m/y', $day->getTimestamp()) ?></td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $counts['accepted'] ?></td>
+                    <td class="numeric"><?= $counts['rejected'] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By week - last 12 weeks</h3>
+        <?php $claimByWeek = $claim['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
 
         <table>
             <thead>
                 <tr>
                     <th class="numeric" style="width: 25%">Date</th>
                     <th class="numeric" style="width: 25%">Received</th>
-                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
                     <th class="numeric" style="width: 25%">Rejected</th>
                 </tr>
             </thead>
             <tbody>
-            <?php
-            $endOfWeek = new DateTime('last sunday');
-            $startOfWeek = (new DateTime('last sunday'))->sub(new DateInterval('P1W'));
-            for ($i = 0; $i < 12; $i++) { ?>
+            <?php foreach ($claimByWeek as $week => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('d/m/y', $startOfWeek->getTimestamp()) ?> - <?= date('d/m/y', $endOfWeek->getTimestamp()) ?></td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $counts['accepted'] ?></td>
+                    <td class="numeric"><?= $counts['rejected'] ?></td>
                 </tr>
-            <?php
-                $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
-                $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            } ?>
+            <?php } ?>
             </tbody>
         </table>
 
-        <h3 class="heading-small">By month - last 12 months</h3>
+        <?php $claimByMonth = $claim['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($claimByMonth) ?> months</h3>
 
         <table>
             <thead>
                 <tr>
                     <th class="numeric" style="width: 25%">Date</th>
                     <th class="numeric" style="width: 25%">Received</th>
-                    <th class="numeric" style="width: 25%">Approved</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
                     <th class="numeric" style="width: 25%">Rejected</th>
                 </tr>
             </thead>
             <tbody>
-            <?php
-            $month = new DateTime('last month');
-            for ($i = 0; $i < 12; $i++) { ?>
+            <?php foreach ($claimByMonth as $month => $counts){ ?>
                 <tr>
-                    <td class="numeric"><?= date('F Y', $month->getTimestamp()) ?></td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
-                    <td class="numeric">0</td>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $counts['accepted'] ?></td>
+                    <td class="numeric"><?= $counts['rejected'] ?></td>
                 </tr>
-                <?php
-                $month = $month->sub(new DateInterval('P1M'));
-            } ?>
+            <?php } ?>
             </tbody>
         </table>
 
