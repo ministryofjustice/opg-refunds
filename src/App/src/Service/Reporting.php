@@ -169,12 +169,57 @@ class Reporting
 
     public function getClaimSourceReport(DateTime $dateOfFirstClaim)
     {
-        return [];
+        $sql = 'SELECT \'donor\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'donor\' UNION ALL
+                SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
+                SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
+                SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
+                SELECT \'total\', count(*) FROM claim';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $sql = 'SELECT \'donor\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'applicant\' = \'donor\' UNION ALL
+                SELECT \'attorney\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'applicant\' = \'attorney\' UNION ALL
+                SELECT \'assisted_digital\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->\'ad\' IS NOT NULL UNION ALL
+                SELECT \'donor_deceased\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'deceased\' = \'true\' UNION ALL
+                SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byMonth' => $byMonth
+        ];
     }
 
     public function getRejectionReasonReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason';
+        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason UNION ALL SELECT \'total\', count(*) FROM claim';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
             $sql
@@ -225,11 +270,10 @@ class Reporting
 
     public function getRefundReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment
-                UNION ALL
-                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method
-                UNION ALL
-                SELECT \'total_refund_amount\', SUM(amount) FROM payment';
+        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment UNION ALL
+                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
+                SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
+                SELECT \'total\', count(*) FROM payment';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
             $sql
@@ -237,11 +281,10 @@ class Reporting
 
         $allTime = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
 
-        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay
-                UNION ALL
-                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay GROUP BY method
-                UNION ALL
-                SELECT \'total_refund_amount\', SUM(amount) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay';
+        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay UNION ALL
+                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay GROUP BY method UNION ALL
+                SELECT \'total_refund_amount\', SUM(amount) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay UNION ALL
+                SELECT \'total\', count(*) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay';
 
         $byDay = [];
         $startOfDay = new DateTime('today');
