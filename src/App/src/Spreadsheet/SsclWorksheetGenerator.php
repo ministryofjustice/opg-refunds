@@ -34,7 +34,6 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $donorCurrent = $claim->getApplication()->getDonor()->getCurrent();
             $addressArray = $donorCurrent->getAddress()->getArrayCopy();
             unset($addressArray['address-postcode']);
-            $account = $claim->getApplication()->getAccount();
             $payment = $claim->getPayment();
 
             $cells = [];
@@ -60,18 +59,25 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(9, $rowIndex, $payeeAddressLine3);
             //Payee Postcode
             $cells[] = new SpreadsheetCell(10, $rowIndex, $donorCurrent->getAddress()->getAddressPostcode());
-            //Payment Method
-            $cells[] = new SpreadsheetCell(13, $rowIndex, 'New Bank Details');
-            //Sort Code
-            $cells[] = new SpreadsheetCell(14, $rowIndex, $account->getSortCode());
-            //Account Number
-            $cells[] = new SpreadsheetCell(15, $rowIndex, $account->getAccountNumber());
-            //Name of Bank
-            $cells[] = new SpreadsheetCell(16, $rowIndex, SortCodeMapper::getNameOfBank($account->getSortCode()));
-            //Account Name
-            $cells[] = new SpreadsheetCell(17, $rowIndex, $account->getName());
-            //Roll Number - Should be blank rather than N/A - SSCL confirmed on 10/11/2017
-            $cells[] = new SpreadsheetCell(18, $rowIndex, '');
+            if ($claim->getApplication()->hasAccount()) {
+                $account = $claim->getApplication()->getAccount();
+
+                //Payment Method
+                $cells[] = new SpreadsheetCell(13, $rowIndex, 'New Bank Details');
+                //Sort Code
+                $cells[] = new SpreadsheetCell(14, $rowIndex, $account->getSortCode());
+                //Account Number
+                $cells[] = new SpreadsheetCell(15, $rowIndex, $account->getAccountNumber());
+                //Name of Bank
+                $cells[] = new SpreadsheetCell(16, $rowIndex, SortCodeMapper::getNameOfBank($account->getSortCode()));
+                //Account Name
+                $cells[] = new SpreadsheetCell(17, $rowIndex, $account->getName());
+                //Roll Number - Should be blank rather than N/A - SSCL confirmed on 10/11/2017
+                $cells[] = new SpreadsheetCell(18, $rowIndex, '');
+            } else {
+                //Payment Method
+                $cells[] = new SpreadsheetCell(13, $rowIndex, 'Cheque');
+            }
             //Invoice Date
             $cells[] = new SpreadsheetCell(19, $rowIndex, (new DateTime('today'))->format('d/m/Y'));
             //Invoice Number - Programme board instructed to use reference number on 02/11/2017

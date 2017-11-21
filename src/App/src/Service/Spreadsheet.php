@@ -89,7 +89,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
         if ($date == new DateTime('today')) {
             // Creating today's spreadsheet which contains all of yesterday's approved claims
             $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today AND c.accountHash IS NOT NULL')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
                 ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
@@ -123,6 +123,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
     {
         $historicRefundDates = [];
 
+        // Check for the presence of account details rather than the account hash because the account details are deleted after X days but the account hash remains.
+        // Limiting to just those payments associated with claims that have account details prevents listing of historic refund dates that will result in empty spreadsheets
         $statement = $this->entityManager->getConnection()->executeQuery(
             'SELECT DISTINCT date_trunc(\'day\', p.added_datetime) AS historic_refund_date FROM claim c JOIN payment p ON c.payment_id = p.id WHERE p.added_datetime < CURRENT_DATE AND (c.json_data->\'account\'->\'details\') IS NOT NULL ORDER BY historic_refund_date DESC'
         );
@@ -156,7 +158,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
             //Create and persist payment
-            $payment = new PaymentEntity($refundAmount, 'Bank transfer');
+            $payment = new PaymentEntity($refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer');
             $this->entityManager->persist($payment);
             $entity->setPayment($payment);
 
@@ -185,15 +187,17 @@ class Spreadsheet implements Initializer\LogSupportInterface
         /** @var ClaimModel $claim */
         $claim = $this->translateToDataModel($entity);
 
-        //  Deserialize the application from the JSON data
-        $applicationArray = $entity->getJsonData();
-        $accountDetails = json_decode($this->decryptBankDetails($applicationArray['account']['details']), true);
+        if (!$claim->getApplication()->isRefundByCheque()) {
+            //  Deserialize the application from the JSON data
+            $applicationArray = $entity->getJsonData();
+            $accountDetails = json_decode($this->decryptBankDetails($applicationArray['account']['details']), true);
 
-        //  Set the sort code and account number in the account
-        $account = $claim->getApplication()
-                         ->getAccount();
-        $account->setAccountNumber($accountDetails['account-number'])
+            //  Set the sort code and account number in the account
+            $account = $claim->getApplication()
+                ->getAccount();
+            $account->setAccountNumber($accountDetails['account-number'])
                 ->setSortCode($accountDetails['sort-code']);
+        }
 
         return $claim;
     }
