@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use App\Entity\Cases\Note;
 use App\Service\Claim as ClaimService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -82,10 +83,12 @@ class Notify implements Initializer\LogSupportInterface
 
         $notified = [
             'total' => count($claimIdsToNotify),
-            'queryTime' => microtime(true) - $start
+            'queryTime' => round(microtime(true) - $start, 4)
         ];
 
         $this->getLogger()->alert("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
+
+        $startNotify = microtime(true);
 
         $processedCount = 0;
         foreach ($claimIdsToNotify as $claimIdToNotify) {
@@ -94,11 +97,11 @@ class Notify implements Initializer\LogSupportInterface
 
             $successful = false;
             if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
-                $successful = $this->sendDuplicateNotification($claim);
+                $successful = $this->sendDuplicateNotification($claim, $userId);
             } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
-                $successful = $this->sendRejectionNotification($claim);
+                $successful = $this->sendRejectionNotification($claim, $userId);
             } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
-                $successful = $this->sendAcceptanceNotification($claim);
+                $successful = $this->sendAcceptanceNotification($claim, $userId);
             }
 
             if ($successful) {
@@ -114,16 +117,17 @@ class Notify implements Initializer\LogSupportInterface
         }
 
         $notified['processed'] = $processedCount;
+        $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
 
         return $notified;
     }
 
-    private function sendDuplicateNotification(ClaimModel $claim): bool
+    private function sendDuplicateNotification(ClaimModel $claim, int $userId): bool
     {
         return false;
     }
 
-    private function sendRejectionNotification(ClaimModel $claim): bool
+    private function sendRejectionNotification(ClaimModel $claim, int $userId): bool
     {
         $successful = false;
 
@@ -175,6 +179,13 @@ class Notify implements Initializer\LogSupportInterface
 
                     $this->getLogger()->info("Successfully sent rejection email for claim {$claim->getReferenceNumber()}");
 
+                    $this->claimService->addNote(
+                        $claim->getId(),
+                        $userId,
+                        NoteModel::TYPE_CLAIM_REJECTED_EMAIL_SENT,
+                        'Successfully sent rejection email to ' . $contact->getEmail()
+                    );
+
                     $successful = true;
                 } catch (Exception $ex) {
                     $this->getLogger()->warn("Failed to send rejection email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -190,6 +201,13 @@ class Notify implements Initializer\LogSupportInterface
 
                     $this->getLogger()->info("Successfully sent rejection text for claim {$claim->getReferenceNumber()}");
 
+                    $this->claimService->addNote(
+                        $claim->getId(),
+                        $userId,
+                        NoteModel::TYPE_CLAIM_REJECTED_TEXT_SENT,
+                        'Successfully sent rejection text to ' . $contact->getPhone()
+                    );
+
                     $successful = true;
                 } catch (Exception $ex) {
                     $this->getLogger()->warn("Failed to send rejection text for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -200,7 +218,7 @@ class Notify implements Initializer\LogSupportInterface
         return $successful;
     }
 
-    private function sendAcceptanceNotification(ClaimModel $claim): bool
+    private function sendAcceptanceNotification(ClaimModel $claim, int $userId): bool
     {
         $successful = false;
 
@@ -221,6 +239,13 @@ class Notify implements Initializer\LogSupportInterface
 
                 $this->getLogger()->info("Successfully sent acceptance email for claim {$claim->getReferenceNumber()}");
 
+                $this->claimService->addNote(
+                    $claim->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_ACCEPTED_EMAIL_SENT,
+                    'Successfully sent acceptance email to ' . $contact->getEmail()
+                );
+
                 $successful = true;
             } catch (Exception $ex) {
                 $this->getLogger()->warn("Failed to send acceptance email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -237,6 +262,13 @@ class Notify implements Initializer\LogSupportInterface
                 ]);
 
                 $this->getLogger()->info("Successfully sent acceptance text for claim {$claim->getReferenceNumber()}");
+
+                $this->claimService->addNote(
+                    $claim->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_ACCEPTED_TEXT_SENT,
+                    'Successfully sent acceptance text to ' . $contact->getPhone()
+                );
 
                 $successful = true;
             } catch (Exception $ex) {
