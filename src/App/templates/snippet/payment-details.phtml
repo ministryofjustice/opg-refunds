@@ -11,32 +11,29 @@ Mandatory: claim
 
 <h2 class="heading-medium heading-refunds">Payment details</h2>
 <dl class="details">
+    <?php if ($claim->hasAccountHash() && $claim->hasAccountHashCount()) { ?>
+        <div class="<?= $this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount()) ? 'details-warning' : '' ?>">
+            <dd class="details-definition">
+                <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
+                    <p class="notice">
+                        <i class="icon icon-important">
+                            <span class="visually-hidden">Warning</span>
+                        </i>
+                        <strong class="bold-small"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></strong>
+                    </p>
+                    <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc', 'accountHash' => $this->e($claim->getAccountHash())]) ?>">Search for claims that use these details</a>
+                <?php } else { ?>
+                    <?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?>
+                <?php } ?>
+            </dd>
+        </div>
+    <?php } ?>
     <div class="">
-        <dt class="details-term">Refund made via</dt>
+        <dt class="details-term">Refund by</dt>
         <dd class="details-definition"><?= $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer' ?></dd>
     </div>
     <div class="">
-        <dt class="details-term">Total refund amount</dt>
+        <dt class="details-term">Total refund</dt>
         <dd class="details-definition"><?= $this->e($this->getRefundTotalAmountString($claim)) ?></dd>
     </div>
-
-    <?php if ($claim->hasAccountHash() && $claim->hasAccountHashCount()) { ?>
-        <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
-        <div class="details-warning">
-            <dt class="details-term">Warning</dt>
-        <?php } else { ?>
-        <div class="">
-        <?php } ?>
-
-        <div class="">
-            <dt class="details-term">
-                <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
-                    <i class="icon icon-important">
-                        <span class="visually-hidden">Warning</span>
-                    </i>
-                <?php } ?>
-                <a href="<?= $this->generateUrl('claim.search', [], ['accountHash' => $this->e($claim->getAccountHash())]) ?>"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></a>
-            </dt>
-        </div>
-    <?php } ?>
 </dl>

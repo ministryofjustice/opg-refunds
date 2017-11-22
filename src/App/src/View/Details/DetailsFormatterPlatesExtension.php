@@ -54,15 +54,15 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         }
 
         if ($accountHashCount === 1) {
-            return "Payment details used once";
+            return "Used once";
         }
 
         if ($accountHashCount === 2) {
-            return "Payment details used twice";
+            return "Used twice";
         }
 
         if ($accountHashCount > 2) {
-            return "Payment details used {$accountHashCount} times";
+            return "Used {$accountHashCount} times";
         }
     }
 
