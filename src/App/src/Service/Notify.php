@@ -173,6 +173,8 @@ class Notify implements Initializer\LogSupportInterface
                         'claim-code' => $claim->getReferenceNumber()
                     ]));
 
+                    $this->getLogger()->info("Successfully sent rejection email for claim {$claim->getReferenceNumber()}");
+
                     $successful = true;
                 } catch (Exception $ex) {
                     $this->getLogger()->warn("Failed to send rejection email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -185,6 +187,8 @@ class Notify implements Initializer\LogSupportInterface
                         'donor-name' => $claim->getDonorName(),
                         'claim-code' => $claim->getReferenceNumber()
                     ]);
+
+                    $this->getLogger()->info("Successfully sent rejection text for claim {$claim->getReferenceNumber()}");
 
                     $successful = true;
                 } catch (Exception $ex) {
@@ -215,6 +219,8 @@ class Notify implements Initializer\LogSupportInterface
                     'claim-code' => $claim->getReferenceNumber()
                 ]);
 
+                $this->getLogger()->info("Successfully sent acceptance email for claim {$claim->getReferenceNumber()}");
+
                 $successful = true;
             } catch (Exception $ex) {
                 $this->getLogger()->warn("Failed to send acceptance email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -229,6 +235,8 @@ class Notify implements Initializer\LogSupportInterface
                     'donor-name' => $claim->getDonorName(),
                     'claim-code' => $claim->getReferenceNumber()
                 ]);
+
+                $this->getLogger()->info("Successfully sent acceptance text for claim {$claim->getReferenceNumber()}");
 
                 $successful = true;
             } catch (Exception $ex) {
