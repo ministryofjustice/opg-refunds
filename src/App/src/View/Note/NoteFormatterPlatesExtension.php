@@ -68,12 +68,14 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'Refund updated';
             case NoteModel::TYPE_REFUND_DOWNLOADED:
                 return 'Refund downloaded';
-            case NoteModel::TYPE_DECISION_REVERSED:
-                return 'Decision reversed';
+            case NoteModel::TYPE_CLAIM_OUTCOME_CHANGED:
+                return 'Claim outcome changed';
             case NoteModel::TYPE_CLAIM_ASSIGNED:
                 return 'Claim assigned';
             case NoteModel::TYPE_CLAIM_REASSIGNED:
                 return 'Claim reassigned';
         }
+
+        return $type;
     }
 }
