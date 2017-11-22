@@ -146,6 +146,8 @@ class Claim
                 $dql .= ' ORDER BY c.receivedDateTime ';
             } elseif ($orderBy === 'modified') {
                 $dql .= ' ORDER BY c.updatedDateTime ';
+            } elseif ($orderBy === 'finished') {
+                $dql .= ' ORDER BY c.finishedDateTime ';
             } elseif ($orderBy === 'status') {
                 $dql .= ' ORDER BY c.status ';
             }
