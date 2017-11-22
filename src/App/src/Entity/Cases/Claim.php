@@ -159,6 +159,8 @@ class Claim extends AbstractEntity
         $this->status = ClaimModel::STATUS_PENDING;
         $this->noSiriusPoas = false;
         $this->noMerisPoas = false;
+        $this->outcomeEmailSent = false;
+        $this->outcomeTextSent = false;
     }
 
     /**
