@@ -125,6 +125,16 @@ class Claim extends AbstractDataModel
     protected $rejectionReasonDescription;
 
     /**
+     * @var bool
+     */
+    protected $outcomeEmailSent;
+
+    /**
+     * @var bool
+     */
+    protected $outcomeTextSent;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -507,6 +517,44 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function isOutcomeEmailSent(): bool
+    {
+        return $this->outcomeEmailSent;
+    }
+
+    /**
+     * @param bool $outcomeEmailSent
+     * @return $this
+     */
+    public function setOutcomeEmailSent(bool $outcomeEmailSent)
+    {
+        $this->outcomeEmailSent = $outcomeEmailSent;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeTextSent(): bool
+    {
+        return $this->outcomeTextSent;
+    }
+
+    /**
+     * @param bool $outcomeTextSent
+     * @return $this
+     */
+    public function setOutcomeTextSent(bool $outcomeTextSent)
+    {
+        $this->outcomeTextSent = $outcomeTextSent;
+
+        return $this;
+    }
+
+    /**
      * @return Payment
      */
     public function getPayment()
@@ -842,6 +890,21 @@ class Claim extends AbstractDataModel
     public function getStatusText(): string
     {
         return StatusFormatter::getStatusText($this->getStatus());
+    }
+
+    public function getNotesOfType(string $type): array
+    {
+        $notes = [];
+
+        if ($this->getNotes() !== null) {
+            foreach ($this->getNotes() as $note) {
+                if ($note->getType() === $type) {
+                    $notes[] = $note;
+                }
+            }
+        }
+
+        return $notes;
     }
 
     /**
