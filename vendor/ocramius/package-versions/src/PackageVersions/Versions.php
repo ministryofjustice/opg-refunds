@@ -11,6 +11,7 @@ namespace PackageVersions;
 final class Versions
 {
     const VERSIONS = array (
+  'alphagov/notifications-php-client' => '1.1.0@cae2548d8e1db11fe552c8f4416275baeba1e424',
   'aws/aws-sdk-php' => '3.36.29@210958295921f0004d0fdc38bc9aefe33ef2a3de',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.0.0@a4833d25dcfa42165c4ddec0c7062528206eeadc',
@@ -25,6 +26,7 @@ final class Versions
   'doctrine/migrations' => 'v1.5.0@c81147c0f2938a6566594455367e095150547f72',
   'doctrine/orm' => 'v2.5.11@249b737094f1e7cba4f0a8d19acf5be6cf3ed504',
   'fig/http-message-util' => '1.1.2@20b2c280cb6914b7b83089720df44e490f4b42f0',
+  'firebase/php-jwt' => 'v3.0.0@fa8a06e96526eb7c0eeaa47e4f39be59d21f16e1',
   'guzzlehttp/guzzle' => '6.3.0@f4db5a78a5ea468d4831de7f0bf9d9415e348699',
   'guzzlehttp/promises' => 'v1.3.1@a59da6cf61d80060647ff4d3eb2c03a2bc694646',
   'guzzlehttp/psr7' => '1.4.2@f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
@@ -36,6 +38,9 @@ final class Versions
   'ocramius/package-versions' => '1.1.3@72b226d2957e9e6a9ed09aeaa29cabd840d1a3b7',
   'ocramius/proxy-manager' => '2.0.4@a55d08229f4f614bf335759ed0cf63378feeb2e6',
   'paragonie/random_compat' => 'v2.0.11@5da4d3c796c275c55f057af5a643ae297d96b4d8',
+  'php-http/guzzle6-adapter' => 'v1.1.1@a56941f9dc6110409cfcddc91546ee97039277ab',
+  'php-http/httplug' => 'v1.1.0@1c6381726c18579c4ca2ef1ec1498fdae8bdf018',
+  'php-http/promise' => 'v1.0.0@dc494cdc9d7160b9a09bd5573272195242ce7980',
   'phpoffice/phpspreadsheet' => '1.0.0-beta@7d4dc74fc6219739f1b6e0a7a2f87fdbf33c6ca5',
   'psr/container' => '1.0.0@b7ce3b176482dbbc1245ebf52b181af44c2cf55f',
   'psr/http-message' => '1.0.1@f6561bf28d520154e4b0ec72be95418abe6d9363',
@@ -100,7 +105,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-584-notification@e332d22a2a69866bfdf79277ee2728f3a5f862e2',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-584-notification@3663c58f21dd899fda6fdb27a4f67388e7e9d278',
 );
 
     private function __construct()

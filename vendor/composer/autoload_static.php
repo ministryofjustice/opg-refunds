@@ -9,11 +9,11 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'aaf5b53a99b4de51dadc23016def253f' => __DIR__ . '/..' . '/webimpress/http-middleware-compatibility/autoload/http-middleware.php',
-        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
     );
@@ -83,6 +83,12 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
             'Interop\\Container\\' => 18,
             'Ingestion\\' => 10,
         ),
+        'H' => 
+        array (
+            'Http\\Promise\\' => 13,
+            'Http\\Client\\' => 12,
+            'Http\\Adapter\\Guzzle6\\' => 21,
+        ),
         'G' => 
         array (
             'GuzzleHttp\\Psr7\\' => 16,
@@ -91,6 +97,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'Fig\\Http\\Message\\' => 17,
             'FastRoute\\' => 10,
         ),
@@ -114,6 +121,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
             'Auth\\' => 5,
             'App\\' => 4,
             'AppTest\\' => 8,
+            'Alphagov\\Notifications\\' => 23,
         ),
     );
 
@@ -281,6 +289,18 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         array (
             0 => __DIR__ . '/../..' . '/src/Ingestion/src',
         ),
+        'Http\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/promise/src',
+        ),
+        'Http\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/httplug/src',
+        ),
+        'Http\\Adapter\\Guzzle6\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-http/guzzle6-adapter/src',
+        ),
         'GuzzleHttp\\Psr7\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
@@ -292,6 +312,10 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'GuzzleHttp\\' => 
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'Fig\\Http\\Message\\' => 
         array (
@@ -348,6 +372,10 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'AppTest\\' => 
         array (
             0 => __DIR__ . '/../..' . '/test/AppTest',
+        ),
+        'Alphagov\\Notifications\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/alphagov/notifications-php-client/src',
         ),
     );
 

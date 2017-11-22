@@ -61,6 +61,11 @@ return [
         'delete_after_historical_refund_dates' => getenv('OPG_REFUNDS_DELETE_AFTER_HISTORICAL_REFUND_DATES') ?: 1
     ],
 
+    'notify' => [
+        'api' => [
+            'key' => getenv('OPG_REFUNDS_NOTIFY_API_KEY') ?: null,
+        ],
+    ],
 
     'log' => [
 
