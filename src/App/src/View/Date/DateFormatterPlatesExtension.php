@@ -128,6 +128,10 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      */
     public function getFinishedDateString($dateTime)
     {
+        if ($dateTime === null) {
+            return '';
+        }
+
         return date('d/m/Y', $dateTime->getTimestamp());
     }
 }

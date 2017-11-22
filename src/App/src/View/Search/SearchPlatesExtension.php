@@ -27,6 +27,11 @@ class SearchPlatesExtension implements ExtensionInterface
     {
         $orderByParameters = ['orderBy' => $orderBy, 'sort' => 'asc'];
 
+        switch ($orderBy) {
+            case 'finished':
+                $orderByParameters['sort'] = 'desc';
+        }
+
         if (isset($searchParameters['orderBy']) && $searchParameters['orderBy'] === $orderBy
             && isset($searchParameters['sort']) && $searchParameters['sort'] === 'asc') {
             $orderByParameters['sort'] = 'desc';
