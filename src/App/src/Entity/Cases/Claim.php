@@ -11,7 +11,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="claim")
+ * @ORM\Entity @ORM\Table(name="claim", indexes={@ORM\Index(name="idx_status", columns={"status"})})
  **/
 class Claim extends AbstractEntity
 {
