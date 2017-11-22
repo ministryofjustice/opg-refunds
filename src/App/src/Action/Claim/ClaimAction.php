@@ -7,6 +7,7 @@ use App\Form\Note;
 use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
@@ -97,7 +98,7 @@ class ClaimAction extends AbstractClaimAction
             if ($form->isValid()) {
                 $message = $form->get('message')->getValue();
 
-                $note = $this->claimService->addNote($claim->getId(), 'Caseworker note', $message);
+                $note = $this->claimService->addNote($claim->getId(), NoteModel::TYPE_USER, $message);
 
                 if ($note === null) {
                     throw new RuntimeException('Failed to add new note to claim with id: ' . $claim->getId());
