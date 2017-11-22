@@ -1,0 +1,37 @@
+<?php $this->layout('layout::default', ['title' => 'Notify'])
+
+/**
+ * @var \App\Form\Notify $form
+ * @var array $notified
+ */
+
+?>
+
+<h2 class="heading-medium heading-refunds">Notify claimants of the outcome</h2>
+
+<div class="grid-row">
+    <div class="column-three-fifths">
+
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+        <?php if ($notified !== null) { ?>
+        <?php } ?>
+
+        <form method="post" class="form">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+            <p>Clicking 'Notify' will send a notification email, if the claimant supplied an email address and/or a text if the claimant supplied a mobile number.</p>
+            <p>It will notify any claimant whose claim was either rejected yesterday or was added to today's SOP1 spreadsheet.</p>
+            <p>It will only notify those claimants who have not already been notified.</p>
+            <p>Do you wish to proceed?</p>
+
+            <div class="form-group">
+                <input type='submit' class="button" name='submit' value='Notify'>
+                <a class="button button-link" href="<?= $this->generateUrl('refund') ?>">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
