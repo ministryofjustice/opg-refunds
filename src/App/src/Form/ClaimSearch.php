@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Filter\StandardInput as StandardInputFilter;
 use App\View\Details\DetailsFormatterPlatesExtension;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use Zend\Form\Element\Select;
 use Zend\Form\Element\Text;
 use Zend\InputFilter\Input;
@@ -49,10 +50,11 @@ class ClaimSearch extends AbstractForm
 
         $field->setValueOptions([
             '' => 'All',
-            ClaimModel::STATUS_PENDING => DetailsFormatterPlatesExtension::getStatusText(ClaimModel::STATUS_PENDING),
-            ClaimModel::STATUS_IN_PROGRESS => DetailsFormatterPlatesExtension::getStatusText(ClaimModel::STATUS_IN_PROGRESS),
-            ClaimModel::STATUS_REJECTED => DetailsFormatterPlatesExtension::getStatusText(ClaimModel::STATUS_REJECTED),
-            ClaimModel::STATUS_ACCEPTED => DetailsFormatterPlatesExtension::getStatusText(ClaimModel::STATUS_ACCEPTED)
+            ClaimModel::STATUS_PENDING => StatusFormatter::getStatusText(ClaimModel::STATUS_PENDING),
+            ClaimModel::STATUS_IN_PROGRESS => StatusFormatter::getStatusText(ClaimModel::STATUS_IN_PROGRESS),
+            ClaimModel::STATUS_DUPLICATE => StatusFormatter::getStatusText(ClaimModel::STATUS_DUPLICATE),
+            ClaimModel::STATUS_REJECTED => StatusFormatter::getStatusText(ClaimModel::STATUS_REJECTED),
+            ClaimModel::STATUS_ACCEPTED => StatusFormatter::getStatusText(ClaimModel::STATUS_ACCEPTED)
         ]);
 
         $this->add($field);

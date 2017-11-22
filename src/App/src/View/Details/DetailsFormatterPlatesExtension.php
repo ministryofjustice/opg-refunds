@@ -17,7 +17,6 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 {
     public function register(Engine $engine)
     {
-        $engine->registerFunction('getFormattedName', [$this, 'getFormattedName']);
         $engine->registerFunction('getApplicantName', [$this, 'getApplicantName']);
         $engine->registerFunction('getPaymentDetailsUsedText', [$this, 'getPaymentDetailsUsedText']);
         $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this, 'shouldShowPaymentDetailsUsedCountWarning']);
@@ -27,17 +26,12 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getValueWithPercentage', [$this, 'getValueWithPercentage']);
     }
 
-    public static function getFormattedName(NameModel $name)
-    {
-        return "{$name->getTitle()} {$name->getFirst()} {$name->getLast()}";
-    }
-
     public function getApplicantName(ApplicationModel $application)
     {
         if ($application->getApplicant() === 'donor') {
-            return "{$this->getFormattedName($application->getDonor()->getCurrent()->getName())} (Donor)";
+            return "{$application->getDonor()->getCurrent()->getName()->getFormattedName()} (Donor)";
         } elseif ($application->getApplicant() === 'attorney') {
-            return "{$this->getFormattedName($application->getAttorney()->getCurrent()->getName())} (Attorney)";
+            return "{$application->getAttorney()->getCurrent()->getName()} (Attorney)";
         }
 
         return '';
@@ -89,7 +83,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         }
     }
 
-    public static function getStatusText(string $status)
+    public function getStatusText(string $status)
     {
         switch ($status) {
             case ClaimModel::STATUS_PENDING:

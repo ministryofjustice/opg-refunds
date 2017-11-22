@@ -34,7 +34,7 @@ $this->addErrorMap([
 
 <?php
 $attorney = $claim->getApplication()->getAttorney();
-$attorneyName = $attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null ? $this->getFormattedName($attorney->getPoa()->getName()) : $this->getFormattedName($attorney->getCurrent()->getName());
+$attorneyName = $attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null ? $attorney->getPoa()->getName()->getFormattedName() : $attorney->getCurrent()->getName()->getFormattedName();
 $postcodes = $claim->getApplication()->getPostcodes();
 ?>
 

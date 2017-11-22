@@ -14,8 +14,6 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
     {
         $engine->registerFunction('getFormattedCaseNumber', [$this, 'getFormattedCaseNumber']);
         $engine->registerFunction('getOriginalPaymentAmountString', [$this, 'getOriginalPaymentAmountString']);
-        $engine->registerFunction('getMoneyString', [$this, 'getMoneyString']);
-        $engine->registerFunction('getRefundTotalAmountString', [$this, 'getRefundTotalAmountString']);
         $engine->registerFunction('getFormattedVerificationMatches', [$this, 'getFormattedVerificationMatches']);
     }
 
@@ -43,20 +41,6 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
             default:
                 return '';
         }
-    }
-
-    public static function getMoneyString(float $amount)
-    {
-        return money_format('£%i', $amount);
-    }
-
-    public static function getRefundTotalAmountString(ClaimModel $claim)
-    {
-        if ($claim->getPoas() === null) {
-            return '£0.00';
-        }
-
-        return self::getMoneyString($claim->getRefundTotalAmount());
     }
 
     public function getFormattedVerificationMatches(PoaModel $poa)

@@ -81,4 +81,12 @@ class Name extends AbstractDataModel
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getFormattedName(): string
+    {
+        return "{$this->getTitle()} {$this->getFirst()} {$this->getLast()}";
+    }
 }

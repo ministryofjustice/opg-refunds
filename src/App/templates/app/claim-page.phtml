@@ -55,8 +55,8 @@ $this->addErrorMap([
                         </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
-                    <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
-                    <td><?= $this->e($this->getMoneyString($poa->getRefundInterestAmount())) ?></td>
+                    <td><?= $this->e($poa->getRefundAmountString()) ?></td>
+                    <td><?= $this->e($poa->getRefundInterestAmountString()) ?></td>
                     <td><?= $this->e($this->getFormattedVerificationMatches($poa)) ?></td>
                 </tr>
             <?php } ?>
@@ -108,8 +108,8 @@ $this->addErrorMap([
                         </td>
                     <?php } ?>
                     <td><?= $this->e($this->getReceivedDateString($poa->getReceivedDate())) ?></td>
-                    <td><?= $this->e($this->getMoneyString($poa->getRefundAmount())) ?></td>
-                    <td><?= $this->e($this->getMoneyString($poa->getRefundInterestAmount())) ?></td>
+                    <td><?= $this->e($poa->getRefundAmountString()) ?></td>
+                    <td><?= $this->e($poa->getRefundInterestAmountString()) ?></td>
                     <td><?= $this->e($this->getFormattedVerificationMatches($poa)) ?></td>
                 </tr>
             <?php } ?>

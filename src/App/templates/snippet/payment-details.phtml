@@ -34,6 +34,6 @@ Mandatory: claim
     </div>
     <div class="">
         <dt class="details-term">Total refund</dt>
-        <dd class="details-definition"><?= $this->e($this->getRefundTotalAmountString($claim)) ?></dd>
+        <dd class="details-definition"><?= $this->e($claim->getRefundTotalAmountString()) ?></dd>
     </div>
 </dl>
