@@ -53,11 +53,15 @@ class NotifyAction extends AbstractModelAction
         if ($form->isValid()) {
             $notified = $this->notifyService->notifyAll();
 
-            $message = "Successfully sent outcome notifications for {$notified['processed']} claims. Query time {$notified['queryTime']}s, notify time {$notified['notifyTime']}s.";
+            if ($notified['total'] === 0) {
+                $message = 'No outcome notifications needed sending. Please try again later.';
+            } else {
+                $message = "Successfully sent outcome notifications for {$notified['processed']} claims. Notify time {$notified['notifyTime']}s.";
 
-            $remaining = $notified['total'] - $notified['processed'];
-            if ($remaining !== 0) {
-                $message .= " There are still {$remaining} claims left to send outcome notifications for. Please try again.";
+                $remaining = $notified['total'] - $notified['processed'];
+                if ($remaining !== 0) {
+                    $message .= " There are still {$remaining} claims left to send outcome notifications for. Please try again.";
+                }
             }
 
             $this->setFlashInfoMessage($request, $message);
