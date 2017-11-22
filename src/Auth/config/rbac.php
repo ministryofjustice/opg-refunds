@@ -22,6 +22,7 @@ return [
             'user',
             'user.claim',
             'spreadsheet',
+            'notify',
             'report'
         ],
     ],

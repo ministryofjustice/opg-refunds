@@ -55,6 +55,7 @@ class ConfigProvider
                 Action\ClaimNoteAction::class => Action\ClaimNoteActionFactory::class,
                 Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
+                Action\NotifyAction::class => Action\NotifyActionFactory::class,
                 Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
                 Action\ReportingAction::class => Action\ReportingActionFactory::class,
