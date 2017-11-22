@@ -31,7 +31,9 @@ class NotifyAction extends AbstractRestfulAction
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $notified = $this->notifyService->notifyAll();
+        $identity = $request->getAttribute('identity');
+
+        $notified = $this->notifyService->notifyAll($identity->getId());
 
         return new JsonResponse($notified);
     }

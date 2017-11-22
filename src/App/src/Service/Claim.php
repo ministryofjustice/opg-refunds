@@ -640,7 +640,7 @@ class Claim
      * @param $claimId
      * @return ClaimEntity
      */
-    public function getClaimEntity($claimId): ClaimEntity
+    private function getClaimEntity($claimId): ClaimEntity
     {
         /** @var ClaimEntity $claim */
         $claim = $this->claimRepository->findOneBy([
