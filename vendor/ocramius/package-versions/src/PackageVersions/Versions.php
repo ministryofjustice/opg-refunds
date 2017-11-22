@@ -105,7 +105,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-584-notification@2fc18f412bb52672a6c4b773ef08870dcf3d3d1d',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-584-notification@75538b4e43325d88cbe352db60ea58a0960cc655',
 );
 
     private function __construct()

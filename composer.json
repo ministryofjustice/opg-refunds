@@ -25,6 +25,7 @@
         "dasprid/container-interop-doctrine": "^1.0",
         "doctrine/migrations": "^1.5",
         "doctrine/orm": "^2.5",
+        "guzzlehttp/guzzle": "^6.3",
         "http-interop/http-middleware": "^0.4.1",
         "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-584-notification",
         "ministryofjustice/opg-refunds-logger": "^1.1",
