@@ -38,20 +38,26 @@ class Reporting
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
 
+        $start = microtime(true);
+
         $dateOfFirstClaim = new DateTime($this->entityManager->getConnection()->executeQuery(
             'SELECT received_datetime FROM claim ORDER BY received_datetime LIMIT 1'
         )->fetch()['received_datetime']);
 
-        $generated = new DateTime();
-
-        return [
-            'generated' => date('d/m/Y H:i:s', $generated->getTimestamp()),
+        $reports = [
             'claim' => $this->getClaimReport($dateOfFirstClaim),
             'claimSource' => $this->getClaimSourceReport($dateOfFirstClaim),
             'rejectionReason' => $this->getRejectionReasonReport($dateOfFirstClaim),
             'duplicateBankDetail' => $this->getDuplicateBankDetailReport($dateOfFirstClaim),
             'refund' => $this->getRefundReport($dateOfFirstClaim),
         ];
+
+        $end = microtime(true);
+
+        $reports['generated'] = date('d/m/Y H:i:s', (new DateTime())->getTimestamp());
+        $reports['generationTimeInMs'] = round(($end - $start) * 1000);
+
+        return $reports;
     }
 
     public function getClaimReport(DateTime $dateOfFirstClaim)
