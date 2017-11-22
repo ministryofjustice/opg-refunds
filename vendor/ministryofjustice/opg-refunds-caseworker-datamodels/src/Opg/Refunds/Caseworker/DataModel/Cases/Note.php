@@ -31,7 +31,7 @@ class Note extends AbstractDataModel
     const TYPE_REFUND_ADDED = 'refund_added';
     const TYPE_REFUND_UPDATED = 'refund_updated';
     const TYPE_REFUND_DOWNLOADED = 'refund_downloaded';
-    const TYPE_DECISION_REVERSED = 'decision_reversed';
+    const TYPE_CLAIM_OUTCOME_CHANGED = 'claim_outcome_changed';
     const TYPE_CLAIM_ASSIGNED = 'claim_assigned';
     const TYPE_CLAIM_REASSIGNED = 'claim_reassigned';
 
