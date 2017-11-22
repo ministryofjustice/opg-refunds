@@ -9,7 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="note")
+ * @ORM\Entity @ORM\Table(name="note", indexes={@ORM\Index(name="idx_type", columns={"type"})})
  **/
 class Note extends AbstractEntity
 {
