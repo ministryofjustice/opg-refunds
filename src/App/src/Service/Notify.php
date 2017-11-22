@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
-use App\Entity\Cases\Note;
+use App\Entity\Cases\Claim as ClaimEntity;
 use App\Service\Claim as ClaimService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
@@ -42,23 +42,15 @@ class Notify implements Initializer\LogSupportInterface
     {
         $start = microtime(true);
 
-        //TODO: Migration script to patch in notifcation note entries
-
         //Select all claim ids that aren't associated with a notification note type
         //Restrict those to duplicated or rejected claims from yesterday or older
         //Plus any accepted claims with a payment. They will have been added to the SOP1 spreadsheet
         $sql = 'SELECT id, finished_datetime FROM claim
-                WHERE id IN (SELECT DISTINCT claim_id FROM note WHERE type NOT IN (
-                    :noteTypeClaimDuplicateEmailSent,
-                    :noteTypeClaimRejectedEmailSent,
-                    :noteTypeClaimAcceptedEmailSent))
+                WHERE outcome_email_sent IS NOT TRUE
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NOT NULL UNION
                 SELECT id, finished_datetime FROM claim
-                WHERE id IN (SELECT DISTINCT claim_id FROM note WHERE type NOT IN (
-                    :noteTypeClaimDuplicateTextSent,
-                    :noteTypeClaimRejectedTextSent,
-                    :noteTypeClaimAcceptedTextSent))
+                WHERE outcome_text_sent IS NOT TRUE
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND (json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\')
                 ORDER BY finished_datetime';
@@ -66,12 +58,6 @@ class Notify implements Initializer\LogSupportInterface
         $statement = $this->entityManager->getConnection()->executeQuery(
             $sql,
             [
-                'noteTypeClaimDuplicateEmailSent' => NoteModel::TYPE_CLAIM_DUPLICATE_EMAIL_SENT,
-                'noteTypeClaimDuplicateTextSent' => NoteModel::TYPE_CLAIM_DUPLICATE_TEXT_SENT,
-                'noteTypeClaimRejectedEmailSent' => NoteModel::TYPE_CLAIM_REJECTED_EMAIL_SENT,
-                'noteTypeClaimRejectedTextSent' => NoteModel::TYPE_CLAIM_REJECTED_TEXT_SENT,
-                'noteTypeClaimAcceptedEmailSent' => NoteModel::TYPE_CLAIM_ACCEPTED_EMAIL_SENT,
-                'noteTypeClaimAcceptedTextSent' => NoteModel::TYPE_CLAIM_ACCEPTED_TEXT_SENT,
                 'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
                 'statusRejected' => ClaimModel::STATUS_REJECTED,
                 'acceptedStatus' => ClaimModel::STATUS_ACCEPTED,
@@ -93,16 +79,19 @@ class Notify implements Initializer\LogSupportInterface
         $processedCount = 0;
         foreach ($claimIdsToNotify as $claimIdToNotify) {
             $claimId = $claimIdToNotify['id'];
-            $claim = $this->claimService->get($claimId, $userId);
+            $claimModel = $this->claimService->get($claimId, $userId);
+            $claimEntity = $this->claimService->getClaimEntity($claimId);
 
             $successful = false;
-            if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
-                $successful = $this->sendDuplicateNotification($claim, $userId);
-            } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
-                $successful = $this->sendRejectionNotification($claim, $userId);
-            } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
-                $successful = $this->sendAcceptanceNotification($claim, $userId);
+            if ($claimModel->getStatus() === ClaimModel::STATUS_DUPLICATE) {
+                $successful = $this->sendDuplicateNotification($claimModel, $claimEntity, $userId);
+            } elseif ($claimModel->getStatus() === ClaimModel::STATUS_REJECTED) {
+                $successful = $this->sendRejectionNotification($claimModel, $claimEntity, $userId);
+            } elseif ($claimModel->getStatus() === ClaimModel::STATUS_ACCEPTED) {
+                $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
+
+            $this->entityManager->flush();
 
             if ($successful) {
                 $processedCount++;
@@ -122,12 +111,12 @@ class Notify implements Initializer\LogSupportInterface
         return $notified;
     }
 
-    private function sendDuplicateNotification(ClaimModel $claim, int $userId): bool
+    private function sendDuplicateNotification(ClaimModel $claimModel, ClaimEntity $claimEntity, int $userId): bool
     {
         return false;
     }
 
-    private function sendRejectionNotification(ClaimModel $claim, int $userId): bool
+    private function sendRejectionNotification(ClaimModel $claimModel, ClaimEntity $claimEntity, int $userId): bool
     {
         $successful = false;
 
@@ -141,7 +130,7 @@ class Notify implements Initializer\LogSupportInterface
             'details-not-verified'  => 'no',
         ];
 
-        switch ($claim->getRejectionReason()) {
+        switch ($claimModel->getRejectionReason()) {
             case ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND:
                 $emailPersonalisation['no-poas-found'] = 'yes';
                 $smsTemplate = 'f90cdca8-cd8b-4e22-ac66-d328b219f53e';
@@ -164,53 +153,57 @@ class Notify implements Initializer\LogSupportInterface
         }
 
         if ($sendRejectionMessage) {
-            $contact = $claim->getApplication()->getContact();
-            $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
-                $claim->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
-                : $claim->getDonorName();
+            $contact = $claimModel->getApplication()->getContact();
+            $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
+                $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+                : $claimModel->getDonorName();
 
             if ($contact->hasEmail()) {
                 try {
                     $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
-                        'donor-name' => $claim->getDonorName(),
-                        'claim-code' => $claim->getReferenceNumber()
+                        'donor-name' => $claimModel->getDonorName(),
+                        'claim-code' => $claimModel->getReferenceNumber()
                     ]));
 
-                    $this->getLogger()->info("Successfully sent rejection email for claim {$claim->getReferenceNumber()}");
+                    $this->getLogger()->info("Successfully sent rejection email for claim {$claimModel->getReferenceNumber()}");
 
                     $this->claimService->addNote(
-                        $claim->getId(),
+                        $claimModel->getId(),
                         $userId,
                         NoteModel::TYPE_CLAIM_REJECTED_EMAIL_SENT,
                         'Successfully sent rejection email to ' . $contact->getEmail()
                     );
 
+                    $claimEntity->setOutcomeEmailSent(true);
+
                     $successful = true;
                 } catch (Exception $ex) {
-                    $this->getLogger()->warn("Failed to send rejection email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                    $this->getLogger()->warn("Failed to send rejection email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
             }
 
             if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
                 try {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
-                        'donor-name' => $claim->getDonorName(),
-                        'claim-code' => $claim->getReferenceNumber()
+                        'donor-name' => $claimModel->getDonorName(),
+                        'claim-code' => $claimModel->getReferenceNumber()
                     ]);
 
-                    $this->getLogger()->info("Successfully sent rejection text for claim {$claim->getReferenceNumber()}");
+                    $this->getLogger()->info("Successfully sent rejection text for claim {$claimModel->getReferenceNumber()}");
 
                     $this->claimService->addNote(
-                        $claim->getId(),
+                        $claimModel->getId(),
                         $userId,
                         NoteModel::TYPE_CLAIM_REJECTED_TEXT_SENT,
                         'Successfully sent rejection text to ' . $contact->getPhone()
                     );
 
+                    $claimEntity->setOutcomeTextSent(true);
+
                     $successful = true;
                 } catch (Exception $ex) {
-                    $this->getLogger()->warn("Failed to send rejection text for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                    $this->getLogger()->warn("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
             }
         }
@@ -218,61 +211,65 @@ class Notify implements Initializer\LogSupportInterface
         return $successful;
     }
 
-    private function sendAcceptanceNotification(ClaimModel $claim, int $userId): bool
+    private function sendAcceptanceNotification(ClaimModel $claimModel, ClaimEntity $claimEntity, int $userId): bool
     {
         $successful = false;
 
-        $contact = $claim->getApplication()->getContact();
-        $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
-            $claim->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
-            : $claim->getDonorName();
+        $contact = $claimModel->getApplication()->getContact();
+        $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
+            $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+            : $claimModel->getDonorName();
 
         if ($contact->hasEmail()) {
             try {
                 $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
                     'person-completing' => $contactName,
-                    'amount-including-interest' => $claim->getRefundTotalAmountString(),
-                    'interest-amount' => $claim->getRefundInterestAmountString(),
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
+                    'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
+                    'interest-amount' => $claimModel->getRefundInterestAmountString(),
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
-                $this->getLogger()->info("Successfully sent acceptance email for claim {$claim->getReferenceNumber()}");
+                $this->getLogger()->info("Successfully sent acceptance email for claim {$claimModel->getReferenceNumber()}");
 
                 $this->claimService->addNote(
-                    $claim->getId(),
+                    $claimModel->getId(),
                     $userId,
                     NoteModel::TYPE_CLAIM_ACCEPTED_EMAIL_SENT,
                     'Successfully sent acceptance email to ' . $contact->getEmail()
                 );
 
+                $claimEntity->setOutcomeEmailSent(true);
+
                 $successful = true;
             } catch (Exception $ex) {
-                $this->getLogger()->warn("Failed to send acceptance email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                $this->getLogger()->warn("Failed to send acceptance email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
         }
 
         if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07') {
             try {
                 $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
-                    'amount-including-interest' => $claim->getRefundTotalAmountString(),
-                    'interest-amount' => $claim->getRefundInterestAmountString(),
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
+                    'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
+                    'interest-amount' => $claimModel->getRefundInterestAmountString(),
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
-                $this->getLogger()->info("Successfully sent acceptance text for claim {$claim->getReferenceNumber()}");
+                $this->getLogger()->info("Successfully sent acceptance text for claim {$claimModel->getReferenceNumber()}");
 
                 $this->claimService->addNote(
-                    $claim->getId(),
+                    $claimModel->getId(),
                     $userId,
                     NoteModel::TYPE_CLAIM_ACCEPTED_TEXT_SENT,
                     'Successfully sent acceptance text to ' . $contact->getPhone()
                 );
 
+                $claimEntity->setOutcomeTextSent(true);
+
                 $successful = true;
             } catch (Exception $ex) {
-                $this->getLogger()->warn("Failed to send acceptance text for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                $this->getLogger()->warn("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
         }
 
