@@ -7,6 +7,34 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 
 class Note extends AbstractDataModel
 {
+    const TYPE_USER = 'user_note';
+    const TYPE_CLAIM_SUBMITTED = 'claim_submitted';
+    const TYPE_ASSISTED_DIGITAL = 'assisted_digital';
+    const TYPE_CLAIM_PENDING = 'claim_pending';
+    const TYPE_CLAIM_IN_PROGRESS = 'claim_in_progress';
+    const TYPE_CLAIM_DUPLICATE = 'claim_duplicate';
+    const TYPE_CLAIM_REJECTED = 'claim_rejected';
+    const TYPE_CLAIM_ACCEPTED = 'claim_accepted';
+    const TYPE_POA_ADDED = 'poa_added';
+    const TYPE_POA_EDITED = 'poa_edited';
+    const TYPE_POA_DELETED = 'poa_deleted';
+    const TYPE_NO_MERIS_POAS = 'no_meris_poas';
+    const TYPE_MERIS_POAS_FOUND = 'meris_poas_found';
+    const TYPE_NO_SIRIUS_POAS = 'no_sirius_poas';
+    const TYPE_SIRIUS_POAS_FOUND = 'sirius_poas_found';
+    const TYPE_CLAIM_DUPLICATE_EMAIL_SENT = 'claim_duplicate_email_sent';
+    const TYPE_CLAIM_DUPLICATE_TEXT_SENT = 'claim_duplicate_text_sent';
+    const TYPE_CLAIM_REJECTED_EMAIL_SENT = 'claim_rejected_email_sent';
+    const TYPE_CLAIM_REJECTED_TEXT_SENT = 'claim_rejected_text_sent';
+    const TYPE_CLAIM_ACCEPTED_EMAIL_SENT = 'claim_accepted_email_sent';
+    const TYPE_CLAIM_ACCEPTED_TEXT_SENT = 'claim_accepted_text_sent';
+    const TYPE_REFUND_ADDED = 'refund_added';
+    const TYPE_REFUND_UPDATED = 'refund_updated';
+    const TYPE_REFUND_DOWNLOADED = 'refund_downloaded';
+    const TYPE_DECISION_REVERSED = 'decision_reversed';
+    const TYPE_CLAIM_ASSIGNED = 'claim_assigned';
+    const TYPE_CLAIM_REASSIGNED = 'claim_reassigned';
+
     /**
      * @var int
      */
@@ -20,7 +48,7 @@ class Note extends AbstractDataModel
     /**
      * @var string
      */
-    protected $title;
+    protected $type;
 
     /**
      * @var string
@@ -83,18 +111,18 @@ class Note extends AbstractDataModel
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getType(): string
     {
-        return $this->title;
+        return $this->type;
     }
 
     /**
-     * @param string $title
+     * @param string $type
      * @return $this
      */
-    public function setTitle(string $title): Note
+    public function setType(string $type): Note
     {
-        $this->title = $title;
+        $this->type = $type;
 
         return $this;
     }
