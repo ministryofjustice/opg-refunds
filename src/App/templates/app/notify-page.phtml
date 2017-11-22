@@ -2,7 +2,6 @@
 
 /**
  * @var \App\Form\Notify $form
- * @var array $notified
  */
 
 ?>
@@ -12,18 +11,17 @@
 <div class="grid-row">
     <div class="column-three-fifths">
 
-        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+        <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
-        <?php if ($notified !== null) { ?>
-        <?php } ?>
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
         <form method="post" class="form">
 
             <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-            <p>Clicking 'Notify' will send a notification email, if the claimant supplied an email address and/or a text if the claimant supplied a mobile number.</p>
+            <p>Clicking 'Notify' will send an outcome notification email and a text to all claimants who have not yet been notified.</p>
             <p>It will notify any claimant whose claim was either rejected yesterday or was added to today's SOP1 spreadsheet.</p>
-            <p>It will only notify those claimants who have not already been notified.</p>
+            <p>It will only notify claimants who have supplied a valid email address or mobile number</p>
             <p>Do you wish to proceed?</p>
 
             <div class="form-group">

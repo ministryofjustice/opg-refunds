@@ -65,9 +65,7 @@ class ClaimAction extends AbstractClaimAction
             if ($assignedClaimId === 0) {
                 //No available claims
 
-                /** @var Messages $flash */
-                $flash = $request->getAttribute('flash');
-                $flash->addMessage('info', 'There are no more claims to process');
+                $this->setFlashInfoMessage($request, 'There are no more claims to process');
 
                 return $this->redirectToRoute('home');
             }

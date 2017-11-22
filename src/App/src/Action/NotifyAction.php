@@ -35,7 +35,7 @@ class NotifyAction extends AbstractModelAction
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::notify-page', [
             'form'  => $form,
-            'notified' => null
+            'messages' => $this->getFlashMessages($request)
         ]));
     }
 
@@ -50,14 +50,24 @@ class NotifyAction extends AbstractModelAction
 
         $form->setData($request->getParsedBody());
 
-        $notified = null;
         if ($form->isValid()) {
             $notified = $this->notifyService->notifyAll();
+
+            $message = "Successfully sent outcome notifications for {$notified['processed']} claims. Query time {$notified['queryTime']}s, notify time {$notified['notifyTime']}s.";
+
+            $remaining = $notified['total'] - $notified['processed'];
+            if ($remaining !== 0) {
+                $message .= " There are still {$remaining} claims left to send outcome notifications for. Please try again.";
+            }
+
+            $this->setFlashInfoMessage($request, $message);
+
+            return $this->redirectToRoute('notify');
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::notify-page', [
             'form'  => $form,
-            'notified' => $notified
+            'messages' => $this->getFlashMessages($request)
         ]));
     }
 
