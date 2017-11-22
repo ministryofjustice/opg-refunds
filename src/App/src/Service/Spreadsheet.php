@@ -5,9 +5,8 @@ namespace App\Service;
 use App\Service\Claim as ClaimService;
 use DateInterval;
 use DateTime;
-use Doctrine\ORM\QueryBuilder;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
 use Doctrine\ORM\EntityManager;
@@ -163,7 +162,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $entity->setPayment($payment);
 
             $message = "A refund amount of $refundAmountString was added to the claim";
-            $this->claimService->addNote($claimId, $userId, 'Refund added', $message);
+            $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_ADDED, $message);
         } elseif (abs(($entity->getPayment()->getAmount()-$refundAmount)/$refundAmount) > 0.00001) {
             $originalPaymentAmount = $entity->getPayment()->getAmount();
 
@@ -172,11 +171,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
             $newRefundAmountString = money_format('£%i', $originalPaymentAmount);
             $message = "The refund amount for claim was changed from $refundAmountString to $newRefundAmountString";
-            $this->claimService->addNote($claimId, $userId, 'Refund updated', $message);
+            $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_UPDATED, $message);
         }
 
         $message = "A refundable claim for $refundAmountString was downloaded";
-        $this->claimService->addNote($claimId, $userId, 'Refund downloaded', $message);
+        $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_DOWNLOADED, $message);
 
         //  Retrieve updated claim
         $entity = $this->repository->findOneBy([
