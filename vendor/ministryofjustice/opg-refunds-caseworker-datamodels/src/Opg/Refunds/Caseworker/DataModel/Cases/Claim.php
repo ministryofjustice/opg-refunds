@@ -17,6 +17,7 @@ class Claim extends AbstractDataModel
 {
     const STATUS_PENDING = 'pending';
     const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_DUPLICATE = 'duplicate';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
