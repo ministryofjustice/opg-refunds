@@ -6,6 +6,7 @@ use Alphagov\Notifications\Client as NotifyClient;
 use App\Service\Claim as ClaimService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
+use Exception;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Log\Initializer;
@@ -124,6 +125,8 @@ class Notify implements Initializer\LogSupportInterface
 
     private function sendRejectionNotification(ClaimModel $claim): bool
     {
+        $successful = false;
+
         $sendRejectionMessage = true;
         $smsTemplate = false;
 
@@ -159,56 +162,80 @@ class Notify implements Initializer\LogSupportInterface
         if ($sendRejectionMessage) {
             $contact = $claim->getApplication()->getContact();
             $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
-                DetailsFormatterPlatesExtension::getFormattedName(
-                    $claim->getApplication()->getAttorney()->getCurrent()->getName()
-                ) : $claim->getDonorName();
+                $claim->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+                : $claim->getDonorName();
 
             if ($contact->hasEmail()) {
-                $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
-                    'person-completing' => $contactName,
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
-                ]));
+                try {
+                    $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
+                        'person-completing' => $contactName,
+                        'donor-name' => $claim->getDonorName(),
+                        'claim-code' => $claim->getReferenceNumber()
+                    ]));
+
+                    $successful = true;
+                } catch (Exception $ex) {
+                    $this->getLogger()->warn("Failed to send rejection email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                }
             }
 
             if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
-                $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
-                ]);
+                try {
+                    $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
+                        'donor-name' => $claim->getDonorName(),
+                        'claim-code' => $claim->getReferenceNumber()
+                    ]);
+
+                    $successful = true;
+                } catch (Exception $ex) {
+                    $this->getLogger()->warn("Failed to send rejection text for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                }
             }
         }
 
-        return true;
+        return $successful;
     }
 
     private function sendAcceptanceNotification(ClaimModel $claim): bool
     {
+        $successful = false;
+
         $contact = $claim->getApplication()->getContact();
         $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
-            DetailsFormatterPlatesExtension::getFormattedName(
-                $claim->getApplication()->getAttorney()->getCurrent()->getName()
-            ) : $claim->getDonorName();
+            $claim->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+            : $claim->getDonorName();
 
         if ($contact->hasEmail()) {
-            $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
-                'person-completing' => $contactName,
-                'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
-                'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
-                'donor-name' => $claim->getDonorName(),
-                'claim-code' => $claim->getReferenceNumber()
-            ]);
+            try {
+                $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
+                    'person-completing' => $contactName,
+                    'amount-including-interest' => $claim->getRefundTotalAmountString(),
+                    'interest-amount' => $claim->getRefundInterestAmountString(),
+                    'donor-name' => $claim->getDonorName(),
+                    'claim-code' => $claim->getReferenceNumber()
+                ]);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->warn("Failed to send acceptance email for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
         }
 
         if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07') {
-            $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
-                'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
-                'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
-                'donor-name' => $claim->getDonorName(),
-                'claim-code' => $claim->getReferenceNumber()
-            ]);
+            try {
+                $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
+                    'amount-including-interest' => $claim->getRefundTotalAmountString(),
+                    'interest-amount' => $claim->getRefundInterestAmountString(),
+                    'donor-name' => $claim->getDonorName(),
+                    'claim-code' => $claim->getReferenceNumber()
+                ]);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->warn("Failed to send acceptance text for claim {$claim->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
         }
 
-        return true;
+        return $successful;
     }
 }

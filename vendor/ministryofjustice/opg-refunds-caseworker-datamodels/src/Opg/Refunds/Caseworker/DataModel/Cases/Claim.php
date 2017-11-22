@@ -8,6 +8,8 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\MoneyFormatter;
+use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 
 /**
  * Class Claim
@@ -712,6 +714,18 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return string
+     */
+    public function getRefundTotalAmountString(): string
+    {
+        if ($this->getPoas() === null) {
+            return '£0.00';
+        }
+
+        return MoneyFormatter::getMoneyString($this->getRefundTotalAmount());
+    }
+
+    /**
      * @return float
      */
     public function getRefundInterestAmount()
@@ -723,6 +737,18 @@ class Claim extends AbstractDataModel
         }
 
         return $refundInterestAmount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefundInterestAmountString(): string
+    {
+        if ($this->getPoas() === null) {
+            return '£0.00';
+        }
+
+        return MoneyFormatter::getMoneyString($this->getRefundInterestAmount());
     }
 
     /**
@@ -808,6 +834,14 @@ class Claim extends AbstractDataModel
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusText(): string
+    {
+        return StatusFormatter::getStatusText($this->getStatus());
     }
 
     /**
