@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Service\Notify;
+namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Interop\Container\ContainerInterface;

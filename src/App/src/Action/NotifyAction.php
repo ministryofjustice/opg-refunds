@@ -4,7 +4,9 @@ namespace App\Action;
 
 use App\Service\Notify as NotifyService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\JsonResponse;
 
 /**
  * Class NotifyAction
@@ -25,9 +27,12 @@ class NotifyAction extends AbstractRestfulAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
+     * @return ResponseInterface
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $this->notifyService->notifyAll();
+        $notified = $this->notifyService->notifyAll();
+
+        return new JsonResponse($notified);
     }
 }

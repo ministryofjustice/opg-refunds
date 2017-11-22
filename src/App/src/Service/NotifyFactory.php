@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use App\Service\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -18,7 +19,9 @@ class NotifyFactory
     public function __invoke(ContainerInterface $container)
     {
         return new Notify(
-            $container->get(NotifyClient::class)
+            $container->get('doctrine.entity_manager.orm_cases'),
+            $container->get(NotifyClient::class),
+            $container->get(ClaimService::class)
         );
     }
 }

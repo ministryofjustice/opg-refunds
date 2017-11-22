@@ -40,6 +40,8 @@ class Notify
 
     public function notifyAll()
     {
+        $notified = [];
 
+        return $notified;
     }
 }
