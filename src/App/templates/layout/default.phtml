@@ -124,12 +124,14 @@
         var gaConfig = {
             universalId: '<?= $this->config()['analytics']['google']['id'] ?>',
             dimensions: {
-                ANONYMOUS_SESSION_ID: '1'
+                ANONYMOUS_SESSION_ID: '1',
+                RELEASE_TAG: '2'
             }
         }
         
         <?php if ( isset($tracking) ): ?>
             gaConfig.sessionId = '<?= $this->e($tracking) ?>';
+            gaConfig.releaseTag = '<?= $this->config()['version']['tag'] ?>';
         <?php endif ?>
     </script>
     <?php endif ?>

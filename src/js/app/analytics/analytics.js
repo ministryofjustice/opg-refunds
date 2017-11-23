@@ -23,6 +23,10 @@
   if (typeof gaConfig.sessionId !== 'undefined') {
     GOVUK.analytics.setDimension(gaConfig.dimensions.ANONYMOUS_SESSION_ID, gaConfig.sessionId)
   }
+
+  if (typeof gaConfig.releaseTag !== 'undefined') {
+    GOVUK.analytics.setDimension(gaConfig.dimensions.RELEASE_TAG, gaConfig.releaseTag)
+  }
   
   // Activate any event plugins eg. print intent, error tracking
   GOVUK.analyticsPlugins.formErrorTracker();

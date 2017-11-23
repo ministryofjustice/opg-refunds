@@ -25,7 +25,7 @@ class TemplateConfigInjectionPlatesExtension implements ExtensionInterface
     {
         $config = $this->config;
 
-        $engine->registerFunction('config', function() use ($config){
+        $engine->registerFunction('config', function () use ($config) {
             return $config;
         });
     }
