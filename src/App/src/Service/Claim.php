@@ -19,6 +19,7 @@ use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
  * Class Claim
@@ -644,28 +645,30 @@ class Claim
      * @param $reason
      * @throws Exception
      */
-    public function setStatusPending($claimId, $userId, $reason)
+    public function setStatusInProgress($claimId, $userId, $reason)
     {
         $claim = $this->getClaimEntity($claimId);
 
-        if (!$this->isReadOnly($claim, $userId) && $claim->getPayment() !== null) {
+        if (!$this->isReadOnly($claim, $userId) && $claim->getPayment() !== null || $claim->getFinishedBy() === null) {
             throw new Exception('You cannot set this claim\'s status back to pending', 403);
         }
 
-        $claim->setStatus(ClaimModel::STATUS_PENDING);
+        $finishedBy = $claim->getFinishedBy();
+
+        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setRejectionReason(null);
         $claim->setRejectionReasonDescription(null);
         $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedBy(null);
         $claim->setFinishedDateTime(null);
-        $claim->setAssignedTo(null);
-        $claim->setAssignedDateTime(null);
+        $claim->setAssignedTo($finishedBy);
+        $claim->setAssignedDateTime(new DateTime());
 
         $this->addNote(
             $claimId,
             $userId,
-            'Claim outcome changed',
-            "Administrator changed the claim outcome due to: '{$reason}'"
+            NoteModel::TYPE_CLAIM_OUTCOME_CHANGED,
+            "Administrator changed the claim outcome due to: '{$reason}'. Claim was reassigned to {$finishedBy->getName()}"
         );
     }
 

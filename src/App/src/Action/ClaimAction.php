@@ -83,12 +83,12 @@ class ClaimAction extends AbstractRestfulAction
                     $requestBody['rejectionReason'],
                     $requestBody['rejectionReasonDescription']
                 );
-            } elseif ($requestBody['status'] === ClaimModel::STATUS_PENDING) {
+            } elseif ($requestBody['status'] === ClaimModel::STATUS_IN_PROGRESS) {
                 if (!isset($requestBody['reason'])) {
                     throw new InvalidInputException('Reason is required');
                 }
 
-                $this->claimService->setStatusPending($claimId, $identity->getId(), $requestBody['reason']);
+                $this->claimService->setStatusInProgress($claimId, $identity->getId(), $requestBody['reason']);
             }
         }
 
