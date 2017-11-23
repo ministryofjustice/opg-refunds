@@ -49,7 +49,6 @@ return [
         User::ROLE_REFUND => [
             'refund',
             'download',
-            'csv.download',
         ],
         User::ROLE_ADMIN => [
             'user',
