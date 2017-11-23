@@ -23,6 +23,8 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this, 'shouldShowPaymentDetailsUsedCountWarning']);
         $engine->registerFunction('getRejectionReasonsText', [$this, 'getRejectionReasonsText']);
         $engine->registerFunction('getStatusText', [$this, 'getStatusText']);
+        $engine->registerFunction('getPercentage', [$this, 'getPercentage']);
+        $engine->registerFunction('getValueWithPercentage', [$this, 'getValueWithPercentage']);
     }
 
     public static function getFormattedName(NameModel $name)
@@ -101,5 +103,21 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
             default:
                 return 'Unknown';
         }
+    }
+
+    public function getPercentage(int $total, int $value)
+    {
+        if ($total === 0) {
+            return '0.00%';
+        }
+
+        $percentage = ($value / $total) * 100;
+
+        return sprintf("%.2f%%", $percentage);
+    }
+
+    public function getValueWithPercentage(int $total, int $value)
+    {
+        return "{$value} ({$this->getPercentage($total, $value)})";
     }
 }
