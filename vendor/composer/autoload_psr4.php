@@ -57,7 +57,6 @@ return array(
     'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib/Doctrine/Common/Annotations'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),
-    'Dev\\' => array($baseDir . '/src/Dev/src'),
     'DeepCopy\\' => array($vendorDir . '/myclabs/deep-copy/src/DeepCopy'),
     'ContainerInteropDoctrine\\' => array($vendorDir . '/dasprid/container-interop-doctrine/src'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),

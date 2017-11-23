@@ -102,7 +102,6 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
             'Doctrine\\Common\\Cache\\' => 22,
             'Doctrine\\Common\\Annotations\\' => 28,
             'Doctrine\\Common\\' => 16,
-            'Dev\\' => 4,
             'DeepCopy\\' => 9,
         ),
         'C' => 
@@ -325,10 +324,6 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'Doctrine\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
-        ),
-        'Dev\\' => 
-        array (
-            0 => __DIR__ . '/../..' . '/src/Dev/src',
         ),
         'DeepCopy\\' => 
         array (

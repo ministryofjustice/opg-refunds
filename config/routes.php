@@ -40,15 +40,4 @@ $app->get('/v1/claim/search', App\Action\ClaimSearchAction::class, 'claim.search
 $app->route('/v1/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');
 $app->route('/v1/user/{id:\d+}/claim[/{claimId:\d+}]', App\Action\UserClaimAction::class, ['GET', 'PUT', 'DELETE'], 'user.claim');
 $app->get('/v1/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, 'spreadsheet');
-
-//Example routes
-/*'/claim[/{id:\d+}]'
-'/claim/{id:\d+}/poa[/{id:\d+}]'
-'/claim/{id:\d+}/verfication[/{id:\d+}]'
-'/claim/{id:\d+}/log[/{id:\d+}]'
-'/user'
-'/user/{id:\d+}/claim' //GET PUT*/
-
-//  Developer routes
-$app->get('/dev/applications', Dev\Action\ApplicationsAction::class, 'dev.applications');
-$app->get('/dev/view-claim-queue', Dev\Action\ViewClaimQueueAction::class, 'dev.view-claim-queue');
+$app->get('/v1/report', App\Action\ReportingAction::class, 'report');

@@ -56,6 +56,7 @@ class ConfigProvider
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
                 Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
+                Action\ReportingAction::class => Action\ReportingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
@@ -63,6 +64,7 @@ class ConfigProvider
                 //  Services
                 Service\Claim::class => Service\ClaimFactory::class,
                 Service\User::class => Service\UserFactory::class,
+                Service\Reporting::class => Service\ReportingFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt

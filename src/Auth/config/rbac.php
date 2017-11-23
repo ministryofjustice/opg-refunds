@@ -22,9 +22,7 @@ return [
             'user',
             'user.claim',
             'spreadsheet',
-            //  Developer routes
-            'dev.applications',
-            'dev.view-claim-queue',
+            'report'
         ],
     ],
 ];
