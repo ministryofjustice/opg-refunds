@@ -21,7 +21,7 @@
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
     <p>Are you sure you want to change the outcome on the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
-    <p><strong>This will change the claim's status back to 'Pending'</strong> allowing a caseworker to modify, approve or reject it.</p>
+    <p><strong>This will change the claim's status back to 'In Pending' and will reassign it back to the caseworker that resolved it</strong> allowing them to modify, approve or reject it.</p>
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('reason'),

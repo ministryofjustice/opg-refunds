@@ -224,7 +224,7 @@ class Claim implements ApiClientInterface
     public function changeClaimOutcome(int $claimId, string $reason)
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
-            'status' => ClaimModel::STATUS_PENDING,
+            'status' => ClaimModel::STATUS_IN_PROGRESS,
             'reason' => $reason
         ]);
 
