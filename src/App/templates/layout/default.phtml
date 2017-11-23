@@ -137,6 +137,6 @@
     <?php endif ?>
     <script src="<?= $this->static('/assets/javascripts/custom-analytics.js') ?>"></script>
     <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
-
+    <?=$this->section('body-end')?>
     </body>
 </html>
