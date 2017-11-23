@@ -42,7 +42,6 @@ class SummaryAction extends AbstractAction
             $form->setData($request->getParsedBody());
 
             if ($form->isValid()) {
-
                 // Add AD details if we have some.
                 if (($ad = $request->getAttribute('ad')) != null) {
                     $session['ad'] = [
@@ -57,8 +56,10 @@ class SummaryAction extends AbstractAction
                 // Process the application
                 $session['reference'] = $this->applicationProcessService->process($session->getArrayCopy());
 
-                // For use in beta; flag the beta ID as used.
-                $this->betaChecker->flagLinkAsUsed($request->getAttribute('betaId'), $session['reference']);
+                if ($request->getAttribute('betaId') != null) {
+                    // For use in beta; flag the beta ID as used.
+                    $this->betaChecker->flagLinkAsUsed($request->getAttribute('betaId'), $session['reference']);
+                }
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
