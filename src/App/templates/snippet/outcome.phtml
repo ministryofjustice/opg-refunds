@@ -69,20 +69,22 @@ Mandatory: claim
             </div>
         <?php } ?>
 
-        <div class="">
-            <dt class="details-term">Notifications</dt>
-            <dd class="details-definition">
-                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
-                    <span>None sent</span>
-                <?php } ?>
-                <?php if ($claim->isOutcomeEmailSent()) { ?>
-                    <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
-                <?php } ?>
-                <?php if ($claim->isOutcomeEmailSent()) { ?>
-                    <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
-                <?php } ?>
-            </dd>
-        </div>
+        <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED || $claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
+            <div class="">
+                <dt class="details-term">Notifications</dt>
+                <dd class="details-definition">
+                    <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
+                        <span>None sent</span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeEmailSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeEmailSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                    <?php } ?>
+                </dd>
+            </div>
+        <?php } ?>
 
     <?php } ?>
 
