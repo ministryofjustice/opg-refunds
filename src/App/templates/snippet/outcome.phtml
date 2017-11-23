@@ -58,12 +58,6 @@ Mandatory: claim
                     <?php if ($claim->getPayment() !== null) { ?>
                         <br/><span>A payment of <?= $this->e($claim->getPayment()->getAmountString()) ?> was added to the spreadsheet on <?= $this->e($this->getFinishedDateString($claim->getPayment()->getAddedDateTime())) ?></span>
                     <?php } ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <br/><span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?></span>
-                    <?php } ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <br/><span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
-                    <?php } ?>
                 </dd>
             </div>
         <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
@@ -71,15 +65,24 @@ Mandatory: claim
                 <dt class="details-term">Claim rejected</dt>
                 <dd class="details-definition">
                     Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>'<?= empty($claim->getRejectionReasonDescription()) ? '' : " with description '{$this->e($claim->getRejectionReasonDescription())}'" ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <br/><span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?></span>
-                    <?php } ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <br/><span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
-                    <?php } ?>
                 </dd>
             </div>
         <?php } ?>
+
+        <div class="">
+            <dt class="details-term">Notifications</dt>
+            <dd class="details-definition">
+                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
+                    <span>None sent</span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeEmailSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeEmailSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                <?php } ?>
+            </dd>
+        </div>
 
     <?php } ?>
 
