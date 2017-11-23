@@ -19,14 +19,10 @@ class TokenGenerator
      */
     public function generate()
     {
-        $token = bin2hex(openssl_random_pseudo_bytes(32, $isStrong));
+        $token = bin2hex(random_bytes(32));
 
         // Use base62 for shorter tokens
         $token = BigInteger::factory('bcmath')->baseConvert($token, 16, 62);
-
-        if ($isStrong !== true) {
-            throw new Exception('Unable to generate a strong token');
-        }
 
         return $token;
     }
