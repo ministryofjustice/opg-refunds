@@ -83,31 +83,6 @@ class ClaimApproveAction extends AbstractClaimAction
                 throw new RuntimeException('Failed to accept claim with id: ' . $this->modelId);
             }
 
-            $contact = $claim->getApplication()->getContact();
-            $contactName = $claim->getApplication()->getApplicant() === 'attorney' ?
-                DetailsFormatterPlatesExtension::getFormattedName(
-                    $claim->getApplication()->getAttorney()->getCurrent()->getName()
-                ) : $claim->getDonorName();
-
-            if ($contact->hasEmail()) {
-                $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
-                    'person-completing' => $contactName,
-                    'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
-                    'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
-                ]);
-            }
-
-            if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07') {
-                $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
-                    'amount-including-interest' => PoaFormatterPlatesExtension::getRefundTotalAmountString($claim),
-                    'interest-amount' => PoaFormatterPlatesExtension::getMoneyString($claim->getRefundInterestAmount()),
-                    'donor-name' => $claim->getDonorName(),
-                    'claim-code' => $claim->getReferenceNumber()
-                ]);
-            }
-
             return $this->redirectToRoute('home');
         }
 

@@ -39,12 +39,12 @@ class ConfigProvider
         return [
             'invokables' => [
                 //  Actions
-                Action\CsvDownloadAction::class => Action\CsvDownloadAction::class,
-                Action\ReportingAction::class => Action\ReportingAction::class,
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
+                Service\Notify\Notify::class => Service\Notify\Notify::class,
                 Service\Refund\Refund::class => Service\Refund\Refund::class,
+                Service\Reporting\Reporting::class => Service\Reporting\Reporting::class,
                 Service\User\User::class => Service\User\User::class,
             ],
             'factories'  => [
@@ -60,7 +60,9 @@ class ConfigProvider
                 Action\Poa\PoaDeleteAction::class => Action\Poa\PoaDeleteActionFactory::class,
                 Action\Poa\PoaNoneFoundAction::class => Action\Poa\PoaNoneFoundActionFactory::class,
                 Action\DownloadAction::class => Action\DownloadActionFactory::class,
+                Action\NotifyAction::class => Action\NotifyActionFactory::class,
                 Action\RefundAction::class => Action\RefundActionFactory::class,
+                Action\ReportingAction::class => Action\ReportingActionFactory::class,
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,

@@ -1,9 +1,338 @@
-<?php $this->layout('layout::default', ['title' => 'Reporting']) ?>
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+$this->layout('layout::default', ['title' => 'Reporting']);
+
+/**
+ * @var array $reports
+ */
+
+$claim = $reports['claim'];
+$claimSource = $reports['claimSource'];
+$rejectionReason = $reports['rejectionReason'];
+$duplicateBankDetail = $reports['duplicateBankDetail'];
+$refund = $reports['refund'];
+?>
 
 <div class="grid-row">
     <div class="column-full">
 
-        <h2 class="heading-medium heading-refunds">Reporting</h2>
+        <h1 class="heading-medium heading-refunds">Reporting</h1>
+
+        <p>Generated <?= $reports['generated'] ?> in <?= $reports['generationTimeInMs'] ?>ms</p>
+
+        <h2 class="heading-small heading-refunds">Claims</h2>
+
+        <?php $claimAllTime = $claim['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Pending</th>
+                    <th class="numeric">In progress</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="numeric">All time</td>
+                    <td class="numeric"><?= $claimAllTime['total'] ?></td>
+                    <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></td>
+                    <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <?php $claimByDay = $claim['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($claimByDay) ?> days</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $claimByWeek = $claim['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $claimByMonth = $claim['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($claimByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric" style="width: 25%">Date</th>
+                    <th class="numeric" style="width: 25%">Received</th>
+                    <th class="numeric" style="width: 25%">Accepted</th>
+                    <th class="numeric" style="width: 25%">Rejected</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['total'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Claim source</h2>
+
+        <?php $claimSourceAllTime = $claimSource['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Assisted digital</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor']) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['attorney']) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['assisted_digital']) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor_deceased']) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $claimSourceByMonth = $claimSource['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($claimSourceByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Assisted digital</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimSourceByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Rejection reasons</h2>
+
+        <?php $rejectionReasonAllTime = $rejectionReason['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">No eligible POAs found</th>
+                <th class="numeric" style="width: 20%">POA already refunded</th>
+                <th class="numeric" style="width: 20%">No fees paid</th>
+                <th class="numeric" style="width: 20%">Details not verified</th>
+                <th class="numeric" style="width: 20%">Other</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_FEES_PAID]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_OTHER]) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Duplicate bank details</h2>
+
+        <?php $duplicateBankDetailAllTime = $duplicateBankDetail['allTime']; ?>
+
+        <h3 class="heading-small">Total</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 50%">Number of times bank details used</th>
+                <th class="numeric" style="width: 50%">Frequency</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($duplicateBankDetailAllTime as $timesUsed => $frequency){ ?>
+                <tr>
+                    <td class="numeric"><?= $timesUsed ?></td>
+                    <td class="numeric"><?= $frequency ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Refunds</h2>
+
+        <?php $refundAllTime = $refund['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $refundAllTime['number_of_spreadsheets'] ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($refundAllTime['total'], $refundAllTime['bank_transfer']) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($refundAllTime['total'], $refundAllTime['cheque']) ?></td>
+                <td class="numeric"><?= $refundAllTime['total_refund_amount'] ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $refundByDay = $refund['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($refundByDay) ?> SOP1 forms</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 25%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $refundByWeek = $refund['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $refundByMonth = $refund['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($refundByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
 
     </div>
 </div>

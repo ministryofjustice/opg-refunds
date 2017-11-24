@@ -59,6 +59,11 @@
                                 <li>
                                     <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>" class="">Search</a>
                                 </li>
+                                <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REPORTING, $identity->getRoles())) { ?>
+                                    <li>
+                                        <a href="<?= $this->generateUrl('reporting') ?>" class="">Reporting</a>
+                                    </li>
+                                <?php } ?>
                                 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND, $identity->getRoles())) { ?>
                                     <li>
                                         <a href="<?= $this->generateUrl('refund') ?>" class="">Refunds</a>
@@ -69,9 +74,6 @@
                                         <a href="<?= $this->generateUrl('user', ['id' => null]) ?>" class="">Users</a>
                                     </li>
                                 <?php } ?>
-                                <li>
-                                    <a href="#" class="">FAQs</a>
-                                </li>
                             </ul>
                         <?php } ?>
                     </nav>

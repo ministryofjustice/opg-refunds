@@ -125,14 +125,14 @@ class Claim implements ApiClientInterface
 
     /**
      * @param int $claimId
-     * @param string $title the new note's title
+     * @param string $type the new note's type
      * @param string $message the new note's message
      * @return NoteModel the newly created note
      */
-    public function addNote(int $claimId, string $title, string $message)
+    public function addNote(int $claimId, string $type, string $message)
     {
         $noteArray = $this->getApiClient()->httpPost("/v1/claim/$claimId/note", [
-            'title'   => $title,
+            'type'   => $type,
             'message' => $message,
         ]);
 

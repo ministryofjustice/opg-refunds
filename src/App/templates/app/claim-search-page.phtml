@@ -90,10 +90,10 @@
                         </a>
                     </th>
                     <th>
-                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'modified'))) ?>">
-                            Modified
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'finished'))) ?>">
+                            Finished
                             <?php
-                            $currentSort = $this->getCurrentSort($searchParameters, 'modified');
+                            $currentSort = $this->getCurrentSort($searchParameters, 'finished');
                             if ($currentSort !== false) {
                                 if ($currentSort === 'asc') { ?>
                                     <i class="icon icon-sort-asc">
@@ -147,7 +147,7 @@
                         </td>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
-                        <td><?= $this->e($this->getTimeIntervalBetween($claimSummary->getUpdatedDateTime())) ?></td>
+                        <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
                         <td><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></td>
                         <td><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td>
                     </tr>

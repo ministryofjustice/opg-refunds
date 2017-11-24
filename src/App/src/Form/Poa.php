@@ -8,6 +8,7 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Zend\Filter\StringTrim;
 use Zend\Form\Element\Checkbox;
 use Zend\Form\Element\Hidden;
 use Zend\Form\Element\Radio;
@@ -55,7 +56,8 @@ class Poa extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            ->attach(new StandardInputFilter)
+            ->attach(new StringTrim);
 
         $caseNumberPattern = '';
         switch ($options['system']) {
