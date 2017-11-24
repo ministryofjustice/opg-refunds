@@ -8,6 +8,8 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\MoneyFormatter;
+use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 
 /**
  * Class Claim
@@ -17,6 +19,7 @@ class Claim extends AbstractDataModel
 {
     const STATUS_PENDING = 'pending';
     const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_DUPLICATE = 'duplicate';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
 
@@ -120,6 +123,16 @@ class Claim extends AbstractDataModel
      * @var string
      */
     protected $rejectionReasonDescription;
+
+    /**
+     * @var bool
+     */
+    protected $outcomeEmailSent;
+
+    /**
+     * @var bool
+     */
+    protected $outcomeTextSent;
 
     /**
      * @var Payment
@@ -504,6 +517,44 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function isOutcomeEmailSent(): bool
+    {
+        return $this->outcomeEmailSent;
+    }
+
+    /**
+     * @param bool $outcomeEmailSent
+     * @return $this
+     */
+    public function setOutcomeEmailSent(bool $outcomeEmailSent)
+    {
+        $this->outcomeEmailSent = $outcomeEmailSent;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeTextSent(): bool
+    {
+        return $this->outcomeTextSent;
+    }
+
+    /**
+     * @param bool $outcomeTextSent
+     * @return $this
+     */
+    public function setOutcomeTextSent(bool $outcomeTextSent)
+    {
+        $this->outcomeTextSent = $outcomeTextSent;
+
+        return $this;
+    }
+
+    /**
      * @return Payment
      */
     public function getPayment()
@@ -711,6 +762,18 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return string
+     */
+    public function getRefundTotalAmountString(): string
+    {
+        if ($this->getPoas() === null) {
+            return '£0.00';
+        }
+
+        return MoneyFormatter::getMoneyString($this->getRefundTotalAmount());
+    }
+
+    /**
      * @return float
      */
     public function getRefundInterestAmount()
@@ -722,6 +785,18 @@ class Claim extends AbstractDataModel
         }
 
         return $refundInterestAmount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefundInterestAmountString(): string
+    {
+        if ($this->getPoas() === null) {
+            return '£0.00';
+        }
+
+        return MoneyFormatter::getMoneyString($this->getRefundInterestAmount());
     }
 
     /**
@@ -807,6 +882,29 @@ class Claim extends AbstractDataModel
         }
 
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatusText(): string
+    {
+        return StatusFormatter::getStatusText($this->getStatus());
+    }
+
+    public function getNotesOfType(string $type): array
+    {
+        $notes = [];
+
+        if ($this->getNotes() !== null) {
+            foreach ($this->getNotes() as $note) {
+                if ($note->getType() === $type) {
+                    $notes[] = $note;
+                }
+            }
+        }
+
+        return $notes;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Opg\Refunds\Caseworker\DataModel\MoneyFormatter;
 
 /**
  * Class Poa
@@ -189,6 +190,14 @@ class Poa extends AbstractDataModel
     }
 
     /**
+     * @return string
+     */
+    public function getRefundAmountString(): string
+    {
+        return MoneyFormatter::getMoneyString($this->getRefundAmount());
+    }
+
+    /**
      * @return float
      */
     public function getRefundInterestAmount(): float
@@ -205,6 +214,22 @@ class Poa extends AbstractDataModel
         $this->refundInterestAmount = $refundInterestAmount;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefundInterestAmountString(): string
+    {
+        return MoneyFormatter::getMoneyString($this->getRefundInterestAmount());
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefundTotalAmountString(): string
+    {
+        return MoneyFormatter::getMoneyString($this->getRefundAmount() + $this->getRefundInterestAmount());
     }
 
     /**

@@ -146,6 +146,8 @@ class Claim
                 $dql .= ' ORDER BY c.receivedDateTime ';
             } elseif ($orderBy === 'modified') {
                 $dql .= ' ORDER BY c.updatedDateTime ';
+            } elseif ($orderBy === 'finished') {
+                $dql .= ' ORDER BY c.finishedDateTime ';
             } elseif ($orderBy === 'status') {
                 $dql .= ' ORDER BY c.status ';
             }
@@ -243,7 +245,7 @@ class Claim
             $this->addNote(
                 $assignedClaimId,
                 $userId,
-                'Claim started by caseworker',
+                NoteModel::TYPE_CLAIM_IN_PROGRESS,
                 "Caseworker has begun to process this claim"
             );
         }
@@ -277,7 +279,7 @@ class Claim
         $this->addNote(
             $claim->getId(),
             $userId,
-            'Claim started by caseworker',
+            NoteModel::TYPE_CLAIM_IN_PROGRESS,
             "Caseworker has begun to process this claim"
         );
 
@@ -304,7 +306,7 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'Claim returned',
+            NoteModel::TYPE_CLAIM_PENDING,
             'Caseworker returned claim to pool'
         );
     }
@@ -329,7 +331,7 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'Claim returned',
+            NoteModel::TYPE_CLAIM_PENDING,
             "Claim has been returned to the pool because the assigned caseworker ({$assignedUser->getName()}) was deleted"
         );
     }
@@ -352,14 +354,14 @@ class Claim
             $this->addNote(
                 $claimId,
                 $userId,
-                'No Sirius POAs',
+                NoteModel::TYPE_NO_SIRIUS_POAS,
                 "Caseworker confirmed that there were no eligible Sirius POAs for this claim"
             );
         } else {
             $this->addNote(
                 $claimId,
                 $userId,
-                'Sirius POA found',
+                NoteModel::TYPE_SIRIUS_POAS_FOUND,
                 "Caseworker has found a Sirius POA for this claim"
             );
         }
@@ -383,14 +385,14 @@ class Claim
             $this->addNote(
                 $claimId,
                 $userId,
-                'No Meris POAs',
+                NoteModel::TYPE_NO_MERIS_POAS,
                 "Caseworker confirmed that there were no eligible Meris POAs for this claim"
             );
         } else {
             $this->addNote(
                 $claimId,
                 $userId,
-                'Meris POA found',
+                NoteModel::TYPE_MERIS_POAS_FOUND,
                 "Caseworker has found a Meris POA for this claim"
             );
         }
@@ -399,17 +401,17 @@ class Claim
     /**
      * @param int $claimId
      * @param int $userId
-     * @param string $title
+     * @param string $type
      * @param string $message
      * @return NoteModel
      */
-    public function addNote(int $claimId, int $userId, string $title, string $message)
+    public function addNote(int $claimId, int $userId, string $type, string $message)
     {
         $claim = $this->getClaimEntity($claimId);
 
         $user = $this->getUser($userId);
 
-        $note = new NoteEntity($title, $message, $claim, $user);
+        $note = new NoteEntity($type, $message, $claim, $user);
 
         $this->entityManager->persist($note);
         $this->entityManager->flush();
@@ -448,8 +450,8 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'POA added',
-            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully added to this claim"
+            NoteModel::TYPE_POA_ADDED,
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully added to this claim"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -531,8 +533,8 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'POA edited',
-            "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $poa)} was successfully edited"
+            NoteModel::TYPE_POA_EDITED,
+            "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully edited"
         );
 
         $claim = $this->getClaimEntity($claimId);
@@ -567,7 +569,7 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'POA delete',
+            NoteModel::TYPE_POA_DELETED,
             "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted"
         );
 
@@ -600,7 +602,7 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'Claim accepted',
+            NoteModel::TYPE_CLAIM_ACCEPTED,
             "Caseworker accepted the claim and it will be processed in the next refund run"
         );
     }
@@ -631,7 +633,7 @@ class Claim
         $this->addNote(
             $claimId,
             $userId,
-            'Claim rejected',
+            NoteModel::TYPE_CLAIM_REJECTED,
             "Caseworker rejected the claim due to {$rejectionReason}"
         );
     }
@@ -640,7 +642,7 @@ class Claim
      * @param $claimId
      * @return ClaimEntity
      */
-    private function getClaimEntity($claimId): ClaimEntity
+    public function getClaimEntity($claimId): ClaimEntity
     {
         /** @var ClaimEntity $claim */
         $claim = $this->claimRepository->findOneBy([

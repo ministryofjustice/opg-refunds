@@ -4,6 +4,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\MoneyFormatter;
 
 /**
  * Class Payment
@@ -48,6 +49,14 @@ class Payment extends AbstractDataModel
         $this->amount = $amount;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAmountString(): string
+    {
+        return MoneyFormatter::getMoneyString($this->getAmount());
     }
 
     /**

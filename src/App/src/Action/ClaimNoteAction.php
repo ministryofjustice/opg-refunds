@@ -79,7 +79,7 @@ class ClaimNoteAction extends AbstractRestfulAction
 
         $identity = $request->getAttribute('identity');
 
-        $note = $this->claimService->addNote($claimId, $identity->getId(), $note->getTitle(), $note->getMessage());
+        $note = $this->claimService->addNote($claimId, $identity->getId(), $note->getType(), $note->getMessage());
 
         return new JsonResponse($note->getArrayCopy());
     }
