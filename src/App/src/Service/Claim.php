@@ -19,6 +19,7 @@ use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
@@ -631,11 +632,12 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
+        $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
         $this->addNote(
             $claimId,
             $userId,
             NoteModel::TYPE_CLAIM_REJECTED,
-            "Caseworker rejected the claim due to {$rejectionReason}"
+            "Caseworker rejected the claim due to '{$rejectionReasonText}'"
         );
     }
 
