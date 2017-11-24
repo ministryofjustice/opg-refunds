@@ -128,7 +128,7 @@ class DateFormatterPlatesExtension implements ExtensionInterface
      */
     public function getFinishedDateString($dateTime)
     {
-        if ($dateTime === null) {
+        if (!$dateTime instanceof DateTime) {
             return '';
         }
 

@@ -47,19 +47,13 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 
         if ($accountHashCount < 1) {
             throw new InvalidArgumentException('Account hash count is set to an invalid value: ' . $accountHashCount);
-        }
-
-        if ($accountHashCount === 1) {
+        } elseif ($accountHashCount === 1) {
             return "Used once";
-        }
-
-        if ($accountHashCount === 2) {
+        } elseif ($accountHashCount === 2) {
             return "Used twice";
         }
 
-        if ($accountHashCount > 2) {
-            return "Used {$accountHashCount} times";
-        }
+        return "Used {$accountHashCount} times";
     }
 
     public function shouldShowPaymentDetailsUsedCountWarning($accountHashCount)

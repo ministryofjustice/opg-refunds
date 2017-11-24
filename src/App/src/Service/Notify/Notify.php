@@ -15,7 +15,7 @@ class Notify implements ApiClientInterface
 
     public function notifyAll()
     {
-        $notified = $this->getApiClient()->httpPost("/v1/notify", []);
+        $notified = $this->getApiClient()->httpPost("/v1/notify");
 
         return $notified;
     }
