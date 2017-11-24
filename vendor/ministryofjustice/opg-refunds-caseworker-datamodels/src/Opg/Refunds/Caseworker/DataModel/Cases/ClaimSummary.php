@@ -64,6 +64,11 @@ class ClaimSummary extends AbstractDataModel
     protected $finishedByStatus;
 
     /**
+     * @var DateTime
+     */
+    protected $finishedDateTime;
+
+    /**
      * @var string
      */
     protected $donorName;
@@ -276,6 +281,25 @@ class ClaimSummary extends AbstractDataModel
     }
 
     /**
+     * @return DateTime
+     */
+    public function getFinishedDateTime()
+    {
+        return $this->finishedDateTime;
+    }
+
+    /**
+     * @param DateTime $finishedDateTime
+     * @return $this
+     */
+    public function setFinishedDateTime(DateTime $finishedDateTime)
+    {
+        $this->finishedDateTime = $finishedDateTime;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getDonorName(): string
@@ -325,6 +349,7 @@ class ClaimSummary extends AbstractDataModel
         switch ($property) {
             case 'updatedDateTime':
             case 'receivedDateTime':
+            case 'finishedDateTime':
                 return (($value instanceof DateTime || is_null($value)) ? $value : new DateTime($value));
             default:
                 return parent::map($property, $value);

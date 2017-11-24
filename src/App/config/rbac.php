@@ -49,6 +49,7 @@ return [
         User::ROLE_REFUND => [
             'refund',
             'download',
+            'notify',
         ],
         User::ROLE_ADMIN => [
             'user',

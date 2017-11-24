@@ -43,9 +43,6 @@ class HomeAction extends AbstractAction
         //  Even though the user details are in the session get them again with a GET call to the API
         $user = $this->userService->getUser($identity->getId());
 
-        $flash = $request->getAttribute('flash');
-        $messages = $flash->getMessages();
-
         $session = $request->getAttribute('session');
         $form = new ProcessNewClaim([
             'csrf' => $session['meta']['csrf'],
@@ -54,7 +51,7 @@ class HomeAction extends AbstractAction
         return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
             'form'     => $form,
             'user'     => $user,
-            'messages' => $messages
+            'messages' => $this->getFlashMessages($request)
         ]));
     }
 }

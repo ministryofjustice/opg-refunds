@@ -34,7 +34,7 @@ $this->addErrorMap([
 
 <?php
 $attorney = $claim->getApplication()->getAttorney();
-$attorneyName = $attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null ? $this->getFormattedName($attorney->getPoa()->getName()) : $this->getFormattedName($attorney->getCurrent()->getName());
+$attorneyName = $attorney->getPoa() !== null && $attorney->getPoa()->getName() !== null ? $attorney->getPoa()->getName()->getFormattedName() : $attorney->getCurrent()->getName()->getFormattedName();
 $postcodes = $claim->getApplication()->getPostcodes();
 ?>
 
@@ -81,10 +81,10 @@ $postcodes = $claim->getApplication()->getPostcodes();
         ]);
     } ?>
 
-    <?php if ($form->has('donor-postcode')) {
+    <?php if ($form->has('attorney-postcode')) {
         $this->insert('snippet::input-multi', [
-            'formElement' => $form->get('donor-postcode'),
-            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getDonorPostcode()}</strong> match the donor's address on the POA?",
+            'formElement' => $form->get('attorney-postcode'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getAttorneyPostcode()}</strong> match <strong class=\"bold-small\">{$attorneyName}</strong> (the attorney's) postcode on the POA?",
             'options' => [
                 'yes' => [
                     'optionLabel' => 'Yes'
@@ -96,10 +96,10 @@ $postcodes = $claim->getApplication()->getPostcodes();
         ]);
     } ?>
 
-    <?php if ($form->has('attorney-postcode')) {
+    <?php if ($form->has('donor-postcode')) {
         $this->insert('snippet::input-multi', [
-            'formElement' => $form->get('attorney-postcode'),
-            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getAttorneyPostcode()}</strong> match any of the attorney addresses on the POA?",
+            'formElement' => $form->get('donor-postcode'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$postcodes->getDonorPostcode()}</strong> match <strong class=\"bold-small\">{$claim->getDonorName()}</strong> (the donor's) postcode on the POA?",
             'options' => [
                 'yes' => [
                     'optionLabel' => 'Yes'

@@ -17,7 +17,7 @@ Mandatory: donor
 <dl class="details">
     <div class="">
         <dt class="details-term">Name</dt>
-        <dd class="details-definition"><?= $this->e($this->getFormattedName($donor->getCurrent()->getName())) ?></dd>
+        <dd class="details-definition"><?= $this->e($donor->getCurrent()->getName()->getFormattedName()) ?></dd>
         <?php if (!$donor->hasPoaName() && $claim->hasPoas()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
@@ -40,7 +40,7 @@ Mandatory: donor
     <?php if ($donor->hasPoaName()) { ?>
         <div class="">
             <dt class="details-term">Name on POA</dt>
-            <dd class="details-definition"><?= $this->e($this->getFormattedName($donor->getPoa()->getName())) ?></dd>
+            <dd class="details-definition"><?= $this->e($donor->getPoa()->getName()->getFormattedName()) ?></dd>
             <?php if ($claim->hasPoas()) { ?>
                 <dd class="details-verified">
                     <i class="icon icon-tick" title="Verified">

@@ -66,12 +66,9 @@ class SignInAction extends AbstractAction
             }
         }
 
-        $flash = $request->getAttribute('flash');
-        $messages = $flash->getMessages();
-
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::sign-in-page', [
             'form'      => $form,
-            'messages'  => $messages,
+            'messages' => $this->getFlashMessages($request)
         ]));
     }
 }

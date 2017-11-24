@@ -3,6 +3,8 @@
 namespace App\Action;
 
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Slim\Flash\Messages;
 use Zend\Diactoros\Response;
 
 /**
@@ -30,5 +32,24 @@ abstract class AbstractAction implements
         return new Response\RedirectResponse(
             $this->getUrlHelper()->generate($route, $routeParams, $queryParams)
         );
+    }
+
+    protected function setFlashInfoMessage(ServerRequestInterface $request, $message)
+    {
+        $this->setFlashMessage($request, 'info', $message);
+    }
+
+    protected function setFlashMessage(ServerRequestInterface $request, $key, $message)
+    {
+        /** @var Messages $flash */
+        $flash = $request->getAttribute('flash');
+        $flash->addMessage($key, $message);
+    }
+
+    protected function getFlashMessages(ServerRequestInterface $request)
+    {
+        /** @var Messages $flash */
+        $flash = $request->getAttribute('flash');
+        return $flash->getMessages();
     }
 }

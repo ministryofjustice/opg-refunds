@@ -4,7 +4,7 @@ namespace App\View\Details;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Common\Name as NameModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use InvalidArgumentException;
@@ -17,7 +17,6 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 {
     public function register(Engine $engine)
     {
-        $engine->registerFunction('getFormattedName', [$this, 'getFormattedName']);
         $engine->registerFunction('getApplicantName', [$this, 'getApplicantName']);
         $engine->registerFunction('getPaymentDetailsUsedText', [$this, 'getPaymentDetailsUsedText']);
         $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this, 'shouldShowPaymentDetailsUsedCountWarning']);
@@ -25,19 +24,16 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getStatusText', [$this, 'getStatusText']);
         $engine->registerFunction('getPercentage', [$this, 'getPercentage']);
         $engine->registerFunction('getValueWithPercentage', [$this, 'getValueWithPercentage']);
-    }
-
-    public static function getFormattedName(NameModel $name)
-    {
-        return "{$name->getTitle()} {$name->getFirst()} {$name->getLast()}";
+        $engine->registerFunction('getOutcomeEmailDescription', [$this, 'getOutcomeEmailDescription']);
+        $engine->registerFunction('getOutcomeTextDescription', [$this, 'getOutcomeTextDescription']);
     }
 
     public function getApplicantName(ApplicationModel $application)
     {
         if ($application->getApplicant() === 'donor') {
-            return "{$this->getFormattedName($application->getDonor()->getCurrent()->getName())} (Donor)";
+            return "{$application->getDonor()->getCurrent()->getName()->getFormattedName()} (Donor)";
         } elseif ($application->getApplicant() === 'attorney') {
-            return "{$this->getFormattedName($application->getAttorney()->getCurrent()->getName())} (Attorney)";
+            return "{$application->getAttorney()->getCurrent()->getName()->getFormattedName()} (Attorney)";
         }
 
         return '';
@@ -51,24 +47,18 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 
         if ($accountHashCount < 1) {
             throw new InvalidArgumentException('Account hash count is set to an invalid value: ' . $accountHashCount);
+        } elseif ($accountHashCount === 1) {
+            return "Used once";
+        } elseif ($accountHashCount === 2) {
+            return "Used twice";
         }
 
-        if ($accountHashCount === 1) {
-            return "Payment details used once";
-        }
-
-        if ($accountHashCount === 2) {
-            return "Payment details used twice";
-        }
-
-        if ($accountHashCount > 2) {
-            return "Payment details used {$accountHashCount} times";
-        }
+        return "Used {$accountHashCount} times";
     }
 
     public function shouldShowPaymentDetailsUsedCountWarning($accountHashCount)
     {
-        return $accountHashCount > 2;
+        return $accountHashCount > 1;
     }
 
     public function getRejectionReasonsText(string $rejectionReason)
@@ -89,7 +79,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         }
     }
 
-    public static function getStatusText(string $status)
+    public function getStatusText(string $status)
     {
         switch ($status) {
             case ClaimModel::STATUS_PENDING:
@@ -119,5 +109,47 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getValueWithPercentage(int $total, int $value)
     {
         return "{$value} ({$this->getPercentage($total, $value)})";
+    }
+
+    public function getOutcomeEmailDescription(ClaimModel $claim)
+    {
+        $notes = [];
+
+        if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_DUPLICATE_EMAIL_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_REJECTED_EMAIL_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_ACCEPTED_EMAIL_SENT);
+        }
+
+        $notesDescription = [];
+
+        foreach ($notes as $note) {
+            $notesDescription[] = 'Email sent on ' . date('d/m/Y', $note->getCreatedDateTime()->getTimestamp());
+        }
+
+        return join('. ', $notesDescription);
+    }
+
+    public function getOutcomeTextDescription(ClaimModel $claim)
+    {
+        $notes = [];
+
+        if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_DUPLICATE_TEXT_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_REJECTED_TEXT_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_ACCEPTED_TEXT_SENT);
+        }
+
+        $notesDescription = [];
+
+        foreach ($notes as $note) {
+            $notesDescription[] = 'Text sent on ' . date('d/m/Y', $note->getCreatedDateTime()->getTimestamp());
+        }
+
+        return join('. ', $notesDescription);
     }
 }
