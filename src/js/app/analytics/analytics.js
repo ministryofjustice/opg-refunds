@@ -30,6 +30,7 @@
   
   // Activate any event plugins eg. print intent, error tracking
   GOVUK.analyticsPlugins.formErrorTracker();
+  GOVUK.analyticsPlugins.externalLinkTracker();
   
   // Track initial pageview
   if (typeof GOVUK.pageviewOptions !== 'undefined') {

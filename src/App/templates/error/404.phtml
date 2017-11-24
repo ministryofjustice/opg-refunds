@@ -12,6 +12,6 @@
 
 <?php $this->start('body-end') ?>
     <script>
-        GOVUK.analytics.trackEvent('Error-page', '404')
+        GOVUK.analytics.trackEvent('Error-page', '404', { transport: 'beacon' })
     </script>
 <?php $this->stop() ?>
