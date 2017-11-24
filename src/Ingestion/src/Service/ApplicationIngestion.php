@@ -6,6 +6,7 @@ use App\Entity\Cases\Claim;
 use App\Entity\Cases\Note;
 use App\Entity\Cases\User;
 use Ingestion\Entity\Application;
+use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -154,7 +155,7 @@ class ApplicationIngestion
                     }
 
                     $receivedDateString = date('d M Y \a\t H:i', $claim->getReceivedDateTime()->getTimestamp());
-                    $note = new Note('Claim submitted', "Claim submitted by $applicantName on $receivedDateString", $claim);
+                    $note = new Note(NoteModel::TYPE_CLAIM_SUBMITTED, "Claim submitted by $applicantName on $receivedDateString", $claim);
                     $this->casesEntityManager->persist($note);
 
                     if ($isAssistedDigital) {
@@ -166,7 +167,7 @@ class ApplicationIngestion
                         ]);
 
                         $adNotes = $applicationData['ad']['notes'];
-                        $adNote = new Note('Assisted Digital', $adNotes, $claim, $adUser);
+                        $adNote = new Note(NoteModel::TYPE_ASSISTED_DIGITAL, $adNotes, $claim, $adUser);
                         $this->casesEntityManager->persist($adNote);
                     }
 

@@ -11,7 +11,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="claim")
+ * @ORM\Entity @ORM\Table(name="claim", indexes={@ORM\Index(name="idx_status", columns={"status"})})
  **/
 class Claim extends AbstractEntity
 {
@@ -122,6 +122,18 @@ class Claim extends AbstractEntity
     protected $rejectionReasonDescription;
 
     /**
+     * @var bool
+     * @ORM\Column(name="outcome_email_sent", type="boolean", options={"default" : false})
+     */
+    protected $outcomeEmailSent;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="outcome_text_sent", type="boolean", options={"default" : false})
+     */
+    protected $outcomeTextSent;
+
+    /**
      * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", inversedBy="claim", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
@@ -147,6 +159,8 @@ class Claim extends AbstractEntity
         $this->status = ClaimModel::STATUS_PENDING;
         $this->noSiriusPoas = false;
         $this->noMerisPoas = false;
+        $this->outcomeEmailSent = false;
+        $this->outcomeTextSent = false;
     }
 
     /**
@@ -411,6 +425,38 @@ class Claim extends AbstractEntity
     public function setRejectionReasonDescription(string $rejectionReasonDescription)
     {
         $this->rejectionReasonDescription = $rejectionReasonDescription;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeEmailSent(): bool
+    {
+        return $this->outcomeEmailSent;
+    }
+
+    /**
+     * @param bool $outcomeEmailSent
+     */
+    public function setOutcomeEmailSent(bool $outcomeEmailSent)
+    {
+        $this->outcomeEmailSent = $outcomeEmailSent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeTextSent(): bool
+    {
+        return $this->outcomeTextSent;
+    }
+
+    /**
+     * @param bool $outcomeTextSent
+     */
+    public function setOutcomeTextSent(bool $outcomeTextSent)
+    {
+        $this->outcomeTextSent = $outcomeTextSent;
     }
 
     /**

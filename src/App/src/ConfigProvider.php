@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use Aws\Kms\KmsClient;
 use Zend\Crypt\PublicKey\Rsa;
 
@@ -54,15 +55,20 @@ class ConfigProvider
                 Action\ClaimNoteAction::class => Action\ClaimNoteActionFactory::class,
                 Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
+                Action\NotifyAction::class => Action\NotifyActionFactory::class,
                 Action\PasswordResetAction::class => Action\PasswordResetActionFactory::class,
                 Action\PingAction::class => Action\PingActionFactory::class,
+                Action\ReportingAction::class => Action\ReportingActionFactory::class,
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
 
                 //  Services
+                NotifyClient::class => Service\NotifyClientFactory::class,
                 Service\Claim::class => Service\ClaimFactory::class,
+                Service\Notify::class => Service\NotifyFactory::class,
                 Service\User::class => Service\UserFactory::class,
+                Service\Reporting::class => Service\ReportingFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
 
                 //Crypt

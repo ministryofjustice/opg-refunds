@@ -9,7 +9,7 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="note")
+ * @ORM\Entity @ORM\Table(name="note", indexes={@ORM\Index(name="idx_type", columns={"type"})})
  **/
 class Note extends AbstractEntity
 {
@@ -31,7 +31,7 @@ class Note extends AbstractEntity
      * @var string
      * @ORM\Column(type="string")
      */
-    protected $title;
+    protected $type;
 
     /**
      * @var string
@@ -60,9 +60,9 @@ class Note extends AbstractEntity
      */
     protected $poa;
 
-    public function __construct(string $title, string $message, Claim $claim, User $user = null, Poa $poa = null)
+    public function __construct(string $type, string $message, Claim $claim, User $user = null, Poa $poa = null)
     {
-        $this->title = $title;
+        $this->type = $type;
         $this->message = $message;
         $this->claim = $claim;
         $this->user = $user;
@@ -98,17 +98,17 @@ class Note extends AbstractEntity
     /**
      * @return string
      */
-    public function getTitle(): string
+    public function getType(): string
     {
-        return $this->title;
+        return $this->type;
     }
 
     /**
-     * @param string $title
+     * @param string $type
      */
-    public function setTitle(string $title)
+    public function setType(string $type)
     {
-        $this->title = $title;
+        $this->type = $type;
     }
 
     /**

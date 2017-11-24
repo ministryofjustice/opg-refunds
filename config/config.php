@@ -19,7 +19,6 @@ $aggregator = new ConfigAggregator([
     // Modules config
     App\ConfigProvider::class,
     Auth\ConfigProvider::class,
-    Dev\ConfigProvider::class,
     Ingestion\ConfigProvider::class,
 
     Log\ConfigProvider::class,
