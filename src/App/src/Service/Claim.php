@@ -247,6 +247,8 @@ class Claim
      *
      * @param int $claimId
      * @param int $userId
+     * @param int $assignToUserId
+     * @param string $reason
      * @return array
      * @throws Exception
      */
