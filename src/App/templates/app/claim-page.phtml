@@ -135,9 +135,10 @@ $this->addErrorMap([
     <?php } ?>
 </div>
 
+<h2 class="heading-medium heading-refunds">User note</h2>
+
 <details>
     <summary>Add a user note</summary>
-    <h2 class="heading-medium heading-refunds">User note</h2>
     <form method="post" class="form">
 
         <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
