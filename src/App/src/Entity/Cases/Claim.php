@@ -294,7 +294,7 @@ class Claim extends AbstractEntity
     /**
      * @param User $finishedBy
      */
-    public function setFinishedBy(User $finishedBy)
+    public function setFinishedBy($finishedBy)
     {
         $this->finishedBy = $finishedBy;
     }
@@ -310,7 +310,7 @@ class Claim extends AbstractEntity
     /**
      * @param DateTime $finishedDateTime
      */
-    public function setFinishedDateTime(DateTime $finishedDateTime)
+    public function setFinishedDateTime($finishedDateTime)
     {
         $this->finishedDateTime = $finishedDateTime;
     }
@@ -406,7 +406,7 @@ class Claim extends AbstractEntity
     /**
      * @param string $rejectionReason
      */
-    public function setRejectionReason(string $rejectionReason)
+    public function setRejectionReason($rejectionReason)
     {
         $this->rejectionReason = $rejectionReason;
     }
@@ -422,7 +422,7 @@ class Claim extends AbstractEntity
     /**
      * @param string $rejectionReasonDescription
      */
-    public function setRejectionReasonDescription(string $rejectionReasonDescription)
+    public function setRejectionReasonDescription($rejectionReasonDescription)
     {
         $this->rejectionReasonDescription = $rejectionReasonDescription;
     }

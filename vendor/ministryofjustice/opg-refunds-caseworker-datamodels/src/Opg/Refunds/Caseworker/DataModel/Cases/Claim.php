@@ -5,6 +5,7 @@ namespace Opg\Refunds\Caseworker\DataModel\Cases;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use DateTime;
@@ -481,7 +482,7 @@ class Claim extends AbstractDataModel
     /**
      * @return string
      */
-    public function getRejectionReason(): string
+    public function getRejectionReason()
     {
         return $this->rejectionReason;
     }
@@ -500,7 +501,7 @@ class Claim extends AbstractDataModel
     /**
      * @return string
      */
-    public function getRejectionReasonDescription(): string
+    public function getRejectionReasonDescription()
     {
         return $this->rejectionReasonDescription;
     }
@@ -892,6 +893,10 @@ class Claim extends AbstractDataModel
         return StatusFormatter::getStatusText($this->getStatus());
     }
 
+    /**
+     * @param string $type
+     * @return Note[]
+     */
     public function getNotesOfType(string $type): array
     {
         $notes = [];
@@ -905,6 +910,15 @@ class Claim extends AbstractDataModel
         }
 
         return $notes;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canChangeOutcome(): bool
+    {
+        return ($this->getStatus() === ClaimModel::STATUS_ACCEPTED && $this->getPayment() === null)
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED;
     }
 
     /**
