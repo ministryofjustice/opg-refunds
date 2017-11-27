@@ -253,8 +253,9 @@ class Claim
     public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
-        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && $claim->getStatus() !== ClaimModel::STATUS_IN_PROGRESS) {
+        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
             throw new Exception('You cannot (re)assign this claim', 403);
         }
 
