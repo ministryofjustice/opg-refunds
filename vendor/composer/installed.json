@@ -5153,12 +5153,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "6faea6dbe01c2287cd17d0fd4209723d4f7e977d"
+            "reference": "f0e1ac50ae367fd038671ec9b6b916d143382304"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/6faea6dbe01c2287cd17d0fd4209723d4f7e977d",
-            "reference": "6faea6dbe01c2287cd17d0fd4209723d4f7e977d",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/f0e1ac50ae367fd038671ec9b6b916d143382304",
+            "reference": "f0e1ac50ae367fd038671ec9b6b916d143382304",
             "shasum": ""
         },
         "require": {
@@ -5167,7 +5167,7 @@
         "require-dev": {
             "phpunit/phpunit": "^6.0.8 || ^5.7.15"
         },
-        "time": "2017-11-24T16:04:45+00:00",
+        "time": "2017-11-27T08:20:49+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {

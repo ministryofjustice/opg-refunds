@@ -11,14 +11,13 @@ Mandatory: claim
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  */
 
-$canChangeClaimOutcome = ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED && $claim->getPayment() === null) || $claim->getStatus() === ClaimModel::STATUS_REJECTED;
 ?>
 
 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_ADMIN, $identity->getRoles())) { ?>
     <h2 class="heading-medium heading-refunds">Administrator</h2>
     <dl class="details">
 
-        <?php if(!$canChangeClaimOutcome) { ?>
+        <?php if(!$claim->canChangeOutcome()) { ?>
             <div class="">
                 <dd class="details-definition">
                     No available administrator functions
@@ -26,7 +25,7 @@ $canChangeClaimOutcome = ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED &&
             </div>
         <?php } ?>
 
-        <?php if($canChangeClaimOutcome) { ?>
+        <?php if($claim->canChangeOutcome()) { ?>
 
             <div class="">
                 <dt class="details-term">Outcome</dt>

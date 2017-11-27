@@ -913,6 +913,15 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function canChangeOutcome(): bool
+    {
+        return ($this->getStatus() === ClaimModel::STATUS_ACCEPTED && $this->getPayment() === null)
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED;
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property
