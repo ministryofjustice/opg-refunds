@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummary as UserSummaryModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummaryPage;
 
 /**
  * Class User
@@ -66,8 +68,12 @@ class User
         string $orderBy = null,
         string $sort = null
     ) {
-        if ($page < 1) {
+        if ($page !== null && $page < 1) {
             $page = 1;
+        }
+
+        if ($orderBy === null) {
+            $orderBy = 'name';
         }
 
         $whereClauses = [];
@@ -85,14 +91,14 @@ class User
         }
 
         // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
-        $dql = 'SELECT c FROM App\Entity\Cases\User u';
+        $dql = 'SELECT u FROM App\Entity\Cases\User u';
         if (count($whereClauses) > 0) {
             $dql .= ' WHERE ' . join(' AND ', $whereClauses);
         }
 
         if (isset($orderBy)) {
             if ($orderBy === 'name') {
-                $dql .= ' ORDER BY u.userName ';
+                $dql .= ' ORDER BY u.name ';
             } elseif ($orderBy === 'email') {
                 $dql .= ' ORDER BY u.email ';
             }
