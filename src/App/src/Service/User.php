@@ -8,6 +8,7 @@ use App\Exception\InvalidInputException;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 
 /**
@@ -44,6 +45,93 @@ class User
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->tokenGenerator = $tokenGenerator;
+    }
+    
+    /**
+     * Search all users
+     *
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $search
+     * @param string|null $status
+     * @param string|null $orderBy
+     * @param string|null $sort
+     * @return UserSummaryPage
+     */
+    public function search(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        string $status = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
+        if ($page < 1) {
+            $page = 1;
+        }
+
+        $whereClauses = [];
+        $parameters = [];
+
+        if (isset($search)) {
+            $userName = $search;
+            $whereClauses[] = 'LOWER(u.name) LIKE LOWER(:userName)';
+            $parameters['userName'] = "%{$userName}%";
+        }
+
+        if (isset($status)) {
+            $whereClauses[] = 'u.status = :status';
+            $parameters['status'] = $status;
+        }
+
+        // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
+        $dql = 'SELECT c FROM App\Entity\Cases\User u';
+        if (count($whereClauses) > 0) {
+            $dql .= ' WHERE ' . join(' AND ', $whereClauses);
+        }
+
+        if (isset($orderBy)) {
+            if ($orderBy === 'name') {
+                $dql .= ' ORDER BY u.userName ';
+            } elseif ($orderBy === 'email') {
+                $dql .= ' ORDER BY u.email ';
+            }
+
+            $dql .= strtoupper($sort ?: 'asc');
+        }
+
+        $query = $this->entityManager->createQuery($dql)->setParameters($parameters);
+
+        if ($page !== null) {
+            $offset = ($page - 1) * $pageSize;
+
+            $query = $query->setFirstResult($offset);
+        }
+
+        if ($pageSize !== null) {
+            $query = $query->setFirstResult($pageSize);
+        }
+
+        $paginator = new Paginator($query, true);
+
+        $total = count($paginator);
+        $pageCount = $pageSize === null ? 1 : ceil($total/$pageSize);
+
+        $userSummaries = [];
+
+        foreach ($paginator as $user) {
+            $userSummaries[] = $this->translateToDataModel($user, [], UserSummaryModel::class);
+        }
+
+        $userSummaryPage = new UserSummaryPage();
+        $userSummaryPage
+            ->setPage($page ?: 1)
+            ->setPageSize($pageSize ?: $total)
+            ->setPageCount($pageCount)
+            ->setTotal($total)
+            ->setUserSummaries($userSummaries);
+
+        return $userSummaryPage;
     }
 
     /**

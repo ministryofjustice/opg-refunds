@@ -71,7 +71,7 @@ class Claim
     }
 
     /**
-     * Get all claims
+     * Search all claims
      *
      * @param int|null $page
      * @param int|null $pageSize
