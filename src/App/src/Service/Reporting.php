@@ -108,7 +108,7 @@ class Reporting
         }
 
         $byWeek = [];
-        $startOfWeek = new DateTime('last sunday');
+        $startOfWeek = new DateTime('last monday');
         $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
         for ($i = 0; $i < 12; $i++) {
             if ($endOfWeek < $dateOfFirstClaim) {
@@ -122,7 +122,7 @@ class Reporting
 
             $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp())] = $this->addStatusColumns($week);
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->addStatusColumns($week);
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -329,7 +329,7 @@ class Reporting
         }
 
         $byWeek = [];
-        $startOfWeek = new DateTime('last sunday');
+        $startOfWeek = new DateTime('last monday');
         $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
         for ($i = 0; $i < 12; $i++) {
             if ($endOfWeek < $dateOfFirstClaim) {
@@ -346,7 +346,7 @@ class Reporting
 
             $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp())] = $this->formatRefundReport($week);
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->formatRefundReport($week);
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
