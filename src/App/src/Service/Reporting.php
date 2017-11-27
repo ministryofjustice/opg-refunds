@@ -62,7 +62,9 @@ class Reporting
 
     public function getClaimReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL SELECT \'total\', count(*) FROM claim';
+        $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
+                SELECT \'total\', count(*) FROM claim UNION ALL
+                SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
             $sql
@@ -70,7 +72,9 @@ class Reporting
 
         $allTime = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
 
-        $sql = 'SELECT status, count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
+        $sql = 'SELECT status, count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay UNION ALL
+                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE c.received_datetime >= :startOfDay AND c.received_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
 
         $byDay = [];
         $startOfDay = new DateTime('today');
@@ -168,6 +172,9 @@ class Reporting
         }
         if (empty($counts['total'])) {
             $counts['total'] = 0;
+        }
+        if (empty($counts['outcome_changed'])) {
+            $counts['outcome_changed'] = 0;
         }
 
         return $counts;

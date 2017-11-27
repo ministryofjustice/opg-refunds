@@ -195,20 +195,7 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
-        $accountHashCount = null;
-
-        if ($claim->getAccountHash() !== null) {
-            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
-            $accountHashCount = $this->entityManager->createQuery($dql)
-                ->setParameter(1, $claim->getAccountHash())
-                ->getSingleScalarResult();
-        }
-
-        /** @var ClaimModel $claimModel */
-        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
-        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
-
-        return $claimModel;
+        return $this->getClaimModel($userId, $claim);
     }
 
     /**
@@ -650,8 +637,9 @@ class Claim
     public function setStatusInProgress($claimId, $userId, $reason)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
-        if (!$this->isReadOnly($claim, $userId) && $claim->getPayment() !== null || $claim->getFinishedBy() === null) {
+        if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
             throw new Exception('You cannot set this claim\'s status back to pending', 403);
         }
 
@@ -770,5 +758,28 @@ class Claim
             'id' => $userId,
         ]);
         return $user;
+    }
+
+    /**
+     * @param int $userId
+     * @param ClaimEntity $claim
+     * @return ClaimModel
+     */
+    private function getClaimModel(int $userId, ClaimEntity $claim): ClaimModel
+    {
+        $accountHashCount = null;
+
+        if ($claim->getAccountHash() !== null) {
+            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
+            $accountHashCount = $this->entityManager->createQuery($dql)
+                ->setParameter(1, $claim->getAccountHash())
+                ->getSingleScalarResult();
+        }
+
+        /** @var ClaimModel $claimModel */
+        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
+        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
+
+        return $claimModel;
     }
 }
