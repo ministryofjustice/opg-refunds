@@ -5,6 +5,7 @@ namespace App\Service\User;
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummaryPage;
 
 class User implements ApiClientInterface
 {
@@ -33,6 +34,56 @@ class User implements ApiClientInterface
         $usersData = $this->getApiClient()->httpGet('/v1/user');
 
         return $this->createModelCollection($usersData);
+    }
+
+    /**
+     * Search users
+     *
+     * @param int|null $page
+     * @param int|null $pageSize
+     * @param string|null $search
+     * @param string|null $status
+     * @param string|null $orderBy
+     * @param string|null $sort
+     * @return UserSummaryPage
+     */
+    public function searchUsers(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        string $status = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
+        $queryParameters = [];
+        if ($page != null) {
+            $queryParameters['page'] = $page;
+        }
+        if ($pageSize != null) {
+            $queryParameters['pageSize'] = $pageSize;
+        }
+        if ($search != null) {
+            $queryParameters['search'] = $search;
+        }
+        if ($status != null) {
+            $queryParameters['status'] = $status;
+        }
+        if ($orderBy != null) {
+            $queryParameters['orderBy'] = $orderBy;
+        }
+        if ($sort != null) {
+            $queryParameters['sort'] = $sort;
+        }
+
+        $url = '/v1/user/search';
+        if ($queryParameters) {
+            $url .= '?' . http_build_query($queryParameters);
+        }
+
+        $userPageData = $this->getApiClient()->httpGet($url);
+        $userSummaryPage = new UserSummaryPage($userPageData);
+
+        return $userSummaryPage;
     }
 
     /**

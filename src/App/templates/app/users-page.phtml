@@ -1,11 +1,15 @@
-<?php $this->layout('layout::default', ['title' => 'Users']) ?>
+<?php $this->layout('layout::default', ['title' => 'Users'])
+
+/* @var \Opg\Refunds\Caseworker\DataModel\Cases\UserSummaryPage $userSummaryPage */
+
+?>
 
 <div class="grid-row">
     <div class="column-full">
 
         <?php // $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
-        <h2 class="heading-medium heading-refunds">Users (<?= count($users) ?>)</h2>
+        <h2 class="heading-medium heading-refunds">Users (<?= $userSummaryPage->getTotal() ?>)</h2>
 
         <table>
             <thead>
@@ -17,8 +21,8 @@
                 </tr>
             </thead>
             <tbody>
-            <?php if (count($users)) { ?>
-                <?php foreach ($users as $user) { ?>
+            <?php if ($userSummaryPage->getTotal() > 0) { ?>
+                <?php foreach ($userSummaryPage->getUserSummaries() as $user) { ?>
                     <tr>
                         <td>
                             <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $this->e($user->getName()) ?></a>

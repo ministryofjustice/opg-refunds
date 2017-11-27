@@ -20,19 +20,23 @@
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <p>Are you sure you want to change the outcome on the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
-    <p><strong>This will change the claim's status back to 'In Pending' and will reassign it back to the caseworker that resolved it</strong> allowing them to modify, approve or reject it.</p>
+    <p>Are you sure you want to reassign the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
+
+    <?php $this->insert('snippet::input-select', [
+        'formElement' => $form->get('user-id'),
+        'formLabel' => 'Reassign to'
+    ]) ?>
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('reason'),
         'formLabel' => 'Reason',
-        'formHint' => 'Explain why you are changing the outcome on this claim. This will appear as a note on the claim',
+        'formHint' => 'Explain why you are reassigning this claim. This will appear as a note on the claim',
         'formType' => 'textarea',
         'formLabelBold' => false
     ]) ?>
 
     <div class="form-group">
-        <input type='submit' class="button" name='submit' value='Change claim outcome'>
+        <input type='submit' class="button" name='submit' value='Reassign claim'>
         <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
     </div>
 

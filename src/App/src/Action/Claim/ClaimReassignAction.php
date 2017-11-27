@@ -4,8 +4,12 @@ namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
 use App\Form\ClaimReassign;
+use App\Service\Claim\Claim as ClaimService;
+use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummary as UserSummaryModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -13,6 +17,17 @@ use Exception;
 
 class ClaimReassignAction extends AbstractClaimAction
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(ClaimService $claimService, UserService $userService)
+    {
+        parent::__construct($claimService);
+        $this->userService = $userService;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -53,15 +68,18 @@ class ClaimReassignAction extends AbstractClaimAction
         if ($form->isValid()) {
             $formData = $form->getData();
 
+            $userId = (int)$formData['user-id'];
             $reason = $formData['reason'];
 
-            $assignedClaimId = $this->claimService->assignClaim($claim->getId(), $reason);
+            $assignedClaim = $this->claimService->assignClaim($claim->getId(), $userId, $reason);
+            $assignedClaimId = $assignedClaim['assignedClaimId'];
+            $assignedToName = $assignedClaim['assignedToName'];
 
             if ($assignedClaimId === 0) {
                 throw new RuntimeException('Failed to reassign claim with id: ' . $this->modelId);
             }
 
-            $this->setFlashInfoMessage($request, 'Claim reassigned to');
+            $this->setFlashInfoMessage($request, 'Claim reassigned to ' . $assignedToName);
 
             return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
         }
@@ -81,8 +99,12 @@ class ClaimReassignAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
+        $userSummaryPage = $this->userService->searchUsers(null, null, null, UserModel::STATUS_ACTIVE);
+        $userSummaries = $userSummaryPage->getUserSummaries();
+
         $form = new ClaimReassign([
             'claim'  => $claim,
+            'userSummaries' => $userSummaries,
             'csrf'   => $session['meta']['csrf'],
         ]);
 

@@ -146,6 +146,7 @@ class ClaimAction extends AbstractClaimAction
             'claim'            => $claim,
             'form'             => $form,
             'poaNoneFoundForm' => $poaNoneFoundForm,
+            'messages' => $this->getFlashMessages($request),
         ];
     }
 }

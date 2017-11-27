@@ -28,6 +28,8 @@ $this->addErrorMap([
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <div>
+    <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
     <?php if ($claim->hasSiriusPoas()) { ?>
