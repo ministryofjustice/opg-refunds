@@ -147,6 +147,15 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
+    /**
+     * @var Collection|Claim[]
+     * @ORM\ManyToMany(targetEntity="Claim")
+     * @ORM\JoinTable(name="duplicate_claims",
+     *      joinColumns={@ORM\JoinColumn(name="claim_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="duplicate_claim_id", referencedColumnName="id")})
+     */
+    private $duplicateClaims;
+
     public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, $accountHash)
     {
         $this->id = $id;
@@ -489,6 +498,22 @@ class Claim extends AbstractEntity
     public function setNotes($notes)
     {
         $this->notes = $notes;
+    }
+
+    /**
+     * @return Claim[]|Collection
+     */
+    public function getDuplicateClaims()
+    {
+        return $this->duplicateClaims;
+    }
+
+    /**
+     * @param Claim[]|Collection $duplicateClaims
+     */
+    public function setDuplicateClaims($duplicateClaims)
+    {
+        $this->duplicateClaims = $duplicateClaims;
     }
 
     /**
