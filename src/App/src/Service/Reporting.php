@@ -89,7 +89,7 @@ class Reporting
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 45; $i++) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
             }
@@ -303,7 +303,7 @@ class Reporting
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
-        while (count($byDay) < 30) {
+        while (count($byDay) < 45) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
             }
