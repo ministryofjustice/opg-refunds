@@ -922,6 +922,14 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function canReassignClaim(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
      * Map properties to correct types
      *
      * @param string $property

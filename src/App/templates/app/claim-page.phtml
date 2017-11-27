@@ -133,21 +133,24 @@ $this->addErrorMap([
     <?php } ?>
 </div>
 
-<h2 class="heading-medium heading-refunds">User note</h2>
-<form method="post" class="form">
+<details>
+    <summary>Add a user note</summary>
+    <h2 class="heading-medium heading-refunds">User note</h2>
+    <form method="post" class="form">
 
-    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+        <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <?php $this->insert('snippet::input-text', [
-        'formElement' => $form->get('message'),
-        'formLabel' => 'Add a user note',
-        'formType' => 'textarea',
-        'formLabelBold' => false,
-        'additionFormControlClass' => 'form-control-3-4'
-    ]) ?>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('message'),
+            'formLabel' => 'message',
+            'formType' => 'textarea',
+            'formLabelBold' => false,
+            'additionFormControlClass' => 'form-control-3-4'
+        ]) ?>
 
-    <input class="button button-secondary" type="submit" value="Submit note">
-</form>
+        <input class="button button-secondary" type="submit" value="Submit note">
+    </form>
+</details>
 
 <h2 class="heading-medium heading-refunds">Timeline</h2>
 

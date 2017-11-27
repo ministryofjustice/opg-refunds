@@ -40,6 +40,7 @@ return [
             'claim.reject',
             'claim.search',
             'claim.change.outcome',
+            'claim.reassign',
             'assisted-digital.start',
         ],
         User::ROLE_REPORTING => [
@@ -55,6 +56,8 @@ return [
             'user.add',
             'user.edit',
             'user.delete',
+            'claim.change.outcome',
+            'claim.reassign',
         ],
     ],
 ];

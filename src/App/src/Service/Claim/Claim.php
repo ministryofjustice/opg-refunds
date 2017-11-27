@@ -33,9 +33,10 @@ class Claim implements ApiClientInterface
      *
      * @param int $claimId
      * @param int $userId
+     * @param string $reason
      * @return int the id of the next case to process. Will be zero if none was assigned
      */
-    public function assignClaim(int $claimId, int $userId)
+    public function assignClaim(int $claimId, int $userId, string $reason)
     {
         $result = $this->getApiClient()->httpPut("/v1/user/$userId/claim/$claimId");
 

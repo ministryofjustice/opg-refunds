@@ -1,0 +1,39 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimReassign $form
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<h2 class="heading-medium">Reassign claim</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>Are you sure you want to change the outcome on the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
+    <p><strong>This will change the claim's status back to 'In Pending' and will reassign it back to the caseworker that resolved it</strong> allowing them to modify, approve or reject it.</p>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('reason'),
+        'formLabel' => 'Reason',
+        'formHint' => 'Explain why you are changing the outcome on this claim. This will appear as a note on the claim',
+        'formType' => 'textarea',
+        'formLabelBold' => false
+    ]) ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Change claim outcome'>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

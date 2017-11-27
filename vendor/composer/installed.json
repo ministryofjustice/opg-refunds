@@ -5148,17 +5148,17 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "1.5.1",
-        "version_normalized": "1.5.1.0",
+        "version": "dev-REF-402-reassign-claim",
+        "version_normalized": "dev-REF-402-reassign-claim",
         "source": {
             "type": "git",
             "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "288e46818fbf75169fddcadf2ca41e9765bf61f9"
+            "reference": "586889b6ae02913a9c6ae22e7d99f494834bdc4f"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/288e46818fbf75169fddcadf2ca41e9765bf61f9",
-            "reference": "288e46818fbf75169fddcadf2ca41e9765bf61f9",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/586889b6ae02913a9c6ae22e7d99f494834bdc4f",
+            "reference": "586889b6ae02913a9c6ae22e7d99f494834bdc4f",
             "shasum": ""
         },
         "require": {
@@ -5167,7 +5167,7 @@
         "require-dev": {
             "phpunit/phpunit": "^6.0.8 || ^5.7.15"
         },
-        "time": "2017-11-27T10:30:33+00:00",
+        "time": "2017-11-27T11:48:28+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -5180,7 +5180,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.5.1",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-402-reassign-claim",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     }
