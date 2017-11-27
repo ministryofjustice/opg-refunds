@@ -22,6 +22,7 @@ $this->addErrorMap([
 <?php $this->start('right-sidebar') ?>
 <?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
 <?php $this->insert('snippet::outcome', ['claim' => $claim]) ?>
+<?php $this->insert('snippet::admin-functions', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
@@ -132,23 +133,21 @@ $this->addErrorMap([
     <?php } ?>
 </div>
 
-<?php if (!$claim->isReadOnly()) { ?>
-    <h2 class="heading-medium heading-refunds">User note</h2>
-    <form method="post" class="form">
+<h2 class="heading-medium heading-refunds">User note</h2>
+<form method="post" class="form">
 
-        <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-        <?php $this->insert('snippet::input-text', [
-            'formElement' => $form->get('message'),
-            'formLabel' => 'Add a user note',
-            'formType' => 'textarea',
-            'formLabelBold' => false,
-            'additionFormControlClass' => 'form-control-3-4'
-        ]) ?>
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('message'),
+        'formLabel' => 'Add a user note',
+        'formType' => 'textarea',
+        'formLabelBold' => false,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
 
-        <input class="button button-secondary" type="submit" value="Submit note">
-    </form>
-<?php } ?>
+    <input class="button button-secondary" type="submit" value="Submit note">
+</form>
 
 <h2 class="heading-medium heading-refunds">Timeline</h2>
 

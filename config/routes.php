@@ -48,5 +48,6 @@ $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Act
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
 $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
+$app->route('/claim/{claimId:\d+}/change-outcome', App\Action\Claim\ClaimChangeOutcomeAction::class, ['GET', 'POST'], 'claim.change.outcome');
 $app->get('/start-assisted-digital', App\Action\AssistedDigitalRedirectAction::class, 'assisted-digital.start');
 $app->route('/notify', App\Action\NotifyAction::class, ['GET', 'POST'], 'notify');

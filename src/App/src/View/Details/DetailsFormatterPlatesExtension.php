@@ -8,6 +8,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use InvalidArgumentException;
+use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 
 /**
  * Class DetailsFormatterPlatesExtension
@@ -63,20 +64,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 
     public function getRejectionReasonsText(string $rejectionReason)
     {
-        switch ($rejectionReason) {
-            case ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND:
-                return 'No eligible POAs found';
-            case ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED:
-                return 'POA already refunded';
-            case ClaimModel::REJECTION_REASON_NO_FEES_PAID:
-                return 'No fees paid';
-            case ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED:
-                return 'Details not verified';
-            case ClaimModel::REJECTION_REASON_OTHER:
-                return 'Other';
-            default:
-                return 'Unknown';
-        }
+        return RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
     }
 
     public function getStatusText(string $status)
