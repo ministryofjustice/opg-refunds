@@ -72,9 +72,19 @@ class Reporting
 
         $allTime = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
 
-        $sql = 'SELECT status, count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
+        $sql = 'SELECT status, count(*) FROM claim WHERE status = :statusPending AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT status, count(*) FROM claim WHERE status IN (:statusDuplicate, :statusRejected, :statusAccepted) AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay UNION ALL
-                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE c.received_datetime >= :startOfDay AND c.received_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
+                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE n.created_datetime >= :startOfDay AND n.created_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
+
+        $parameters = [
+            'statusPending' => ClaimModel::STATUS_PENDING,
+            'statusInProgress' => ClaimModel::STATUS_IN_PROGRESS,
+            'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
+            'statusRejected' => ClaimModel::STATUS_REJECTED,
+            'statusAccepted' => ClaimModel::STATUS_ACCEPTED
+        ];
 
         $byDay = [];
         $startOfDay = new DateTime('today');
@@ -84,13 +94,10 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
@@ -108,13 +115,10 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfWeek->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfWeek->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
@@ -132,13 +136,10 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
