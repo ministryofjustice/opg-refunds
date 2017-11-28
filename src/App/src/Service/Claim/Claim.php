@@ -86,8 +86,17 @@ class Claim implements ApiClientInterface
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function searchClaims(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
-    {
+    public function searchClaims(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        int $assignedToId = null,
+        string $status = null,
+        string $accountHash = null,
+        array $poaCaseNumbers = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
         $queryParameters = [];
         if ($page != null) {
             $queryParameters['page'] = $page;
@@ -106,6 +115,9 @@ class Claim implements ApiClientInterface
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
+        }
+        if ($poaCaseNumbers != null) {
+            $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
         }
         if ($orderBy != null) {
             $queryParameters['orderBy'] = $orderBy;
