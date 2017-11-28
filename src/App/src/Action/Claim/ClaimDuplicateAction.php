@@ -96,7 +96,7 @@ class ClaimDuplicateAction extends AbstractClaimAction
                 return $this->redirectToRoute('home');
             } catch (ApiException $ex) {
                 if ($ex->getCode() === 400) {
-                    $form->setMessages(['duplicate-of' => ['Claim code does not match any existing claim']]);
+                    $form->setMessages(['duplicate-of' => ['Claim code does not match an existing claim']]);
                 } else {
                     throw $ex;
                 }
