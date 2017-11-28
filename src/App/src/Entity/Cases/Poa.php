@@ -118,6 +118,22 @@ class Poa extends AbstractEntity
     }
 
     /**
+     * @return bool
+     */
+    public function isCaseNumberAvailable(): bool
+    {
+        return $this->caseNumberAvailable;
+    }
+
+    /**
+     * @param bool $caseNumberAvailable
+     */
+    public function setCaseNumberAvailable(bool $caseNumberAvailable)
+    {
+        $this->caseNumberAvailable = $caseNumberAvailable;
+    }
+
+    /**
      * @return DateTime
      */
     public function getReceivedDate(): DateTime

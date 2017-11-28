@@ -600,6 +600,7 @@ class Claim
     public function setStatusAccepted($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $this->checkCanEdit($claim, $userId);
 
@@ -611,6 +612,8 @@ class Claim
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        $this->setPoaCaseNumbersAvailable($claim, $claimModel, true);
 
         $this->addNote(
             $claimId,
@@ -629,6 +632,7 @@ class Claim
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $this->checkCanEdit($claim, $userId);
 
@@ -642,6 +646,8 @@ class Claim
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        $this->setPoaCaseNumbersAvailable($claim, $claimModel, true);
 
         $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
         $this->addNote(
@@ -678,6 +684,8 @@ class Claim
         $claim->setAssignedTo($finishedBy);
         $claim->setAssignedDateTime(new DateTime());
         $claim->getDuplicateOf()->clear();
+
+        $this->setPoaCaseNumbersAvailable($claim, $claimModel, false);
 
         $this->addNote(
             $claimId,
@@ -849,5 +857,19 @@ class Claim
         $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
 
         return $claimModel;
+    }
+
+    /**
+     * @param ClaimEntity $claim
+     * @param ClaimModel $claimModel
+     * @param bool $caseNumberAvailable
+     */
+    private function setPoaCaseNumbersAvailable(ClaimEntity $claim, ClaimModel $claimModel, bool $caseNumberAvailable)
+    {
+        if ($claimModel->hasPoas()) {
+            foreach ($claim->getPoas() as $poa) {
+                $poa->setCaseNumberAvailable($caseNumberAvailable);
+            }
+        }
     }
 }
