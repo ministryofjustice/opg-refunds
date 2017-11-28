@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="poa", uniqueConstraints={@ORM\UniqueConstraint(name="case_number_idx", columns={"system", "case_number"})})
+ * @ORM\Table(name="poa", uniqueConstraints={@ORM\UniqueConstraint(name="case_number_idx", columns={"system", "case_number", "case_number_available"})})
  **/
 class Poa extends AbstractEntity
 {
@@ -35,6 +35,12 @@ class Poa extends AbstractEntity
      * @ORM\Column(name="case_number", type="string")
      */
     protected $caseNumber;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="case_number_available", type="boolean", options={"default" : false})
+     */
+    protected $caseNumberAvailable;
 
     /**
      * @var DateTime
@@ -65,6 +71,7 @@ class Poa extends AbstractEntity
     {
         $this->system = $system;
         $this->caseNumber = $caseNumber;
+        $this->caseNumberAvailable = false;
         $this->receivedDate = $receivedDate;
         $this->originalPaymentAmount = $originalPaymentAmount;
         $this->claim = $claim;
