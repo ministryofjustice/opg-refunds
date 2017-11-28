@@ -14,6 +14,8 @@
 <?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
 <h2 class="heading-medium">Reassign claim</h2>
 
 <form method="post" class="form">
