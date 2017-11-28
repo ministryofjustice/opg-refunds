@@ -45,11 +45,12 @@ class ClaimSearchAction extends AbstractRestfulAction
         $assignedToId = isset($queryParameters['assignedToId']) ? $queryParameters['assignedToId'] : null;
         $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
         $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
+        $poaCaseNumbers = isset($queryParameters['poaCaseNumbers']) ? explode(',', $queryParameters['poaCaseNumbers']) : null;
         $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
         $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
 
         //  Search claims
-        $claimSummaryPage = $this->claimService->search($page, $pageSize, $search, $assignedToId, $status, $accountHash, $orderBy, $sort);
+        $claimSummaryPage = $this->claimService->search($page, $pageSize, $search, $assignedToId, $status, $accountHash, $poaCaseNumbers, $orderBy, $sort);
 
         return new JsonResponse($claimSummaryPage->getArrayCopy());
     }

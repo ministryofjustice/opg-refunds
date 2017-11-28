@@ -80,12 +80,22 @@ class Claim
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function search(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
-    {
+    public function search(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        int $assignedToId = null,
+        string $status = null,
+        string $accountHash = null,
+        array $poaCaseNumbers = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
 
@@ -117,7 +127,7 @@ class Claim
         }
 
         if (isset($assignedToId)) {
-            $join = ' JOIN c.assignedTo u';
+            $join .= ' JOIN c.assignedTo u';
             $whereClauses[] = 'u.id = :assignedToId';
             $parameters['assignedToId'] = $assignedToId;
         }
@@ -130,6 +140,12 @@ class Claim
         if (isset($accountHash)) {
             $whereClauses[] = 'c.accountHash = :accountHash';
             $parameters['accountHash'] = $accountHash;
+        }
+
+        if (isset($poaCaseNumbers)) {
+            $join .= ' JOIN c.poas p';
+            $whereClauses[] = 'p.caseNumber IN (:poaCaseNumbers)';
+            $parameters['poaCaseNumbers'] = $poaCaseNumbers;
         }
 
         $offset = ($page - 1) * $pageSize;
