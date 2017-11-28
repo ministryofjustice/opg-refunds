@@ -687,6 +687,16 @@ class Claim
 
         $this->setPoaCaseNumbersAvailable($claim, $claimModel, false);
 
+        try {
+            $this->entityManager->flush();
+        } catch (DriverException $ex) {
+            if ($ex->getErrorCode() === 7) {
+                //Duplicate case number
+                throw new Exception("Could not set this claim's status back to pending due to a poa case number duplication", 400);
+            }
+            throw $ex;
+        }
+
         $this->addNote(
             $claimId,
             $userId,
