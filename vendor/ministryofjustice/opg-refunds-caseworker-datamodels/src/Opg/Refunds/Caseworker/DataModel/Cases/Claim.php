@@ -652,7 +652,7 @@ class Claim extends AbstractDataModel
     /**
      * @return array
      */
-    public function getDuplicateOfIds(): array
+    public function getDuplicateOfIds()
     {
         return $this->duplicateOfIds;
     }
@@ -671,7 +671,7 @@ class Claim extends AbstractDataModel
     /**
      * @return array
      */
-    public function getDuplicateClaimIds(): array
+    public function getDuplicateClaimIds()
     {
         return $this->duplicateClaimIds;
     }
@@ -984,6 +984,13 @@ class Claim extends AbstractDataModel
     {
         return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS && !$this->hasPoas()
             && !$this->isNoSiriusPoas() && !$this->isNoMerisPoas();
+    }
+
+    public function isClaimResolved(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_ACCEPTED
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
     }
 
     /**

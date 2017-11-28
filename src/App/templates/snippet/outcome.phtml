@@ -53,7 +53,7 @@ Mandatory: claim
         </dd>
     </div>
 
-    <?php if($claim->isClaimComplete() && $claim->isReadOnly()) { ?>
+    <?php if($claim->isClaimResolved()) { ?>
         
         <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
             <div class="">
@@ -69,27 +69,46 @@ Mandatory: claim
             <div class="">
                 <dt class="details-term">Claim rejected</dt>
                 <dd class="details-definition">
-                    Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>'<?= empty($claim->getRejectionReasonDescription()) ? '' : " with description '{$this->e($claim->getRejectionReasonDescription())}'" ?>
+                    <span>Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>'<?= empty($claim->getRejectionReasonDescription()) ? '' : " with description '{$this->e($claim->getRejectionReasonDescription())}'" ?></span>
+                </dd>
+            </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) { ?>
+            <div class="">
+                <dt class="details-term">Duplicate claim</dt>
+                <dd class="details-definition">
+                    <span>Claim was resolved as a duplicate of<?php foreach ($claim->getDuplicateOfIds() as $duplicateOfId => $claimCode) { ?> <a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a><?php } ?> on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
                 </dd>
             </div>
         <?php } ?>
 
-        <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED || $claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
+        <?php if ($claim->getDuplicateClaimIds() !== null && count($claim->getDuplicateClaimIds()) > 0) { ?>
             <div class="">
-                <dt class="details-term">Notifications</dt>
+                <dt class="details-term">Duplicate claims</dt>
                 <dd class="details-definition">
-                    <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
-                        <span>None sent</span>
-                    <?php } ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
-                    <?php } ?>
-                    <?php if ($claim->isOutcomeEmailSent()) { ?>
-                        <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
-                    <?php } ?>
+                    <span>This is duplicated by</span>
+                    <ul>
+                        <?php foreach ($claim->getDuplicateClaimIds() as $duplicateOfId => $claimCode) { ?>
+                            <li><a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a></li>
+                        <?php } ?>
+                    </ul>
                 </dd>
             </div>
         <?php } ?>
+
+        <div class="">
+            <dt class="details-term">Notifications</dt>
+            <dd class="details-definition">
+                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
+                    <span>None sent</span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeEmailSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeEmailSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                <?php } ?>
+            </dd>
+        </div>
 
     <?php } ?>
 
