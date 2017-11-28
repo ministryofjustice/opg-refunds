@@ -1,4 +1,6 @@
-<?php $this->layout('layout::default', ['title' => 'Search claims']) ?>
+<?php use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
+
+$this->layout('layout::default', ['title' => 'Search claims']) ?>
 <?php
 /**
  * @var \App\Form\ClaimSearch $form
@@ -149,7 +151,7 @@
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
                         <td><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></td>
-                        <td><?= $this->e($this->getStatusText($claimSummary->getStatus())) ?></td>
+                        <td><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></td>
                     </tr>
                 <?php } ?>
 

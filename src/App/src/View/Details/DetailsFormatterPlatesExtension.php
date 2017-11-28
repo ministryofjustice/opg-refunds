@@ -22,7 +22,6 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getPaymentDetailsUsedText', [$this, 'getPaymentDetailsUsedText']);
         $engine->registerFunction('shouldShowPaymentDetailsUsedCountWarning', [$this, 'shouldShowPaymentDetailsUsedCountWarning']);
         $engine->registerFunction('getRejectionReasonsText', [$this, 'getRejectionReasonsText']);
-        $engine->registerFunction('getStatusText', [$this, 'getStatusText']);
         $engine->registerFunction('getPercentage', [$this, 'getPercentage']);
         $engine->registerFunction('getValueWithPercentage', [$this, 'getValueWithPercentage']);
         $engine->registerFunction('getOutcomeEmailDescription', [$this, 'getOutcomeEmailDescription']);
@@ -65,22 +64,6 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getRejectionReasonsText(string $rejectionReason)
     {
         return RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
-    }
-
-    public function getStatusText(string $status)
-    {
-        switch ($status) {
-            case ClaimModel::STATUS_PENDING:
-                return 'Pending';
-            case ClaimModel::STATUS_IN_PROGRESS:
-                return 'In Progress';
-            case ClaimModel::STATUS_REJECTED:
-                return 'Rejected';
-            case ClaimModel::STATUS_ACCEPTED:
-                return 'Accepted';
-            default:
-                return 'Unknown';
-        }
     }
 
     public function getPercentage(int $total, int $value)

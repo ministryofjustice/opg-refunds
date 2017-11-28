@@ -3,12 +3,14 @@
 namespace App\Action\Claim;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use Api\Exception\ApiException;
 use App\Form\AbstractForm;
 use App\Form\ClaimDuplicate;
 use App\Service\Claim\Claim as ClaimService;
 use App\View\Details\DetailsFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
@@ -48,8 +50,8 @@ class ClaimDuplicateAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
-        } elseif (!$claim->isClaimComplete()) {
-            throw new Exception('Claim is not complete', 400);
+        } elseif (!$claim->canResolveAsDuplicate()) {
+            throw new Exception('Claim cannot be resolved as a duplicate', 400);
         }
 
         /** @var ClaimDuplicate $form */
@@ -78,17 +80,27 @@ class ClaimDuplicateAction extends AbstractClaimAction
         if ($form->isValid()) {
             $formData = $form->getData();
 
-            $duplicateionReason = $formData['duplicateion-reason'];
-            $duplicateionReasonDescription = $formData['duplicateion-reason-description'];
+            $duplicateOf = $formData['duplicate-of'];
+            $duplicateOfClaimId = IdentFormatter::parseId($duplicateOf);
 
-            $claim = $this->claimService
-                ->setDuplicateionReason($claim->getId(), $duplicateionReason, $duplicateionReasonDescription);
+            try {
+                $claim = $this->claimService->setStatusDuplicate($claim->getId(), $duplicateOfClaimId);
 
-            if ($claim === null) {
-                throw new RuntimeException('Failed to set duplicateion reason on claim with id: ' . $this->modelId);
+                if ($claim === null) {
+                    throw new RuntimeException('Failed to resolve claim with id: ' . $this->modelId . ' as a duplicate of ' . $duplicateOf);
+                }
+
+                $duplicateOfClaimCode = IdentFormatter::format($duplicateOfClaimId);
+                $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} resolved as a duplicate of {$duplicateOfClaimCode} successfully");
+
+                return $this->redirectToRoute('home');
+            } catch (ApiException $ex) {
+                if ($ex->getCode() === 400) {
+                    $form->setMessages(['duplicate-of' => ['Claim code does not match any existing claim']]);
+                } else {
+                    throw $ex;
+                }
             }
-
-            return $this->redirectToRoute('home');
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-duplicate-page', [

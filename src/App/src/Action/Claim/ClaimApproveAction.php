@@ -67,6 +67,8 @@ class ClaimApproveAction extends AbstractClaimAction
                 throw new RuntimeException('Failed to accept claim with id: ' . $this->modelId);
             }
 
+            $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} approved successfully");
+
             return $this->redirectToRoute('home');
         }
 
