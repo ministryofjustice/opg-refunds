@@ -105,13 +105,11 @@ class Claim
 
         if (isset($search)) {
             $donorName = $search;
-            $claimCode = str_replace(' ', '', $search);
-            $claimCode = str_ireplace('R', '', $claimCode);
+            $claimId = IdentFormatter::parseId($search);
 
-            if (is_numeric($claimCode)) {
-                $claimCode = (int)$claimCode;
-                $whereClauses[] = 'c.id = :claimCode';
-                $parameters['claimCode'] = $claimCode;
+            if ($claimId !== false) {
+                $whereClauses[] = 'c.id = :claimId';
+                $parameters['claimId'] = $claimId;
             } else {
                 $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
                 $parameters['donorName'] = "%{$donorName}%";
@@ -704,7 +702,6 @@ class Claim
         }
 
         $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
-        $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
 
         if ($duplicateOfClaim === null) {
             throw new Exception('Supplied duplicate claim id does not reference a valid claim', 400);
@@ -721,6 +718,8 @@ class Claim
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
 
         $this->addNote(
             $claimId,

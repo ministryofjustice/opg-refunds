@@ -983,7 +983,7 @@ class Claim extends AbstractDataModel
     public function canResolveAsDuplicate(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS && !$this->hasPoas()
-            && !$this->isNoSiriusPoas() && $this->isNoMerisPoas();
+            && !$this->isNoSiriusPoas() && !$this->isNoMerisPoas();
     }
 
     /**

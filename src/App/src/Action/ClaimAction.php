@@ -6,6 +6,7 @@ use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -69,9 +70,9 @@ class ClaimAction extends AbstractRestfulAction
             $this->claimService->setNoMerisPoas($claimId, $identity->getId(), $requestBody['noMerisPoas']);
         }
 
-        $status = $requestBody['status'];
+        if (isset($requestBody['status'])) {
+            $status = $requestBody['status'];
 
-        if (isset($status)) {
             if ($status === ClaimModel::STATUS_ACCEPTED) {
                 $this->claimService->setStatusAccepted($claimId, $identity->getId());
             } elseif ($status === ClaimModel::STATUS_REJECTED) {
@@ -92,11 +93,11 @@ class ClaimAction extends AbstractRestfulAction
 
                 $this->claimService->setStatusInProgress($claimId, $identity->getId(), $requestBody['reason']);
             } elseif ($status === ClaimModel::STATUS_DUPLICATE) {
-                if (!isset($requestBody['duplicateOfClaimId']) || !is_int($requestBody['duplicateOfClaimId'])) {
+                if (!isset($requestBody['duplicateOfClaimId']) || IdentFormatter::parseId($requestBody['duplicateOfClaimId']) === false) {
                     throw new InvalidInputException('duplicateOfClaimId is required and must be a valid claim id');
                 }
 
-                $this->claimService->setStatusDuplicate($claimId, $identity->getId(), $requestBody['duplicateOfClaimId']);
+                $this->claimService->setStatusDuplicate($claimId, $identity->getId(), IdentFormatter::parseId($requestBody['duplicateOfClaimId']));
             }
         }
 
