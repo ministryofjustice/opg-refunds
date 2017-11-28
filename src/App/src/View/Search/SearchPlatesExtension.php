@@ -56,8 +56,14 @@ class SearchPlatesExtension implements ExtensionInterface
         return $sort;
     }
 
-    public function getPoaCaseNumbersText(string $poaCaseNumbers)
+    public function getPoaCaseNumbersText($searchParameters)
     {
+        if (!isset($searchParameters['poaCaseNumbers'])) {
+            return '';
+        }
+
+        $poaCaseNumbers = $searchParameters['poaCaseNumbers'];
+
         if (empty($poaCaseNumbers)) {
             return '';
         }

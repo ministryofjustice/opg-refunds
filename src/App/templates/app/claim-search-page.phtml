@@ -45,7 +45,7 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
 
             <p>
                 <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
-                    <?= $claimSummaryPage->getTotal() ?> result<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?><?= $this->getPoaCaseNumbersText($searchParameters['poaCaseNumbers']) ?>
+                    <?= $claimSummaryPage->getTotal() ?> result<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?><?= $this->getPoaCaseNumbersText($searchParameters) ?>
                 <?php } else { ?>
                     <?= $claimSummaryPage->getTotal() ?> total claim<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?>
                 <?php } ?>
