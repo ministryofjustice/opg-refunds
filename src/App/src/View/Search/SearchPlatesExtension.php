@@ -16,11 +16,12 @@ class SearchPlatesExtension implements ExtensionInterface
         $engine->registerFunction('isSearchParametersSet', [$this, 'isSearchParametersSet']);
         $engine->registerFunction('getOrderByParameters', [$this, 'getOrderByParameters']);
         $engine->registerFunction('getCurrentSort', [$this, 'getCurrentSort']);
+        $engine->registerFunction('getPoaCaseNumbersText', [$this, 'getPoaCaseNumbersText']);
     }
 
     public function isSearchParametersSet($searchParameters)
     {
-        return isset($searchParameters['search']) || isset($searchParameters['status']) || isset($searchParameters['assignedToId']);
+        return isset($searchParameters['search']) || isset($searchParameters['status']) || isset($searchParameters['assignedToId']) || isset($searchParameters['poaCaseNumbers']);
     }
 
     public function getOrderByParameters($searchParameters, string $orderBy)
@@ -53,5 +54,22 @@ class SearchPlatesExtension implements ExtensionInterface
         }
 
         return $sort;
+    }
+
+    public function getPoaCaseNumbersText(string $poaCaseNumbers)
+    {
+        if (empty($poaCaseNumbers)) {
+            return '';
+        }
+
+        $poaCaseNumbersArray = explode(',', $poaCaseNumbers);
+
+        for ($i = 0; $i < count($poaCaseNumbersArray); $i++) {
+            if (strlen($poaCaseNumbersArray[$i]) === 12) {
+                $poaCaseNumbersArray[$i] = join('-', str_split($poaCaseNumbersArray[$i], 4));
+            }
+        }
+
+        return ' using POA case number' . (count($poaCaseNumbersArray) > 1 ? 's ' : ' ') . join(', ', $poaCaseNumbersArray);
     }
 }

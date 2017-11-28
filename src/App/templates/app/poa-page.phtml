@@ -24,7 +24,7 @@ $this->addErrorMap([
 <?php $this->insert('snippet::case-numbers', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->insert('snippet::error-summary', [ 'form' => $form, 'poaCaseNumbers' => isset($poaCaseNumbers) ? $poaCaseNumbers : '' ]) ?>
 
 <?php if ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS) { ?>
     <h2 class="heading-medium">Sirius power of attorney details</h2>

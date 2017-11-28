@@ -3,6 +3,7 @@
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  * @var \App\Form\ClaimChangeOutcome $form
+ * @var string $poaCaseNumbers
  */
 ?>
 
@@ -14,7 +15,7 @@
 <?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
 <?php $this->stop() ?>
 
-<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->insert('snippet::error-summary', [ 'form' => $form, 'poaCaseNumbers' => isset($poaCaseNumbers) ? $poaCaseNumbers : '' ]) ?>
 
 <h2 class="heading-medium">Change claim outcome</h2>
 
