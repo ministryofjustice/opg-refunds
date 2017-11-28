@@ -205,10 +205,15 @@ class Claim
      * @param int $claimId
      * @param int $userId
      * @return ClaimModel
+     * @throws Exception
      */
     public function get(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        if ($claim === null) {
+            throw new Exception('Claim not found', 404);
+        }
 
         return $this->getClaimModel($userId, $claim);
     }
