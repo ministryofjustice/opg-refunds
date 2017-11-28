@@ -19,6 +19,8 @@ use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
  * Class Claim
@@ -193,20 +195,7 @@ class Claim
     {
         $claim = $this->getClaimEntity($claimId);
 
-        $accountHashCount = null;
-
-        if ($claim->getAccountHash() !== null) {
-            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
-            $accountHashCount = $this->entityManager->createQuery($dql)
-                ->setParameter(1, $claim->getAccountHash())
-                ->getSingleScalarResult();
-        }
-
-        /** @var ClaimModel $claimModel */
-        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
-        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
-
-        return $claimModel;
+        return $this->getClaimModel($userId, $claim);
     }
 
     /**
@@ -630,11 +619,46 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
+        $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
         $this->addNote(
             $claimId,
             $userId,
             NoteModel::TYPE_CLAIM_REJECTED,
-            "Caseworker rejected the claim due to {$rejectionReason}"
+            "Caseworker rejected the claim due to '{$rejectionReasonText}'"
+        );
+    }
+
+    /**
+     * @param $claimId
+     * @param $userId
+     * @param $reason
+     * @throws Exception
+     */
+    public function setStatusInProgress($claimId, $userId, $reason)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
+            throw new Exception('You cannot set this claim\'s status back to pending', 403);
+        }
+
+        $finishedBy = $claim->getFinishedBy();
+
+        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+        $claim->setRejectionReason(null);
+        $claim->setRejectionReasonDescription(null);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy(null);
+        $claim->setFinishedDateTime(null);
+        $claim->setAssignedTo($finishedBy);
+        $claim->setAssignedDateTime(new DateTime());
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_OUTCOME_CHANGED,
+            "Administrator changed the claim outcome due to: '{$reason}'. Claim was reassigned to {$finishedBy->getName()}"
         );
     }
 
@@ -734,5 +758,28 @@ class Claim
             'id' => $userId,
         ]);
         return $user;
+    }
+
+    /**
+     * @param int $userId
+     * @param ClaimEntity $claim
+     * @return ClaimModel
+     */
+    private function getClaimModel(int $userId, ClaimEntity $claim): ClaimModel
+    {
+        $accountHashCount = null;
+
+        if ($claim->getAccountHash() !== null) {
+            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
+            $accountHashCount = $this->entityManager->createQuery($dql)
+                ->setParameter(1, $claim->getAccountHash())
+                ->getSingleScalarResult();
+        }
+
+        /** @var ClaimModel $claimModel */
+        $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
+        $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
+
+        return $claimModel;
     }
 }

@@ -77,7 +77,18 @@ class ClaimAction extends AbstractRestfulAction
                     throw new InvalidInputException('Rejection reason and description are required');
                 }
 
-                $this->claimService->setStatusRejected($claimId, $identity->getId(), $requestBody['rejectionReason'], $requestBody['rejectionReasonDescription']);
+                $this->claimService->setStatusRejected(
+                    $claimId,
+                    $identity->getId(),
+                    $requestBody['rejectionReason'],
+                    $requestBody['rejectionReasonDescription']
+                );
+            } elseif ($requestBody['status'] === ClaimModel::STATUS_IN_PROGRESS) {
+                if (!isset($requestBody['reason'])) {
+                    throw new InvalidInputException('Reason is required');
+                }
+
+                $this->claimService->setStatusInProgress($claimId, $identity->getId(), $requestBody['reason']);
             }
         }
 
