@@ -45,6 +45,11 @@ Mandatory: claim
                     <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
                 </p>
             <?php } ?>
+            <?php if ($claim->canResolveAsDuplicate()) { ?>
+                <p>
+                    <a class="button" href="<?= $this->generateUrl('claim.duplicate', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Resolve as duplicate</a>
+                </p>
+            <?php } ?>
         </dd>
     </div>
 

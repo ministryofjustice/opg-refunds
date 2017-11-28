@@ -22,22 +22,6 @@ use Exception;
 class ClaimApproveAction extends AbstractClaimAction
 {
     /**
-     * @var NotifyClient
-     */
-    private $notifyClient;
-
-    /**
-     * ClaimApproveAction constructor
-     * @param ClaimService $claimService
-     * @param NotifyClient $notifyClient
-     */
-    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
-    {
-        parent::__construct($claimService);
-        $this->notifyClient = $notifyClient;
-    }
-
-    /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return HtmlResponse

@@ -24,7 +24,7 @@
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "http-interop/http-middleware": "^0.4.1",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "^1.6",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-499-duplicate-claims",
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",

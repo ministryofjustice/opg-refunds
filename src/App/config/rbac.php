@@ -38,6 +38,7 @@ return [
             'claim.poa.delete',
             'claim.approve',
             'claim.reject',
+            'claim.duplicate',
             'claim.search',
             'claim.change.outcome',
             'claim.reassign',

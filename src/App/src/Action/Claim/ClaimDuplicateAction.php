@@ -4,7 +4,7 @@ namespace App\Action\Claim;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
-use App\Form\ClaimReject;
+use App\Form\ClaimDuplicate;
 use App\Service\Claim\Claim as ClaimService;
 use App\View\Details\DetailsFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -15,11 +15,27 @@ use Exception;
 use RuntimeException;
 
 /**
- * Class ClaimRejectAction
+ * Class ClaimDuplicateAction
  * @package App\Action\Claim
  */
-class ClaimRejectAction extends AbstractClaimAction
+class ClaimDuplicateAction extends AbstractClaimAction
 {
+    /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
+     * ClaimDuplicateAction constructor
+     * @param ClaimService $claimService
+     * @param NotifyClient $notifyClient
+     */
+    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
+    {
+        parent::__construct($claimService);
+        $this->notifyClient = $notifyClient;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -36,10 +52,10 @@ class ClaimRejectAction extends AbstractClaimAction
             throw new Exception('Claim is not complete', 400);
         }
 
-        /** @var ClaimReject $form */
+        /** @var ClaimDuplicate $form */
         $form = $this->getForm($request, $claim);
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reject-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-duplicate-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -54,7 +70,7 @@ class ClaimRejectAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimReject $form */
+        /** @var ClaimDuplicate $form */
         $form = $this->getForm($request, $claim);
 
         $form->setData($request->getParsedBody());
@@ -62,20 +78,20 @@ class ClaimRejectAction extends AbstractClaimAction
         if ($form->isValid()) {
             $formData = $form->getData();
 
-            $rejectionReason = $formData['rejection-reason'];
-            $rejectionReasonDescription = $formData['rejection-reason-description'];
+            $duplicateionReason = $formData['duplicateion-reason'];
+            $duplicateionReasonDescription = $formData['duplicateion-reason-description'];
 
             $claim = $this->claimService
-                ->setRejectionReason($claim->getId(), $rejectionReason, $rejectionReasonDescription);
+                ->setDuplicateionReason($claim->getId(), $duplicateionReason, $duplicateionReasonDescription);
 
             if ($claim === null) {
-                throw new RuntimeException('Failed to set rejection reason on claim with id: ' . $this->modelId);
+                throw new RuntimeException('Failed to set duplicateion reason on claim with id: ' . $this->modelId);
             }
 
             return $this->redirectToRoute('home');
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reject-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-duplicate-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -90,7 +106,7 @@ class ClaimRejectAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new ClaimReject([
+        $form = new ClaimDuplicate([
             'claim'  => $claim,
             'csrf'   => $session['meta']['csrf'],
         ]);

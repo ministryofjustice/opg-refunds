@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "382385905db02bca44e2cd4271933141",
+    "content-hash": "00eb920a1364576b81f679048bcd0316",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -605,16 +605,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "1.6.0",
+            "version": "dev-REF-499-duplicate-claims",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "23bb105e032f8e13e18a9c3800413b5591c5811f"
+                "reference": "c340679c65ab0c57ee6718283f600c62b2570668"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/23bb105e032f8e13e18a9c3800413b5591c5811f",
-                "reference": "23bb105e032f8e13e18a9c3800413b5591c5811f",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/c340679c65ab0c57ee6718283f600c62b2570668",
+                "reference": "c340679c65ab0c57ee6718283f600c62b2570668",
                 "shasum": ""
             },
             "require": {
@@ -634,10 +634,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.6.0",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-499-duplicate-claims",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-11-27T15:01:20+00:00"
+            "time": "2017-11-28T12:50:07+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
@@ -5016,6 +5016,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "ministryofjustice/opg-refunds-caseworker-datamodels": 20,
         "roave/security-advisories": 20
     },
     "prefer-stable": false,
