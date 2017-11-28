@@ -677,6 +677,7 @@ class Claim
         $claim->setFinishedDateTime(null);
         $claim->setAssignedTo($finishedBy);
         $claim->setAssignedDateTime(new DateTime());
+        $claim->getDuplicateOf()->clear();
 
         $this->addNote(
             $claimId,
