@@ -768,7 +768,7 @@ class Claim
      * @param $claimId
      * @return ClaimEntity
      */
-    public function getClaimEntity($claimId): ClaimEntity
+    public function getClaimEntity($claimId)
     {
         /** @var ClaimEntity $claim */
         $claim = $this->claimRepository->findOneBy([
