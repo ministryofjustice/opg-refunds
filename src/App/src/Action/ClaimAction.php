@@ -69,10 +69,12 @@ class ClaimAction extends AbstractRestfulAction
             $this->claimService->setNoMerisPoas($claimId, $identity->getId(), $requestBody['noMerisPoas']);
         }
 
-        if (isset($requestBody['status'])) {
-            if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
+        $status = $requestBody['status'];
+
+        if (isset($status)) {
+            if ($status === ClaimModel::STATUS_ACCEPTED) {
                 $this->claimService->setStatusAccepted($claimId, $identity->getId());
-            } elseif ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
+            } elseif ($status === ClaimModel::STATUS_REJECTED) {
                 if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
                     throw new InvalidInputException('Rejection reason and description are required');
                 }
@@ -83,12 +85,18 @@ class ClaimAction extends AbstractRestfulAction
                     $requestBody['rejectionReason'],
                     $requestBody['rejectionReasonDescription']
                 );
-            } elseif ($requestBody['status'] === ClaimModel::STATUS_IN_PROGRESS) {
+            } elseif ($status === ClaimModel::STATUS_IN_PROGRESS) {
                 if (!isset($requestBody['reason'])) {
                     throw new InvalidInputException('Reason is required');
                 }
 
                 $this->claimService->setStatusInProgress($claimId, $identity->getId(), $requestBody['reason']);
+            } elseif ($status === ClaimModel::STATUS_DUPLICATE) {
+                if (!isset($requestBody['duplicateOfClaimId']) || !is_int($requestBody['duplicateOfClaimId'])) {
+                    throw new InvalidInputException('duplicateOfClaimId is required and must be a valid claim id');
+                }
+
+                $this->claimService->setStatusDuplicate($claimId, $identity->getId(), $requestBody['duplicateOfClaimId']);
             }
         }
 

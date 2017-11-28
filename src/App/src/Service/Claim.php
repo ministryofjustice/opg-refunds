@@ -19,6 +19,7 @@ use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
@@ -258,7 +259,7 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
-            throw new Exception('You cannot (re)assign this claim', 403);
+            throw new Exception('You cannot (re)assign this claim', 400);
         }
 
         $assignedTo = $this->getUser($assignToUserId);
@@ -665,7 +666,7 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
-            throw new Exception('You cannot set this claim\'s status back to pending', 403);
+            throw new Exception('You cannot set this claim\'s status back to pending', 400);
         }
 
         $finishedBy = $claim->getFinishedBy();
@@ -684,6 +685,45 @@ class Claim
             $userId,
             NoteModel::TYPE_CLAIM_OUTCOME_CHANGED,
             "Administrator changed the claim outcome due to: '{$reason}'. Claim was reassigned to {$finishedBy->getName()}"
+        );
+    }
+
+    /**
+     * @param $claimId
+     * @param $userId
+     * @param int $duplicateOfClaimId
+     * @throws Exception
+     */
+    public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $this->checkCanEdit($claim, $userId);
+
+        $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
+        $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
+
+        if ($duplicateOfClaim === null) {
+            throw new Exception('Supplied duplicate claim id does not reference a valid claim', 400);
+        }
+
+        $duplicateOf = $claim->getDuplicateOf();
+        $duplicateOf->add($duplicateOfClaim);
+
+        $user = $this->getUser($userId);
+
+        $claim->setStatus(ClaimModel::STATUS_DUPLICATE);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
+        $claim->setFinishedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_DUPLICATE,
+            "Caseworker marked the claim as a duplicate of {$duplicateOfReferenceNumber}"
         );
     }
 
@@ -759,7 +799,7 @@ class Claim
     private function checkCanEdit($claim, $userId)
     {
         if ($this->isReadOnly($claim, $userId)) {
-            throw new Exception('You cannot edit this claim', 403);
+            throw new Exception('You cannot edit this claim', 400);
         }
     }
 
