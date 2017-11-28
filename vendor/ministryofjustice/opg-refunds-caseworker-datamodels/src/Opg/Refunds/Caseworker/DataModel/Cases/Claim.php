@@ -966,7 +966,8 @@ class Claim extends AbstractDataModel
     public function canChangeOutcome(): bool
     {
         return ($this->getStatus() === ClaimModel::STATUS_ACCEPTED && $this->getPayment() === null)
-            || $this->getStatus() === ClaimModel::STATUS_REJECTED;
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
     }
 
     /**
