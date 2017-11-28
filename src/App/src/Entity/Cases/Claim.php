@@ -580,12 +580,12 @@ class Claim extends AbstractEntity
             'AssistedDigital' => function () {
                 return isset($this->getJsonData()['ad']);
             },
-            'DuplicateOf' => function () {
-                $duplicateOf = [];
+            'DuplicateOfIds' => function () {
+                $duplicateOfIds = [];
                 foreach ($this->getDuplicateOf() as $duplicateClaim) {
-                    $duplicateOf[$duplicateClaim->getId()] = IdentFormatter::format($duplicateClaim->getId());
+                    $duplicateOfIds[$duplicateClaim->getId()] = IdentFormatter::format($duplicateClaim->getId());
                 }
-                return $duplicateOf;
+                return $duplicateOfIds;
             },
             'DuplicateClaimIds' => function () {
                 $duplicateClaimIds = [];

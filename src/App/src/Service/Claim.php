@@ -697,8 +697,11 @@ class Claim
     public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
-        $this->checkCanEdit($claim, $userId);
+        if (!$claimModel->canResolveAsDuplicate()) {
+            throw new Exception('You cannot resolve this claim as a duplicate', 400);
+        }
 
         $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
         $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
