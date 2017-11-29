@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="poa", uniqueConstraints={@ORM\UniqueConstraint(name="case_number_idx", columns={"system", "case_number"})})
+ * @ORM\Table(name="poa", uniqueConstraints={@ORM\UniqueConstraint(name="case_number_idx", columns={"system", "case_number", "case_number_rejection_count"})})
  **/
 class Poa extends AbstractEntity
 {
@@ -35,6 +35,12 @@ class Poa extends AbstractEntity
      * @ORM\Column(name="case_number", type="string")
      */
     protected $caseNumber;
+
+    /**
+     * @var int
+     * @ORM\Column(name="case_number_rejection_count", type="integer", options={"default" : 0})
+     */
+    protected $caseNumberRejectionCount;
 
     /**
      * @var DateTime
@@ -65,6 +71,7 @@ class Poa extends AbstractEntity
     {
         $this->system = $system;
         $this->caseNumber = $caseNumber;
+        $this->caseNumberRejectionCount = 0;
         $this->receivedDate = $receivedDate;
         $this->originalPaymentAmount = $originalPaymentAmount;
         $this->claim = $claim;
@@ -108,6 +115,22 @@ class Poa extends AbstractEntity
     public function setCaseNumber(string $caseNumber)
     {
         $this->caseNumber = $caseNumber;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCaseNumberRejectionCount(): int
+    {
+        return $this->caseNumberRejectionCount;
+    }
+
+    /**
+     * @param int $caseNumberRejectionCount
+     */
+    public function setCaseNumberRejectionCount(int $caseNumberRejectionCount)
+    {
+        $this->caseNumberRejectionCount = $caseNumberRejectionCount;
     }
 
     /**

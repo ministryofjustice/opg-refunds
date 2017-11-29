@@ -6,6 +6,7 @@ use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -70,9 +71,11 @@ class ClaimAction extends AbstractRestfulAction
         }
 
         if (isset($requestBody['status'])) {
-            if ($requestBody['status'] === ClaimModel::STATUS_ACCEPTED) {
+            $status = $requestBody['status'];
+
+            if ($status === ClaimModel::STATUS_ACCEPTED) {
                 $this->claimService->setStatusAccepted($claimId, $identity->getId());
-            } elseif ($requestBody['status'] === ClaimModel::STATUS_REJECTED) {
+            } elseif ($status === ClaimModel::STATUS_REJECTED) {
                 if (!isset($requestBody['rejectionReason']) || !isset($requestBody['rejectionReasonDescription'])) {
                     throw new InvalidInputException('Rejection reason and description are required');
                 }
@@ -83,12 +86,18 @@ class ClaimAction extends AbstractRestfulAction
                     $requestBody['rejectionReason'],
                     $requestBody['rejectionReasonDescription']
                 );
-            } elseif ($requestBody['status'] === ClaimModel::STATUS_IN_PROGRESS) {
+            } elseif ($status === ClaimModel::STATUS_IN_PROGRESS) {
                 if (!isset($requestBody['reason'])) {
                     throw new InvalidInputException('Reason is required');
                 }
 
                 $this->claimService->setStatusInProgress($claimId, $identity->getId(), $requestBody['reason']);
+            } elseif ($status === ClaimModel::STATUS_DUPLICATE) {
+                if (!isset($requestBody['duplicateOfClaimId']) || IdentFormatter::parseId($requestBody['duplicateOfClaimId']) === false) {
+                    throw new InvalidInputException('duplicateOfClaimId is required and must be a valid claim id');
+                }
+
+                $this->claimService->setStatusDuplicate($claimId, $identity->getId(), IdentFormatter::parseId($requestBody['duplicateOfClaimId']));
             }
         }
 

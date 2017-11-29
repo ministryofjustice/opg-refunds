@@ -165,6 +165,9 @@ class Reporting
         if (empty($counts[ClaimModel::STATUS_IN_PROGRESS])) {
             $counts[ClaimModel::STATUS_IN_PROGRESS] = 0;
         }
+        if (empty($counts[ClaimModel::STATUS_DUPLICATE])) {
+            $counts[ClaimModel::STATUS_DUPLICATE] = 0;
+        }
         if (empty($counts[ClaimModel::STATUS_REJECTED])) {
             $counts[ClaimModel::STATUS_REJECTED] = 0;
         }

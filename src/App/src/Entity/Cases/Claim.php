@@ -3,12 +3,14 @@
 namespace App\Entity\Cases;
 
 use App\Entity\AbstractEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 /**
  * @ORM\Entity @ORM\Table(name="claim", indexes={@ORM\Index(name="idx_status", columns={"status"})})
@@ -147,6 +149,21 @@ class Claim extends AbstractEntity
      */
     protected $notes;
 
+    /**
+     * @var Collection|Claim[]
+     * @ORM\ManyToMany(targetEntity="Claim", inversedBy="duplicateClaims")
+     * @ORM\JoinTable(name="duplicate_claims",
+     *      joinColumns={@ORM\JoinColumn(name="claim_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="duplicate_claim_id", referencedColumnName="id")})
+     */
+    private $duplicateOf;
+
+    /**
+     * @var Collection|Claim[]
+     * @ORM\ManyToMany(targetEntity="Claim", mappedBy="duplicateOf")
+     */
+    private $duplicateClaims;
+
     public function __construct(int $id, DateTime $receivedDateTime, array $jsonData, string $donorName, $accountHash)
     {
         $this->id = $id;
@@ -161,6 +178,8 @@ class Claim extends AbstractEntity
         $this->noMerisPoas = false;
         $this->outcomeEmailSent = false;
         $this->outcomeTextSent = false;
+        $this->duplicateClaims = new ArrayCollection();
+        $this->duplicateOf = new ArrayCollection();
     }
 
     /**
@@ -492,6 +511,38 @@ class Claim extends AbstractEntity
     }
 
     /**
+     * @return Claim[]|Collection
+     */
+    public function getDuplicateClaims()
+    {
+        return $this->duplicateClaims;
+    }
+
+    /**
+     * @param Claim[]|Collection $duplicateClaims
+     */
+    public function setDuplicateClaims($duplicateClaims)
+    {
+        $this->duplicateClaims = $duplicateClaims;
+    }
+
+    /**
+     * @return Claim[]|Collection
+     */
+    public function getDuplicateOf()
+    {
+        return $this->duplicateOf;
+    }
+
+    /**
+     * @param Claim[]|Collection $duplicateOf
+     */
+    public function setDuplicateOf($duplicateOf)
+    {
+        $this->duplicateOf = $duplicateOf;
+    }
+
+    /**
      * Returns the entity as a datamodel structure
      *
      * In the $modelToEntityMappings array key values reflect the set method to be used in the datamodel
@@ -528,6 +579,20 @@ class Claim extends AbstractEntity
             },
             'AssistedDigital' => function () {
                 return isset($this->getJsonData()['ad']);
+            },
+            'DuplicateOfIds' => function () {
+                $duplicateOfIds = [];
+                foreach ($this->getDuplicateOf() as $duplicateClaim) {
+                    $duplicateOfIds[$duplicateClaim->getId()] = IdentFormatter::format($duplicateClaim->getId());
+                }
+                return $duplicateOfIds;
+            },
+            'DuplicateClaimIds' => function () {
+                $duplicateClaimIds = [];
+                foreach ($this->getDuplicateClaims() as $duplicateClaim) {
+                    $duplicateClaimIds[$duplicateClaim->getId()] = IdentFormatter::format($duplicateClaim->getId());
+                }
+                return $duplicateClaimIds;
             },
         ]);
 

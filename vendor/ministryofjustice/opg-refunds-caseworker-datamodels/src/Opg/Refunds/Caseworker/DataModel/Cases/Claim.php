@@ -156,6 +156,16 @@ class Claim extends AbstractDataModel
     protected $readOnly;
 
     /**
+     * @var array
+     */
+    protected $duplicateOfIds;
+
+    /**
+     * @var array
+     */
+    protected $duplicateClaimIds;
+
+    /**
      * @return int
      */
     public function getId(): int
@@ -640,6 +650,44 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return array
+     */
+    public function getDuplicateOfIds()
+    {
+        return $this->duplicateOfIds;
+    }
+
+    /**
+     * @param array $duplicateOfIds
+     * @return $this
+     */
+    public function setDuplicateOfIds(array $duplicateOfIds): Claim
+    {
+        $this->duplicateOfIds = $duplicateOfIds;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDuplicateClaimIds()
+    {
+        return $this->duplicateClaimIds;
+    }
+
+    /**
+     * @param array $duplicateClaimIds
+     * @return $this
+     */
+    public function setDuplicateClaimIds(array $duplicateClaimIds): Claim
+    {
+        $this->duplicateClaimIds = $duplicateClaimIds;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function hasPoas()
@@ -918,7 +966,8 @@ class Claim extends AbstractDataModel
     public function canChangeOutcome(): bool
     {
         return ($this->getStatus() === ClaimModel::STATUS_ACCEPTED && $this->getPayment() === null)
-            || $this->getStatus() === ClaimModel::STATUS_REJECTED;
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
     }
 
     /**
@@ -927,6 +976,22 @@ class Claim extends AbstractDataModel
     public function canReassignClaim(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canResolveAsDuplicate(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS && !$this->hasPoas()
+            && !$this->isNoSiriusPoas() && !$this->isNoMerisPoas();
+    }
+
+    public function isClaimResolved(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_ACCEPTED
+            || $this->getStatus() === ClaimModel::STATUS_REJECTED
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
     }
 
     /**
