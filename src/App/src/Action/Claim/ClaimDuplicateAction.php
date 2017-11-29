@@ -83,22 +83,26 @@ class ClaimDuplicateAction extends AbstractClaimAction
             $duplicateOf = $formData['duplicate-of'];
             $duplicateOfClaimId = IdentFormatter::parseId($duplicateOf);
 
-            try {
-                $claim = $this->claimService->setStatusDuplicate($claim->getId(), $duplicateOfClaimId);
+            if ($duplicateOfClaimId === $claim->getId()) {
+                $form->setMessages(['duplicate-of' => ['You cannot resolve this claim as a duplicate of itself']]);
+            } else {
+                try {
+                    $claim = $this->claimService->setStatusDuplicate($claim->getId(), $duplicateOfClaimId);
 
-                if ($claim === null) {
-                    throw new RuntimeException('Failed to resolve claim with id: ' . $this->modelId . ' as a duplicate of ' . $duplicateOf);
-                }
+                    if ($claim === null) {
+                        throw new RuntimeException('Failed to resolve claim with id: ' . $this->modelId . ' as a duplicate of ' . $duplicateOf);
+                    }
 
-                $duplicateOfClaimCode = IdentFormatter::format($duplicateOfClaimId);
-                $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} resolved as a duplicate of {$duplicateOfClaimCode} successfully");
+                    $duplicateOfClaimCode = IdentFormatter::format($duplicateOfClaimId);
+                    $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} resolved as a duplicate of {$duplicateOfClaimCode} successfully");
 
-                return $this->redirectToRoute('home');
-            } catch (ApiException $ex) {
-                if ($ex->getCode() === 400) {
-                    $form->setMessages(['duplicate-of' => ['Claim code does not match an existing claim']]);
-                } else {
-                    throw $ex;
+                    return $this->redirectToRoute('home');
+                } catch (ApiException $ex) {
+                    if ($ex->getCode() === 400) {
+                        $form->setMessages(['duplicate-of' => ['Claim code does not match an existing claim']]);
+                    } else {
+                        throw $ex;
+                    }
                 }
             }
         }
