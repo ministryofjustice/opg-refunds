@@ -910,8 +910,28 @@ class Claim
     private function incrementPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
     {
         if ($claimModel->hasPoas()) {
+            $caseNumbers = [];
+
             foreach ($claim->getPoas() as $poa) {
-                $poa->setCaseNumberRejectionCount($poa->getCaseNumberRejectionCount() + 1);
+                $caseNumbers[] = $poa->getCaseNumber();
+            }
+
+            $sql = 'SELECT case_number, max(case_number_rejection_count) FROM poa WHERE case_number IN (\'' . join('\', \'', $caseNumbers) . '\') GROUP BY case_number';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $maxCaseNumbersRejectionCounts = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            foreach ($claim->getPoas() as $poa) {
+                if (isset($maxCaseNumbersRejectionCounts[$poa->getCaseNumber()])) {
+                    // Subsequent rejections
+                    $poa->setCaseNumberRejectionCount($maxCaseNumbersRejectionCounts[$poa->getCaseNumber()] + 1);
+                } else {
+                    // First rejection
+                    $poa->setCaseNumberRejectionCount(1);
+                }
             }
         }
     }
