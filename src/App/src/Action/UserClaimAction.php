@@ -34,13 +34,17 @@ class UserClaimAction extends AbstractRestfulAction
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $userId = $request->getAttribute('id');
+        $assignToUserId = $request->getAttribute('id');
         $claimId = $request->getAttribute('claimId');
 
         if ($claimId === null) {
-            $result = $this->claimService->assignNextClaim($userId);
+            $result = $this->claimService->assignNextClaim($assignToUserId);
         } else {
-            $result = $this->claimService->assignClaim($claimId, $userId);
+            $identity = $request->getAttribute('identity');
+
+            $requestBody = $request->getParsedBody();
+
+            $result = $this->claimService->assignClaim($claimId, $identity->getId(), $assignToUserId, $requestBody['reason']);
         }
 
         return new JsonResponse($result);

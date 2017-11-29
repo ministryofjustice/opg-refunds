@@ -19,6 +19,7 @@ use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 
@@ -71,7 +72,7 @@ class Claim
     }
 
     /**
-     * Get all claims
+     * Search all claims
      *
      * @param int|null $page
      * @param int|null $pageSize
@@ -79,12 +80,22 @@ class Claim
      * @param int|null $assignedToId
      * @param string|null $status
      * @param string|null $accountHash
+     * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function search(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
-    {
+    public function search(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        int $assignedToId = null,
+        string $status = null,
+        string $accountHash = null,
+        array $poaCaseNumbers = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
 
@@ -104,13 +115,11 @@ class Claim
 
         if (isset($search)) {
             $donorName = $search;
-            $claimCode = str_replace(' ', '', $search);
-            $claimCode = str_ireplace('R', '', $claimCode);
+            $claimId = IdentFormatter::parseId($search);
 
-            if (is_numeric($claimCode)) {
-                $claimCode = (int)$claimCode;
-                $whereClauses[] = 'c.id = :claimCode';
-                $parameters['claimCode'] = $claimCode;
+            if ($claimId !== false) {
+                $whereClauses[] = 'c.id = :claimId';
+                $parameters['claimId'] = $claimId;
             } else {
                 $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
                 $parameters['donorName'] = "%{$donorName}%";
@@ -118,7 +127,7 @@ class Claim
         }
 
         if (isset($assignedToId)) {
-            $join = ' JOIN c.assignedTo u';
+            $join .= ' JOIN c.assignedTo u';
             $whereClauses[] = 'u.id = :assignedToId';
             $parameters['assignedToId'] = $assignedToId;
         }
@@ -131,6 +140,12 @@ class Claim
         if (isset($accountHash)) {
             $whereClauses[] = 'c.accountHash = :accountHash';
             $parameters['accountHash'] = $accountHash;
+        }
+
+        if (isset($poaCaseNumbers)) {
+            $join .= ' JOIN c.poas p';
+            $whereClauses[] = 'p.caseNumber IN (:poaCaseNumbers)';
+            $parameters['poaCaseNumbers'] = $poaCaseNumbers;
         }
 
         $offset = ($page - 1) * $pageSize;
@@ -190,10 +205,15 @@ class Claim
      * @param int $claimId
      * @param int $userId
      * @return ClaimModel
+     * @throws Exception
      */
     public function get(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+
+        if ($claim === null) {
+            throw new Exception('Claim not found', 404);
+        }
 
         return $this->getClaimModel($userId, $claim);
     }
@@ -247,32 +267,57 @@ class Claim
      *
      * @param int $claimId
      * @param int $userId
+     * @param int $assignToUserId
+     * @param string $reason
      * @return array
      * @throws Exception
      */
-    public function assignClaim(int $claimId, int $userId)
+    public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
-        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && $claim->getAssignedTo() !== null) {
-            throw new Exception('You cannot assign this claim', 403);
+        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
+            throw new Exception('You cannot (re)assign this claim', 400);
         }
 
-        $user = $this->getUser($userId);
+        $assignedTo = $this->getUser($assignToUserId);
 
-        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setUpdatedDateTime(new DateTime());
-        $claim->setAssignedTo($user);
+        $originalAssignedTo = $claim->getAssignedTo();
+        $claim->setAssignedTo($assignedTo);
         $claim->setAssignedDateTime(new DateTime());
 
-        $this->addNote(
-            $claim->getId(),
-            $userId,
-            NoteModel::TYPE_CLAIM_IN_PROGRESS,
-            "Caseworker has begun to process this claim"
-        );
+        if ($claim->getStatus() === ClaimModel::STATUS_PENDING) {
+            // Explicit assignment
+            $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
 
-        return ['assignedClaimId' => $claim->getId()];
+            $this->addNote(
+                $claim->getId(),
+                $userId,
+                NoteModel::TYPE_CLAIM_IN_PROGRESS,
+                "Caseworker has begun to process this claim"
+            );
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
+            // Reassignment
+            $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
+
+            if (!empty($reason)) {
+                $message .= " due to '{$reason}'";
+            }
+
+            $this->addNote(
+                $claim->getId(),
+                $userId,
+                NoteModel::TYPE_CLAIM_REASSIGNED,
+                $message
+            );
+        }
+
+        return [
+            'assignedClaimId' => $claim->getId(),
+            'assignedToName'  => $assignedTo->getName()
+        ];
     }
 
     /**
@@ -576,6 +621,7 @@ class Claim
     public function setStatusAccepted($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $this->checkCanEdit($claim, $userId);
 
@@ -587,6 +633,8 @@ class Claim
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, true);
 
         $this->addNote(
             $claimId,
@@ -605,6 +653,7 @@ class Claim
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $this->checkCanEdit($claim, $userId);
 
@@ -618,6 +667,8 @@ class Claim
         $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
         $this->addNote(
@@ -640,7 +691,7 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
-            throw new Exception('You cannot set this claim\'s status back to pending', 403);
+            throw new Exception('You cannot set this claim\'s status back to pending', 400);
         }
 
         $finishedBy = $claim->getFinishedBy();
@@ -653,6 +704,19 @@ class Claim
         $claim->setFinishedDateTime(null);
         $claim->setAssignedTo($finishedBy);
         $claim->setAssignedDateTime(new DateTime());
+        $claim->getDuplicateOf()->clear();
+
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, false);
+
+        try {
+            $this->entityManager->flush();
+        } catch (DriverException $ex) {
+            if ($ex->getErrorCode() === 7) {
+                //Duplicate case number
+                throw new Exception("Could not set this claim's status back to pending due to a poa case number duplication", 400);
+            }
+            throw $ex;
+        }
 
         $this->addNote(
             $claimId,
@@ -664,9 +728,52 @@ class Claim
 
     /**
      * @param $claimId
+     * @param $userId
+     * @param int $duplicateOfClaimId
+     * @throws Exception
+     */
+    public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        if (!$claimModel->canResolveAsDuplicate()) {
+            throw new Exception('You cannot resolve this claim as a duplicate', 400);
+        }
+
+        $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
+
+        if ($duplicateOfClaim === null) {
+            throw new Exception('Supplied duplicate claim id does not reference a valid claim', 400);
+        }
+
+        $duplicateOf = $claim->getDuplicateOf();
+        $duplicateOf->add($duplicateOfClaim);
+
+        $user = $this->getUser($userId);
+
+        $claim->setStatus(ClaimModel::STATUS_DUPLICATE);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
+        $claim->setFinishedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_DUPLICATE,
+            "Caseworker marked the claim as a duplicate of {$duplicateOfReferenceNumber}"
+        );
+    }
+
+    /**
+     * @param $claimId
      * @return ClaimEntity
      */
-    public function getClaimEntity($claimId): ClaimEntity
+    public function getClaimEntity($claimId)
     {
         /** @var ClaimEntity $claim */
         $claim = $this->claimRepository->findOneBy([
@@ -734,7 +841,7 @@ class Claim
     private function checkCanEdit($claim, $userId)
     {
         if ($this->isReadOnly($claim, $userId)) {
-            throw new Exception('You cannot edit this claim', 403);
+            throw new Exception('You cannot edit this claim', 400);
         }
     }
 
@@ -781,5 +888,51 @@ class Claim
         $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
 
         return $claimModel;
+    }
+
+    /**
+     * @param ClaimEntity $claim
+     * @param ClaimModel $claimModel
+     */
+    private function resetPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
+    {
+        if ($claimModel->hasPoas()) {
+            foreach ($claim->getPoas() as $poa) {
+                $poa->setCaseNumberRejectionCount(0);
+            }
+        }
+    }
+
+    /**
+     * @param ClaimEntity $claim
+     * @param ClaimModel $claimModel
+     */
+    private function incrementPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
+    {
+        if ($claimModel->hasPoas()) {
+            $caseNumbers = [];
+
+            foreach ($claim->getPoas() as $poa) {
+                $caseNumbers[] = $poa->getCaseNumber();
+            }
+
+            $sql = 'SELECT case_number, max(case_number_rejection_count) FROM poa WHERE case_number IN (\'' . join('\', \'', $caseNumbers) . '\') GROUP BY case_number';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $maxCaseNumbersRejectionCounts = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            foreach ($claim->getPoas() as $poa) {
+                if (isset($maxCaseNumbersRejectionCounts[$poa->getCaseNumber()])) {
+                    // Subsequent rejections
+                    $poa->setCaseNumberRejectionCount($maxCaseNumbersRejectionCounts[$poa->getCaseNumber()] + 1);
+                } else {
+                    // First rejection
+                    $poa->setCaseNumberRejectionCount(1);
+                }
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ return [
             'claim.search',
             'user',
             'user.claim',
+            'user.search',
             'spreadsheet',
             'notify',
             'report'

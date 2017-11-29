@@ -2,29 +2,26 @@
 
 namespace App\Action;
 
-use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
-use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
 /**
- * Class ClaimSearchAction
+ * Class UserSearchAction
  * @package App\Action
  */
-class ClaimSearchAction extends AbstractRestfulAction
+class UserSearchAction extends AbstractRestfulAction
 {
     /**
-     * @var ClaimService
+     * @var UserService
      */
-    private $claimService;
+    private $userService;
 
-    public function __construct(ClaimService $claimService)
+    public function __construct(UserService $userService)
     {
-        $this->claimService = $claimService;
+        $this->userService = $userService;
     }
 
     /**
@@ -42,16 +39,13 @@ class ClaimSearchAction extends AbstractRestfulAction
         $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
         $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
         $search = isset($queryParameters['search']) ? $queryParameters['search'] : null;
-        $assignedToId = isset($queryParameters['assignedToId']) ? $queryParameters['assignedToId'] : null;
         $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
-        $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
-        $poaCaseNumbers = isset($queryParameters['poaCaseNumbers']) ? explode(',', $queryParameters['poaCaseNumbers']) : null;
         $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
         $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
 
-        //  Search claims
-        $claimSummaryPage = $this->claimService->search($page, $pageSize, $search, $assignedToId, $status, $accountHash, $poaCaseNumbers, $orderBy, $sort);
+        //  Search users
+        $userSummaryPage = $this->userService->search($page, $pageSize, $search, $status, $orderBy, $sort);
 
-        return new JsonResponse($claimSummaryPage->getArrayCopy());
+        return new JsonResponse($userSummaryPage->getArrayCopy());
     }
 }
