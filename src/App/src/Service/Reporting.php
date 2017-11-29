@@ -72,25 +72,32 @@ class Reporting
 
         $allTime = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
 
-        $sql = 'SELECT status, count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
+        $sql = 'SELECT status, count(*) FROM claim WHERE status = :statusPending AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT status, count(*) FROM claim WHERE status IN (:statusDuplicate, :statusRejected, :statusAccepted) AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay UNION ALL
-                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE c.received_datetime >= :startOfDay AND c.received_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
+                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE n.created_datetime >= :startOfDay AND n.created_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
+
+        $parameters = [
+            'statusPending' => ClaimModel::STATUS_PENDING,
+            'statusInProgress' => ClaimModel::STATUS_IN_PROGRESS,
+            'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
+            'statusRejected' => ClaimModel::STATUS_REJECTED,
+            'statusAccepted' => ClaimModel::STATUS_ACCEPTED
+        ];
 
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
-        for ($i = 0; $i < 30; $i++) {
+        for ($i = 0; $i < 45; $i++) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
@@ -101,24 +108,21 @@ class Reporting
         }
 
         $byWeek = [];
-        $startOfWeek = new DateTime('last sunday');
+        $startOfWeek = new DateTime('last monday');
         $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
         for ($i = 0; $i < 12; $i++) {
             if ($endOfWeek < $dateOfFirstClaim) {
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfWeek->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfWeek->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp())] = $this->addStatusColumns($week);
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->addStatusColumns($week);
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -132,13 +136,10 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
             $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
@@ -302,7 +303,7 @@ class Reporting
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
-        while (count($byDay) < 30) {
+        while (count($byDay) < 45) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
             }
@@ -328,7 +329,7 @@ class Reporting
         }
 
         $byWeek = [];
-        $startOfWeek = new DateTime('last sunday');
+        $startOfWeek = new DateTime('last monday');
         $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
         for ($i = 0; $i < 12; $i++) {
             if ($endOfWeek < $dateOfFirstClaim) {
@@ -345,7 +346,7 @@ class Reporting
 
             $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp())] = $this->formatRefundReport($week);
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->formatRefundReport($week);
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));

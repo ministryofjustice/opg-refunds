@@ -71,7 +71,7 @@ class Claim
     }
 
     /**
-     * Get all claims
+     * Search all claims
      *
      * @param int|null $page
      * @param int|null $pageSize
@@ -247,32 +247,57 @@ class Claim
      *
      * @param int $claimId
      * @param int $userId
+     * @param int $assignToUserId
+     * @param string $reason
      * @return array
      * @throws Exception
      */
-    public function assignClaim(int $claimId, int $userId)
+    public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
         $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
-        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && $claim->getAssignedTo() !== null) {
-            throw new Exception('You cannot assign this claim', 403);
+        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
+            throw new Exception('You cannot (re)assign this claim', 403);
         }
 
-        $user = $this->getUser($userId);
+        $assignedTo = $this->getUser($assignToUserId);
 
-        $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setUpdatedDateTime(new DateTime());
-        $claim->setAssignedTo($user);
+        $originalAssignedTo = $claim->getAssignedTo();
+        $claim->setAssignedTo($assignedTo);
         $claim->setAssignedDateTime(new DateTime());
 
-        $this->addNote(
-            $claim->getId(),
-            $userId,
-            NoteModel::TYPE_CLAIM_IN_PROGRESS,
-            "Caseworker has begun to process this claim"
-        );
+        if ($claim->getStatus() === ClaimModel::STATUS_PENDING) {
+            // Explicit assignment
+            $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
 
-        return ['assignedClaimId' => $claim->getId()];
+            $this->addNote(
+                $claim->getId(),
+                $userId,
+                NoteModel::TYPE_CLAIM_IN_PROGRESS,
+                "Caseworker has begun to process this claim"
+            );
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
+            // Reassignment
+            $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
+
+            if (!empty($reason)) {
+                $message .= " due to '{$reason}'";
+            }
+
+            $this->addNote(
+                $claim->getId(),
+                $userId,
+                NoteModel::TYPE_CLAIM_REASSIGNED,
+                $message
+            );
+        }
+
+        return [
+            'assignedClaimId' => $claim->getId(),
+            'assignedToName'  => $assignedTo->getName()
+        ];
     }
 
     /**

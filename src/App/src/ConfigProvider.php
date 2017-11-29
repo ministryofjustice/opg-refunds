@@ -62,6 +62,7 @@ class ConfigProvider
                 Action\SpreadsheetAction::class => Action\SpreadsheetActionFactory::class,
                 Action\UserAction::class => Action\UserActionFactory::class,
                 Action\UserClaimAction::class => Action\UserClaimActionFactory::class,
+                Action\UserSearchAction::class => Action\UserSearchActionFactory::class,
 
                 //  Services
                 NotifyClient::class => Service\NotifyClientFactory::class,
