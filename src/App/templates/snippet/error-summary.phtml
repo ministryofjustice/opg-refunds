@@ -4,7 +4,13 @@
         <ul>
             <?php foreach ($form->getMessages() as $elementName=>$messages) { ?>
                 <?php foreach ($messages as $message) { ?>
-                    <li><a href="#id-<?= $this->e($elementName) ?>"><?=$this->e($this->summaryError($elementName, $message))?></a></li>
+                    <li>
+                        <?php if (empty($poaCaseNumbers)) { ?>
+                            <a href="#id-<?= $this->e($elementName) ?>"><?=$this->e($this->summaryError($elementName, $message))?></a>
+                        <?php } else { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc', 'poaCaseNumbers' => $poaCaseNumbers]) ?>" target="_blank"><?=$this->e($this->summaryError($elementName, $message))?></a>
+                        <?php } ?>
+                    </li>
                 <?php } ?>
             <?php } ?>
         </ul>

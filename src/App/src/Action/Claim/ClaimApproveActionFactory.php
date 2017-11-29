@@ -19,8 +19,7 @@ class ClaimApproveActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new ClaimApproveAction(
-            $container->get(ClaimService::class),
-            $container->get(NotifyClient::class)
+            $container->get(ClaimService::class)
         );
     }
 }

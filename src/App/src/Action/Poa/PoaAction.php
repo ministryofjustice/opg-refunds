@@ -57,6 +57,8 @@ class PoaAction extends AbstractPoaAction
         /** @var Poa $form */
         $form->setData($request->getParsedBody());
 
+        $poaCaseNumbers = [];
+
         if ($form->isValid()) {
             $poa = new PoaModel($form->getModelData());
 
@@ -79,7 +81,8 @@ class PoaAction extends AbstractPoaAction
                 return $this->redirectToRoute('claim', ['id' => $request->getAttribute('claimId')]);
             } catch (ApiException $ex) {
                 if ($ex->getCode() === 400) {
-                    $form->setMessages(['case-number' => ['Case number is already registered with another claim']]);
+                    $form->setMessages(['case-number' => ['Case number is already registered with at least one claim. Search for claims that use this case number to resolve']]);
+                    $poaCaseNumbers[] = $poa->getCaseNumber();
                 } else {
                     throw $ex;
                 }
@@ -89,7 +92,8 @@ class PoaAction extends AbstractPoaAction
         return new HtmlResponse($this->getTemplateRenderer()->render('app::poa-page', [
             'claim'  => $claim,
             'form'   => $form,
-            'system' => $system
+            'system' => $system,
+            'poaCaseNumbers' => join(',', $poaCaseNumbers)
         ]));
     }
 

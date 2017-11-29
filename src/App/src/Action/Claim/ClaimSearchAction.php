@@ -72,10 +72,11 @@ class ClaimSearchAction extends AbstractAction
         $assignedToId = isset($searchParameters['assignedToId']) ? $searchParameters['assignedToId'] : null;
         $status = isset($searchParameters['status']) ? $searchParameters['status'] : null;
         $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
+        $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ? explode(',', $searchParameters['poaCaseNumbers']) : null;
         $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
         $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
 
-        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $search, $assignedToId, $status, $accountHash, $orderBy, $sort);
+        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $search, $assignedToId, $status, $accountHash, $poaCaseNumbers, $orderBy, $sort);
 
         //  Unset page so it isn't added to search links
         unset($searchParameters['page']);

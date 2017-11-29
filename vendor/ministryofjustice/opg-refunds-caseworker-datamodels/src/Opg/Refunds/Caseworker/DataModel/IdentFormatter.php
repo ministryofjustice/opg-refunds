@@ -22,4 +22,18 @@ class IdentFormatter
     {
         return trim(chunk_split('R' . sprintf("%011d", $value), 4, ' '));
     }
+
+    /**
+     * Parse the claim's id from the code
+     *
+     * @param string $claimCode
+     * @return bool|int
+     */
+    public static function parseId(string $claimCode)
+    {
+        $claimCode = str_replace(' ', '', $claimCode);
+        $claimCode = str_ireplace('R', '', $claimCode);
+
+        return is_numeric($claimCode) ? (int)$claimCode : false;
+    }
 }

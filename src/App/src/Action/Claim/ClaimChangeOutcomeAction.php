@@ -2,6 +2,7 @@
 
 namespace App\Action\Claim;
 
+use Api\Exception\ApiException;
 use App\Form\AbstractForm;
 use App\Form\ClaimChangeOutcome;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -50,25 +51,40 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
 
         $form->setData($request->getParsedBody());
 
+        $poaCaseNumbers = [];
+
         if ($form->isValid()) {
             $formData = $form->getData();
 
             $reason = $formData['reason'];
 
-            $claim = $this->claimService->changeClaimOutcome($claim->getId(), $reason);
+            try {
+                $claim = $this->claimService->changeClaimOutcome($claim->getId(), $reason);
 
-            if ($claim === null) {
-                throw new RuntimeException('Failed to change outcome claim with id: ' . $this->modelId);
+                if ($claim === null) {
+                    throw new RuntimeException('Failed to change outcome claim with id: ' . $this->modelId);
+                }
+
+                $this->setFlashInfoMessage($request, 'Claim outcome changed. Status changed to pending');
+
+                return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
+            } catch (ApiException $ex) {
+                if ($ex->getCode() === 400) {
+                    $form->setMessages(['general' => ['Could not change claim outcome. At least one other claim containing one of the same POA case numbers is being worked on. Search for claims that use these POA case numbers to resolve']]);
+                    $poaCaseNumbers = [];
+                    foreach ($claim->getPoas() as $poa) {
+                        $poaCaseNumbers[] = $poa->getCaseNumber();
+                    }
+                } else {
+                    throw $ex;
+                }
             }
-
-            $this->setFlashInfoMessage($request, 'Claim outcome changed. Status changed to pending');
-
-            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-change-outcome-page', [
             'form'  => $form,
-            'claim' => $claim
+            'claim' => $claim,
+            'poaCaseNumbers' => join(',', $poaCaseNumbers)
         ]));
     }
 

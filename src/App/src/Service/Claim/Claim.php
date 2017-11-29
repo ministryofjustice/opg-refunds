@@ -10,6 +10,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 class Claim implements ApiClientInterface
 {
@@ -85,8 +86,17 @@ class Claim implements ApiClientInterface
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function searchClaims(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
-    {
+    public function searchClaims(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        int $assignedToId = null,
+        string $status = null,
+        string $accountHash = null,
+        array $poaCaseNumbers = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
         $queryParameters = [];
         if ($page != null) {
             $queryParameters['page'] = $page;
@@ -105,6 +115,9 @@ class Claim implements ApiClientInterface
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
+        }
+        if ($poaCaseNumbers != null) {
+            $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
         }
         if ($orderBy != null) {
             $queryParameters['orderBy'] = $orderBy;
@@ -217,6 +230,16 @@ class Claim implements ApiClientInterface
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'status' => ClaimModel::STATUS_ACCEPTED
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function setStatusDuplicate(int $claimId, int $duplicateOfClaimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'status' => ClaimModel::STATUS_DUPLICATE,
+            'duplicateOfClaimId' => $duplicateOfClaimId
         ]);
 
         return $this->createDataModel($claimArray);

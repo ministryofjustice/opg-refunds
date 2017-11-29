@@ -7,19 +7,20 @@ use App\Service\Claim\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimRejectActionFactory
+ * Class ClaimDuplicateActionFactory
  * @package App\Action\Claim
  */
-class ClaimRejectActionFactory
+class ClaimDuplicateActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimRejectAction
+     * @return ClaimDuplicateAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimRejectAction(
-            $container->get(ClaimService::class)
+        return new ClaimDuplicateAction(
+            $container->get(ClaimService::class),
+            $container->get(NotifyClient::class)
         );
     }
 }
