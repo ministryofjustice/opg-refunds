@@ -634,7 +634,7 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
-        $this->setPoaCaseNumbersAvailable($claim, $claimModel, true);
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, true);
 
         $this->addNote(
             $claimId,
@@ -668,7 +668,7 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
-        $this->setPoaCaseNumbersAvailable($claim, $claimModel, true);
+        $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
         $this->addNote(
@@ -706,7 +706,7 @@ class Claim
         $claim->setAssignedDateTime(new DateTime());
         $claim->getDuplicateOf()->clear();
 
-        $this->setPoaCaseNumbersAvailable($claim, $claimModel, false);
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, false);
 
         try {
             $this->entityManager->flush();
@@ -893,13 +893,25 @@ class Claim
     /**
      * @param ClaimEntity $claim
      * @param ClaimModel $claimModel
-     * @param bool $caseNumberAvailable
      */
-    private function setPoaCaseNumbersAvailable(ClaimEntity $claim, ClaimModel $claimModel, bool $caseNumberAvailable)
+    private function resetPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
     {
         if ($claimModel->hasPoas()) {
             foreach ($claim->getPoas() as $poa) {
-                $poa->setCaseNumberAvailable($caseNumberAvailable);
+                $poa->setCaseNumberRejectionCount(0);
+            }
+        }
+    }
+
+    /**
+     * @param ClaimEntity $claim
+     * @param ClaimModel $claimModel
+     */
+    private function incrementPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
+    {
+        if ($claimModel->hasPoas()) {
+            foreach ($claim->getPoas() as $poa) {
+                $poa->setCaseNumberRejectionCount($poa->getCaseNumberRejectionCount() + 1);
             }
         }
     }
