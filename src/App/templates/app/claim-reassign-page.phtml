@@ -2,7 +2,7 @@
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
- * @var \App\Form\ClaimApprove $form
+ * @var \App\Form\ClaimReassign $form
  */
 ?>
 
@@ -16,16 +16,29 @@
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-<h2 class="heading-medium">Approve claim</h2>
+<h2 class="heading-medium">Reassign claim</h2>
 
 <form method="post" class="form">
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <p>Are you sure you want to approve the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
+    <p>Are you sure you want to reassign the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
+
+    <?php $this->insert('snippet::input-select', [
+        'formElement' => $form->get('user-id'),
+        'formLabel' => 'Reassign to'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('reason'),
+        'formLabel' => 'Reason',
+        'formHint' => 'Explain why you are reassigning this claim. This will appear as a note on the claim',
+        'formType' => 'textarea',
+        'formLabelBold' => false
+    ]) ?>
 
     <div class="form-group">
-        <input type='submit' class="button" name='submit' value='Approve claim'>
+        <input type='submit' class="button" name='submit' value='Reassign claim'>
         <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
     </div>
 

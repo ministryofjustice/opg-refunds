@@ -1,0 +1,55 @@
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+$this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimReject $form
+ */
+
+$this->addErrorMap([
+    'duplicate-of' => [
+        'required' => [
+            'summary'   => 'Please enter the claim code this claim is a duplicate of',
+            'field'     => 'Please enter a valid claim code'
+        ],
+        'invalid-claim-code' => [
+            'summary'   => 'Invalid claim code. Enter either the numerical id or the \'R123 4567 8901\' style claim code of the claim this is a duplicate of',
+            'field'     => 'Invalid claim code'
+        ]
+    ]
+]);
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium">Resolve claim as duplicate</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>Are you sure you want to resolve the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?> as a duplicate?</p>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('duplicate-of'),
+        'formLabel' => 'Duplicate of claim code',
+        'formHint' => 'Enter either the numerical id or the \'R123 4567 8901\' style claim code of the claim this is a duplicate of',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Resolve as duplicate'>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

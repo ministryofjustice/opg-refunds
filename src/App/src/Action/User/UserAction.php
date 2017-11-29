@@ -45,10 +45,10 @@ class UserAction extends AbstractModelAction
         }
 
         //  Get all users
-        $users = $this->userService->getUsers();
+        $userSummaryPage = $this->userService->searchUsers();
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::users-page', [
-            'users' => $users,
+            'userSummaryPage' => $userSummaryPage,
         ]));
     }
 }

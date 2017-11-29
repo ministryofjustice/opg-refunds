@@ -9,6 +9,7 @@ use App\Service\Claim\Claim as ClaimService;
 use App\View\Details\DetailsFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
@@ -20,22 +21,6 @@ use RuntimeException;
  */
 class ClaimRejectAction extends AbstractClaimAction
 {
-    /**
-     * @var NotifyClient
-     */
-    private $notifyClient;
-
-    /**
-     * ClaimRejectAction constructor
-     * @param ClaimService $claimService
-     * @param NotifyClient $notifyClient
-     */
-    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
-    {
-        parent::__construct($claimService);
-        $this->notifyClient = $notifyClient;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -87,6 +72,9 @@ class ClaimRejectAction extends AbstractClaimAction
             if ($claim === null) {
                 throw new RuntimeException('Failed to set rejection reason on claim with id: ' . $this->modelId);
             }
+
+            $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
+            $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} rejected due to '{$rejectionReasonText}' successfully");
 
             return $this->redirectToRoute('home');
         }

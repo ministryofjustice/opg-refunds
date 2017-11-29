@@ -10,6 +10,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 class Claim implements ApiClientInterface
 {
@@ -33,13 +34,14 @@ class Claim implements ApiClientInterface
      *
      * @param int $claimId
      * @param int $userId
-     * @return int the id of the next case to process. Will be zero if none was assigned
+     * @param string $reason
+     * @return array containing assignedClaimId (the id of the next case to process, will be zero if none was assigned) and assignedToName
      */
-    public function assignClaim(int $claimId, int $userId)
+    public function assignClaim(int $claimId, int $userId, string $reason)
     {
-        $result = $this->getApiClient()->httpPut("/v1/user/$userId/claim/$claimId");
+        $result = $this->getApiClient()->httpPut("/v1/user/$userId/claim/$claimId", ['reason' => $reason]);
 
-        return $result['assignedClaimId'];
+        return $result;
     }
 
     /**
@@ -84,8 +86,17 @@ class Claim implements ApiClientInterface
      * @param string|null $sort
      * @return ClaimSummaryPage
      */
-    public function searchClaims(int $page = null, int $pageSize = null, string $search = null, int $assignedToId = null, string $status = null, string $accountHash = null, string $orderBy = null, string $sort = null)
-    {
+    public function searchClaims(
+        int $page = null,
+        int $pageSize = null,
+        string $search = null,
+        int $assignedToId = null,
+        string $status = null,
+        string $accountHash = null,
+        array $poaCaseNumbers = null,
+        string $orderBy = null,
+        string $sort = null
+    ) {
         $queryParameters = [];
         if ($page != null) {
             $queryParameters['page'] = $page;
@@ -104,6 +115,9 @@ class Claim implements ApiClientInterface
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
+        }
+        if ($poaCaseNumbers != null) {
+            $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
         }
         if ($orderBy != null) {
             $queryParameters['orderBy'] = $orderBy;
@@ -216,6 +230,16 @@ class Claim implements ApiClientInterface
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'status' => ClaimModel::STATUS_ACCEPTED
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function setStatusDuplicate(int $claimId, int $duplicateOfClaimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'status' => ClaimModel::STATUS_DUPLICATE,
+            'duplicateOfClaimId' => $duplicateOfClaimId
         ]);
 
         return $this->createDataModel($claimArray);

@@ -2,24 +2,25 @@
 
 namespace App\Action\Claim;
 
-use Alphagov\Notifications\Client as NotifyClient;
 use App\Service\Claim\Claim as ClaimService;
+use App\Service\User\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimRejectActionFactory
+ * Class ClaimReassignActionFactory
  * @package App\Action\Claim
  */
-class ClaimRejectActionFactory
+class ClaimReassignActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimRejectAction
+     * @return ClaimReassignAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimRejectAction(
-            $container->get(ClaimService::class)
+        return new ClaimReassignAction(
+            $container->get(ClaimService::class),
+            $container->get(UserService::class)
         );
     }
 }

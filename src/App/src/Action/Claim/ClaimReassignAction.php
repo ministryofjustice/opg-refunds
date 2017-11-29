@@ -2,18 +2,32 @@
 
 namespace App\Action\Claim;
 
-use Api\Exception\ApiException;
 use App\Form\AbstractForm;
-use App\Form\ClaimChangeOutcome;
+use App\Form\ClaimReassign;
+use App\Service\Claim\Claim as ClaimService;
+use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummary as UserSummaryModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
 
-class ClaimChangeOutcomeAction extends AbstractClaimAction
+class ClaimReassignAction extends AbstractClaimAction
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    public function __construct(ClaimService $claimService, UserService $userService)
+    {
+        parent::__construct($claimService);
+        $this->userService = $userService;
+    }
+
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -28,10 +42,10 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
             throw new Exception('Claim not found', 404);
         }
 
-        /** @var ClaimChangeOutcome $form */
+        /** @var ClaimReassign $form */
         $form = $this->getForm($request, $claim);
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-change-outcome-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reassign-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -46,45 +60,33 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimChangeOutcome $form */
+        /** @var ClaimReassign $form */
         $form = $this->getForm($request, $claim);
 
         $form->setData($request->getParsedBody());
 
-        $poaCaseNumbers = [];
-
         if ($form->isValid()) {
             $formData = $form->getData();
 
+            $userId = (int)$formData['user-id'];
             $reason = $formData['reason'];
 
-            try {
-                $claim = $this->claimService->changeClaimOutcome($claim->getId(), $reason);
+            $assignedClaim = $this->claimService->assignClaim($claim->getId(), $userId, $reason);
+            $assignedClaimId = $assignedClaim['assignedClaimId'];
+            $assignedToName = $assignedClaim['assignedToName'];
 
-                if ($claim === null) {
-                    throw new RuntimeException('Failed to change outcome claim with id: ' . $this->modelId);
-                }
-
-                $this->setFlashInfoMessage($request, 'Claim outcome changed. Status changed to pending');
-
-                return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
-            } catch (ApiException $ex) {
-                if ($ex->getCode() === 400) {
-                    $form->setMessages(['general' => ['Could not change claim outcome. At least one other claim containing one of the same POA case numbers is being worked on. Search for claims that use these POA case numbers to resolve']]);
-                    $poaCaseNumbers = [];
-                    foreach ($claim->getPoas() as $poa) {
-                        $poaCaseNumbers[] = $poa->getCaseNumber();
-                    }
-                } else {
-                    throw $ex;
-                }
+            if ($assignedClaimId === 0) {
+                throw new RuntimeException('Failed to reassign claim with id: ' . $this->modelId);
             }
+
+            $this->setFlashInfoMessage($request, 'Claim reassigned to ' . $assignedToName);
+
+            return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-change-outcome-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reassign-page', [
             'form'  => $form,
-            'claim' => $claim,
-            'poaCaseNumbers' => join(',', $poaCaseNumbers)
+            'claim' => $claim
         ]));
     }
 
@@ -97,8 +99,12 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $form = new ClaimChangeOutcome([
+        $userSummaryPage = $this->userService->searchUsers(null, null, null, UserModel::STATUS_ACTIVE);
+        $userSummaries = $userSummaryPage->getUserSummaries();
+
+        $form = new ClaimReassign([
             'claim'  => $claim,
+            'userSummaries' => $userSummaries,
             'csrf'   => $session['meta']['csrf'],
         ]);
 

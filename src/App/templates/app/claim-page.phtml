@@ -28,6 +28,8 @@ $this->addErrorMap([
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
 <div>
+    <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
     <h2 class="heading-medium">Sirius power of attorneys</h2>
 
     <?php if ($claim->hasSiriusPoas()) { ?>
@@ -134,20 +136,24 @@ $this->addErrorMap([
 </div>
 
 <h2 class="heading-medium heading-refunds">User note</h2>
-<form method="post" class="form">
 
-    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+<details>
+    <summary>Add a user note</summary>
+    <form method="post" class="form">
 
-    <?php $this->insert('snippet::input-text', [
-        'formElement' => $form->get('message'),
-        'formLabel' => 'Add a user note',
-        'formType' => 'textarea',
-        'formLabelBold' => false,
-        'additionFormControlClass' => 'form-control-3-4'
-    ]) ?>
+        <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <input class="button button-secondary" type="submit" value="Submit note">
-</form>
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('message'),
+            'formLabel' => 'message',
+            'formType' => 'textarea',
+            'formLabelBold' => false,
+            'additionFormControlClass' => 'form-control-3-4'
+        ]) ?>
+
+        <input class="button button-secondary" type="submit" value="Submit note">
+    </form>
+</details>
 
 <h2 class="heading-medium heading-refunds">Timeline</h2>
 

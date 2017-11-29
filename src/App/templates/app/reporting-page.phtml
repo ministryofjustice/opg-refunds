@@ -35,6 +35,7 @@ $refund = $reports['refund'];
                     <th class="numeric">In progress</th>
                     <th class="numeric">Accepted</th>
                     <th class="numeric">Rejected</th>
+                    <th class="numeric">Duplicate</th>
                     <th class="numeric">Outcome changed</th>
                 </tr>
             </thead>
@@ -46,6 +47,7 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></td>
                 </tr>
             </tbody>
@@ -58,11 +60,12 @@ $refund = $reports['refund'];
         <table>
             <thead>
                 <tr>
-                    <th class="numeric" style="width: 20%">Date</th>
-                    <th class="numeric" style="width: 20%">Received</th>
-                    <th class="numeric" style="width: 20%">Accepted</th>
-                    <th class="numeric" style="width: 20%">Rejected</th>
-                    <th class="numeric" style="width: 20%">Outcome changed</th>
+                    <th class="numeric" style="width: 17%">Date</th>
+                    <th class="numeric" style="width: 16%">Received</th>
+                    <th class="numeric" style="width: 17%">Accepted</th>
+                    <th class="numeric" style="width: 17%">Rejected</th>
+                    <th class="numeric" style="width: 16%">Duplicate</th>
+                    <th class="numeric" style="width: 17%">Outcome changed</th>
                 </tr>
             </thead>
             <tbody>
@@ -72,6 +75,7 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $counts['total'] ?></td>
                     <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
                     <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
+                    <td class="numeric"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></td>
                     <td class="numeric"><?= $counts['outcome_changed'] ?></td>
                 </tr>
             <?php } ?>
@@ -85,11 +89,12 @@ $refund = $reports['refund'];
         <table>
             <thead>
                 <tr>
-                    <th class="numeric" style="width: 20%">Date</th>
-                    <th class="numeric" style="width: 20%">Received</th>
-                    <th class="numeric" style="width: 20%">Accepted</th>
-                    <th class="numeric" style="width: 20%">Rejected</th>
-                    <th class="numeric" style="width: 20%">Outcome changed</th>
+                    <th class="numeric" style="width: 17%">Date</th>
+                    <th class="numeric" style="width: 16%">Received</th>
+                    <th class="numeric" style="width: 17%">Accepted</th>
+                    <th class="numeric" style="width: 17%">Rejected</th>
+                    <th class="numeric" style="width: 16%">Duplicate</th>
+                    <th class="numeric" style="width: 17%">Outcome changed</th>
                 </tr>
             </thead>
             <tbody>
@@ -99,6 +104,7 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $counts['total'] ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
@@ -112,11 +118,12 @@ $refund = $reports['refund'];
         <table>
             <thead>
                 <tr>
-                    <th class="numeric" style="width: 20%">Date</th>
-                    <th class="numeric" style="width: 20%">Received</th>
-                    <th class="numeric" style="width: 20%">Accepted</th>
-                    <th class="numeric" style="width: 20%">Rejected</th>
-                    <th class="numeric" style="width: 20%">Outcome changed</th>
+                    <th class="numeric" style="width: 17%">Date</th>
+                    <th class="numeric" style="width: 16%">Received</th>
+                    <th class="numeric" style="width: 17%">Accepted</th>
+                    <th class="numeric" style="width: 17%">Rejected</th>
+                    <th class="numeric" style="width: 16%">Duplicate</th>
+                    <th class="numeric" style="width: 17%">Outcome changed</th>
                 </tr>
             </thead>
             <tbody>
@@ -126,6 +133,7 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $counts['total'] ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
