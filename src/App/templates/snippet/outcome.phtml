@@ -98,7 +98,7 @@ Mandatory: claim
         <div class="">
             <dt class="details-term">Notifications</dt>
             <dd class="details-definition">
-                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeEmailSent()) { ?>
+                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent()) { ?>
                     <span>None sent</span>
                 <?php } ?>
                 <?php if ($claim->isOutcomeEmailSent()) { ?>
