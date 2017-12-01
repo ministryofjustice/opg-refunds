@@ -60,6 +60,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(9, $rowIndex, $payeeAddressLine3);
             //Payee Postcode
             $cells[] = new SpreadsheetCell(10, $rowIndex, $donorCurrent->getAddress()->getAddressPostcode());
+            //Remittance Email Address
+            $cells[] = new SpreadsheetCell(11, $rowIndex, $claim->getApplication()->getContact()->getEmail());
             if ($claim->getApplication()->hasAccount()) {
                 $account = $claim->getApplication()->getAccount();
 
@@ -171,6 +173,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(9, $rowIndex, $row[9]);
             //Payee Postcode
             $cells[] = new SpreadsheetCell(10, $rowIndex, $row[10]);
+            //Remittance Email Address
+            $cells[] = new SpreadsheetCell(11, $rowIndex, $row[11]);
             //Payment Method
             $cells[] = new SpreadsheetCell(13, $rowIndex, $row[13]);
             if ($row[13] === 'New Bank Details') {
