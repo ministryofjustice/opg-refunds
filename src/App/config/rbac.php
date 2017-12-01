@@ -51,6 +51,7 @@ return [
             'refund',
             'download',
             'notify',
+            'verify',
         ],
         User::ROLE_ADMIN => [
             'user',

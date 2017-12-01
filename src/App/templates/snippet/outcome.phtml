@@ -104,7 +104,7 @@ Mandatory: claim
                 <?php if ($claim->isOutcomeEmailSent()) { ?>
                     <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
                 <?php } ?>
-                <?php if ($claim->isOutcomeEmailSent()) { ?>
+                <?php if ($claim->isOutcomeTextSent()) { ?>
                     <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
                 <?php } ?>
             </dd>

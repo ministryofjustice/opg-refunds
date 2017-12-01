@@ -3,10 +3,12 @@
 namespace Api\Service;
 
 use Api\Exception;
+use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Psr\Http\Message\ResponseInterface;
+use Zend\Diactoros\UploadedFile;
 
 /**
  * Class Client
@@ -119,6 +121,34 @@ class Client
         $url = new Uri($this->apiBaseUri . $path);
 
         $request = new Request('POST', $url, $this->buildHeaders(), json_encode($payload));
+
+        $response = $this->httpClient->sendRequest($request);
+
+        switch ($response->getStatusCode()) {
+            case 200:
+            case 201:
+                return $this->handleResponse($response);
+            default:
+                return $this->handleErrorResponse($response);
+        }
+    }
+
+    /**
+     * Performs a POST against the API
+     *
+     * @param string $path
+     * @param UploadedFile $uploadedFile
+     * @return array
+     * @throw RuntimeException | Exception\ApiException
+     */
+    public function httpPostFile($path, UploadedFile $uploadedFile)
+    {
+        $url = new Uri($this->apiBaseUri . $path);
+
+        $headers = $this->buildHeaders();
+        $headers['Content-Type'] = $uploadedFile->getClientMediaType();
+
+        $request = new Request('POST', $url, $headers, $uploadedFile->getStream());
 
         $response = $this->httpClient->sendRequest($request);
 

@@ -41,6 +41,7 @@ $app->get('/refund', App\Action\RefundAction::class, 'refund');
 $app->get('/reporting', App\Action\ReportingAction::class, 'reporting');
 $app->route('/change-password[/{token}]', App\Action\Password\PasswordChangeAction::class, ['GET', 'POST'], 'password.change');
 $app->get('/download[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\DownloadAction::class, 'download');
+$app->route('/verify', App\Action\VerifyAction::class, ['GET', 'POST'], 'verify');
 $app->route('/claim[/{id:\d+}]', App\Action\Claim\ClaimAction::class, ['GET', 'POST'], 'claim');
 $app->route('/claim/{claimId:\d+}/approve', App\Action\Claim\ClaimApproveAction::class, ['GET', 'POST'], 'claim.approve');
 $app->route('/claim/{claimId:\d+}/reject', App\Action\Claim\ClaimRejectAction::class, ['GET', 'POST'], 'claim.reject');
