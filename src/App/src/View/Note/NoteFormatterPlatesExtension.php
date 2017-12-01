@@ -25,7 +25,7 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
             case NoteModel::TYPE_CLAIM_SUBMITTED:
                 return 'Claim submitted';
             case NoteModel::TYPE_ASSISTED_DIGITAL:
-                return 'Assisted Digital';
+                return 'Phone claim';
             case NoteModel::TYPE_CLAIM_PENDING:
                 return 'Claim returned';
             case NoteModel::TYPE_CLAIM_IN_PROGRESS:

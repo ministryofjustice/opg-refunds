@@ -53,12 +53,16 @@
                         <a href="<?= $this->generateUrl('home') ?>" id="proposition-name">Claim a power of attorney refund</a>
                         <?php if (isset($identity)) { ?>
                             <ul id="proposition-links">
-                                <li>
-                                    <a href="<?= $this->generateUrl('home') ?>" class="">Your claims</a>
-                                </li>
-                                <li>
-                                    <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>" class="">Search</a>
-                                </li>
+                                <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER, $identity->getRoles())) { ?>
+                                    <li>
+                                        <a href="<?= $this->generateUrl('home') ?>" class="">Your claims</a>
+                                    </li>
+                                <?php } ?>
+                                <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER, $identity->getRoles())) { ?>
+                                    <li>
+                                        <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>" class="">Search</a>
+                                    </li>
+                                <?php } ?>
                                 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REPORTING, $identity->getRoles())) { ?>
                                     <li>
                                         <a href="<?= $this->generateUrl('reporting') ?>" class="">Reporting</a>
