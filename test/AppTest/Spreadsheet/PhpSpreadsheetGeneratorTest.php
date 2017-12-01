@@ -2,6 +2,7 @@
 
 namespace AppTest\Spreadsheet;
 
+use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
@@ -97,7 +98,7 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $user->setName('Test User');
 
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator($this->ssclConfig);
-        $this->worksheet = $spreadsheetWorksheetGenerator->generate([$claim], $user);
+        $this->worksheet = $spreadsheetWorksheetGenerator->generate(new DateTime(), [$claim], $user);
     }
 
     /**

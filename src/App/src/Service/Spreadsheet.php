@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Service\Claim as ClaimService;
+use App\Spreadsheet\SpreadsheetWorksheet;
 use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -11,6 +12,7 @@ use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Zend\Crypt\PublicKey\Rsa;
 use Aws\Kms\KmsClient;
 
@@ -83,29 +85,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
      */
     public function getAllRefundable(DateTime $date, int $userId)
     {
-        $queryBuilder = $this->repository->createQueryBuilder('c');
-
-        if ($date == new DateTime('today')) {
-            // Creating today's spreadsheet which contains all of yesterday's approved claims
-            $queryBuilder->leftJoin('c.payment', 'p')
-                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
-                ->orderBy('c.finishedDateTime', 'ASC')
-                ->setMaxResults(3000)
-                ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
-        } else {
-            $startDateTime = clone $date;
-            $endDateTime = $date->add(new DateInterval('P1D'));
-            $queryBuilder->join('c.payment', 'p')
-                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
-                ->orderBy('c.finishedDateTime', 'ASC')
-                ->setParameters([
-                    'status' => ClaimModel::STATUS_ACCEPTED,
-                    'startDateTime' => $startDateTime,
-                    'endDateTime' => $endDateTime
-                ]);
-        }
-
-        $claims = $queryBuilder->getQuery()->getResult();
+        $claims = $this->getSpreadsheetClaims($date);
 
         $refundableClaims = [];
 
@@ -136,6 +116,121 @@ class Spreadsheet implements Initializer\LogSupportInterface
         }
 
         return $historicRefundDates;
+    }
+
+    public function storeSpreadsheetHashes(array $spreadsheetHashes)
+    {
+        foreach ($spreadsheetHashes as $spreadsheetHash) {
+            $claimCode = $spreadsheetHash['claimCode'];
+            $claimId = IdentFormatter::parseId($claimCode);
+
+            $claimEntity = $this->claimService->getClaimEntity($claimId);
+
+            $claimEntity->getPayment()->setSpreadsheetHash($spreadsheetHash['hash']);
+        }
+
+        $this->entityManager->flush();
+    }
+
+    public function validateSpreadsheetHashes(array $spreadsheetHashes, DateTime $date)
+    {
+        $added = [];
+        $changed = [];
+        $deleted = [];
+
+        $processed = [];
+
+        if (count($spreadsheetHashes) > 0) {
+            $expectedClaims = $this->getSpreadsheetClaims($date);
+
+            $rowIndex = 3;
+
+            foreach ($expectedClaims as $expectedClaim) {
+                $expectedClaimCode = IdentFormatter::format($expectedClaim->getId());
+
+                $found = false;
+                foreach ($spreadsheetHashes as $spreadsheetHash) {
+                    if ($expectedClaimCode === $spreadsheetHash['claimCode']) {
+                        $found = true;
+                        break;
+                    }
+                }
+
+                if ($found === false) {
+                    $deleted[$expectedClaimCode] = [
+                        'claimCode' => $expectedClaimCode,
+                        'row' => $rowIndex,
+                        'hash' => $expectedClaim->getPayment()->getSpreadsheetHash(),
+                    ];
+                }
+
+                $rowIndex++;
+            }
+
+            foreach ($spreadsheetHashes as $spreadsheetHash) {
+                $claimCode = $spreadsheetHash['claimCode'];
+                $claimId = IdentFormatter::parseId($claimCode);
+
+                if ($claimId === false) {
+                    $deleted[$claimCode] = $spreadsheetHash;
+                } else {
+                    $claimEntity = $this->claimService->getClaimEntity($claimId);
+
+                    if ($claimEntity === null) {
+                        $added[$claimCode] = $spreadsheetHash;
+                    } elseif ($claimEntity->getPayment()->getSpreadsheetHash() !== $spreadsheetHash['hash']) {
+                        if (isset($changed[$claimCode])) {
+                            $added[] = $spreadsheetHash;
+                        } else {
+                            $changed[$claimCode] = $spreadsheetHash;
+                        }
+                    } elseif (isset($processed[$claimCode])) {
+                        $added[] = $spreadsheetHash;
+                    }
+
+                    $processed[$claimCode] = $spreadsheetHash;
+                }
+            }
+        }
+
+        return [
+            'valid' => count($added) === 0 && count($changed) === 0 && count($deleted) === 0,
+            'added' => $added,
+            'changed' => $changed,
+            'deleted' => $deleted
+        ];
+    }
+
+    /**
+     * @param DateTime $date
+     * @return ClaimEntity[]
+     */
+    private function getSpreadsheetClaims(DateTime $date): array
+    {
+        $queryBuilder = $this->repository->createQueryBuilder('c');
+
+        if ($date == new DateTime('today')) {
+            // Creating today's spreadsheet which contains all of yesterday's approved claims
+            $queryBuilder->leftJoin('c.payment', 'p')
+                ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setMaxResults(3000)
+                ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
+        } else {
+            $startDateTime = clone $date;
+            $endDateTime = $date->add(new DateInterval('P1D'));
+            $queryBuilder->join('c.payment', 'p')
+                ->where('c.status = :status AND p.addedDateTime >= :startDateTime AND p.addedDateTime < :endDateTime')
+                ->orderBy('c.finishedDateTime', 'ASC')
+                ->setParameters([
+                    'status' => ClaimModel::STATUS_ACCEPTED,
+                    'startDateTime' => $startDateTime,
+                    'endDateTime' => $endDateTime
+                ]);
+        }
+
+        $claims = $queryBuilder->getQuery()->getResult();
+        return $claims;
     }
 
     /**

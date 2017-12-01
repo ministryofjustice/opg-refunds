@@ -40,6 +40,6 @@ $app->get('/v1/claim/search', App\Action\ClaimSearchAction::class, 'claim.search
 $app->route('/v1/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');
 $app->route('/v1/user/{id:\d+}/claim[/{claimId:\d+}]', App\Action\UserClaimAction::class, ['GET', 'PUT', 'DELETE'], 'user.claim');
 $app->get('/v1/user/search', App\Action\UserSearchAction::class, 'user.search');
-$app->get('/v1/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, 'spreadsheet');
+$app->route('/v1/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, ['GET', 'POST'], 'spreadsheet');
 $app->post('/v1/notify', App\Action\NotifyAction::class, 'notify');
 $app->get('/v1/report', App\Action\ReportingAction::class, 'report');

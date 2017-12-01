@@ -3,7 +3,6 @@
 namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
-use Opg\Refunds\Caseworker\DataModel\Applications\Current;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
@@ -101,7 +100,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
     public function testEmptyArray()
     {
-        $result = $this->generator->generate([], $this->approver);
+        $result = $this->generator->generate(new DateTime(), [], $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());
@@ -119,7 +118,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->claim
         ];
 
-        $result = $this->generator->generate($claims, $this->approver);
+        $result = $this->generator->generate(new DateTime(), $claims, $this->approver);
 
         $this->assertNotNull($result);
         $this->assertEquals('Data', $result->getName());

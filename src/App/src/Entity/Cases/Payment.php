@@ -46,6 +46,12 @@ class Payment extends AbstractEntity
     protected $processedDateTime;
 
     /**
+     * @var string
+     * @ORM\Column(name="spreadsheet_hash", type="string", nullable=true)
+     */
+    protected $spreadsheetHash;
+
+    /**
      * @var Claim
      * @ORM\OneToOne(targetEntity="Claim", mappedBy="payment")
      */
@@ -129,6 +135,22 @@ class Payment extends AbstractEntity
     public function setProcessedDateTime(DateTime $processedDateTime)
     {
         $this->processedDateTime = $processedDateTime;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSpreadsheetHash(): string
+    {
+        return $this->spreadsheetHash;
+    }
+
+    /**
+     * @param string $spreadsheetHash
+     */
+    public function setSpreadsheetHash(string $spreadsheetHash)
+    {
+        $this->spreadsheetHash = $spreadsheetHash;
     }
 
     /**

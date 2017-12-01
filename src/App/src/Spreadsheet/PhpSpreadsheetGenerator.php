@@ -2,9 +2,12 @@
 
 namespace App\Spreadsheet;
 
+use Exception;
 use InvalidArgumentException;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsReader;
+use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
+use Psr\Http\Message\StreamInterface;
 
 class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 {
@@ -53,7 +56,7 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         }
 
         if ($schema === ISpreadsheetGenerator::SCHEMA_SSCL && $fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLS) {
-            $reader = new XlsReader();
+            $reader = new XlsxReader();
             //$reader->setReadDataOnly(true);
             $reader->setLoadSheetsOnly($spreadsheetWorksheet->getName());
             $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'BulkSOP1 MOJ No Formatting.xlsx';
@@ -103,6 +106,40 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
             if (is_file($this->tempFolder . $file)) {
                 unlink($this->tempFolder . $file);
             }
+        }
+    }
+
+    /**
+     * @param StreamInterface $spreadsheetStream
+     * @return array
+     * @throws Exception
+     */
+    public function getWorksheetData(StreamInterface $spreadsheetStream): array
+    {
+        $tempFileName = tempnam($this->tempFolder, 'validate_');
+        $tempFile = fopen($tempFileName, 'w');
+
+        fwrite($tempFile, $spreadsheetStream);
+
+        $reader = new XlsReader();
+
+        try {
+            $spreadsheet = $reader->load($tempFileName);
+
+            fclose($tempFile); // this removes the file
+            unlink($tempFileName);
+
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $data = $sheet->toArray();
+
+            //First two rows are headers
+            unset($data[0]);
+            unset($data[1]);
+
+            return $data;
+        } catch (Exception $ex) {
+            throw new Exception('Failed to parse uploaded spreadsheet', 400);
         }
     }
 }
