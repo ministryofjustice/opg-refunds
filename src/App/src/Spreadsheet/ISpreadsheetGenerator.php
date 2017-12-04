@@ -2,6 +2,8 @@
 
 namespace App\Spreadsheet;
 
+use Psr\Http\Message\StreamInterface;
+
 interface ISpreadsheetGenerator
 {
     const SCHEMA_SSCL = 'SSCL';
@@ -37,4 +39,10 @@ interface ISpreadsheetGenerator
     );
 
     public function deleteTempFiles();
+
+    /**
+     * @param StreamInterface $spreadsheetStream
+     * @return array
+     */
+    public function getWorksheetData(StreamInterface $spreadsheetStream): array;
 }

@@ -6,7 +6,7 @@ class SpreadsheetFileNameFormatter
 {
     public static function getFileName($schema, $fileFormat, $dateString)
     {
-        return "BulkSOP1 MOJ $dateString.xls";
+        return "BulkSOP1_MOJ_$dateString.xls";
     }
 
     public static function getTempFileName($schema, $fileFormat)

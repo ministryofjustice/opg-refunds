@@ -10,12 +10,16 @@ use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterfa
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
+use Opg\Refunds\Log\Initializer;
+
 /**
  * Class AuthAction
  * @package Auth\Action
  */
-class AuthAction implements ServerMiddlewareInterface
+class AuthAction implements ServerMiddlewareInterface, Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
+
     /**
      * @var Authentication
      */
@@ -50,11 +54,15 @@ class AuthAction implements ServerMiddlewareInterface
                     'claims',
                 ]);
 
+                $this->getLogger()->info('Caseworker login: ' . $userData['name'], ['userId'=>$userData['id']]);
+
                 return new JsonResponse($userData);
             } catch (InvalidInputException $ignore) {
                 //  Authentication failed - exception thrown below
             }
         }
+
+        $this->getLogger()->warn('Failed authentication attempt', ['email'=>strtolower($requestBody['email'])]);
 
         throw new UnauthorizedException('Authentication failed');
     }

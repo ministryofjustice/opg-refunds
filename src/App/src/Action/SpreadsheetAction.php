@@ -65,9 +65,14 @@ class SpreadsheetAction extends AbstractRestfulAction
         } else {
             $identity = $request->getAttribute('identity');
 
-            $claims = $this->spreadsheetService->getAllRefundable(new DateTime($dateString), $identity->getId());
+            $date = new DateTime($dateString);
+            $claims = $this->spreadsheetService->getAllRefundable(clone $date, $identity->getId());
 
-            $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate($claims, $identity);
+            $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate(clone $date, $claims, $identity);
+
+            $spreadsheetHashes = $this->spreadsheetWorksheetGenerator->getHashes($spreadsheetWorksheet);
+
+            $this->spreadsheetService->storeSpreadsheetHashes($spreadsheetHashes);
 
             $schema = ISpreadsheetGenerator::SCHEMA_SSCL;
             $fileFormat = ISpreadsheetGenerator::FILE_FORMAT_XLS;
@@ -91,5 +96,44 @@ class SpreadsheetAction extends AbstractRestfulAction
                 ->withBody($stream)
                 ->withHeader('Content-Length', "{$stream->getSize()}");
         }
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return ResponseInterface|Response
+     */
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        // Retrieve spreadsheet file
+        $worksheetData = $this->spreadsheetGenerator->getWorksheetData($request->getBody());
+        $worksheet = $this->spreadsheetWorksheetGenerator->getWorksheet($worksheetData);
+
+        $date = false;
+        foreach ($worksheet->getRows() as $row) {
+            $date = DateTime::createFromFormat('d/m/Y', $row->getCells()[15]->getData());
+
+            if ($date === false) {
+                continue;
+            } else {
+                $date->setTime(0, 0, 0);
+                break;
+            }
+        }
+
+        if ($date === false) {
+            return new JsonResponse([
+                'valid' => false,
+                'added' => [],
+                'changed' => [],
+                'deleted' => []
+            ]);
+        }
+
+        $spreadsheetHashes = $this->spreadsheetWorksheetGenerator->getHashes($worksheet);
+
+        $result = $this->spreadsheetService->validateSpreadsheetHashes($spreadsheetHashes, $date);
+
+        return new JsonResponse($result);
     }
 }

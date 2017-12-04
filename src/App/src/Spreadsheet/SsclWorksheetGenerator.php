@@ -21,11 +21,12 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
     }
 
     /**
+     * @param DateTime $date
      * @param ClaimModel[] $claims the source data to generate the worksheet from. Should be a multidimensional array
      * @param UserModel $approver
      * @return SpreadsheetWorksheet a complete SSCL schema compatible worksheet
      */
-    public function generate(array $claims, UserModel $approver): SpreadsheetWorksheet
+    public function generate(DateTime $date, array $claims, UserModel $approver): SpreadsheetWorksheet
     {
         $rows = [];
 
@@ -59,6 +60,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(9, $rowIndex, $payeeAddressLine3);
             //Payee Postcode
             $cells[] = new SpreadsheetCell(10, $rowIndex, $donorCurrent->getAddress()->getAddressPostcode());
+            //Remittance Email Address
+            $cells[] = new SpreadsheetCell(11, $rowIndex, $claim->getApplication()->getContact()->getEmail());
             if ($claim->getApplication()->hasAccount()) {
                 $account = $claim->getApplication()->getAccount();
 
@@ -79,7 +82,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
                 $cells[] = new SpreadsheetCell(13, $rowIndex, 'Cheque');
             }
             //Invoice Date
-            $cells[] = new SpreadsheetCell(19, $rowIndex, (new DateTime('today'))->format('d/m/Y'));
+            $cells[] = new SpreadsheetCell(19, $rowIndex, $date->format('d/m/Y'));
             //Invoice Number - Programme board instructed to use reference number on 02/11/2017
             $cells[] = new SpreadsheetCell(20, $rowIndex, $claim->getReferenceNumber());
             //Description
@@ -110,6 +113,114 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(33, $rowIndex, $approverId);
 
             $rows[] = new SpreadsheetRow($cells);
+        }
+
+        return new SpreadsheetWorksheet(self::WORKSHEET_NAME, $rows);
+    }
+
+    /**
+     * @param SpreadsheetWorksheet $spreadsheetWorksheet
+     * @return array
+     */
+    public function getHashes(SpreadsheetWorksheet $spreadsheetWorksheet): array
+    {
+        $hashes = [];
+
+        foreach ($spreadsheetWorksheet->getRows() as $row) {
+            $rowData = [];
+            foreach ($row->getCells() as $cell) {
+                $rowData[] = $cell->getData();
+            }
+
+            $rowString = join('_', $rowData);
+
+            $rowNumber = $row->getCells()[0]->getRow();
+
+            $hashes[] = [
+                'claimCode' => $row->getCells()[2]->getData() ?: 'Deleted-' . $rowNumber,
+                'row' => $rowNumber,
+                'hash' => hash('sha512', $rowString),
+            ];
+        }
+
+        return $hashes;
+    }
+
+    public function getWorksheet(array $worksheetData): SpreadsheetWorksheet
+    {
+        $rows = [];
+
+        $rowIndex = 3;
+
+        foreach ($worksheetData as $row) {
+            $cells = [];
+
+            //OU
+            $cells[] = new SpreadsheetCell(0, $rowIndex, $row[0]);
+            //Payee Type
+            $cells[] = new SpreadsheetCell(3, $rowIndex, $row[3]);
+            //Unique Payee Reference
+            $cells[] = new SpreadsheetCell(4, $rowIndex, $row[4]);
+            //Payee Forename
+            $cells[] = new SpreadsheetCell(5, $rowIndex, $row[5]);
+            //Payee Surname
+            $cells[] = new SpreadsheetCell(6, $rowIndex, $row[6]);
+            //Payee Address Line 1
+            $cells[] = new SpreadsheetCell(7, $rowIndex, $row[7]);
+            //Payee Address Line 2
+            $cells[] = new SpreadsheetCell(8, $rowIndex, $row[8]);
+            //Town/City
+            $cells[] = new SpreadsheetCell(9, $rowIndex, $row[9]);
+            //Payee Postcode
+            $cells[] = new SpreadsheetCell(10, $rowIndex, $row[10]);
+            //Remittance Email Address
+            $cells[] = new SpreadsheetCell(11, $rowIndex, $row[11]);
+            //Payment Method
+            $cells[] = new SpreadsheetCell(13, $rowIndex, $row[13]);
+            if ($row[13] === 'New Bank Details') {
+                //Sort Code
+                $cells[] = new SpreadsheetCell(14, $rowIndex, $row[14]);
+                //Account Number
+                $cells[] = new SpreadsheetCell(15, $rowIndex, $row[15]);
+                //Name of Bank
+                $cells[] = new SpreadsheetCell(16, $rowIndex, $row[16]);
+                //Account Name
+                $cells[] = new SpreadsheetCell(17, $rowIndex, $row[17]);
+                //Roll Number
+                $cells[] = new SpreadsheetCell(18, $rowIndex, $row[18]);
+            }
+            //Invoice Date
+            $cells[] = new SpreadsheetCell(19, $rowIndex, $row[19]);
+            //Invoice Number
+            $cells[] = new SpreadsheetCell(20, $rowIndex, $row[20]);
+            //Description
+            $cells[] = new SpreadsheetCell(21, $rowIndex, $row[21]);
+            //Entity - From config
+            $cells[] = new SpreadsheetCell(22, $rowIndex, $row[22]);
+            //Cost Centre - From config
+            $cells[] = new SpreadsheetCell(23, $rowIndex, $row[23]);
+            //Account - From config
+            $cells[] = new SpreadsheetCell(24, $rowIndex, $row[24]);
+            //Objective - From config
+            $cells[] = new SpreadsheetCell(25, $rowIndex, $row[25]);
+            //Analysis - From config
+            $cells[] = new SpreadsheetCell(26, $rowIndex, $row[26]);
+            //VAT Rate
+            $cells[] = new SpreadsheetCell(27, $rowIndex, $row[27]);
+            //Net Amount
+            $cells[] = new SpreadsheetCell(29, $rowIndex, $row[29]);
+            //VAT Amount
+            $cells[] = new SpreadsheetCell(30, $rowIndex, $row[30]);
+            //Total Amount
+            $cells[] = new SpreadsheetCell(31, $rowIndex, $row[31]);
+            //Completer ID
+            $cells[] = new SpreadsheetCell(32, $rowIndex, $row[32]);
+            //Approver ID
+            $cells[] = new SpreadsheetCell(33, $rowIndex, $row[33]);
+
+            $rows[] = new SpreadsheetRow($cells);
+
+            $rowIndex++;
         }
 
         return new SpreadsheetWorksheet(self::WORKSHEET_NAME, $rows);

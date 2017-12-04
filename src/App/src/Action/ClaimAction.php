@@ -11,12 +11,16 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
+use Opg\Refunds\Log\Initializer;
+
 /**
  * Class ClaimAction
  * @package App\Action
  */
-class ClaimAction extends AbstractRestfulAction
+class ClaimAction extends AbstractRestfulAction implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
+
     /**
      * @var ClaimService
      */
@@ -42,6 +46,11 @@ class ClaimAction extends AbstractRestfulAction
 
         //  Return a specific claim
         $claim = $this->claimService->get($claimId, $identity->getId());
+
+        $this->getLogger()->info('Claim viewed: '.$claim->getId(), [
+            'claim'=>$claim->getId(),
+            'user'=>$identity->getId(),
+        ]);
 
         return new JsonResponse($claim->getArrayCopy());
     }
