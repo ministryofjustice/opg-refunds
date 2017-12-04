@@ -3,6 +3,7 @@
 namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
@@ -77,13 +78,20 @@ class SsclWorksheetGeneratorTest extends TestCase
         $current->setAddress($address);
         $donor->setCurrent($current);
 
+        $contact = new Contact();
+        $contact->setEmail('test@test.com');
+
         $account = new Account();
         $account
             ->setName('Mr Unit Test')
             ->setAccountNumber('12345678')
             ->setSortCode('112233');
 
-        $application = $this->applicationBuilder->withDonor($donor)->withAccount($account)->build();
+        $application = $this->applicationBuilder
+            ->withDonor($donor)
+            ->withContact($contact)
+            ->withAccount($account)
+            ->build();
 
         $payment = new Payment();
         $payment->setAmount(45);
@@ -178,85 +186,89 @@ class SsclWorksheetGeneratorTest extends TestCase
             $this->assertEquals(10, $cells[8]->getColumn());
             $this->assertEquals('TS1 1ON', $cells[8]->getData());
 
+            //Remittance Email Address
+            $this->assertEquals(11, $cells[9]->getColumn());
+            $this->assertEquals('test@test.com', $cells[9]->getData());
+
             //Payment Method
-            $this->assertEquals(13, $cells[9]->getColumn());
-            $this->assertEquals('New Bank Details', $cells[9]->getData());
+            $this->assertEquals(13, $cells[10]->getColumn());
+            $this->assertEquals('New Bank Details', $cells[10]->getData());
 
             //Sort Code
-            $this->assertEquals(14, $cells[10]->getColumn());
-            $this->assertEquals($account->getSortCode(), $cells[10]->getData());
+            $this->assertEquals(14, $cells[11]->getColumn());
+            $this->assertEquals($account->getSortCode(), $cells[11]->getData());
 
             //Account Number
-            $this->assertEquals(15, $cells[11]->getColumn());
-            $this->assertEquals($account->getAccountNumber(), $cells[11]->getData());
+            $this->assertEquals(15, $cells[12]->getColumn());
+            $this->assertEquals($account->getAccountNumber(), $cells[12]->getData());
 
             //Name of Bank
-            $this->assertEquals(16, $cells[12]->getColumn());
-            $this->assertEquals('Halifax', $cells[12]->getData());
+            $this->assertEquals(16, $cells[13]->getColumn());
+            $this->assertEquals('Halifax', $cells[13]->getData());
 
             //Account Name
-            $this->assertEquals(17, $cells[13]->getColumn());
-            $this->assertEquals($account->getName(), $cells[13]->getData());
+            $this->assertEquals(17, $cells[14]->getColumn());
+            $this->assertEquals($account->getName(), $cells[14]->getData());
 
             //Roll Number - Should be blank rather than N/A - SSCL confirmed on 10/11/2017
-            $this->assertEquals(18, $cells[14]->getColumn());
-            $this->assertEquals('', $cells[14]->getData());
+            $this->assertEquals(18, $cells[15]->getColumn());
+            $this->assertEquals('', $cells[15]->getData());
 
             //Invoice Date
-            $this->assertEquals(19, $cells[15]->getColumn());
-            $this->assertEquals((new DateTime('today'))->format('d/m/Y'), $cells[15]->getData());
+            $this->assertEquals(19, $cells[16]->getColumn());
+            $this->assertEquals((new DateTime('today'))->format('d/m/Y'), $cells[16]->getData());
 
             //Invoice Number - Programme board instructed to use reference number on 02/11/2017
-            $this->assertEquals(20, $cells[16]->getColumn());
-            $this->assertEquals($claim->getReferenceNumber(), $cells[16]->getData());
+            $this->assertEquals(20, $cells[17]->getColumn());
+            $this->assertEquals($claim->getReferenceNumber(), $cells[17]->getData());
 
             //Description
-            $this->assertEquals(21, $cells[17]->getColumn());
-            $this->assertEquals('Lasting Power of Attorney', $cells[17]->getData());
+            $this->assertEquals(21, $cells[18]->getColumn());
+            $this->assertEquals('Lasting Power of Attorney', $cells[18]->getData());
 
             //Entity - From config
-            $this->assertEquals(22, $cells[18]->getColumn());
-            $this->assertEquals('0123', $cells[18]->getData());
+            $this->assertEquals(22, $cells[19]->getColumn());
+            $this->assertEquals('0123', $cells[19]->getData());
 
             //Cost Centre - From config
-            $this->assertEquals(23, $cells[19]->getColumn());
-            $this->assertEquals('99999999', $cells[19]->getData());
+            $this->assertEquals(23, $cells[20]->getColumn());
+            $this->assertEquals('99999999', $cells[20]->getData());
 
             //Account - From config
-            $this->assertEquals(24, $cells[20]->getColumn());
-            $this->assertEquals('123450000', $cells[20]->getData());
+            $this->assertEquals(24, $cells[21]->getColumn());
+            $this->assertEquals('123450000', $cells[21]->getData());
 
             //Objective - From config
-            $this->assertEquals(25, $cells[21]->getColumn());
-            $this->assertEquals('0', $cells[21]->getData());
+            $this->assertEquals(25, $cells[22]->getColumn());
+            $this->assertEquals('0', $cells[22]->getData());
 
             //Analysis - From config
-            $this->assertEquals(26, $cells[22]->getColumn());
-            $this->assertEquals('12345678', $cells[22]->getData());
+            $this->assertEquals(26, $cells[23]->getColumn());
+            $this->assertEquals('12345678', $cells[23]->getData());
 
             //VAT Rate
-            $this->assertEquals(27, $cells[23]->getColumn());
-            $this->assertEquals('UK OUT OF SCOPE', $cells[23]->getData());
+            $this->assertEquals(27, $cells[24]->getColumn());
+            $this->assertEquals('UK OUT OF SCOPE', $cells[24]->getData());
 
             //Net Amount
-            $this->assertEquals(29, $cells[24]->getColumn());
-            $this->assertEquals($payment->getAmount(), $cells[24]->getData());
+            $this->assertEquals(29, $cells[25]->getColumn());
+            $this->assertEquals($payment->getAmount(), $cells[25]->getData());
 
             //VAT Amount
-            $this->assertEquals(30, $cells[25]->getColumn());
-            $this->assertEquals(0, $cells[25]->getData());
+            $this->assertEquals(30, $cells[26]->getColumn());
+            $this->assertEquals(0, $cells[26]->getData());
 
             //Total Amount
-            $this->assertEquals(31, $cells[26]->getColumn());
-            $this->assertEquals($payment->getAmount(), $cells[26]->getData());
+            $this->assertEquals(31, $cells[27]->getColumn());
+            $this->assertEquals($payment->getAmount(), $cells[27]->getData());
 
             //Completer ID - From config
-            $this->assertEquals(32, $cells[27]->getColumn());
-            $this->assertEquals($this->claim->getFinishedByName(), $cells[27]->getData());
+            $this->assertEquals(32, $cells[28]->getColumn());
+            $this->assertEquals($this->claim->getFinishedByName(), $cells[28]->getData());
 
             //Approver ID - From config
-            $this->assertEquals(33, $cells[28]->getColumn());
-            $this->assertEquals($this->approver->getName(), $cells[28]->getData());
+            $this->assertEquals(33, $cells[29]->getColumn());
+            $this->assertEquals($this->approver->getName(), $cells[29]->getData());
         }
     }
 }

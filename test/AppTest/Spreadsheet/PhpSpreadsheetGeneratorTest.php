@@ -4,6 +4,7 @@ namespace AppTest\Spreadsheet;
 
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
@@ -78,13 +79,16 @@ class PhpSpreadsheetGeneratorTest extends TestCase
         $current->setAddress($address);
         $donor->setCurrent($current);
 
+        $contact = new Contact();
+        $contact->setEmail('test@test.com');
+
         $account = new Account();
         $account
             ->setName('Mr Unit Test')
             ->setAccountNumber('12345678')
             ->setSortCode('112233');
 
-        $application = $applicationBuilder->withDonor($donor)->withAccount($account)->build();
+        $application = $applicationBuilder->withDonor($donor)->withContact($contact)->withAccount($account)->build();
 
         $payment = new Payment();
         $payment->setAmount(45);

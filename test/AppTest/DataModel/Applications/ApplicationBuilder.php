@@ -4,6 +4,7 @@ namespace AppTest\DataModel\Applications;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
 
 class ApplicationBuilder
@@ -29,6 +30,12 @@ class ApplicationBuilder
     public function withDonor(Donor $donor)
     {
         $this->application->setDonor($donor);
+        return $this;
+    }
+
+    public function withContact(Contact $contact)
+    {
+        $this->application->setContact($contact);
         return $this;
     }
 
