@@ -40,7 +40,7 @@ class CacheControlMiddlewareTest extends TestCase
     {
         $middleware = new CacheControlMiddleware();
 
-        $this->routeResult->getMatchedRouteName()->willReturn( 'eligibility.test' );
+        $this->routeResult->getMatchedRouteName()->willReturn( 'home' );
 
         $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
 

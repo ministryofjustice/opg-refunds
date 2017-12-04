@@ -25,12 +25,6 @@ return (getenv('OPG_REFUNDS_STACK_TYPE') !== 'testing') ? [] :
         ],
     ],
 
-    'notify' => [
-        'api' => [
-            'key' => getenv('OPG_REFUNDS_NOTIFY_PHANTOM_API_KEY') ?: null,
-        ],
-    ],
-
     'whoops' => [
         'json_exceptions' => [
             'display'    => true,

@@ -9,3 +9,9 @@
 <p>
     <a class="button" href="<?= $this->url('home') ?>">Start a refund claim</a>
 </p>
+
+<?php $this->start('body-end') ?>
+    <script>
+        GOVUK.analytics.trackEvent('Error-page', '404', { transport: 'beacon' })
+    </script>
+<?php $this->stop() ?>

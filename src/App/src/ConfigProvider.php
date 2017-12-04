@@ -72,6 +72,7 @@ class ConfigProvider
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
                 Middleware\ProcessingTime\ProcessingTimeMiddleware::class => Middleware\ProcessingTime\ProcessingTimeMiddlewareFactory::class,
                 Middleware\AssistedDigital\AssistedDigitalMiddleware::class => Middleware\AssistedDigital\AssistedDigitalMiddlewareFactory::class,
+                Middleware\Tracking\TrackingMiddleware::class => Middleware\Tracking\TrackingMiddlewareFactory::class,
 
                 // Services
                 Service\Session\SessionManager::class => Service\Session\SessionManagerFactory::class,

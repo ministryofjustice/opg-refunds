@@ -7,13 +7,6 @@
     <?php $subTitle = 'Claim a power of attorney refund'; ?>
     <title><?= (isset($pageTitle)) ? $this->e($pageTitle).' | ' : '' ?><?= ($pageTitle!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
-    <?php if ( isset($this->config()['analytics']['google']['id']) ): ?>
-    <script>
-        var GA_TRACKING_ID;
-        GA_TRACKING_ID = '<?= $this->config()['analytics']['google']['id'] ?>';
-    </script>
-    <?php endif ?>
-
     <!--[if gt IE 8]><!--><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template.css') ?>" media="screen" rel="stylesheet" /><!--<![endif]-->
     <!--[if IE 6]><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-ie6.css') ?>" media="screen" rel="stylesheet" /><![endif]-->
     <!--[if IE 7]><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-ie7.css') ?>" media="screen" rel="stylesheet" /><![endif]-->
@@ -86,7 +79,7 @@
 
     <div class="phase-banner">
         <p>
-            <strong class="phase-tag"><?= (empty($ad)) ? 'PRIVATE BETA' : 'ASSISTED DIGITAL' ?></strong>
+            <strong class="phase-tag"><?= (empty($ad)) ? 'PRIVATE BETA' : 'PHONE CLAIM' ?></strong>
             <span>This is a new service – your <a href="https://www.surveymonkey.co.uk/r/Refundsfeedback" rel="external" target="_blank">feedback</a> will help us to improve it.</span>
         </p>
         </div>
@@ -124,13 +117,26 @@
         </div>
     </footer>
 
-    <div id="global-app-error" class="app-error hidden"></div>
-
     <script src="<?= $this->static('/assets/javascripts/vendor.js') ?>"></script>
     <script src="<?= $this->static('/assets/javascripts/app.js') ?>"></script>
+    <?php if ( isset($this->config()['analytics']['google']['id']) ): ?>
+    <script>
+        var gaConfig = {
+            universalId: '<?= $this->config()['analytics']['google']['id'] ?>',
+            dimensions: {
+                ANONYMOUS_SESSION_ID: '1',
+                RELEASE_TAG: '2'
+            }
+        }
+        
+        <?php if ( isset($tracking) ): ?>
+            gaConfig.sessionId = '<?= $this->e($tracking) ?>';
+            gaConfig.releaseTag = '<?= $this->config()['version']['tag'] ?>';
+        <?php endif ?>
+    </script>
+    <?php endif ?>
     <script src="<?= $this->static('/assets/javascripts/custom-analytics.js') ?>"></script>
-
     <script>if (typeof window.GOVUK === 'undefined') document.body.className = document.body.className.replace('js-enabled', '');</script>
-
+    <?=$this->section('body-end')?>
     </body>
 </html>

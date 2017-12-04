@@ -19,6 +19,7 @@ class TemplateConfigInjectionPlatesExtensionFactory
             $config,
             array_flip([
                 // The following top level config keys will be injected into the template.
+                'version',
                 'analytics',
             ])
         );
