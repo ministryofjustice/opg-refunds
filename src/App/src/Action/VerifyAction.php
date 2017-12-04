@@ -19,9 +19,9 @@ class VerifyAction extends AbstractModelAction
      */
     private $refundService;
 
-    public function __construct(RefundService $verifyService)
+    public function __construct(RefundService $refundService)
     {
-        $this->refundService = $verifyService;
+        $this->refundService = $refundService;
     }
 
     /**
