@@ -47,6 +47,7 @@ class Reporting
         $reports = [
             'claim' => $this->getClaimReport($dateOfFirstClaim),
             'claimSource' => $this->getClaimSourceReport($dateOfFirstClaim),
+            'phoneClaimType' => $this->getPhoneClaimTypeReport($dateOfFirstClaim),
             'rejectionReason' => $this->getRejectionReasonReport($dateOfFirstClaim),
             'duplicateBankDetail' => $this->getDuplicateBankDetailReport($dateOfFirstClaim),
             'refund' => $this->getRefundReport($dateOfFirstClaim),
@@ -203,6 +204,48 @@ class Reporting
                 SELECT \'assisted_digital\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->\'ad\' IS NOT NULL UNION ALL
                 SELECT \'donor_deceased\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'deceased\' = \'true\' UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byMonth' => $byMonth
+        ];
+    }
+
+    public function getPhoneClaimTypeReport(DateTime $dateOfFirstClaim)
+    {
+        $sql = 'SELECT (json_data->\'ad\'->\'meta\'->\'type\')::TEXT AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $sql = 'SELECT (json_data->\'ad\'->\'meta\'->\'type\')::TEXT AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY type';
 
         $byMonth = [];
         $startOfMonth = new DateTime('midnight first day of this month');
