@@ -15,7 +15,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
      */
     const MAX_AGE = 300;
 
-    private $cachabePages = [
+    private $cacheablePages = [
         'home',
         'terms',
         'cookies',
@@ -41,7 +41,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
 
         // If it's an eligibility route
         if ($response instanceof ResponseInterface) {
-            if (in_array($matchedRoute, $this->cachabePages)) {
+            if (in_array($matchedRoute, $this->cacheablePages)) {
                 // Allow caching on these pages
                 $response = $response->withHeader('Cache-Control', 'max-age='.self::MAX_AGE)
                     ->withHeader('Expires', gmdate('D, d M Y H:i:s T', time() + self::MAX_AGE));
