@@ -68,6 +68,7 @@ class ConfigProvider
                 Action\ReportingAction::class => Action\ReportingActionFactory::class,
                 Action\SignInAction::class => Action\SignInActionFactory::class,
                 Action\SignOutAction::class => Action\SignOutActionFactory::class,
+                Action\VerifyAction::class => Action\VerifyActionFactory::class,
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,

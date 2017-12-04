@@ -5,6 +5,7 @@ namespace App\Service\Refund;
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use DateTime;
+use Zend\Diactoros\UploadedFile;
 
 /**
  * Class Refund
@@ -37,5 +38,12 @@ class Refund implements ApiClientInterface
             'name'   => $fileName,
             'length' => $contentLength
         ];
+    }
+
+    public function verifyRefundSpreadsheet(UploadedFile $spreadsheetFile)
+    {
+        $result = $this->getApiClient()->httpPostFile('/v1/spreadsheet', $spreadsheetFile);
+
+        return $result;
     }
 }

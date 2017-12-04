@@ -10,7 +10,7 @@
 <h2 class="heading-large">
     <span><?= $this->e($claim->getReferenceNumber()) ?> <?= $this->e($claim->getDonorName()) ?></span>
     <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
-        <span class="heading-secondary"><strong class="phase-tag">Assisted digital</strong></span>
+        <span class="heading-secondary"><strong class="phase-tag">Phone claim</strong></span>
     <?php } ?>
     <?php if ($claim->isReadOnly()) { ?>
         <span class="heading-secondary"><?= $this->e($claim->getStatusText()) ?> (Read Only)</span>

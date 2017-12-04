@@ -1,0 +1,21 @@
+<?php
+
+$elementId = "id-{$formElement->getName()}";
+
+$hasErrors = !empty($formElement->getMessages());
+
+$value = $formElement->getValue();
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+
+    <label class="form-label" for="<?= $elementId ?>"><?= $this->e($formLabel) ?></label>
+
+    <?php foreach($formElement->getMessages() as $message): ?>
+        <p class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></p>
+    <?php endforeach ?>
+
+    <input type="file" class="form-control<?= $hasErrors ? ' form-control-error' : '' ?>" id="<?= $elementId ?>" name="<?= $formElement->getName() ?>">
+
+</div>
