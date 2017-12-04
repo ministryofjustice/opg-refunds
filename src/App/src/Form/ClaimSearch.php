@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Filter\StandardInput as StandardInputFilter;
-use App\View\Details\DetailsFormatterPlatesExtension;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use Zend\Form\Element\Select;

@@ -2,7 +2,8 @@
 <?php
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user
- * @var \App\Form\ProcessNewClaim $form
+ * @var \App\Form\ProcessNewClaim $processNewClaimForm
+ * @var \App\Form\PhoneClaim $phoneClaimForm
  */
 ?>
 
@@ -11,11 +12,11 @@
         <h2 class="heading-medium heading-refunds">Process a claim</h2>
         <p>Add a new power of attorney refund</p>
 
-        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$processNewClaimForm ]) ?>
 
         <form method="post" class="form" action="<?= $this->generateUrl('claim') ?>">
 
-            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $processNewClaimForm->get('secret')]) ?>
 
             <input type='submit' class="button" name='submit' value='Process new claim'>
 
@@ -24,7 +25,18 @@
         <h2 class="heading-medium heading-refunds">Phone claim</h2>
         <p>Help a user with their claim</p>
 
-        <p><a class="button button-secondary" href="<?= $this->generateUrl('assisted-digital.start') ?>" target="_blank">Start phone claim</a></p>
+        <form method="post" class="form" action="<?= $this->generateUrl('assisted-digital.start') ?>" target="_blank">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $phoneClaimForm->get('secret')]) ?>
+
+            <?php $this->insert('snippet::input-select', [
+                'formElement' => $phoneClaimForm->get('type'),
+                'formLabel' => 'Reason for call'
+            ]) ?>
+
+            <input type='submit' class="button button-secondary" name='submit' value='Start phone claim'>
+
+        </form>
     </div>
     <div class="column-four-fifths">
 
