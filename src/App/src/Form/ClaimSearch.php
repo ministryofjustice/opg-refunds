@@ -3,7 +3,9 @@
 namespace App\Form;
 
 use App\Filter\StandardInput as StandardInputFilter;
+use App\Validator;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\UserSummary as UserSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use Zend\Form\Element\Select;
 use Zend\Form\Element\Text;
@@ -55,6 +57,28 @@ class ClaimSearch extends AbstractForm
             ClaimModel::STATUS_REJECTED => StatusFormatter::getStatusText(ClaimModel::STATUS_REJECTED),
             ClaimModel::STATUS_ACCEPTED => StatusFormatter::getStatusText(ClaimModel::STATUS_ACCEPTED)
         ]);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //  User selection
+        $field = new Select('assignedToFinishedById');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new StandardInputFilter);
+
+        $input->setRequired(false);
+
+        /* @var UserSummaryModel[] $userSummaries */
+        $userSummaries = $options['userSummaries'];
+
+        $valueOptions = ['' => 'Any'];
+        foreach ($userSummaries as $userSummary) {
+            $valueOptions[$userSummary->getId()] = $userSummary->getName();
+        }
+
+        $field->setValueOptions($valueOptions);
 
         $this->add($field);
         $inputFilter->add($input);

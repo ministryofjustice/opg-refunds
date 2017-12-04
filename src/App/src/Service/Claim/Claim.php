@@ -79,9 +79,10 @@ class Claim implements ApiClientInterface
      * @param int|null $page
      * @param int|null $pageSize
      * @param string|null $search
-     * @param int|null $assignedToId
+     * @param int|null $assignedToFinishedById
      * @param string|null $status
      * @param string|null $accountHash
+     * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
      * @param string|null $sort
      * @return ClaimSummaryPage
@@ -90,7 +91,7 @@ class Claim implements ApiClientInterface
         int $page = null,
         int $pageSize = null,
         string $search = null,
-        int $assignedToId = null,
+        int $assignedToFinishedById = null,
         string $status = null,
         string $accountHash = null,
         array $poaCaseNumbers = null,
@@ -107,8 +108,8 @@ class Claim implements ApiClientInterface
         if ($search != null) {
             $queryParameters['search'] = $search;
         }
-        if ($assignedToId != null) {
-            $queryParameters['assignedToId'] = $assignedToId;
+        if ($assignedToFinishedById != null) {
+            $queryParameters['assignedToFinishedById'] = $assignedToFinishedById;
         }
         if ($status != null) {
             $queryParameters['status'] = $status;

@@ -31,6 +31,11 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                     'formLabel' => 'Status'
                 ]) ?>
 
+                <?php $this->insert('snippet::input-select', [
+                    'formElement' => $form->get('assignedToFinishedById'),
+                    'formLabel' => 'Assigned to/Finished by'
+                ]) ?>
+
                 <div class="form-group">
                     <input type='submit' class="button button-search" name='submit' value='Search'>
                     <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
