@@ -79,6 +79,8 @@ class Claim implements ApiClientInterface
      * @param int|null $page
      * @param int|null $pageSize
      * @param string|null $search
+     * @param string|null $received
+     * @param string|null $finished
      * @param int|null $assignedToFinishedById
      * @param string|null $status
      * @param string|null $accountHash
@@ -91,6 +93,8 @@ class Claim implements ApiClientInterface
         int $page = null,
         int $pageSize = null,
         string $search = null,
+        string $received = null,
+        string $finished = null,
         int $assignedToFinishedById = null,
         string $status = null,
         string $accountHash = null,
@@ -104,6 +108,12 @@ class Claim implements ApiClientInterface
         }
         if ($pageSize != null) {
             $queryParameters['pageSize'] = $pageSize;
+        }
+        if ($received != null) {
+            $queryParameters['received'] = $received;
+        }
+        if ($finished != null) {
+            $queryParameters['finished'] = $finished;
         }
         if ($search != null) {
             $queryParameters['search'] = $search;

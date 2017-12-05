@@ -82,6 +82,8 @@ class ClaimSearchAction extends AbstractAction
         $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
         $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
         $search = isset($searchParameters['search']) ? $searchParameters['search'] : null;
+        $received = isset($searchParameters['received']) ? $searchParameters['received'] : null;
+        $finished = isset($searchParameters['finished']) ? $searchParameters['finished'] : null;
         $assignedToFinishedById = isset($searchParameters['assignedToFinishedById'])
             && is_numeric($searchParameters['assignedToFinishedById']) ?
             (int)$searchParameters['assignedToFinishedById'] : null;
@@ -96,6 +98,8 @@ class ClaimSearchAction extends AbstractAction
             $page,
             $pageSize,
             $search,
+            $received,
+            $finished,
             $assignedToFinishedById,
             $status,
             $accountHash,
