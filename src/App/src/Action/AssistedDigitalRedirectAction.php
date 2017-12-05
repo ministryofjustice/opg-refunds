@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Form\PhoneClaim;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -51,17 +52,33 @@ class AssistedDigitalRedirectAction extends AbstractAction
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $identity = $request->getAttribute('identity');
-
-        $user = $this->userService->getUser($identity->getId());
-
-        $token = $this->generator->generate([
-            'userId' => $user->getId(),
-            'name' => $user->getName()
+        $session = $request->getAttribute('session');
+        $form = new PhoneClaim([
+            'csrf'  => $session['meta']['csrf'],
         ]);
 
-        return new RedirectResponse(
-            "https://{$this->publicDomain}/assisted-digital/{$token}"
-        );
+        $form->setData($request->getParsedBody());
+
+        if ($form->isValid()) {
+            $formData = $form->getData();
+
+            $type = $formData['type'];
+
+            $identity = $request->getAttribute('identity');
+
+            $user = $this->userService->getUser($identity->getId());
+
+            $token = $this->generator->generate([
+                'userId' => $user->getId(),
+                'name' => $user->getName(),
+                'type' => $type
+            ]);
+
+            return new RedirectResponse(
+                "https://{$this->publicDomain}/assisted-digital/{$token}"
+            );
+        }
+
+        return $this->redirectToRoute('home');
     }
 }

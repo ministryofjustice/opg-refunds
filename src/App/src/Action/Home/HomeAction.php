@@ -3,6 +3,7 @@
 namespace App\Action\Home;
 
 use App\Action\AbstractAction;
+use App\Form\PhoneClaim;
 use App\Form\ProcessNewClaim;
 use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -46,12 +47,17 @@ class HomeAction extends AbstractAction
             $user = $this->userService->getUser($identity->getId());
 
             $session = $request->getAttribute('session');
-            $form = new ProcessNewClaim([
+            $processNewClaimForm = new ProcessNewClaim([
                 'csrf' => $session['meta']['csrf'],
             ]);
 
+            $phoneClaimForm = new PhoneClaim([
+                'csrf'  => $session['meta']['csrf'],
+            ]);
+
             return new HtmlResponse($this->getTemplateRenderer()->render('app::home-page', [
-                'form' => $form,
+                'processNewClaimForm' => $processNewClaimForm,
+                'phoneClaimForm' => $phoneClaimForm,
                 'user' => $user,
                 'messages' => $this->getFlashMessages($request)
             ]));
