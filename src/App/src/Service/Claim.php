@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use DateInterval;
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Query\Expr\Join;
@@ -77,6 +78,8 @@ class Claim
      * @param int|null $page
      * @param int|null $pageSize
      * @param string|null $search
+     * @param string|null $received
+     * @param string|null $finished
      * @param int|null $assignedToFinishedById
      * @param string|null $status
      * @param string|null $accountHash
@@ -89,6 +92,8 @@ class Claim
         int $page = null,
         int $pageSize = null,
         string $search = null,
+        string $received = null,
+        string $finished = null,
         int $assignedToFinishedById = null,
         string $status = null,
         string $accountHash = null,
@@ -125,6 +130,44 @@ class Claim
             } else {
                 $queryBuilder->andWhere('LOWER(c.donorName) LIKE LOWER(:donorName)');
                 $parameters['donorName'] = "%{$donorName}%";
+            }
+        }
+
+        if (isset($received)) {
+            $receivedRange = explode('-', $received);
+
+            $receivedFrom = DateTime::createFromFormat('d/m/Y', $receivedRange[0]);
+            if ($receivedFrom instanceof DateTime) {
+                $receivedFrom->setTime(0, 0, 0);
+
+                $receivedTo = count($receivedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $receivedRange[1])
+                    : (clone $receivedFrom)->add(new DateInterval('P1D'));
+                if ($receivedTo instanceof DateTime) {
+                    $receivedTo->setTime(0, 0, 0);
+
+                    $queryBuilder->andWhere('c.receivedDateTime > :receivedFrom AND c.receivedDateTime < :receivedTo');
+                    $parameters['receivedFrom'] = $receivedFrom;
+                    $parameters['receivedTo'] = $receivedTo;
+                }
+            }
+        }
+
+        if (isset($finished)) {
+            $finishedRange = explode('-', $finished);
+
+            $finishedFrom = DateTime::createFromFormat('d/m/Y', $finishedRange[0]);
+            if ($finishedFrom instanceof DateTime) {
+                $finishedFrom->setTime(0, 0, 0);
+
+                $finishedTo = count($finishedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $finishedRange[1])
+                    : (clone $finishedFrom)->add(new DateInterval('P1D'));
+                if ($finishedTo instanceof DateTime) {
+                    $finishedTo->setTime(0, 0, 0);
+
+                    $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    $parameters['finishedFrom'] = $finishedFrom;
+                    $parameters['finishedTo'] = $finishedTo;
+                }
             }
         }
 

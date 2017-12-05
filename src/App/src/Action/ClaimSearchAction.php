@@ -42,6 +42,8 @@ class ClaimSearchAction extends AbstractRestfulAction
         $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
         $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
         $search = isset($queryParameters['search']) ? $queryParameters['search'] : null;
+        $received = isset($queryParameters['received']) ? $queryParameters['received'] : null;
+        $finished = isset($queryParameters['finished']) ? $queryParameters['finished'] : null;
         $assignedToFinishedById = isset($queryParameters['assignedToFinishedById'])
             ? $queryParameters['assignedToFinishedById'] : null;
         $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
@@ -56,6 +58,8 @@ class ClaimSearchAction extends AbstractRestfulAction
             $page,
             $pageSize,
             $search,
+            $received,
+            $finished,
             $assignedToFinishedById,
             $status,
             $accountHash,
