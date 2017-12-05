@@ -4,6 +4,7 @@ namespace App\Service;
 
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
@@ -21,7 +22,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
-use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 /**
  * Class Claim
@@ -77,7 +77,7 @@ class Claim
      * @param int|null $page
      * @param int|null $pageSize
      * @param string|null $search
-     * @param int|null $assignedToId
+     * @param int|null $assignedToFinishedById
      * @param string|null $status
      * @param string|null $accountHash
      * @param array|null $poaCaseNumbers
@@ -89,7 +89,7 @@ class Claim
         int $page = null,
         int $pageSize = null,
         string $search = null,
-        int $assignedToId = null,
+        int $assignedToFinishedById = null,
         string $status = null,
         string $accountHash = null,
         array $poaCaseNumbers = null,
@@ -109,8 +109,10 @@ class Claim
             $pageSize = 50;
         }
 
-        $join = '';
-        $whereClauses = [];
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->select('c')
+            ->from('Cases:Claim', 'c');
+
         $parameters = [];
 
         if (isset($search)) {
@@ -118,66 +120,64 @@ class Claim
             $claimId = IdentFormatter::parseId($search);
 
             if ($claimId !== false) {
-                $whereClauses[] = 'c.id = :claimId';
+                $queryBuilder->andWhere('c.id = :claimId');
                 $parameters['claimId'] = $claimId;
             } else {
-                $whereClauses[] = 'LOWER(c.donorName) LIKE LOWER(:donorName)';
+                $queryBuilder->andWhere('LOWER(c.donorName) LIKE LOWER(:donorName)');
                 $parameters['donorName'] = "%{$donorName}%";
             }
         }
 
-        if (isset($assignedToId)) {
-            $join .= ' JOIN c.assignedTo u';
-            $whereClauses[] = 'u.id = :assignedToId';
-            $parameters['assignedToId'] = $assignedToId;
+        if (isset($assignedToFinishedById)) {
+            $queryBuilder->addSelect('ua');
+            $queryBuilder->addSelect('uf');
+            $queryBuilder->leftJoin('c.assignedTo', 'ua');
+            $queryBuilder->leftJoin('c.finishedBy', 'uf');
+            $queryBuilder->andWhere('(ua.id = :assignedToFinishedById OR uf.id = :assignedToFinishedById)');
+            $parameters['assignedToFinishedById'] = $assignedToFinishedById;
         }
 
         if (isset($status)) {
-            $whereClauses[] = 'c.status = :status';
+            $queryBuilder->andWhere('c.status = :status');
             $parameters['status'] = $status;
         }
 
         if (isset($accountHash)) {
-            $whereClauses[] = 'c.accountHash = :accountHash';
+            $queryBuilder->andWhere('c.accountHash = :accountHash');
             $parameters['accountHash'] = $accountHash;
         }
 
         if (isset($poaCaseNumbers)) {
-            $join .= ' JOIN c.poas p';
-            $whereClauses[] = 'p.caseNumber IN (:poaCaseNumbers)';
+            $queryBuilder->leftJoin('c.poas', 'p');
+            $queryBuilder->andWhere('p.caseNumber IN (:poaCaseNumbers)');
             $parameters['poaCaseNumbers'] = $poaCaseNumbers;
+        }
+
+        if (isset($orderBy)) {
+            $sort = strtoupper($sort ?: 'asc');
+
+            if ($orderBy === 'donor') {
+                $queryBuilder->orderBy('c.donorName', $sort);
+            } elseif ($orderBy === 'received') {
+                $queryBuilder->orderBy('c.receivedDateTime', $sort);
+            } elseif ($orderBy === 'modified') {
+                $queryBuilder->orderBy('c.updatedDateTime', $sort);
+            } elseif ($orderBy === 'finished') {
+                $queryBuilder->orderBy('c.finishedDateTime', $sort);
+            } elseif ($orderBy === 'status') {
+                $queryBuilder->orderBy('c.status', $sort);
+            }
         }
 
         $offset = ($page - 1) * $pageSize;
 
         // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
-        $dql = 'SELECT c FROM App\Entity\Cases\Claim c' . $join;
-        if (count($whereClauses) > 0) {
-            $dql .= ' WHERE ' . join(' AND ', $whereClauses);
-        }
-
-        if (isset($orderBy)) {
-            if ($orderBy === 'donor') {
-                $dql .= ' ORDER BY c.donorName ';
-            } elseif ($orderBy === 'received') {
-                $dql .= ' ORDER BY c.receivedDateTime ';
-            } elseif ($orderBy === 'modified') {
-                $dql .= ' ORDER BY c.updatedDateTime ';
-            } elseif ($orderBy === 'finished') {
-                $dql .= ' ORDER BY c.finishedDateTime ';
-            } elseif ($orderBy === 'status') {
-                $dql .= ' ORDER BY c.status ';
-            }
-
-            $dql .= strtoupper($sort ?: 'asc');
-        }
-
-        $query = $this->entityManager->createQuery($dql)
+        $queryBuilder
             ->setParameters($parameters)
             ->setFirstResult($offset)
             ->setMaxResults($pageSize);
 
-        $paginator = new Paginator($query, true);
+        $paginator = new Paginator($queryBuilder, true);
 
         $total = count($paginator);
         $pageCount = ceil($total/$pageSize);
