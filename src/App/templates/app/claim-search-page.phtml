@@ -27,7 +27,7 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                 ]) ?>
 
                 <?php $this->insert('snippet::input-select', [
-                    'formElement' => $form->get('status'),
+                    'formElement' => $form->get('statuses'),
                     'formLabel' => 'Status'
                 ]) ?>
 
@@ -158,7 +158,7 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToFinishedById' => $claimSummary->getAssignedToId() ?: $claimSummary->getFinishedById()])) ?>"><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></a></td>
-                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['statuses' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
                     </tr>
                 <?php } ?>
 

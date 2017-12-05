@@ -21,7 +21,12 @@ class SearchPlatesExtension implements ExtensionInterface
 
     public function isSearchParametersSet($searchParameters)
     {
-        return isset($searchParameters['search']) || isset($searchParameters['status']) || isset($searchParameters['assignedToFinishedById']) || isset($searchParameters['poaCaseNumbers']);
+        return isset($searchParameters['search'])
+            || isset($searchParameters['received'])
+            || isset($searchParameters['finished'])
+            || isset($searchParameters['statuses'])
+            || isset($searchParameters['assignedToFinishedById'])
+            || isset($searchParameters['poaCaseNumbers']);
     }
 
     public function getOrderByParameters($searchParameters, string $orderBy)

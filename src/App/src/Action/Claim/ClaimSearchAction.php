@@ -67,8 +67,8 @@ class ClaimSearchAction extends AbstractAction
                 if ($searchParameters['search'] === '') {
                     unset($searchParameters['search']);
                 }
-                if ($searchParameters['status'] === '') {
-                    unset($searchParameters['status']);
+                if ($searchParameters['statuses'] === '') {
+                    unset($searchParameters['statuses']);
                 }
                 if ($searchParameters['assignedToFinishedById'] === '') {
                     unset($searchParameters['assignedToFinishedById']);
@@ -87,7 +87,7 @@ class ClaimSearchAction extends AbstractAction
         $assignedToFinishedById = isset($searchParameters['assignedToFinishedById'])
             && is_numeric($searchParameters['assignedToFinishedById']) ?
             (int)$searchParameters['assignedToFinishedById'] : null;
-        $status = isset($searchParameters['status']) ? $searchParameters['status'] : null;
+        $statuses = isset($searchParameters['statuses']) ? $searchParameters['statuses'] : null;
         $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
         $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ?
             explode(',', $searchParameters['poaCaseNumbers']) : null;
@@ -101,7 +101,7 @@ class ClaimSearchAction extends AbstractAction
             $received,
             $finished,
             $assignedToFinishedById,
-            $status,
+            $statuses,
             $accountHash,
             $poaCaseNumbers,
             $orderBy,

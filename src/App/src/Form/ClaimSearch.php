@@ -41,7 +41,7 @@ class ClaimSearch extends AbstractForm
         $inputFilter->add($input);
 
         //  Status selection
-        $field = new Select('status');
+        $field = new Select('statuses');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -51,6 +51,7 @@ class ClaimSearch extends AbstractForm
 
         $field->setValueOptions([
             '' => 'All',
+            join(',', [ClaimModel::STATUS_DUPLICATE, ClaimModel::STATUS_REJECTED, ClaimModel::STATUS_ACCEPTED]) => 'Completed',
             ClaimModel::STATUS_PENDING => StatusFormatter::getStatusText(ClaimModel::STATUS_PENDING),
             ClaimModel::STATUS_IN_PROGRESS => StatusFormatter::getStatusText(ClaimModel::STATUS_IN_PROGRESS),
             ClaimModel::STATUS_DUPLICATE => StatusFormatter::getStatusText(ClaimModel::STATUS_DUPLICATE),

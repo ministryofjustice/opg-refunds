@@ -82,7 +82,7 @@ class Claim implements ApiClientInterface
      * @param string|null $received
      * @param string|null $finished
      * @param int|null $assignedToFinishedById
-     * @param string|null $status
+     * @param string|null $statuses
      * @param string|null $accountHash
      * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
@@ -96,7 +96,7 @@ class Claim implements ApiClientInterface
         string $received = null,
         string $finished = null,
         int $assignedToFinishedById = null,
-        string $status = null,
+        string $statuses = null,
         string $accountHash = null,
         array $poaCaseNumbers = null,
         string $orderBy = null,
@@ -121,8 +121,8 @@ class Claim implements ApiClientInterface
         if ($assignedToFinishedById != null) {
             $queryParameters['assignedToFinishedById'] = $assignedToFinishedById;
         }
-        if ($status != null) {
-            $queryParameters['status'] = $status;
+        if ($statuses != null) {
+            $queryParameters['statuses'] = $statuses;
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
