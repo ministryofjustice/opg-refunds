@@ -877,8 +877,11 @@ class Claim
         $accountHashCount = null;
 
         if ($claim->getAccountHash() !== null) {
-            $dql = 'SELECT COUNT(c.id) AS account_hash_count FROM App\Entity\Cases\Claim c WHERE c.accountHash = ?1';
-            $accountHashCount = $this->entityManager->createQuery($dql)
+            $queryBuilder = $this->entityManager->createQueryBuilder()
+                ->select('COUNT(c.id)')
+                ->from('Cases:Claim', 'c')
+                ->where('c.accountHash = ?1');
+            $accountHashCount = $queryBuilder->getQuery()
                 ->setParameter(1, $claim->getAccountHash())
                 ->getSingleScalarResult();
         }
