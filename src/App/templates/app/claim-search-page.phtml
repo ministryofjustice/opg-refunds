@@ -155,8 +155,8 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                             <?php } ?>
                         </td>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
-                        <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
-                        <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['received' => $this->getSearchDateString($claimSummary->getReceivedDateTime())])) ?>"><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['finished' => $this->getSearchDateString($claimSummary->getFinishedDateTime())])) ?>"><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></a></td>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToFinishedById' => $claimSummary->getAssignedToId() ?: $claimSummary->getFinishedById()])) ?>"><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></a></td>
                         <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['statuses' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
                     </tr>
