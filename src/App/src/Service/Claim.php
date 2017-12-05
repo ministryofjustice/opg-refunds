@@ -141,8 +141,9 @@ class Claim
                 $receivedFrom->setTime(0, 0, 0);
 
                 $receivedTo = count($receivedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $receivedRange[1])
-                    : (clone $receivedFrom)->add(new DateInterval('P1D'));
+                    : (clone $receivedFrom);
                 if ($receivedTo instanceof DateTime) {
+                    $receivedTo->add(new DateInterval('P1D'));
                     $receivedTo->setTime(0, 0, 0);
 
                     $queryBuilder->andWhere('c.receivedDateTime > :receivedFrom AND c.receivedDateTime < :receivedTo');
@@ -160,8 +161,9 @@ class Claim
                 $finishedFrom->setTime(0, 0, 0);
 
                 $finishedTo = count($finishedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $finishedRange[1])
-                    : (clone $finishedFrom)->add(new DateInterval('P1D'));
+                    : (clone $finishedFrom);
                 if ($finishedTo instanceof DateTime) {
+                    $finishedTo->add(new DateInterval('P1D'));
                     $finishedTo->setTime(0, 0, 0);
 
                     $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
