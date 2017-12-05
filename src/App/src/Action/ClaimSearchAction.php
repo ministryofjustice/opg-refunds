@@ -46,7 +46,7 @@ class ClaimSearchAction extends AbstractRestfulAction
         $finished = isset($queryParameters['finished']) ? $queryParameters['finished'] : null;
         $assignedToFinishedById = isset($queryParameters['assignedToFinishedById'])
             ? $queryParameters['assignedToFinishedById'] : null;
-        $status = isset($queryParameters['status']) ? $queryParameters['status'] : null;
+        $statuses = isset($queryParameters['statuses']) ? explode(',', $queryParameters['statuses']) : null;
         $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
         $poaCaseNumbers = isset($queryParameters['poaCaseNumbers'])
             ? explode(',', $queryParameters['poaCaseNumbers']) : null;
@@ -61,7 +61,7 @@ class ClaimSearchAction extends AbstractRestfulAction
             $received,
             $finished,
             $assignedToFinishedById,
-            $status,
+            $statuses,
             $accountHash,
             $poaCaseNumbers,
             $orderBy,

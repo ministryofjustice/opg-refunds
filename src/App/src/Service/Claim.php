@@ -81,7 +81,7 @@ class Claim
      * @param string|null $received
      * @param string|null $finished
      * @param int|null $assignedToFinishedById
-     * @param string|null $status
+     * @param array|null $statuses
      * @param string|null $accountHash
      * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
@@ -95,7 +95,7 @@ class Claim
         string $received = null,
         string $finished = null,
         int $assignedToFinishedById = null,
-        string $status = null,
+        array $statuses = null,
         string $accountHash = null,
         array $poaCaseNumbers = null,
         string $orderBy = null,
@@ -180,9 +180,9 @@ class Claim
             $parameters['assignedToFinishedById'] = $assignedToFinishedById;
         }
 
-        if (isset($status)) {
-            $queryBuilder->andWhere('c.status = :status');
-            $parameters['status'] = $status;
+        if (isset($statuses)) {
+            $queryBuilder->andWhere('c.status IN (:statuses)');
+            $parameters['statuses'] = $statuses;
         }
 
         if (isset($accountHash)) {
