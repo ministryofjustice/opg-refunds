@@ -17,6 +17,8 @@ class SearchPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getOrderByParameters', [$this, 'getOrderByParameters']);
         $engine->registerFunction('getCurrentSort', [$this, 'getCurrentSort']);
         $engine->registerFunction('getPoaCaseNumbersText', [$this, 'getPoaCaseNumbersText']);
+        $engine->registerFunction('getDefaultSearchParameters', [$this, 'getDefaultSearchParameters']);
+        $engine->registerFunction('getSearchParameters', [$this, 'getSearchParameters']);
     }
 
     public function isSearchParametersSet($searchParameters)
@@ -82,5 +84,15 @@ class SearchPlatesExtension implements ExtensionInterface
         }
 
         return ' using POA case number' . (count($poaCaseNumbersArray) > 1 ? 's ' : ' ') . join(', ', $poaCaseNumbersArray);
+    }
+
+    public function getDefaultSearchParameters()
+    {
+        return ['orderBy' => 'received', 'sort' => 'desc'];
+    }
+
+    public function getSearchParameters(array $searchParameters = [])
+    {
+        return array_merge($this->getDefaultSearchParameters(), $searchParameters);
     }
 }

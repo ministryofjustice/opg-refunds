@@ -39,7 +39,7 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                 <div class="form-group">
                     <input type='submit' class="button button-search" name='submit' value='Search'>
                     <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
-                        <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>">Clear all</a>
+                        <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], $this->getDefaultSearchParameters()) ?>">Clear all</a>
                     <?php } ?>
                 </div>
 
