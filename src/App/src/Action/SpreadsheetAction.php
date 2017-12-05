@@ -111,7 +111,7 @@ class SpreadsheetAction extends AbstractRestfulAction
 
         $date = false;
         foreach ($worksheet->getRows() as $row) {
-            $date = DateTime::createFromFormat('d/m/Y', $row->getCells()[15]->getData());
+            $date = DateTime::createFromFormat('d/m/Y', $row->getCells()[16]->getData());
 
             if ($date === false) {
                 continue;

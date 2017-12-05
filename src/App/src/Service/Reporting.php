@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateInterval;
 use DateTime;
@@ -47,6 +48,7 @@ class Reporting
         $reports = [
             'claim' => $this->getClaimReport($dateOfFirstClaim),
             'claimSource' => $this->getClaimSourceReport($dateOfFirstClaim),
+            'phoneClaimType' => $this->getPhoneClaimTypeReport($dateOfFirstClaim),
             'rejectionReason' => $this->getRejectionReasonReport($dateOfFirstClaim),
             'duplicateBankDetail' => $this->getDuplicateBankDetailReport($dateOfFirstClaim),
             'refund' => $this->getRefundReport($dateOfFirstClaim),
@@ -232,6 +234,74 @@ class Reporting
             'allTime' => $allTime,
             'byMonth' => $byMonth
         ];
+    }
+
+    public function getPhoneClaimTypeReport(DateTime $dateOfFirstClaim)
+    {
+        $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type
+                UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+        $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY type
+                UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql,
+                [
+                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                ]
+            );
+
+            $month = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byMonth' => $byMonth
+        ];
+    }
+
+    private function addPhoneClaimTypeColumns(array $counts)
+    {
+        if (empty($counts[AssistedDigitalModel::TYPE_DONOR_DECEASED])) {
+            $counts[AssistedDigitalModel::TYPE_DONOR_DECEASED] = 0;
+        }
+        if (empty($counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL])) {
+            $counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL] = 0;
+        }
+        if (empty($counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE])) {
+            $counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE] = 0;
+        }
+        if (empty($counts[AssistedDigitalModel::TYPE_DEPUTY])) {
+            $counts[AssistedDigitalModel::TYPE_DEPUTY] = 0;
+        }
+        if (empty($counts[AssistedDigitalModel::TYPE_CHEQUE])) {
+            $counts[AssistedDigitalModel::TYPE_CHEQUE] = 0;
+        }
+        if (empty($counts['total'])) {
+            $counts['total'] = 0;
+        }
+
+        return $counts;
     }
 
     public function getRejectionReasonReport(DateTime $dateOfFirstClaim)
