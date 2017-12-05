@@ -157,8 +157,8 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
                         <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
                         <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
-                        <td><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></td>
-                        <td><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToFinishedById' => $claimSummary->getAssignedToId() ?: $claimSummary->getFinishedById()])) ?>"><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['status' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
                     </tr>
                 <?php } ?>
 
