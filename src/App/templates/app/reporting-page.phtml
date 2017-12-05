@@ -1,4 +1,6 @@
-<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+<?php use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\PhoneClaimTypeFormatter;
 
 $this->layout('layout::default', ['title' => 'Reporting']);
 
@@ -8,6 +10,7 @@ $this->layout('layout::default', ['title' => 'Reporting']);
 
 $claim = $reports['claim'];
 $claimSource = $reports['claimSource'];
+$phoneClaimType = $reports['phoneClaimType'];
 $rejectionReason = $reports['rejectionReason'];
 $duplicateBankDetail = $reports['duplicateBankDetail'];
 $refund = $reports['refund'];
@@ -189,6 +192,64 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Phone claim type</h2>
+
+        <?php $phoneClaimTypeAllTime = $phoneClaimType['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $phoneClaimTypeByMonth = $phoneClaimType['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($phoneClaimTypeByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($phoneClaimTypeByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
                 </tr>
             <?php } ?>
             </tbody>

@@ -6,6 +6,12 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 
 class AssistedDigital extends AbstractDataModel
 {
+    const TYPE_DONOR_DECEASED = "donor_deceased";
+    const TYPE_ASSISTED_DIGITAL = "assisted_digital";
+    const TYPE_REFUSE_CLAIM_ONLINE = "refuse_claim_online";
+    const TYPE_DEPUTY = "deputy";
+    const TYPE_CHEQUE = "cheque";
+
     /**
      * @var string
      */
