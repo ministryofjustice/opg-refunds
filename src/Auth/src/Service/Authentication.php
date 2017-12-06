@@ -57,7 +57,7 @@ class Authentication
      * @param string $email
      * @param string $password
      * @return User
-     * @throws UnauthorizedException|Exception
+     * @throws InvalidInputException|UnauthorizedException
      */
     public function validatePassword(string $email, string $password)
     {

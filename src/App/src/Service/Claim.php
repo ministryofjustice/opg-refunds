@@ -2,10 +2,12 @@
 
 namespace App\Service;
 
+use App\Exception\AlreadyExistsException;
+use App\Exception\InvalidInputException;
+use App\Exception\NotFoundException;
 use DateInterval;
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
-use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Ingestion\Service\ApplicationIngestion;
@@ -250,14 +252,14 @@ class Claim
      * @param int $claimId
      * @param int $userId
      * @return ClaimModel
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function get(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
 
         if ($claim === null) {
-            throw new Exception('Claim not found', 404);
+            throw new NotFoundException('Claim not found');
         }
 
         return $this->getClaimModel($userId, $claim);
@@ -315,7 +317,7 @@ class Claim
      * @param int $assignToUserId
      * @param string $reason
      * @return array
-     * @throws Exception
+     * @throws InvalidInputException
      */
     public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
@@ -323,7 +325,7 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
-            throw new Exception('You cannot (re)assign this claim', 400);
+            throw new InvalidInputException('You cannot (re)assign this claim');
         }
 
         $assignedTo = $this->getUser($assignToUserId);
@@ -679,7 +681,7 @@ class Claim
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
 
-        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, true);
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         $this->addNote(
             $claimId,
@@ -728,7 +730,7 @@ class Claim
      * @param $claimId
      * @param $userId
      * @param $reason
-     * @throws Exception
+     * @throws InvalidInputException|AlreadyExistsException|DriverException
      */
     public function setStatusInProgress($claimId, $userId, $reason)
     {
@@ -736,7 +738,7 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
-            throw new Exception('You cannot set this claim\'s status back to pending', 400);
+            throw new InvalidInputException('You cannot set this claim\'s status back to pending');
         }
 
         $finishedBy = $claim->getFinishedBy();
@@ -751,14 +753,14 @@ class Claim
         $claim->setAssignedDateTime(new DateTime());
         $claim->getDuplicateOf()->clear();
 
-        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel, false);
+        $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         try {
             $this->entityManager->flush();
         } catch (DriverException $ex) {
             if ($ex->getErrorCode() === 7) {
                 //Duplicate case number
-                throw new Exception("Could not set this claim's status back to pending due to a poa case number duplication", 400);
+                throw new AlreadyExistsException("Could not set this claim's status back to pending due to a poa case number duplication");
             }
             throw $ex;
         }
@@ -775,7 +777,7 @@ class Claim
      * @param $claimId
      * @param $userId
      * @param int $duplicateOfClaimId
-     * @throws Exception
+     * @throws InvalidInputException
      */
     public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
     {
@@ -783,13 +785,13 @@ class Claim
         $claimModel = $this->getClaimModel($userId, $claim);
 
         if (!$claimModel->canResolveAsDuplicate()) {
-            throw new Exception('You cannot resolve this claim as a duplicate', 400);
+            throw new InvalidInputException('You cannot resolve this claim as a duplicate');
         }
 
         $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
 
         if ($duplicateOfClaim === null) {
-            throw new Exception('Supplied duplicate claim id does not reference a valid claim', 400);
+            throw new InvalidInputException('Supplied duplicate claim id does not reference a valid claim');
         }
 
         $duplicateOf = $claim->getDuplicateOf();
@@ -829,8 +831,7 @@ class Claim
 
     /**
      * @param PoaModel $poaModel
-     * @throws DriverException
-     * @throws Exception
+     * @throws AlreadyExistsException|DriverException
      */
     public function flushPoaChanges(PoaModel $poaModel)
     {
@@ -839,7 +840,7 @@ class Claim
         } catch (DriverException $ex) {
             if ($ex->getErrorCode() === 7) {
                 //Duplicate case number
-                throw new Exception("Case number {$poaModel->getCaseNumber()} is already registered with another claim", 400);
+                throw new AlreadyExistsException("Case number {$poaModel->getCaseNumber()} is already registered with another claim");
             }
             throw $ex;
         }
@@ -881,12 +882,12 @@ class Claim
      *
      * @param $claim
      * @param $userId
-     * @throws Exception
+     * @throws InvalidInputException
      */
     private function checkCanEdit($claim, $userId)
     {
         if ($this->isReadOnly($claim, $userId)) {
-            throw new Exception('You cannot edit this claim', 400);
+            throw new InvalidInputException('You cannot edit this claim');
         }
     }
 
