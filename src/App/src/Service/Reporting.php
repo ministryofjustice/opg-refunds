@@ -52,6 +52,8 @@ class Reporting
             'rejectionReason' => $this->getRejectionReasonReport($dateOfFirstClaim),
             'duplicateBankDetail' => $this->getDuplicateBankDetailReport($dateOfFirstClaim),
             'refund' => $this->getRefundReport($dateOfFirstClaim),
+            'processingTime' => $this->getProcessingTime($dateOfFirstClaim),
+            'poasPerClaim' => $this->getPoasPerClaim($dateOfFirstClaim),
         ];
 
         $end = microtime(true);
@@ -468,5 +470,111 @@ class Reporting
         $report['total_refund_amount'] = money_format('£%i', $report['total_refund_amount']);
 
         return $report;
+    }
+
+    private function getProcessingTime($dateOfFirstClaim)
+    {
+        $sql = 'SELECT \'mean\' AS aggregate, avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
+                UNION ALL SELECT \'median\' AS aggregate, PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
+                UNION ALL SELECT \'min\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' ORDER BY processing_time ASC LIMIT 1) AS value
+                UNION ALL SELECT \'max\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' ORDER BY processing_time DESC LIMIT 1) AS value';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        $sql = 'SELECT \'mean\' AS aggregate, avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
+                UNION ALL SELECT \'median\' AS aggregate, PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
+                UNION ALL SELECT \'min\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay ORDER BY processing_time ASC LIMIT 1) AS value
+                UNION ALL SELECT \'max\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay ORDER BY processing_time DESC LIMIT 1) AS value';
+
+        $parameters = [];
+
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+
+            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $day;
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
+        $byWeek = [];
+        $startOfWeek = new DateTime('last monday');
+        $endOfWeek = (clone $startOfWeek)->add(new DateInterval('P1W'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfWeek < $dateOfFirstClaim) {
+                break;
+            }
+
+            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+
+            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $week;
+
+            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
+            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+        }
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+
+            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+
+            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byDay'   => $byDay,
+            'byWeek'  => $byWeek,
+            'byMonth' => $byMonth
+        ];
+    }
+
+    private function getPoasPerClaim($dateOfFirstClaim)
+    {
+        $sql = 'SELECT poas_per_claim, count(*) AS frequency FROM (SELECT count(*) as poas_per_claim FROM poa GROUP BY claim_id) AS poas_per_claim GROUP BY poas_per_claim ORDER BY poas_per_claim';
+
+        $statement = $this->entityManager->getConnection()->executeQuery(
+            $sql
+        );
+
+        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+        return [
+            'allTime' => $allTime
+        ];
     }
 }
