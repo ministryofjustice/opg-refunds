@@ -474,8 +474,8 @@ class Reporting
 
     private function getProcessingTime($dateOfFirstClaim)
     {
-        $sql = 'SELECT \'mean\' AS aggregate, avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
-                UNION ALL SELECT \'median\' AS aggregate, PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
+        $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
+                UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\'
                 UNION ALL SELECT \'min\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' ORDER BY processing_time ASC LIMIT 1) AS value
                 UNION ALL SELECT \'max\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' ORDER BY processing_time DESC LIMIT 1) AS value';
 
@@ -485,8 +485,8 @@ class Reporting
 
         $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
-        $sql = 'SELECT \'mean\' AS aggregate, avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
-                UNION ALL SELECT \'median\' AS aggregate, PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
+        $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
+                UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
                 UNION ALL SELECT \'min\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay ORDER BY processing_time ASC LIMIT 1) AS value
                 UNION ALL SELECT \'max\' AS aggregate, (SELECT EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)) AS processing_time FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay ORDER BY processing_time DESC LIMIT 1) AS value';
 
