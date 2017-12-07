@@ -90,8 +90,7 @@ class Notify implements Initializer\LogSupportInterface
 
             $successful = false;
 
-            $contact = $claimModel->getApplication()->getContact();
-            if ($contact->hasAddress() && $contact->hasEmail() === false && $contact->hasPhone() === false) {
+            if ($claimModel->shouldSendLetter()) {
                 //Address only. Manual letter required
                 $letters[$claimModel->getId()] = [
                     'claimCode' => $claimModel->getReferenceNumber(),

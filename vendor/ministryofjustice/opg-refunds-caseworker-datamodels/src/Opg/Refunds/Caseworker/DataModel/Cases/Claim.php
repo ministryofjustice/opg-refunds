@@ -1011,11 +1011,24 @@ class Claim extends AbstractDataModel
             && !$this->isNoSiriusPoas() && !$this->isNoMerisPoas();
     }
 
+    /**
+     * @return bool
+     */
     public function isClaimResolved(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_ACCEPTED
             || $this->getStatus() === ClaimModel::STATUS_REJECTED
             || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendLetter(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
     }
 
     /**
