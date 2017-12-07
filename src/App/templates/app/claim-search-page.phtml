@@ -27,14 +27,19 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                 ]) ?>
 
                 <?php $this->insert('snippet::input-select', [
-                    'formElement' => $form->get('status'),
+                    'formElement' => $form->get('statuses'),
                     'formLabel' => 'Status'
+                ]) ?>
+
+                <?php $this->insert('snippet::input-select', [
+                    'formElement' => $form->get('assignedToFinishedById'),
+                    'formLabel' => 'Assigned to/Finished by'
                 ]) ?>
 
                 <div class="form-group">
                     <input type='submit' class="button button-search" name='submit' value='Search'>
                     <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
-                        <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc']) ?>">Clear all</a>
+                        <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], $this->getDefaultSearchParameters()) ?>">Clear all</a>
                     <?php } ?>
                 </div>
 
@@ -150,10 +155,10 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
                             <?php } ?>
                         </td>
                         <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
-                        <td><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></td>
-                        <td><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></td>
-                        <td><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></td>
-                        <td><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['received' => $this->getSearchDateString($claimSummary->getReceivedDateTime())])) ?>"><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['finished' => $this->getSearchDateString($claimSummary->getFinishedDateTime())])) ?>"><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToFinishedById' => $claimSummary->getAssignedToId() ?: $claimSummary->getFinishedById()])) ?>"><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['statuses' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
                     </tr>
                 <?php } ?>
 
