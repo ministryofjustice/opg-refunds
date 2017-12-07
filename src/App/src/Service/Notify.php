@@ -52,7 +52,7 @@ class Notify implements Initializer\LogSupportInterface
                 SELECT id, finished_datetime FROM claim
                 WHERE outcome_text_sent IS NOT TRUE
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
-                AND (json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\') UNION
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL UNION
                 SELECT id, finished_datetime FROM claim
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
@@ -77,6 +77,7 @@ class Notify implements Initializer\LogSupportInterface
         ];
 
         $letters = [];
+        $phoneCalls = [];
 
         $this->getLogger()->alert("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
 
@@ -93,6 +94,13 @@ class Notify implements Initializer\LogSupportInterface
             if ($claimModel->shouldSendLetter()) {
                 //Address only. Manual letter required
                 $letters[$claimModel->getId()] = [
+                    'claimCode' => $claimModel->getReferenceNumber(),
+                    'donorName' => $claimModel->getDonorName(),
+                    'outcome' => $claimModel->getStatusText()
+                ];
+            } elseif ($claimModel->shouldPhone()) {
+                //Land line phone number only. Phone call required
+                $phoneCalls[$claimModel->getId()] = [
                     'claimCode' => $claimModel->getReferenceNumber(),
                     'donorName' => $claimModel->getDonorName(),
                     'outcome' => $claimModel->getStatusText()
@@ -123,12 +131,14 @@ class Notify implements Initializer\LogSupportInterface
         $notified['processed'] = $processedCount;
         $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
 
-        //Only send back letters details if there are no more emails or texts to send so that sending the letters
-        //is the last task to complete
+        //Only send back letter and phone call details if there are no more emails or texts to send
+        //so that sending the letters and making the calls are the last tasks to complete
         if ($notified['total'] - $notified['processed'] - count($letters) === 0) {
             $notified['letters'] = $letters;
+            $notified['phoneCalls'] = $phoneCalls;
         } else {
             $notified['letters'] = [];
+            $notified['phoneCalls'] = [];
         }
 
         return $notified;
@@ -185,7 +195,7 @@ class Notify implements Initializer\LogSupportInterface
                 $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
                 : $claimModel->getDonorName();
 
-            if ($contact->hasEmail()) {
+            if ($claimModel->shouldSendEmail()) {
                 try {
                     $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
@@ -210,7 +220,7 @@ class Notify implements Initializer\LogSupportInterface
                 }
             }
 
-            if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07' && $smsTemplate) {
+            if ($claimModel->shouldSendText() && $smsTemplate) {
                 try {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
                         'donor-name' => $claimModel->getDonorName(),
@@ -247,7 +257,7 @@ class Notify implements Initializer\LogSupportInterface
             $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
             : $claimModel->getDonorName();
 
-        if ($contact->hasEmail()) {
+        if ($claimModel->shouldSendEmail()) {
             try {
                 $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
                     'person-completing' => $contactName,
@@ -274,7 +284,7 @@ class Notify implements Initializer\LogSupportInterface
             }
         }
 
-        if ($contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07') {
+        if ($claimModel->shouldSendText()) {
             try {
                 $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),

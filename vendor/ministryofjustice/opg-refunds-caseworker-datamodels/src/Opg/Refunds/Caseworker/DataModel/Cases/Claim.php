@@ -141,6 +141,11 @@ class Claim extends AbstractDataModel
     protected $outcomeLetterSent;
 
     /**
+     * @var bool
+     */
+    protected $outcomePhoned;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -590,6 +595,25 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function isOutcomePhoned(): bool
+    {
+        return $this->outcomePhoned;
+    }
+
+    /**
+     * @param bool $outcomePhoned
+     * @return $this
+     */
+    public function setOutcomePhoned(bool $outcomePhoned)
+    {
+        $this->outcomePhoned = $outcomePhoned;
+
+        return $this;
+    }
+
+    /**
      * @return Payment
      */
     public function getPayment()
@@ -1024,11 +1048,46 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function shouldSendEmail(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomeEmailSent() && $contact->hasEmail();
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendText(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomeTextSent()
+            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07';
+    }
+
+    /**
+     * @return bool
+     */
     public function shouldSendLetter(): bool
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
+        return !$this->isOutcomeLetterSent()
+            && !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldPhone(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomePhoned()
+            && !$contact->hasEmail()
+            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
+            && !$contact->hasAddress();
     }
 
     /**
