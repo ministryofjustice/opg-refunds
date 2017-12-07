@@ -98,14 +98,25 @@ Mandatory: claim
         <div class="">
             <dt class="details-term">Notifications</dt>
             <dd class="details-definition">
-                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent()) { ?>
+                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
                     <span>None sent</span>
+                    <?php if ($claim->shouldSendLetter()) { ?>
+                        <a class="button button-secondary" href="">Confirm letter sent</a>
+                    <?php } elseif ($claim->shouldPhone()) { ?>
+                        <a class="button button-secondary" href="">Confirm phone called</a>
+                    <?php } ?>
                 <?php } ?>
                 <?php if ($claim->isOutcomeEmailSent()) { ?>
                     <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
                 <?php } ?>
                 <?php if ($claim->isOutcomeTextSent()) { ?>
                     <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeLetterSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeLetterDescription($claim)) ?></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomePhoneCalled()) { ?>
+                    <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
                 <?php } ?>
             </dd>
         </div>

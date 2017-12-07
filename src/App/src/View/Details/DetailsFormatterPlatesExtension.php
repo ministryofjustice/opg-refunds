@@ -28,6 +28,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getProcessingTimeText', [$this, 'getProcessingTimeText']);
         $engine->registerFunction('getOutcomeEmailDescription', [$this, 'getOutcomeEmailDescription']);
         $engine->registerFunction('getOutcomeTextDescription', [$this, 'getOutcomeTextDescription']);
+        $engine->registerFunction('getOutcomeLetterDescription', [$this, 'getOutcomeLetterDescription']);
     }
 
     public function getApplicantName(ApplicationModel $application)
@@ -175,6 +176,48 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 
         foreach ($notes as $note) {
             $notesDescription[] = 'Text sent on ' . date('d/m/Y', $note->getCreatedDateTime()->getTimestamp());
+        }
+
+        return join('. ', $notesDescription);
+    }
+
+    public function getOutcomeLetterDescription(ClaimModel $claim)
+    {
+        $notes = [];
+
+        if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_DUPLICATE_LETTER_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_REJECTED_LETTER_SENT);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_ACCEPTED_LETTER_SENT);
+        }
+
+        $notesDescription = [];
+
+        foreach ($notes as $note) {
+            $notesDescription[] = 'Letter sent on ' . date('d/m/Y', $note->getCreatedDateTime()->getTimestamp());
+        }
+
+        return join('. ', $notesDescription);
+    }
+
+    public function getOutcomePhoneDescription(ClaimModel $claim)
+    {
+        $notes = [];
+
+        if ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_DUPLICATE_PHONE_CALLED);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_REJECTED_PHONE_CALLED);
+        } elseif ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) {
+            $notes = $claim->getNotesOfType(NoteModel::TYPE_CLAIM_ACCEPTED_PHONE_CALLED);
+        }
+
+        $notesDescription = [];
+
+        foreach ($notes as $note) {
+            $notesDescription[] = 'Phone called on ' . date('d/m/Y', $note->getCreatedDateTime()->getTimestamp());
         }
 
         return join('. ', $notesDescription);

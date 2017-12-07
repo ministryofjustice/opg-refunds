@@ -141,6 +141,11 @@ class Claim extends AbstractDataModel
     protected $outcomeLetterSent;
 
     /**
+     * @var bool
+     */
+    protected $outcomePhoneCalled;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -590,6 +595,25 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @return bool
+     */
+    public function isOutcomePhoneCalled(): bool
+    {
+        return $this->outcomePhoneCalled;
+    }
+
+    /**
+     * @param bool $outcomePhoneCalled
+     * @return $this
+     */
+    public function setOutcomePhoneCalled(bool $outcomePhoneCalled)
+    {
+        $this->outcomePhoneCalled = $outcomePhoneCalled;
+
+        return $this;
+    }
+
+    /**
      * @return Payment
      */
     public function getPayment()
@@ -1011,11 +1035,59 @@ class Claim extends AbstractDataModel
             && !$this->isNoSiriusPoas() && !$this->isNoMerisPoas();
     }
 
+    /**
+     * @return bool
+     */
     public function isClaimResolved(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_ACCEPTED
             || $this->getStatus() === ClaimModel::STATUS_REJECTED
             || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendEmail(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomeEmailSent() && $contact->hasEmail();
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendText(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomeTextSent()
+            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07';
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldSendLetter(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomeLetterSent()
+            && !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldPhone(): bool
+    {
+        $contact = $this->getApplication()->getContact();
+
+        return !$this->isOutcomePhoneCalled()
+            && !$contact->hasEmail()
+            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
+            && !$contact->hasAddress();
     }
 
     /**
