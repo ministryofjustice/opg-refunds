@@ -34,16 +34,21 @@ abstract class AbstractAction implements
         );
     }
 
-    protected function setFlashInfoMessage(ServerRequestInterface $request, $message)
+    protected function setFlashInfoMessage(ServerRequestInterface $request, $message, bool $now = false)
     {
-        $this->setFlashMessage($request, 'info', $message);
+        $this->setFlashMessage($request, 'info', $message, $now);
     }
 
-    protected function setFlashMessage(ServerRequestInterface $request, $key, $message)
+    protected function setFlashMessage(ServerRequestInterface $request, $key, $message, bool $now = false)
     {
         /** @var Messages $flash */
         $flash = $request->getAttribute('flash');
-        $flash->addMessage($key, $message);
+
+        if ($now) {
+            $flash->addMessageNow($key, $message);
+        } else {
+            $flash->addMessage($key, $message);
+        }
     }
 
     protected function getFlashMessages(ServerRequestInterface $request)

@@ -1,7 +1,10 @@
-<?php $this->layout('layout::default', ['title' => 'Notify'])
+<?php use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
+
+$this->layout('layout::default', ['title' => 'Notify'])
 
 /**
  * @var \App\Form\Notify $form
+ * @var array $letters
  */
 
 ?>
@@ -13,23 +16,55 @@
 
         <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
-        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+        <?php if (empty($letters) === false) { ?>
+            <h3 class="heading-small">Claims to notify by post</h3>
 
-        <form method="post" class="form">
+            <p>You will need to send letters to each of these claimants based on the claim's outcome. The address to send the letter to will be in the 'contact details' section.</p>
+            <p>After sending the letter, you will need to confirm that you have sent it in the claim's 'outcome' section to prevent being reminded again.</p>
 
-            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+            <table>
+                <thead>
+                <tr>
+                    <th>Claim code</th>
+                    <th>Donor name</th>
+                    <th>Outcome</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach ($letters as $claimId => $claimDetails) { ?>
+                    <tr>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['claimCode']) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['donorName']) ?></a></td>
+                        <td><?= $this->e($claimDetails['outcome']) ?></td>
+                    </tr>
+                <?php } ?>
+
+                </tbody>
+            </table>
+
+            <p><a class="button button-link" href="<?= $this->generateUrl('notify') ?>">Back</a></p>
+        <?php } else { ?>
 
             <p>Clicking 'Notify' will send an outcome notification email and a text to all claimants who have not yet been notified.</p>
             <p>It will notify any claimant whose claim was either rejected yesterday or was added to today's SOP1 spreadsheet.</p>
-            <p>It will only notify claimants who have supplied a valid email address or mobile number</p>
+            <p>It will only notify claimants who have supplied a valid email address or mobile number.</p>
             <p>Do you wish to proceed?</p>
 
-            <div class="form-group">
-                <input type='submit' class="button" name='submit' value='Notify'>
-                <a class="button button-link" href="<?= $this->generateUrl('refund') ?>">Cancel</a>
-            </div>
+            <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
-        </form>
+            <form method="post" class="form">
+
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+                <div class="form-group">
+                    <input type='submit' class="button" name='submit' value='Notify'>
+                    <a class="button button-link" href="<?= $this->generateUrl('refund') ?>">Cancel</a>
+                </div>
+
+            </form>
+
+        <?php } ?>
 
     </div>
 </div>
