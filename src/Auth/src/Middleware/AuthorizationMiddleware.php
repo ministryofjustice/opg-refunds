@@ -2,7 +2,9 @@
 
 namespace Auth\Middleware;
 
+use App\Exception\ForbiddenException;
 use App\Exception\InvalidInputException;
+use App\Exception\NotFoundException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\Authentication as AuthenticationService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
@@ -75,7 +77,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $route = $request->getAttribute(RouteResult::class);
 
         if (is_null($route)) {
-            throw new Exception('Page not found', 404);
+            throw new NotFoundException('Page not found');
         }
 
         $routeName = $route->getMatchedRoute()->getName();
@@ -88,6 +90,6 @@ class AuthorizationMiddleware implements MiddlewareInterface
         }
 
         //  If we couldn't access the route then throw a forbidden exception
-        throw new Exception('Access forbidden', 403);
+        throw new ForbiddenException('Access forbidden');
     }
 }

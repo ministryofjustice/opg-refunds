@@ -91,6 +91,7 @@ return [
         ],
         'orm_cases' => [
             'proxy_dir' => sys_get_temp_dir(),
+            'entity_namespaces' => ['Cases' => 'App\Entity\Cases']
         ],
         'orm_cases_migration' => [
             'proxy_dir' => sys_get_temp_dir(),

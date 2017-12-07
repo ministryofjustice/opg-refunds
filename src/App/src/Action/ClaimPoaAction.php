@@ -3,8 +3,6 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use App\Service\User as UserService;
-use Exception;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ResponseInterface;

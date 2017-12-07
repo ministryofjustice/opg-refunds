@@ -2,11 +2,11 @@
 
 namespace App\Action;
 
+use App\Exception\NotFoundException;
 use Fig\Http\Message\RequestMethodInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Exception;
 
 /**
  * Class AbstractRestfulAction
@@ -18,7 +18,7 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
      * @return mixed
-     * @throws Exception
+     * @throws NotFoundException
      */
     final public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -35,7 +35,7 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
         ];
 
         if (!isset($actionMappings[$method])) {
-            throw new Exception(sprintf('%s method can not be used in this result action: %s', $method, get_class($this)), 404);
+            throw new NotFoundException(sprintf('%s method can not be used in this result action: %s', $method, get_class($this)));
         }
 
         return $this->{$actionMappings[$method] . 'Action'}($request, $delegate);
@@ -46,11 +46,11 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        throw new Exception('Index action not implemented on ' . get_class($this), 404);
+        throw new NotFoundException('Index action not implemented on ' . get_class($this));
     }
 
     /**
@@ -58,11 +58,11 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        throw new Exception('Add action not implemented on ' . get_class($this), 404);
+        throw new NotFoundException('Add action not implemented on ' . get_class($this));
     }
 
     /**
@@ -70,11 +70,11 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        throw new Exception('Edit action not implemented on ' . get_class($this), 404);
+        throw new NotFoundException('Edit action not implemented on ' . get_class($this));
     }
 
     /**
@@ -82,11 +82,11 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        throw new Exception('Modify action not implemented on ' . get_class($this), 404);
+        throw new NotFoundException('Modify action not implemented on ' . get_class($this));
     }
 
     /**
@@ -94,10 +94,10 @@ abstract class AbstractRestfulAction implements ServerMiddlewareInterface
      *
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @throws Exception
+     * @throws NotFoundException
      */
     public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        throw new Exception('Delete action not implemented on ' . get_class($this), 404);
+        throw new NotFoundException('Delete action not implemented on ' . get_class($this));
     }
 }

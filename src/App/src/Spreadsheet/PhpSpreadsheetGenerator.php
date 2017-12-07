@@ -2,6 +2,7 @@
 
 namespace App\Spreadsheet;
 
+use App\Exception\InvalidInputException;
 use Exception;
 use InvalidArgumentException;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
@@ -112,7 +113,7 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
     /**
      * @param StreamInterface $spreadsheetStream
      * @return array
-     * @throws Exception
+     * @throws InvalidInputException
      */
     public function getWorksheetData(StreamInterface $spreadsheetStream): array
     {
@@ -139,7 +140,7 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
 
             return $data;
         } catch (Exception $ex) {
-            throw new Exception('Failed to parse uploaded spreadsheet', 400);
+            throw new InvalidInputException('Failed to parse uploaded spreadsheet');
         }
     }
 }
