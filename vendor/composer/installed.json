@@ -5148,17 +5148,17 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "1.8.0",
-        "version_normalized": "1.8.0.0",
+        "version": "dev-REF-623-notification-letters",
+        "version_normalized": "dev-REF-623-notification-letters",
         "source": {
             "type": "git",
             "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "13ee16c10e5f0390e72e8b36742caca41bb37059"
+            "reference": "088b7113fb6bf8f8415346669f416fc98ef70a3e"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/13ee16c10e5f0390e72e8b36742caca41bb37059",
-            "reference": "13ee16c10e5f0390e72e8b36742caca41bb37059",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/088b7113fb6bf8f8415346669f416fc98ef70a3e",
+            "reference": "088b7113fb6bf8f8415346669f416fc98ef70a3e",
             "shasum": ""
         },
         "require": {
@@ -5167,7 +5167,7 @@
         "require-dev": {
             "phpunit/phpunit": "^6.0.8 || ^5.7.15"
         },
-        "time": "2017-12-05T09:56:48+00:00",
+        "time": "2017-12-07T09:40:35+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -5180,7 +5180,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.8.0",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-623-notification-letters",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     }
