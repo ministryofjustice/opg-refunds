@@ -25,12 +25,15 @@ class Note extends AbstractDataModel
     const TYPE_CLAIM_DUPLICATE_EMAIL_SENT = 'claim_duplicate_email_sent';
     const TYPE_CLAIM_DUPLICATE_TEXT_SENT = 'claim_duplicate_text_sent';
     const TYPE_CLAIM_DUPLICATE_LETTER_SENT = 'claim_duplicate_letter_sent';
+    const TYPE_CLAIM_DUPLICATE_PHONE_CALLED = 'claim_duplicate_phone_called';
     const TYPE_CLAIM_REJECTED_EMAIL_SENT = 'claim_rejected_email_sent';
     const TYPE_CLAIM_REJECTED_TEXT_SENT = 'claim_rejected_text_sent';
     const TYPE_CLAIM_REJECTED_LETTER_SENT = 'claim_rejected_letter_sent';
+    const TYPE_CLAIM_REJECTED_PHONE_CALLED = 'claim_rejected_phone_called';
     const TYPE_CLAIM_ACCEPTED_EMAIL_SENT = 'claim_accepted_email_sent';
     const TYPE_CLAIM_ACCEPTED_TEXT_SENT = 'claim_accepted_text_sent';
     const TYPE_CLAIM_ACCEPTED_LETTER_SENT = 'claim_accepted_letter_sent';
+    const TYPE_CLAIM_ACCEPTED_PHONE_CALLED = 'claim_accepted_phone_called';
     const TYPE_REFUND_ADDED = 'refund_added';
     const TYPE_REFUND_UPDATED = 'refund_updated';
     const TYPE_REFUND_DOWNLOADED = 'refund_downloaded';

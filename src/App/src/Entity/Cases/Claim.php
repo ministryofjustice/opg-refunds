@@ -131,6 +131,12 @@ class Claim extends AbstractEntity
 
     /**
      * @var bool
+     * @ORM\Column(name="outcome_phone_called", type="boolean", options={"default" : false})
+     */
+    protected $outcomePhoneCalled;
+
+    /**
+     * @var bool
      * @ORM\Column(name="outcome_text_sent", type="boolean", options={"default" : false})
      */
     protected $outcomeTextSent;
@@ -498,6 +504,22 @@ class Claim extends AbstractEntity
     public function setOutcomeLetterSent(bool $outcomeLetterSent)
     {
         $this->outcomeLetterSent = $outcomeLetterSent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomePhoneCalled(): bool
+    {
+        return $this->outcomePhoneCalled;
+    }
+
+    /**
+     * @param bool $outcomePhoneCalled
+     */
+    public function setOutcomePhoneCalled(bool $outcomePhoneCalled)
+    {
+        $this->outcomePhoneCalled = $outcomePhoneCalled;
     }
 
     /**

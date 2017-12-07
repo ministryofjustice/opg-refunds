@@ -143,7 +143,7 @@ class Claim extends AbstractDataModel
     /**
      * @var bool
      */
-    protected $outcomePhoned;
+    protected $outcomePhoneCalled;
 
     /**
      * @var Payment
@@ -597,18 +597,18 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
-    public function isOutcomePhoned(): bool
+    public function isOutcomePhoneCalled(): bool
     {
-        return $this->outcomePhoned;
+        return $this->outcomePhoneCalled;
     }
 
     /**
-     * @param bool $outcomePhoned
+     * @param bool $outcomePhoneCalled
      * @return $this
      */
-    public function setOutcomePhoned(bool $outcomePhoned)
+    public function setOutcomePhoneCalled(bool $outcomePhoneCalled)
     {
-        $this->outcomePhoned = $outcomePhoned;
+        $this->outcomePhoneCalled = $outcomePhoneCalled;
 
         return $this;
     }
@@ -1084,7 +1084,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomePhoned()
+        return !$this->isOutcomePhoneCalled()
             && !$contact->hasEmail()
             && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
             && !$contact->hasAddress();
