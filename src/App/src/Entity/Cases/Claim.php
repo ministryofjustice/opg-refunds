@@ -190,6 +190,8 @@ class Claim extends AbstractEntity
         $this->noMerisPoas = false;
         $this->outcomeEmailSent = false;
         $this->outcomeTextSent = false;
+        $this->outcomeLetterSent = false;
+        $this->outcomePhoneCalled = false;
         $this->duplicateClaims = new ArrayCollection();
         $this->duplicateOf = new ArrayCollection();
     }
