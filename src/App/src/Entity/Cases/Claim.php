@@ -136,6 +136,12 @@ class Claim extends AbstractEntity
     protected $outcomeTextSent;
 
     /**
+     * @var bool
+     * @ORM\Column(name="outcome_letter_sent", type="boolean", options={"default" : false})
+     */
+    protected $outcomeLetterSent;
+
+    /**
      * @var Payment
      * @ORM\OneToOne(targetEntity="Payment", inversedBy="claim", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
@@ -476,6 +482,22 @@ class Claim extends AbstractEntity
     public function setOutcomeTextSent(bool $outcomeTextSent)
     {
         $this->outcomeTextSent = $outcomeTextSent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeLetterSent(): bool
+    {
+        return $this->outcomeLetterSent;
+    }
+
+    /**
+     * @param bool $outcomeLetterSent
+     */
+    public function setOutcomeLetterSent(bool $outcomeLetterSent)
+    {
+        $this->outcomeLetterSent = $outcomeLetterSent;
     }
 
     /**

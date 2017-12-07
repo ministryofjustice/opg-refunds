@@ -136,6 +136,11 @@ class Claim extends AbstractDataModel
     protected $outcomeTextSent;
 
     /**
+     * @var bool
+     */
+    protected $outcomeLetterSent;
+
+    /**
      * @var Payment
      */
     protected $payment;
@@ -561,6 +566,25 @@ class Claim extends AbstractDataModel
     public function setOutcomeTextSent(bool $outcomeTextSent)
     {
         $this->outcomeTextSent = $outcomeTextSent;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeLetterSent(): bool
+    {
+        return $this->outcomeLetterSent;
+    }
+
+    /**
+     * @param bool $outcomeLetterSent
+     * @return $this
+     */
+    public function setOutcomeLetterSent(bool $outcomeLetterSent)
+    {
+        $this->outcomeLetterSent = $outcomeLetterSent;
 
         return $this;
     }
