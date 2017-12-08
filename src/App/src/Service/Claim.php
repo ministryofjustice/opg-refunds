@@ -817,6 +817,94 @@ class Claim
     }
 
     /**
+     * @param int $claimId
+     * @param int $userId
+     * @param bool $outcomeLetterSent
+     */
+    public function setOutcomeLetterSent(int $claimId, int $userId, bool $outcomeLetterSent)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        if (!$claimModel->shouldSendLetter()) {
+            throw new InvalidInputException('A letter should not have been sent to the claimant of this claim');
+        }
+
+        $claim->setOutcomeLetterSent($outcomeLetterSent);
+
+        if ($outcomeLetterSent === true) {
+            switch ($claimModel->getStatus()) {
+                case ClaimModel::STATUS_DUPLICATE:
+                    $noteType = NoteModel::TYPE_CLAIM_DUPLICATE_LETTER_SENT;
+                    $message = 'Successfully sent duplicate letter to';
+                    break;
+                case ClaimModel::STATUS_REJECTED:
+                    $noteType = NoteModel::TYPE_CLAIM_REJECTED_LETTER_SENT;
+                    $message = 'Successfully sent rejection letter to';
+                    break;
+                case ClaimModel::STATUS_ACCEPTED:
+                    $noteType = NoteModel::TYPE_CLAIM_ACCEPTED_LETTER_SENT;
+                    $message = 'Successfully sent acceptance letter to';
+                    break;
+                default:
+                    return;
+            }
+
+            $this->addNote(
+                $claimId,
+                $userId,
+                $noteType,
+                $message . PHP_EOL . PHP_EOL . $claimModel->getApplication()->getContact()->getAddress()
+            );
+        }
+    }
+
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param bool $outcomePhoneCalled
+     */
+    public function setOutcomePhoneCalled(int $claimId, int $userId, bool $outcomePhoneCalled)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        if (!$claimModel->shouldPhone()) {
+            throw new InvalidInputException('A phone call should not have been made to the claimant of this claim');
+        }
+
+        $claim->setOutcomePhoneCalled($outcomePhoneCalled);
+
+        if ($outcomePhoneCalled === true) {
+            $message = "Successfully phoned {$claimModel->getApplication()->getContact()->getPhone()} to inform claimant that their claim was ";
+
+            switch ($claimModel->getStatus()) {
+                case ClaimModel::STATUS_DUPLICATE:
+                    $noteType = NoteModel::TYPE_CLAIM_DUPLICATE_PHONE_CALLED;
+                    $message .= 'a duplicate';
+                    break;
+                case ClaimModel::STATUS_REJECTED:
+                    $noteType = NoteModel::TYPE_CLAIM_REJECTED_PHONE_CALLED;
+                    $message .= 'rejected';
+                    break;
+                case ClaimModel::STATUS_ACCEPTED:
+                    $noteType = NoteModel::TYPE_CLAIM_ACCEPTED_PHONE_CALLED;
+                    $message .= 'accepted';
+                    break;
+                default:
+                    return;
+            }
+
+            $this->addNote(
+                $claimId,
+                $userId,
+                $noteType,
+                $message
+            );
+        }
+    }
+
+    /**
      * @param $claimId
      * @return ClaimEntity
      */
