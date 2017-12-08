@@ -23,6 +23,7 @@ return [
             'sign.in',
             'password.change',
             'password.reset',
+            'exception',
         ],
         'authenticated-user' => [
             'home',
