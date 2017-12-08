@@ -2,6 +2,7 @@
 
 namespace App\View\Details;
 
+use DateInterval;
 use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
@@ -24,6 +25,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getRejectionReasonsText', [$this, 'getRejectionReasonsText']);
         $engine->registerFunction('getPercentage', [$this, 'getPercentage']);
         $engine->registerFunction('getValueWithPercentage', [$this, 'getValueWithPercentage']);
+        $engine->registerFunction('getProcessingTimeText', [$this, 'getProcessingTimeText']);
         $engine->registerFunction('getOutcomeEmailDescription', [$this, 'getOutcomeEmailDescription']);
         $engine->registerFunction('getOutcomeTextDescription', [$this, 'getOutcomeTextDescription']);
     }
@@ -80,6 +82,60 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
     public function getValueWithPercentage(int $total, int $value)
     {
         return "{$value} ({$this->getPercentage($total, $value)})";
+    }
+
+    public function getProcessingTimeText($processingTime)
+    {
+        if ($processingTime === null && is_numeric($processingTime) === false) {
+            return 'N/A';
+        }
+
+        $processingTimeText = '';
+
+        $processingTimeInSeconds = (int)$processingTime;
+
+        $processingTimeDays = floor($processingTimeInSeconds/60/60/24);
+        $processingTimeInSeconds -= $processingTimeDays*24*60*60;
+
+        if ($processingTimeDays > 0) {
+            if ($processingTimeDays > 1) {
+                $processingTimeText .= " $processingTimeDays days";
+            } else {
+                $processingTimeText .= " $processingTimeDays day";
+            }
+        }
+
+        $processingTimeHours = floor($processingTimeInSeconds/60/60);
+        $processingTimeInSeconds -= $processingTimeHours*60*60;
+
+        if ($processingTimeHours > 0) {
+            if ($processingTimeHours > 1) {
+                $processingTimeText .= " $processingTimeHours hours";
+            } else {
+                $processingTimeText .= " $processingTimeHours hour";
+            }
+        }
+
+        $processingTimeMinutes = floor($processingTimeInSeconds/60);
+        $processingTimeInSeconds -= $processingTimeMinutes*60;
+
+        if ($processingTimeMinutes > 0) {
+            if ($processingTimeMinutes > 1) {
+                $processingTimeText .= " $processingTimeMinutes minutes";
+            } else {
+                $processingTimeText .= " $processingTimeMinutes minute";
+            }
+        }
+
+        if ($processingTimeDays === 0.0 && $processingTimeInSeconds > 0) {
+            if ($processingTimeInSeconds > 1) {
+                $processingTimeText .= " $processingTimeInSeconds seconds";
+            } else {
+                $processingTimeText .= " $processingTimeInSeconds second";
+            }
+        }
+
+        return trim($processingTimeText);
     }
 
     public function getOutcomeEmailDescription(ClaimModel $claim)
