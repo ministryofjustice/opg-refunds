@@ -29,6 +29,7 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
         $engine->registerFunction('getOutcomeEmailDescription', [$this, 'getOutcomeEmailDescription']);
         $engine->registerFunction('getOutcomeTextDescription', [$this, 'getOutcomeTextDescription']);
         $engine->registerFunction('getOutcomeLetterDescription', [$this, 'getOutcomeLetterDescription']);
+        $engine->registerFunction('getOutcomePhoneDescription', [$this, 'getOutcomePhoneDescription']);
     }
 
     public function getApplicantName(ApplicationModel $application)

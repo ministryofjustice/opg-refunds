@@ -62,7 +62,7 @@ class ConfirmNotifiedAction extends AbstractClaimAction
             if ($claim->shouldSendLetter()) {
                 $claim = $this->claimService->setOutcomeLetterSent($claim->getId());
                 $this->setFlashInfoMessage($request, "Successfully confirmed letter was sent to claimant");
-            } elseif ($claim->shouldSendLetter()) {
+            } elseif ($claim->shouldPhone()) {
                 $claim = $this->claimService->setOutcomePhoneCalled($claim->getId());
                 $this->setFlashInfoMessage($request, "Successfully confirmed claimant was phoned");
             } else {
