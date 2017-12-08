@@ -63,7 +63,7 @@ $this->layout('layout::default', ['title' => 'Notify'])
                     </thead>
                     <tbody>
 
-                    <?php foreach ($letters as $claimId => $claimDetails) { ?>
+                    <?php foreach ($phoneCalls as $claimId => $claimDetails) { ?>
                         <tr>
                             <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['claimCode']) ?></a></td>
                             <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['donorName']) ?></a></td>

@@ -52,5 +52,6 @@ $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', Ap
 $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
 $app->route('/claim/{claimId:\d+}/change-outcome', App\Action\Claim\ClaimChangeOutcomeAction::class, ['GET', 'POST'], 'claim.change.outcome');
 $app->route('/claim/{claimId:\d+}/reassign', App\Action\Claim\ClaimReassignAction::class, ['GET', 'POST'], 'claim.reassign');
+$app->route('/claim/{claimId:\d+}/notified', App\Action\Claim\ConfirmNotifiedAction::class, ['GET', 'POST'], 'claim.confirm.notified');
 $app->post('/start-assisted-digital', App\Action\AssistedDigitalRedirectAction::class, 'assisted-digital.start');
 $app->route('/notify', App\Action\NotifyAction::class, ['GET', 'POST'], 'notify');
