@@ -76,49 +76,48 @@ class User
             $orderBy = 'name';
         }
 
-        $whereClauses = [];
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->select('u')
+            ->from('Cases:User', 'u');
+
         $parameters = [];
 
         if (isset($search)) {
             $userName = $search;
-            $whereClauses[] = 'LOWER(u.name) LIKE LOWER(:userName)';
+            $queryBuilder->andWhere('LOWER(u.name) LIKE LOWER(:userName)');
             $parameters['userName'] = "%{$userName}%";
         }
 
         if (isset($status)) {
-            $whereClauses[] = 'u.status = :status';
+            $queryBuilder->andWhere('u.status = :status');
             $parameters['status'] = $status;
         }
 
-        // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
-        $dql = 'SELECT u FROM App\Entity\Cases\User u';
-        if (count($whereClauses) > 0) {
-            $dql .= ' WHERE ' . join(' AND ', $whereClauses);
-        }
-
         if (isset($orderBy)) {
-            if ($orderBy === 'name') {
-                $dql .= ' ORDER BY u.name ';
-            } elseif ($orderBy === 'email') {
-                $dql .= ' ORDER BY u.email ';
-            }
+            $sort = strtoupper($sort ?: 'asc');
 
-            $dql .= strtoupper($sort ?: 'asc');
+            if ($orderBy === 'name') {
+                $queryBuilder->orderBy('u.name', $sort);
+            } elseif ($orderBy === 'email') {
+                $queryBuilder->orderBy('u.email', $sort);
+            }
         }
 
-        $query = $this->entityManager->createQuery($dql)->setParameters($parameters);
+        // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
+        $queryBuilder
+            ->setParameters($parameters)
+            ->setMaxResults($pageSize);
 
         if ($page !== null) {
             $offset = ($page - 1) * $pageSize;
-
-            $query = $query->setFirstResult($offset);
+            $queryBuilder->setFirstResult($offset);
         }
 
         if ($pageSize !== null) {
-            $query = $query->setFirstResult($pageSize);
+             $queryBuilder->setFirstResult($pageSize);
         }
 
-        $paginator = new Paginator($query, true);
+        $paginator = new Paginator($queryBuilder, true);
 
         $total = count($paginator);
         $pageCount = $pageSize === null ? 1 : ceil($total/$pageSize);
