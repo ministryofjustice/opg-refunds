@@ -112,6 +112,9 @@ class Notify implements Initializer\LogSupportInterface
                 ];
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_DUPLICATE) {
                 $successful = $this->sendDuplicateNotification($claimModel, $claimEntity, $userId);
+
+                //TODO: REMOVE. For now pretend that duplicate emails don't need sending. Remove when we have the text for duplicate emails
+                $notified['total']--;
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_REJECTED) {
                 $successful = $this->sendRejectionNotification($claimModel, $claimEntity, $userId);
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_ACCEPTED) {
