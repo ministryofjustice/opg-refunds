@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "25f9ba52b1a91d06d523c1ce8e18776b",
+    "content-hash": "840bc402cbec4f241f99578c89807a8e",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -641,16 +641,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
-            "version": "v1.1.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-logger.git",
-                "reference": "84fb465fa7eddd22e47c46de8111a46cf54cacfa"
+                "reference": "a4a078325213712392f948fee254c3e05dcc4760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/84fb465fa7eddd22e47c46de8111a46cf54cacfa",
-                "reference": "84fb465fa7eddd22e47c46de8111a46cf54cacfa",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/a4a078325213712392f948fee254c3e05dcc4760",
+                "reference": "a4a078325213712392f948fee254c3e05dcc4760",
                 "shasum": ""
             },
             "require": {
@@ -680,10 +680,10 @@
             ],
             "description": "Common logging component for OPG Refunds",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/v1.1.0",
+                "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/2.0.0",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
             },
-            "time": "2017-09-28T12:47:32+00:00"
+            "time": "2017-12-08T11:48:29+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
