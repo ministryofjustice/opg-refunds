@@ -101,9 +101,9 @@ Mandatory: claim
                 <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
                     <span>None sent</span>
                     <?php if ($claim->shouldSendLetter()) { ?>
-                        <a class="button button-secondary" href="">Confirm letter sent</a>
+                        <p><a class="button button-secondary" href="">Confirm letter sent</a></p>
                     <?php } elseif ($claim->shouldPhone()) { ?>
-                        <a class="button button-secondary" href="">Confirm phone called</a>
+                        <p><a class="button button-secondary" href="">Confirm phone called</a></p>
                     <?php } ?>
                 <?php } ?>
                 <?php if ($claim->isOutcomeEmailSent()) { ?>

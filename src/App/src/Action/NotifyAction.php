@@ -52,11 +52,14 @@ class NotifyAction extends AbstractModelAction
         $form->setData($request->getParsedBody());
 
         $letters = [];
+        $phoneCalls = [];
 
         if ($form->isValid()) {
             $notified = $this->notifyService->notifyAll();
             $letters = $notified['letters'];
             $lettersCount = count($letters);
+            $phoneCalls = $notified['phoneCalls'];
+            $phoneCallsCount = count($phoneCalls);
 
             if ($notified['total'] === 0) {
                 $message = 'No outcome notifications needed sending. Please try again later.';
@@ -83,10 +86,14 @@ class NotifyAction extends AbstractModelAction
                     if ($remaining === $lettersCount) {
                         //Only letters remaining
                         $message .= ' by post. See list below for required postal notifications.';
-                    } elseif ($lettersCount > 0) {
-                        $message .= " including {$lettersCount} by post. Please try again to send remaining email and text notifications and see list below for required postal notifications.";
+                    } elseif ($remaining === $phoneCallsCount) {
+                        //Only phone calls remaining
+                        $message .= ' by phone. See list below for required phone call notifications.';
+                    } elseif ($remaining === $lettersCount + $phoneCallsCount) {
+                        //Both remaining
+                        $message .= ", {$lettersCount} by post and {$phoneCallsCount} by phone. See lists below for required postal and phone call notifications.";
                     } else {
-                        //No letters required
+                        //No letters or calls required
                         $message .= '. Please try again to send remaining email and text notifications.';
                     }
                 }
@@ -102,7 +109,8 @@ class NotifyAction extends AbstractModelAction
         return new HtmlResponse($this->getTemplateRenderer()->render('app::notify-page', [
             'form'  => $form,
             'messages' => $this->getFlashMessages($request),
-            'letters' => $letters
+            'letters' => $letters,
+            'phoneCalls' => $phoneCalls
         ]));
     }
 

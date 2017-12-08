@@ -5,6 +5,7 @@ $this->layout('layout::default', ['title' => 'Notify'])
 /**
  * @var \App\Form\Notify $form
  * @var array $letters
+ * @var array $phoneCalls
  */
 
 ?>
@@ -16,32 +17,63 @@ $this->layout('layout::default', ['title' => 'Notify'])
 
         <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
 
-        <?php if (empty($letters) === false) { ?>
-            <h3 class="heading-small">Claims to notify by post</h3>
+        <?php if (empty($letters) === false || empty($phoneCalls) === false) { ?>
 
-            <p>You will need to send letters to each of these claimants based on the claim's outcome. The address to send the letter to will be in the 'contact details' section.</p>
-            <p>After sending the letter, you will need to confirm that you have sent it in the claim's 'outcome' section to prevent being reminded again.</p>
+            <?php if (empty($letters) === false) { ?>
+                <h3 class="heading-small">Claims to notify by post</h3>
 
-            <table>
-                <thead>
-                <tr>
-                    <th>Claim code</th>
-                    <th>Donor name</th>
-                    <th>Outcome</th>
-                </tr>
-                </thead>
-                <tbody>
+                <p>You will need to send letters to each of these claimants based on the claim's outcome. The address to send the letter to will be in the 'contact details' section.</p>
+                <p>After sending the letter, you will need to confirm that you have sent it in the claim's 'outcome' section to prevent being reminded again.</p>
 
-                <?php foreach ($letters as $claimId => $claimDetails) { ?>
+                <table>
+                    <thead>
                     <tr>
-                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['claimCode']) ?></a></td>
-                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['donorName']) ?></a></td>
-                        <td><?= $this->e($claimDetails['outcome']) ?></td>
+                        <th>Claim code</th>
+                        <th>Donor name</th>
+                        <th>Outcome</th>
                     </tr>
-                <?php } ?>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
+                    <?php foreach ($letters as $claimId => $claimDetails) { ?>
+                        <tr>
+                            <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['claimCode']) ?></a></td>
+                            <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['donorName']) ?></a></td>
+                            <td><?= $this->e($claimDetails['outcome']) ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    </tbody>
+                </table>
+            <?php } ?>
+
+            <?php if (empty($phoneCalls) === false) { ?>
+                <h3 class="heading-small">Claims to notify by phone</h3>
+
+                <p>You will need to phone each of these claimants to let them know the outcome of their claim. The phone number will be in the 'contact details' section.</p>
+                <p>After phoning the claimant, you will need to confirm that you have done this in the claim's 'outcome' section to prevent being reminded again.</p>
+
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Claim code</th>
+                        <th>Donor name</th>
+                        <th>Outcome</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    <?php foreach ($letters as $claimId => $claimDetails) { ?>
+                        <tr>
+                            <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['claimCode']) ?></a></td>
+                            <td><a href="<?= $this->generateUrl('claim', ['id' => $claimId]) ?>" target="_blank"><?= $this->e($claimDetails['donorName']) ?></a></td>
+                            <td><?= $this->e($claimDetails['outcome']) ?></td>
+                        </tr>
+                    <?php } ?>
+
+                    </tbody>
+                </table>
+            <?php } ?>
 
             <p><a class="button button-link" href="<?= $this->generateUrl('notify') ?>">Back</a></p>
         <?php } else { ?>
