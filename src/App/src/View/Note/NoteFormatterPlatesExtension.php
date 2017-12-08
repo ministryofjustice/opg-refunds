@@ -54,14 +54,26 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'Email sent';
             case NoteModel::TYPE_CLAIM_DUPLICATE_TEXT_SENT:
                 return 'Text sent';
+            case NoteModel::TYPE_CLAIM_DUPLICATE_LETTER_SENT:
+                return 'Letter sent';
+            case NoteModel::TYPE_CLAIM_DUPLICATE_PHONE_CALLED:
+                return 'Phone called';
             case NoteModel::TYPE_CLAIM_REJECTED_EMAIL_SENT:
                 return 'Email sent';
             case NoteModel::TYPE_CLAIM_REJECTED_TEXT_SENT:
                 return 'Text sent';
+            case NoteModel::TYPE_CLAIM_REJECTED_LETTER_SENT:
+                return 'Letter sent';
+            case NoteModel::TYPE_CLAIM_REJECTED_PHONE_CALLED:
+                return 'Phone called';
             case NoteModel::TYPE_CLAIM_ACCEPTED_EMAIL_SENT:
                 return 'Email sent';
             case NoteModel::TYPE_CLAIM_ACCEPTED_TEXT_SENT:
                 return 'Text sent';
+            case NoteModel::TYPE_CLAIM_ACCEPTED_LETTER_SENT:
+                return 'Letter sent';
+            case NoteModel::TYPE_CLAIM_ACCEPTED_PHONE_CALLED:
+                return 'Phone called';
             case NoteModel::TYPE_REFUND_ADDED:
                 return 'Refund added';
             case NoteModel::TYPE_REFUND_UPDATED:

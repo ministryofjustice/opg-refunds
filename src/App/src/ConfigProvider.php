@@ -56,6 +56,7 @@ class ConfigProvider
                 Action\Claim\ClaimReassignAction::class => Action\Claim\ClaimReassignActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
                 Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
+                Action\Claim\ConfirmNotifiedAction::class => Action\Claim\ConfirmNotifiedActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
                 Action\Password\PasswordResetAction::class => Action\Password\PasswordResetActionFactory::class,
