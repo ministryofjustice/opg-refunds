@@ -79,9 +79,12 @@ class Claim implements ApiClientInterface
      * @param int|null $page
      * @param int|null $pageSize
      * @param string|null $search
-     * @param int|null $assignedToId
-     * @param string|null $status
+     * @param string|null $received
+     * @param string|null $finished
+     * @param int|null $assignedToFinishedById
+     * @param string|null $statuses
      * @param string|null $accountHash
+     * @param array|null $poaCaseNumbers
      * @param string|null $orderBy
      * @param string|null $sort
      * @return ClaimSummaryPage
@@ -90,8 +93,10 @@ class Claim implements ApiClientInterface
         int $page = null,
         int $pageSize = null,
         string $search = null,
-        int $assignedToId = null,
-        string $status = null,
+        string $received = null,
+        string $finished = null,
+        int $assignedToFinishedById = null,
+        string $statuses = null,
         string $accountHash = null,
         array $poaCaseNumbers = null,
         string $orderBy = null,
@@ -104,14 +109,20 @@ class Claim implements ApiClientInterface
         if ($pageSize != null) {
             $queryParameters['pageSize'] = $pageSize;
         }
+        if ($received != null) {
+            $queryParameters['received'] = $received;
+        }
+        if ($finished != null) {
+            $queryParameters['finished'] = $finished;
+        }
         if ($search != null) {
             $queryParameters['search'] = $search;
         }
-        if ($assignedToId != null) {
-            $queryParameters['assignedToId'] = $assignedToId;
+        if ($assignedToFinishedById != null) {
+            $queryParameters['assignedToFinishedById'] = $assignedToFinishedById;
         }
-        if ($status != null) {
-            $queryParameters['status'] = $status;
+        if ($statuses != null) {
+            $queryParameters['statuses'] = $statuses;
         }
         if ($accountHash != null) {
             $queryParameters['accountHash'] = $accountHash;
@@ -250,6 +261,24 @@ class Claim implements ApiClientInterface
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'status' => ClaimModel::STATUS_IN_PROGRESS,
             'reason' => $reason
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function setOutcomeLetterSent(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'outcomeLetterSent' => true
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function setOutcomePhoneCalled(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'outcomePhoneCalled' => true
         ]);
 
         return $this->createDataModel($claimArray);

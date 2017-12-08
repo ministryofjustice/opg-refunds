@@ -4,11 +4,14 @@ namespace App\Action\Claim;
 
 use App\Form\ClaimSearch;
 use App\Service\Claim\Claim as ClaimService;
+use App\Service\User\User as UserService;
 use App\Action\AbstractAction;
+use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Fig\Http\Message\RequestMethodInterface;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
+use Zend\Diactoros\Response\RedirectResponse;
 
 /**
  * Class ClaimSearchAction
@@ -22,18 +25,25 @@ class ClaimSearchAction extends AbstractAction
     protected $claimService;
 
     /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
      * AbstractClaimAction constructor
      * @param ClaimService $claimService
+     * @param UserService $userService
      */
-    public function __construct(ClaimService $claimService)
+    public function __construct(ClaimService $claimService, UserService $userService)
     {
         $this->claimService = $claimService;
+        $this->userService = $userService;
     }
 
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|RedirectResponse
      */
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
@@ -57,8 +67,11 @@ class ClaimSearchAction extends AbstractAction
                 if ($searchParameters['search'] === '') {
                     unset($searchParameters['search']);
                 }
-                if ($searchParameters['status'] === '') {
-                    unset($searchParameters['status']);
+                if ($searchParameters['statuses'] === '') {
+                    unset($searchParameters['statuses']);
+                }
+                if ($searchParameters['assignedToFinishedById'] === '') {
+                    unset($searchParameters['assignedToFinishedById']);
                 }
 
                 //  Redirect to search with get params
@@ -69,14 +82,31 @@ class ClaimSearchAction extends AbstractAction
         $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
         $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
         $search = isset($searchParameters['search']) ? $searchParameters['search'] : null;
-        $assignedToId = isset($searchParameters['assignedToId']) ? $searchParameters['assignedToId'] : null;
-        $status = isset($searchParameters['status']) ? $searchParameters['status'] : null;
+        $received = isset($searchParameters['received']) ? $searchParameters['received'] : null;
+        $finished = isset($searchParameters['finished']) ? $searchParameters['finished'] : null;
+        $assignedToFinishedById = isset($searchParameters['assignedToFinishedById'])
+            && is_numeric($searchParameters['assignedToFinishedById']) ?
+            (int)$searchParameters['assignedToFinishedById'] : null;
+        $statuses = isset($searchParameters['statuses']) ? $searchParameters['statuses'] : null;
         $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
-        $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ? explode(',', $searchParameters['poaCaseNumbers']) : null;
+        $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ?
+            explode(',', $searchParameters['poaCaseNumbers']) : null;
         $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
         $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
 
-        $claimSummaryPage = $this->claimService->searchClaims($page, $pageSize, $search, $assignedToId, $status, $accountHash, $poaCaseNumbers, $orderBy, $sort);
+        $claimSummaryPage = $this->claimService->searchClaims(
+            $page,
+            $pageSize,
+            $search,
+            $received,
+            $finished,
+            $assignedToFinishedById,
+            $statuses,
+            $accountHash,
+            $poaCaseNumbers,
+            $orderBy,
+            $sort
+        );
 
         //  Unset page so it isn't added to search links
         unset($searchParameters['page']);
@@ -96,7 +126,11 @@ class ClaimSearchAction extends AbstractAction
     {
         $session = $request->getAttribute('session');
 
+        $userSummaryPage = $this->userService->searchUsers(null, null, null, UserModel::STATUS_ACTIVE);
+        $userSummaries = $userSummaryPage->getUserSummaries();
+
         $form = new ClaimSearch([
+            'userSummaries' => $userSummaries,
             'csrf'   => $session['meta']['csrf'],
         ]);
 

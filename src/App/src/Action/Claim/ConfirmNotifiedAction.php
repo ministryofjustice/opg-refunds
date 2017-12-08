@@ -2,31 +2,25 @@
 
 namespace App\Action\Claim;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
-use App\Form\ClaimReassign;
+use App\Form\ConfirmNotified;
 use App\Service\Claim\Claim as ClaimService;
-use App\Service\User\User as UserService;
+use App\View\Details\DetailsFormatterPlatesExtension;
+use App\View\Poa\PoaFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
-use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
 
-class ClaimReassignAction extends AbstractClaimAction
+/**
+ * Class ConfirmNotifiedAction
+ * @package App\Action\Claim
+ */
+class ConfirmNotifiedAction extends AbstractClaimAction
 {
-    /**
-     * @var UserService
-     */
-    private $userService;
-
-    public function __construct(ClaimService $claimService, UserService $userService)
-    {
-        parent::__construct($claimService);
-        $this->userService = $userService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -41,10 +35,10 @@ class ClaimReassignAction extends AbstractClaimAction
             throw new Exception('Claim not found', 404);
         }
 
-        /** @var ClaimReassign $form */
+        /** @var ConfirmNotified $form */
         $form = $this->getForm($request, $claim);
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reassign-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-confirm-notified-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -59,31 +53,30 @@ class ClaimReassignAction extends AbstractClaimAction
     {
         $claim = $this->getClaim($request);
 
-        /** @var ClaimReassign $form */
+        /** @var ConfirmNotified $form */
         $form = $this->getForm($request, $claim);
 
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $formData = $form->getData();
-
-            $userId = (int)$formData['user-id'];
-            $reason = $formData['reason'];
-
-            $assignedClaim = $this->claimService->assignClaim($claim->getId(), $userId, $reason);
-            $assignedClaimId = $assignedClaim['assignedClaimId'];
-            $assignedToName = $assignedClaim['assignedToName'];
-
-            if ($assignedClaimId === 0) {
-                throw new RuntimeException('Failed to reassign claim with id: ' . $this->modelId);
+            if ($claim->shouldSendLetter()) {
+                $claim = $this->claimService->setOutcomeLetterSent($claim->getId());
+                $this->setFlashInfoMessage($request, "Successfully confirmed letter was sent to claimant");
+            } elseif ($claim->shouldPhone()) {
+                $claim = $this->claimService->setOutcomePhoneCalled($claim->getId());
+                $this->setFlashInfoMessage($request, "Successfully confirmed claimant was phoned");
+            } else {
+                throw new Exception('No manual notifications required!', 400);
             }
 
-            $this->setFlashInfoMessage($request, 'Claim reassigned to ' . $assignedToName);
+            if ($claim === null) {
+                throw new RuntimeException('Failed to accept claim with id: ' . $this->modelId);
+            }
 
-            return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
+            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         }
 
-        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-reassign-page', [
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-confirm-notified-page', [
             'form'  => $form,
             'claim' => $claim
         ]));
@@ -98,12 +91,8 @@ class ClaimReassignAction extends AbstractClaimAction
     {
         $session = $request->getAttribute('session');
 
-        $userSummaryPage = $this->userService->searchUsers(null, null, null, UserModel::STATUS_ACTIVE);
-        $userSummaries = $userSummaryPage->getUserSummaries();
-
-        $form = new ClaimReassign([
+        $form = new ConfirmNotified([
             'claim'  => $claim,
-            'userSummaries' => $userSummaries,
             'csrf'   => $session['meta']['csrf'],
         ]);
 

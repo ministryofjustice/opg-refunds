@@ -2,25 +2,24 @@
 
 namespace App\Action\Claim;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Service\Claim\Claim as ClaimService;
-use App\Service\User\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimSearchActionFactory
+ * Class ConfirmNotifiedActionFactory
  * @package App\Action\Claim
  */
-class ClaimSearchActionFactory
+class ConfirmNotifiedActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimSearchAction
+     * @return ConfirmNotifiedAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimSearchAction(
-            $container->get(ClaimService::class),
-            $container->get(UserService::class)
+        return new ConfirmNotifiedAction(
+            $container->get(ClaimService::class)
         );
     }
 }

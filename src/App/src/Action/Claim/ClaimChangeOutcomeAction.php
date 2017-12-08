@@ -69,7 +69,7 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
 
                 return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
             } catch (ApiException $ex) {
-                if ($ex->getCode() === 400) {
+                if ($ex->getCode() === 409) {
                     $form->setMessages(['general' => ['Could not change claim outcome. At least one other claim containing one of the same POA case numbers is being worked on. Search for claims that use these POA case numbers to resolve']]);
                     $poaCaseNumbers = [];
                     foreach ($claim->getPoas() as $poa) {

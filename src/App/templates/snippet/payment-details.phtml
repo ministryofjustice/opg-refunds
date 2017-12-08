@@ -9,7 +9,7 @@ Mandatory: claim
  */
 ?>
 
-<h2 class="heading-medium heading-refunds">Payment details</h2>
+<h2 id="payment-details" class="heading-medium heading-refunds">Payment details</h2>
 <dl class="details">
     <?php if ($claim->hasAccountHash() && $claim->hasAccountHashCount()) { ?>
         <div class="<?= $this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount()) ? 'details-warning' : '' ?>">
@@ -21,7 +21,7 @@ Mandatory: claim
                         </i>
                         <strong class="bold-small"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></strong>
                     </p>
-                    <a href="<?= $this->generateUrl('claim.search', [], ['orderBy' => 'received', 'sort' => 'desc', 'accountHash' => $this->e($claim->getAccountHash())]) ?>">Search for claims that use these details</a>
+                    <a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['accountHash' => $this->e($claim->getAccountHash())])) ?>">Search for claims that use these details</a>
                 <?php } else { ?>
                     <?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?>
                 <?php } ?>
