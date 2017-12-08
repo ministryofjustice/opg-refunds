@@ -131,9 +131,21 @@ class Claim extends AbstractEntity
 
     /**
      * @var bool
+     * @ORM\Column(name="outcome_phone_called", type="boolean", options={"default" : false})
+     */
+    protected $outcomePhoneCalled;
+
+    /**
+     * @var bool
      * @ORM\Column(name="outcome_text_sent", type="boolean", options={"default" : false})
      */
     protected $outcomeTextSent;
+
+    /**
+     * @var bool
+     * @ORM\Column(name="outcome_letter_sent", type="boolean", options={"default" : false})
+     */
+    protected $outcomeLetterSent;
 
     /**
      * @var Payment
@@ -178,6 +190,8 @@ class Claim extends AbstractEntity
         $this->noMerisPoas = false;
         $this->outcomeEmailSent = false;
         $this->outcomeTextSent = false;
+        $this->outcomeLetterSent = false;
+        $this->outcomePhoneCalled = false;
         $this->duplicateClaims = new ArrayCollection();
         $this->duplicateOf = new ArrayCollection();
     }
@@ -476,6 +490,38 @@ class Claim extends AbstractEntity
     public function setOutcomeTextSent(bool $outcomeTextSent)
     {
         $this->outcomeTextSent = $outcomeTextSent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomeLetterSent(): bool
+    {
+        return $this->outcomeLetterSent;
+    }
+
+    /**
+     * @param bool $outcomeLetterSent
+     */
+    public function setOutcomeLetterSent(bool $outcomeLetterSent)
+    {
+        $this->outcomeLetterSent = $outcomeLetterSent;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOutcomePhoneCalled(): bool
+    {
+        return $this->outcomePhoneCalled;
+    }
+
+    /**
+     * @param bool $outcomePhoneCalled
+     */
+    public function setOutcomePhoneCalled(bool $outcomePhoneCalled)
+    {
+        $this->outcomePhoneCalled = $outcomePhoneCalled;
     }
 
     /**

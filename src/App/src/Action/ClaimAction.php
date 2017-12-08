@@ -110,6 +110,14 @@ class ClaimAction extends AbstractRestfulAction implements Initializer\LogSuppor
             }
         }
 
+        if (isset($requestBody['outcomeLetterSent'])) {
+            $this->claimService->setOutcomeLetterSent($claimId, $identity->getId(), $requestBody['outcomeLetterSent']);
+        }
+
+        if (isset($requestBody['outcomePhoneCalled'])) {
+            $this->claimService->setOutcomePhoneCalled($claimId, $identity->getId(), $requestBody['outcomePhoneCalled']);
+        }
+
         $claim = $this->claimService->get($claimId, $identity->getId());
 
         return new JsonResponse($claim->getArrayCopy());
