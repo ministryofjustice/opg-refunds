@@ -266,6 +266,24 @@ class Claim implements ApiClientInterface
         return $this->createDataModel($claimArray);
     }
 
+    public function setOutcomeLetterSent(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'outcomeLetterSent' => true
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function setOutcomePhoneCalled(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'outcomePhoneCalled' => true
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
     /**
      * @param ClaimModel $claim
      * @param PoaModel $poa

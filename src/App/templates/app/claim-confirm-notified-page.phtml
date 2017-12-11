@@ -1,0 +1,43 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ConfirmNotified $form
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium">
+    <?php if ($claim->shouldSendLetter()) { ?>
+        Confirm letter sent
+    <?php } elseif ($claim->shouldPhone()) { ?>
+        Confirm phone called
+    <?php } ?>
+</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <?php if ($claim->shouldSendLetter()) { ?>
+        <p>Can you confirm that you have sent a letter to the following address informing the claimant of the outcome of their claim?</p>
+        <p><?= nl2br($this->e($claim->getApplication()->getContact()->getAddress())) ?></p>
+    <?php } elseif ($claim->shouldPhone()) { ?>
+        <p>Can you confirm that you have called the claimant on <?= $this->e($claim->getApplication()->getContact()->getPhone()) ?> to inform them of the outcome of their claim?</p>
+    <?php } ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Confirm'>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

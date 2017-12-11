@@ -14,7 +14,7 @@ Mandatory: claim
 ?>
 
 <?php if (in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_ADMIN, $identity->getRoles())) { ?>
-    <h2 class="heading-medium heading-refunds">Administrator</h2>
+    <h2 id="administrator-functions" class="heading-medium heading-refunds">Administrator</h2>
     <dl class="details">
 
         <?php if(!$claim->canChangeOutcome() && !$claim->canReassignClaim()) { ?>

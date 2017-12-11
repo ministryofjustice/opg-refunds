@@ -14,6 +14,8 @@ $phoneClaimType = $reports['phoneClaimType'];
 $rejectionReason = $reports['rejectionReason'];
 $duplicateBankDetail = $reports['duplicateBankDetail'];
 $refund = $reports['refund'];
+$processingTime = $reports['processingTime'];
+$poasPerClaim = $reports['poasPerClaim'];
 ?>
 
 <div class="grid-row">
@@ -412,6 +414,110 @@ $refund = $reports['refund'];
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
                     <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">Processing time</h2>
+
+        <?php $processingTimeAllTime = $processingTime['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['mean']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['median']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['min']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['max']) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $processingTimeByWeek = $processingTime['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($processingTimeByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $processingTimeByMonth = $processingTime['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($processingTimeByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($processingTimeByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds">POAs per claim</h2>
+
+        <?php $poasPerClaimAllTime = $poasPerClaim['allTime']; ?>
+
+        <h3 class="heading-small">Total</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 50%">Number of POAs associated with a claim</th>
+                <th class="numeric" style="width: 50%">Frequency</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($poasPerClaimAllTime as $poasPerClaim => $frequency){ ?>
+                <tr>
+                    <td class="numeric"><?= $poasPerClaim ?></td>
+                    <td class="numeric"><?= $frequency ?></td>
                 </tr>
             <?php } ?>
             </tbody>

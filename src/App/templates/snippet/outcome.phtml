@@ -13,7 +13,7 @@ Mandatory: claim
 
 ?>
 
-<h2 class="heading-medium heading-refunds">Outcome</h2>
+<h2 id="outcome" class="heading-medium heading-refunds">Outcome</h2>
 
 <?php if($claim->hasPoas() || $claim->isNoMerisPoas() || $claim->isNoSiriusPoas() || $claim->isClaimComplete()) { ?>
     <h2 class="notice notice-heading">
@@ -98,14 +98,25 @@ Mandatory: claim
         <div class="">
             <dt class="details-term">Notifications</dt>
             <dd class="details-definition">
-                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent()) { ?>
+                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
                     <span>None sent</span>
+                    <?php if ($claim->shouldSendLetter()) { ?>
+                        <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm letter sent</a></p>
+                    <?php } elseif ($claim->shouldPhone()) { ?>
+                        <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm phone called</a></p>
+                    <?php } ?>
                 <?php } ?>
                 <?php if ($claim->isOutcomeEmailSent()) { ?>
                     <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
                 <?php } ?>
                 <?php if ($claim->isOutcomeTextSent()) { ?>
                     <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomeLetterSent()) { ?>
+                    <span><?= $this->e($this->getOutcomeLetterDescription($claim)) ?></span>
+                <?php } ?>
+                <?php if ($claim->isOutcomePhoneCalled()) { ?>
+                    <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
                 <?php } ?>
             </dd>
         </div>
