@@ -84,7 +84,7 @@ class Notify implements Initializer\LogSupportInterface
         $letters = [];
         $phoneCalls = [];
 
-        $this->getLogger()->alert("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
+        $this->getLogger()->info("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
 
         $startNotify = microtime(true);
 

@@ -313,7 +313,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $updateCount = count($result);
 
             if ($updateCount > 0) {
-                $this->getLogger()->alert("Bank details for $updateCount claim(s) were deleted");
+                $this->getLogger()->warn("Bank details for $updateCount claim(s) were deleted");
             }
         }
     }
