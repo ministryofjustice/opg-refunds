@@ -84,7 +84,7 @@ class Notify implements Initializer\LogSupportInterface
         $letters = [];
         $phoneCalls = [];
 
-        $this->getLogger()->alert("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
+        $this->getLogger()->info("{$notified['total']} claimants to notify. Query time {$notified['queryTime']}s");
 
         $startNotify = microtime(true);
 
@@ -229,7 +229,7 @@ class Notify implements Initializer\LogSupportInterface
 
                     $successful = true;
                 } catch (Exception $ex) {
-                    $this->getLogger()->warn("Failed to send rejection email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                    $this->getLogger()->crit("Failed to send rejection email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
             }
 
@@ -253,7 +253,7 @@ class Notify implements Initializer\LogSupportInterface
 
                     $successful = true;
                 } catch (Exception $ex) {
-                    $this->getLogger()->warn("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                    $this->getLogger()->crit("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
             }
         }
@@ -293,7 +293,7 @@ class Notify implements Initializer\LogSupportInterface
 
                 $successful = true;
             } catch (Exception $ex) {
-                $this->getLogger()->warn("Failed to send acceptance email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                $this->getLogger()->crit("Failed to send acceptance email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
         }
 
@@ -319,7 +319,7 @@ class Notify implements Initializer\LogSupportInterface
 
                 $successful = true;
             } catch (Exception $ex) {
-                $this->getLogger()->warn("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+                $this->getLogger()->crit("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
         }
 
