@@ -51,6 +51,11 @@ pcntl_signal(SIGQUIT, array($worker, 'stop'));
 
 // Start worker. Will block until stopped
 try {
+    // Wait one minute before starting for any migration scripts that may cause ingestion to fail
+    $logger->notice('Waiting for one minute before starting');
+
+    sleep(60);
+
     $successful = $worker->run();
 } catch (Exception $ex) {
     $logger->crit("An unknown exception has caused the worker to terminate", [ 'exception'=>$ex ]);
