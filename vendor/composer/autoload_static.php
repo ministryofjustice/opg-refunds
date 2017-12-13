@@ -16,6 +16,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'be01b9b16925dcb22165c40b46681ac6' => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib/cli/cli.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -380,6 +381,13 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
     );
 
     public static $prefixesPsr0 = array (
+        'c' => 
+        array (
+            'cli' => 
+            array (
+                0 => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib',
+            ),
+        ),
         'P' => 
         array (
             'ProxyManager\\' => 

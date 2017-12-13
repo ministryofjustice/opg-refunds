@@ -53,6 +53,7 @@ final class Versions
   'symfony/yaml' => 'v3.3.10@8c7bf1e7d5d6b05a690b715729cb4cd0c0a99c46',
   'webimpress/composer-extra-dependency' => '0.2.2@31fa56391d30f03b1180c87610cbe22254780ad9',
   'webimpress/http-middleware-compatibility' => '0.1.4@8ed1c2c7523dce0035b98bc4f3a73ca9cd1d3717',
+  'wp-cli/php-cli-tools' => 'v0.11.8@363c75349f5dde561e0b416dd00f7aaa76fa2c27',
   'zendframework/zend-code' => '3.1.0@2899c17f83a7207f2d7f53ec2f421204d3beea27',
   'zendframework/zend-component-installer' => '1.0.0@0ca44807dbcf356b75a869c61b533f917ccbc5ae',
   'zendframework/zend-config-aggregator' => '1.0.0@9494f491db02112c48777f1948a3b7ef71d674ab',
@@ -105,7 +106,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.4@df464ec88c2040a2213dd6b84e842953bfc82c88',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-594-withdraw-claim-logic@ed6faa139b7161f6db06b77809c77dbaf41cbc8a',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-ingestion-daemon@508ccd730bba943e4569aba78dc076066ba185d9',
 );
 
     private function __construct()
