@@ -9,6 +9,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
+use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Router\RouteResult;
@@ -37,17 +38,30 @@ class AuthorizationMiddleware implements MiddlewareInterface
     private $rbac;
 
     /**
+     * @var NotFoundDelegate
+     */
+    private $notFoundDelegate;
+
+
+    /**
      * AuthorizationMiddleware constructor
      *
      * @param AuthenticationService $authService
      * @param UrlHelper $urlHelper
+     * @param NotFoundDelegate $notFoundDelegate
      * @param Rbac $rbac
      */
-    public function __construct(AuthenticationService $authService, UrlHelper $urlHelper, Rbac $rbac)
+    public function __construct(
+        AuthenticationService $authService,
+        UrlHelper $urlHelper,
+        Rbac $rbac,
+        NotFoundDelegate $notFoundDelegate
+    )
     {
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;
+        $this->notFoundDelegate = $notFoundDelegate;
     }
 
     /**
@@ -66,9 +80,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
         //  Determine the route was are attempting to access
         $route = $request->getAttribute(RouteResult::class);
 
-        //  TODO - Move this to a proper 404 handler
         if (is_null($route)) {
-            throw new Exception('Page not found', 404);
+            return $this->notFoundDelegate->process($request);
         }
 
         $routeName = $route->getMatchedRoute()->getName();
