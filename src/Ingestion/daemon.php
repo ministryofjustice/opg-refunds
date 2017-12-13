@@ -26,7 +26,7 @@ if (!class_exists('Composer\Autoload\ClassLoader', false)) {
 cli\Colors::enable();
 
 // Initialise IoC container
-$container = require __DIR__ . '../../config/container.php';
+$container = require __DIR__ . '/../../config/container.php';
 
 use Ingestion\Worker\IngestionWorker;
 use Zend\Log\Logger;
