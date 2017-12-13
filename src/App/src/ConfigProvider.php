@@ -39,6 +39,7 @@ class ConfigProvider
         return [
             'invokables' => [
                 //  Actions
+                Action\ExceptionAction::class => Action\ExceptionAction::class,
 
                 // Services
                 Service\Claim\Claim::class => Service\Claim\Claim::class,
