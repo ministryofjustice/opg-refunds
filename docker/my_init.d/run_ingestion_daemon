@@ -1,4 +1,4 @@
 #!/bin/sh
 
 cd /app
-exec su -c "bin/ingestion-daemon" app
+exec su -c "bin/ingestion-daemon" app &
