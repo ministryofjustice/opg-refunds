@@ -25,6 +25,10 @@ if (!class_exists('Composer\Autoload\ClassLoader', false)) {
 
 cli\Colors::enable();
 
+cli\line('Waiting until all services are up and migration is complete before Initialising ingestion daemon');
+sleep(60);
+cli\line('Initialising ingestion daemon');
+
 // Initialise IoC container
 $container = require __DIR__ . '/../../config/container.php';
 
@@ -35,8 +39,6 @@ use Zend\Log\Logger;
 
 /** @var Logger $logger */
 $logger = $container->get(Logger::class);
-
-$logger->notice('Initialising ingestion daemon');
 
 // Create the Worker
 
@@ -49,20 +51,17 @@ pcntl_signal(SIGTERM, array($worker, 'stop'));
 pcntl_signal(SIGINT, array($worker, 'stop'));
 pcntl_signal(SIGQUIT, array($worker, 'stop'));
 
+cli\line('Ingestion daemon initialisation complete. Starting');
+
 // Start worker. Will block until stopped
 try {
-    // Wait one minute before starting for any migration scripts that may cause ingestion to fail
-    $logger->notice('Waiting for one minute before starting');
-
-    sleep(60);
-
     $successful = $worker->run();
 } catch (Exception $ex) {
     $logger->crit("An unknown exception has caused the worker to terminate", [ 'exception'=>$ex ]);
     exit(1);
 }
 
-$logger->notice('Ingestion daemon ended ' . ($successful ? 'successfully' : 'unsuccessfully'));
+cli\line('Ingestion daemon ended ' . ($successful ? 'successfully' : 'unsuccessfully'));
 
 // Exit with correct code based on worker response
 if ($successful) {
