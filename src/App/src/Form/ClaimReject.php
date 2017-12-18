@@ -41,7 +41,6 @@ class ClaimReject extends AbstractForm
             ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED => ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED,
             ClaimModel::REJECTION_REASON_NO_FEES_PAID        => ClaimModel::REJECTION_REASON_NO_FEES_PAID,
             ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED  => ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED,
-            ClaimModel::REJECTION_REASON_OTHER               => ClaimModel::REJECTION_REASON_OTHER
         ]);
 
         $this->add($radioElement);
