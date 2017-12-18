@@ -309,7 +309,7 @@ class Reporting
 
     public function getRejectionReasonReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason UNION ALL SELECT \'total\', count(*) FROM claim';
+        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason UNION ALL SELECT \'total\', count(*) FROM claim WHERE status = \'rejected\'';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
             $sql
