@@ -21,8 +21,6 @@ class RejectionReasonsFormatter
                 return 'No fees paid';
             case Claim::REJECTION_REASON_CLAIM_NOT_VERIFIED:
                 return 'Details not verified';
-            case Claim::REJECTION_REASON_OTHER:
-                return 'Other';
             default:
                 return 'Unknown';
         }
