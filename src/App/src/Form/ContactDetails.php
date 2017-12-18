@@ -53,8 +53,7 @@ class ContactDetails extends AbstractForm
         $input = new Input($field->getName());
 
         $input->getFilterChain()
-            ->attach(new StandardInputFilter)
-            ->attach(new Filter\StringToLower);
+            ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
