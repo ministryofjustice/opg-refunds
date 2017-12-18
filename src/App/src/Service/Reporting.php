@@ -336,9 +336,6 @@ class Reporting
         if (empty($counts[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED])) {
             $counts[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED] = 0;
         }
-        if (empty($counts[ClaimModel::REJECTION_REASON_OTHER])) {
-            $counts[ClaimModel::REJECTION_REASON_OTHER] = 0;
-        }
 
         return $counts;
     }

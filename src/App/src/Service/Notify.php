@@ -117,11 +117,6 @@ class Notify implements Initializer\LogSupportInterface
                 $notified['total']--;
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_REJECTED) {
                 $successful = $this->sendRejectionNotification($claimModel, $claimEntity, $userId);
-
-                if (!$successful && $claimModel->getRejectionReason() === ClaimModel::REJECTION_REASON_OTHER) {
-                    //TODO: REMOVE. For now pretend that rejection reason 'other' emails don't need sending. Remove when we have decided what to do with the 'other' option
-                    $notified['total']--;
-                }
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_ACCEPTED) {
                 $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
@@ -197,7 +192,6 @@ class Notify implements Initializer\LogSupportInterface
                 $emailPersonalisation['details-not-verified'] = 'yes';
                 $smsTemplate = '2bb54224-0cab-44b9-9623-fd12f6ee6e77';
                 break;
-            case ClaimModel::REJECTION_REASON_OTHER:
             default:
                 $sendRejectionMessage = false;
         }
