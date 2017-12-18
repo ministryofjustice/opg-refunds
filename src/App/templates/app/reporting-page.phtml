@@ -16,6 +16,8 @@ $duplicateBankDetail = $reports['duplicateBankDetail'];
 $refund = $reports['refund'];
 $processingTime = $reports['processingTime'];
 $poasPerClaim = $reports['poasPerClaim'];
+
+$generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER, $identity->getRoles());
 ?>
 
 <div class="grid-row">
@@ -48,11 +50,19 @@ $poasPerClaim = $reports['poasPerClaim'];
                 <tr>
                     <td class="numeric">All time</td>
                     <td class="numeric"><?= $claimAllTime['total'] ?></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_PENDING])) ?>"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_IN_PROGRESS])) ?>"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_PENDING])) ?>"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_IN_PROGRESS])) ?>"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></td>
+                        <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                    <?php } ?>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></td>
                 </tr>
             </tbody>
@@ -78,10 +88,17 @@ $poasPerClaim = $reports['poasPerClaim'];
                 $dateFilter = $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $day)); ?>
                 <tr>
                     <td class="numeric"><?= $day ?></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $counts[ClaimModel::STATUS_REJECTED] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></a></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $counts[ClaimModel::STATUS_REJECTED] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></td>
+                    <?php } ?>
                     <td class="numeric"><?= $counts['outcome_changed'] ?></td>
                 </tr>
             <?php } ?>
@@ -109,10 +126,17 @@ $poasPerClaim = $reports['poasPerClaim'];
                 $dateFilter = $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $dateRange[0])) . '-' . $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $dateRange[1])); ?>
                 <tr>
                     <td class="numeric"><?= $week ?></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                    <?php } ?>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
@@ -141,10 +165,17 @@ $poasPerClaim = $reports['poasPerClaim'];
                 $dateFilter = $this->getSearchDateString($dateTime) . '-' . $this->getSearchDateString((clone $dateTime)->add(new DateInterval('P1M'))->sub(new DateInterval('P1D'))); ?>
                 <tr>
                     <td class="numeric"><?= $month ?></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
-                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                    <?php } ?>
                     <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
