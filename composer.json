@@ -27,7 +27,7 @@
         "doctrine/orm": "^2.5",
         "guzzlehttp/guzzle": "^6.3",
         "http-interop/http-middleware": "^0.4.1",
-        "ministryofjustice/opg-refunds-caseworker-datamodels": "^1.9",
+        "ministryofjustice/opg-refunds-caseworker-datamodels": "dev-REF-587-remove-other",
         "ministryofjustice/opg-refunds-logger": "^1.1",
         "php-http/guzzle6-adapter": "^1.1",
         "phpoffice/phpspreadsheet": "^1.0@beta",
