@@ -38,7 +38,7 @@ return [
                 'username' => getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME') ?: null,
                 'password' => getenv('OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD') ?: null,
                 'options' => [
-                    PDO::ATTR_PERSISTENT => true
+                    PDO::ATTR_PERSISTENT => false
                 ]
 
             ],
