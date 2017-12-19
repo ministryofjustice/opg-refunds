@@ -1039,6 +1039,14 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function canWithdrawClaim(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * @return bool
+     */
     public function isClaimResolved(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_ACCEPTED

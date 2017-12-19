@@ -50,6 +50,11 @@ Mandatory: claim
                     <a class="button" href="<?= $this->generateUrl('claim.duplicate', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Resolve as duplicate</a>
                 </p>
             <?php } ?>
+            <?php if ($claim->canWithdrawClaim() && !$claim->isReadOnly()) { ?>
+                <p>
+                    <a class="button button-secondary" href="<?= $this->generateUrl('claim.withdraw', ['claimId' => $claim->getId()]) ?>">Withdraw claim</a>
+                </p>
+            <?php } ?>
         </dd>
     </div>
 

@@ -47,6 +47,7 @@ $app->route('/claim[/{id:\d+}]', App\Action\Claim\ClaimAction::class, ['GET', 'P
 $app->route('/claim/{claimId:\d+}/approve', App\Action\Claim\ClaimApproveAction::class, ['GET', 'POST'], 'claim.approve');
 $app->route('/claim/{claimId:\d+}/reject', App\Action\Claim\ClaimRejectAction::class, ['GET', 'POST'], 'claim.reject');
 $app->route('/claim/{claimId:\d+}/duplicate', App\Action\Claim\ClaimDuplicateAction::class, ['GET', 'POST'], 'claim.duplicate');
+$app->route('/claim/{claimId:\d+}/withdraw', App\Action\Claim\ClaimWithdrawAction::class, ['GET', 'POST'], 'claim.withdraw');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Action\Poa\PoaAction::class, ['GET', 'POST'], 'claim.poa');
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');

@@ -40,6 +40,7 @@ return [
             'claim.approve',
             'claim.reject',
             'claim.duplicate',
+            'claim.withdraw',
             'claim.search',
             'claim.change.outcome',
             'claim.confirm.notified',
