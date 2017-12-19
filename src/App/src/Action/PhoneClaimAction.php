@@ -15,7 +15,7 @@ use App\Service\AssistedDigital\LinkToken as LinkTokenGenerator;
  * Class ReportingAction
  * @package App\Action
  */
-class AssistedDigitalRedirectAction extends AbstractModelAction
+class PhoneClaimAction extends AbstractModelAction
 {
     /**
      * @var LinkTokenGenerator
