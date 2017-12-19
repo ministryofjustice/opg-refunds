@@ -54,5 +54,5 @@ $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 
 $app->route('/claim/{claimId:\d+}/change-outcome', App\Action\Claim\ClaimChangeOutcomeAction::class, ['GET', 'POST'], 'claim.change.outcome');
 $app->route('/claim/{claimId:\d+}/reassign', App\Action\Claim\ClaimReassignAction::class, ['GET', 'POST'], 'claim.reassign');
 $app->route('/claim/{claimId:\d+}/notified', App\Action\Claim\ConfirmNotifiedAction::class, ['GET', 'POST'], 'claim.confirm.notified');
-$app->post('/start-assisted-digital', App\Action\AssistedDigitalRedirectAction::class, 'assisted-digital.start');
+$app->route('/phone-claim', App\Action\AssistedDigitalRedirectAction::class, ['GET', 'POST'], 'phone-claim');
 $app->route('/notify', App\Action\NotifyAction::class, ['GET', 'POST'], 'notify');

@@ -5,6 +5,7 @@ namespace App\Action;
 use App\Form\PhoneClaim;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
 
 use App\Service\User\User as UserService;
@@ -14,7 +15,7 @@ use App\Service\AssistedDigital\LinkToken as LinkTokenGenerator;
  * Class ReportingAction
  * @package App\Action
  */
-class AssistedDigitalRedirectAction extends AbstractAction
+class AssistedDigitalRedirectAction extends AbstractModelAction
 {
     /**
      * @var LinkTokenGenerator
@@ -48,14 +49,25 @@ class AssistedDigitalRedirectAction extends AbstractAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return RedirectResponse
+     * @return HtmlResponse
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
     {
-        $session = $request->getAttribute('session');
-        $form = new PhoneClaim([
-            'csrf'  => $session['meta']['csrf'],
-        ]);
+        $form = $this->getForm($request);
+
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::phone-claim-page', [
+            'form'  => $form
+        ]));
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse|RedirectResponse
+     */
+    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $form = $this->getForm($request);
 
         $form->setData($request->getParsedBody());
 
@@ -79,6 +91,23 @@ class AssistedDigitalRedirectAction extends AbstractAction
             );
         }
 
-        return $this->redirectToRoute('home');
+        return new HtmlResponse($this->getTemplateRenderer()->render('app::phone-claim-page', [
+            'form'  => $form
+        ]));
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @return PhoneClaim
+     */
+    protected function getForm(ServerRequestInterface $request): PhoneClaim
+    {
+        $session = $request->getAttribute('session');
+
+        $form = new PhoneClaim([
+            'csrf'  => $session['meta']['csrf'],
+        ]);
+
+        return $form;
     }
 }

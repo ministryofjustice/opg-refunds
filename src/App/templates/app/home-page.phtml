@@ -3,7 +3,6 @@
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user
  * @var \App\Form\ProcessNewClaim $processNewClaimForm
- * @var \App\Form\PhoneClaim $phoneClaimForm
  */
 ?>
 
@@ -25,18 +24,7 @@
         <h2 class="heading-medium heading-refunds">Phone claim</h2>
         <p>Help a user with their claim</p>
 
-        <form method="post" class="form" action="<?= $this->generateUrl('assisted-digital.start') ?>" target="_blank">
-
-            <?php $this->insert('snippet::input-hidden', ['formElement' => $phoneClaimForm->get('secret')]) ?>
-
-            <?php $this->insert('snippet::input-select', [
-                'formElement' => $phoneClaimForm->get('type'),
-                'formLabel' => 'Reason for call'
-            ]) ?>
-
-            <input type='submit' class="button button-secondary" name='submit' value='Start phone claim'>
-
-        </form>
+        <a class="button button-secondary" href="<?= $this->generateUrl('phone-claim') ?>" target="_blank">Start phone claim</a>
     </div>
     <div class="column-four-fifths">
 
