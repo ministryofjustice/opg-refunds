@@ -819,13 +819,16 @@ class Claim
     /**
      * @param $claimId
      * @param $userId
+     * @throws InvalidInputException
      */
     public function setStatusWithdrawn($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
         $claimModel = $this->getClaimModel($userId, $claim);
 
-        $this->checkCanEdit($claim, $userId);
+        if (!$claimModel->canWithdrawClaim()) {
+            throw new InvalidInputException('You cannot withdraw this claim');
+        }
 
         $user = $this->getUser($userId);
 
