@@ -256,6 +256,15 @@ class Claim implements ApiClientInterface
         return $this->createDataModel($claimArray);
     }
 
+    public function setStatusWithdrawn(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'status' => ClaimModel::STATUS_WITHDRAWN
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
     public function changeClaimOutcome(int $claimId, string $reason)
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
