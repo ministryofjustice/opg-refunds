@@ -52,7 +52,7 @@ class ContactDetailsTest extends TestCase
         $values = $form->getData();
 
         $this->assertEquals( '07635860432', $values['phone'] );
-        $this->assertEquals( 'test@example.com', $values['email'] );
+        $this->assertEquals( 'test@eXample.com', $values['email'] );
     }
 
     public function testValidationWhenTogether()

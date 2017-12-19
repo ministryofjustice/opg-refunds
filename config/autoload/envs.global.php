@@ -110,7 +110,8 @@ return [
             'username' => getenv('OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME') ?: null,
             'password' => getenv('OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD') ?: null,
             'options' => [
-                PDO::ATTR_PERSISTENT => true
+                // Warning: RDS and ATTR_PERSISTENT are not friends.
+                PDO::ATTR_PERSISTENT => false
             ]
 
         ],
