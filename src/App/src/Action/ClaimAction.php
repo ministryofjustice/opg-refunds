@@ -107,6 +107,8 @@ class ClaimAction extends AbstractRestfulAction implements Initializer\LogSuppor
                 }
 
                 $this->claimService->setStatusDuplicate($claimId, $identity->getId(), IdentFormatter::parseId($requestBody['duplicateOfClaimId']));
+            } elseif ($status === ClaimModel::STATUS_WITHDRAWN) {
+                $this->claimService->setStatusWithdrawn($claimId, $identity->getId());
             }
         }
 
