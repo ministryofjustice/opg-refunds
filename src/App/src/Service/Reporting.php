@@ -79,7 +79,7 @@ class Reporting
 
         $sql = 'SELECT status, count(*) FROM claim WHERE status = :statusPending AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
-                SELECT status, count(*) FROM claim WHERE status IN (:statusDuplicate, :statusRejected, :statusAccepted) AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay GROUP BY status UNION ALL
+                SELECT status, count(*) FROM claim WHERE status IN (:statusDuplicate, :statusRejected, :statusAccepted, :statusWithdrawn) AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay UNION ALL
                 SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE n.created_datetime >= :startOfDay AND n.created_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
 
@@ -88,7 +88,8 @@ class Reporting
             'statusInProgress' => ClaimModel::STATUS_IN_PROGRESS,
             'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
             'statusRejected' => ClaimModel::STATUS_REJECTED,
-            'statusAccepted' => ClaimModel::STATUS_ACCEPTED
+            'statusAccepted' => ClaimModel::STATUS_ACCEPTED,
+            'statusWithdrawn' => ClaimModel::STATUS_WITHDRAWN
         ];
 
         $byDay = [];
@@ -178,6 +179,9 @@ class Reporting
         }
         if (empty($counts[ClaimModel::STATUS_ACCEPTED])) {
             $counts[ClaimModel::STATUS_ACCEPTED] = 0;
+        }
+        if (empty($counts[ClaimModel::STATUS_WITHDRAWN])) {
+            $counts[ClaimModel::STATUS_WITHDRAWN] = 0;
         }
         if (empty($counts['total'])) {
             $counts['total'] = 0;

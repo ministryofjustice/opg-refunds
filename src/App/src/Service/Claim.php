@@ -817,6 +817,36 @@ class Claim
     }
 
     /**
+     * @param $claimId
+     * @param $userId
+     */
+    public function setStatusWithdrawn($claimId, $userId)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        $this->checkCanEdit($claim, $userId);
+
+        $user = $this->getUser($userId);
+
+        $claim->setStatus(ClaimModel::STATUS_WITHDRAWN);
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedBy($user);
+        $claim->setFinishedDateTime(new DateTime());
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_WITHDRAWN,
+            "Caseworker withdrew the claim on behalf of the claimant"
+        );
+    }
+
+    /**
      * @param int $claimId
      * @param int $userId
      * @param bool $outcomeLetterSent
