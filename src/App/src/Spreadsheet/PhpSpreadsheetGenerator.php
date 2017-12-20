@@ -184,6 +184,46 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
             $rowIndex++;
         }
 
+        $queryParametersSheet = $spreadsheet->createSheet();
+
+        $queryParametersSheet->setCellValueByColumnAndRow(0, 1, 'Parameter');
+        $queryParametersSheet->setCellValueByColumnAndRow(1, 1, 'Value');
+
+        $rowIndex = 2;
+        foreach ($queryParameters as $parameter => $value) {
+            $queryParametersSheet->setCellValueByColumnAndRow(0, $rowIndex, $parameter);
+            $queryParametersSheet->setCellValueByColumnAndRow(1, $rowIndex, $value);
+
+            $rowIndex++;
+        }
+
+        $resultsSheet->setTitle('Results');
+
+        //Set header bold
+        $resultsSheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        //Autofilter
+        $resultsSheet->setAutoFilter($resultsSheet->calculateWorksheetDimension());
+
+        //Auto width columns
+        $resultsSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(2)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(3)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(4)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(5)->setAutoSize(true);
+
+        $queryParametersSheet->setTitle('Search parameters');
+
+        //Set header bold
+        $queryParametersSheet->getStyle('A1:B1')->getFont()->setBold(true);
+
+        //Auto width columns
+        $queryParametersSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
+        $queryParametersSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
+
+        $spreadsheet->setActiveSheetIndex(0);
+
         if ($fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLSX) {
             $writer = new XlsxWriter($spreadsheet);
             $writer->save($outputFilePath);
