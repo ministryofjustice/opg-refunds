@@ -21,7 +21,7 @@
         "guzzlehttp/guzzle": "^6.2",
         "league/json-guard": "^1.0",
         "league/json-reference": "^1.0",
-        "ministryofjustice/opg-refunds-logger": "^1.1",
+        "ministryofjustice/opg-refunds-logger": "^2.0",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "spomky-labs/base64url": "^1.0",
