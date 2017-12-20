@@ -142,9 +142,11 @@ class Claim
 
         $claimSummaries = [];
 
-        foreach ($queryBuilder as $claim) {
+        foreach ($queryBuilder->getQuery()->getResult() as $claim) {
             $claimSummaries[] = $this->translateToDataModel($claim, [], ClaimSummaryModel::class);
         }
+
+        return $claimSummaries;
     }
 
     /**

@@ -6,9 +6,12 @@ use App\Exception\InvalidInputException;
 use Exception;
 use InvalidArgumentException;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
+use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Psr\Http\Message\StreamInterface;
 
 class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
@@ -153,9 +156,40 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
      */
     public function getClaimSearchStream(string $fileFormat, array $claimSummaries, array $queryParameters)
     {
-        $tempFileName = SpreadsheetFileNameFormatter::getTempFileName($schema, $fileFormat);
+        $tempFileName = SpreadsheetFileNameFormatter::getTempFileName('Claim_Search', $fileFormat);
+        $outputFilePath = $this->tempFolder . $tempFileName;
+        if (file_exists($outputFilePath)) {
+            throw new InvalidArgumentException('Temp file alrady exists');
+        }
 
-        $outputFilePath = $this->generateFile($schema, $fileFormat, $tempFileName, $spreadsheetWorksheet);
+        $spreadsheet = new Spreadsheet();
+        $resultsSheet = $spreadsheet->getActiveSheet();
+
+        $resultsSheet->setCellValueByColumnAndRow(0, 1, 'Claim code');
+        $resultsSheet->setCellValueByColumnAndRow(1, 1, 'Donor name');
+        $resultsSheet->setCellValueByColumnAndRow(2, 1, 'Received');
+        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Finished');
+        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Assigned to/Finished by');
+        $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Status');
+
+        $rowIndex = 2;
+        foreach ($claimSummaries as $claimSummary) {
+            $resultsSheet->setCellValueByColumnAndRow(0, $rowIndex, $claimSummary->getReferenceNumber());
+            $resultsSheet->setCellValueByColumnAndRow(1, $rowIndex, $claimSummary->getDonorName());
+            $resultsSheet->setCellValueByColumnAndRow(2, $rowIndex, $claimSummary->getReceivedDateTime());
+            $resultsSheet->setCellValueByColumnAndRow(3, $rowIndex, $claimSummary->getFinishedDateTime());
+            $resultsSheet->setCellValueByColumnAndRow(4, $rowIndex, $claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName());
+            $resultsSheet->setCellValueByColumnAndRow(5, $rowIndex, StatusFormatter::getStatusText($claimSummary->getStatus()));
+
+            $rowIndex++;
+        }
+
+        if ($fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLSX) {
+            $writer = new XlsxWriter($spreadsheet);
+            $writer->save($outputFilePath);
+        } else {
+            throw new InvalidArgumentException('Supplied schema and file format is not supported');
+        }
 
         $handle = fopen($outputFilePath, 'r');
 

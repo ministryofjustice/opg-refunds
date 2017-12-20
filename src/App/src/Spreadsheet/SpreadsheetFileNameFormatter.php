@@ -25,7 +25,7 @@ class SpreadsheetFileNameFormatter
 
     public static function getClaimSearchFileName($fileFormat)
     {
-        $timestamp = date('d-M-Y_H-i', new DateTime());
+        $timestamp = date('d-M-Y_H-i', (new DateTime())->getTimestamp());
         $fileExtension = strtolower($fileFormat);
         return "Search_results_{$timestamp}.{$fileExtension}";
     }
