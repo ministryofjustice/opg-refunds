@@ -19,6 +19,7 @@ return [
             'claim.log',
             'claim.poa',
             'claim.search',
+            'claim.search.download',
             'user',
             'user.claim',
             'user.search',

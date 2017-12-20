@@ -36,34 +36,8 @@ class ClaimSearchAction extends AbstractRestfulAction
     {
         $queryParameters = $request->getQueryParams();
 
-        $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
-        $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
-        $search = isset($queryParameters['search']) ? $queryParameters['search'] : null;
-        $received = isset($queryParameters['received']) ? $queryParameters['received'] : null;
-        $finished = isset($queryParameters['finished']) ? $queryParameters['finished'] : null;
-        $assignedToFinishedById = isset($queryParameters['assignedToFinishedById'])
-            ? $queryParameters['assignedToFinishedById'] : null;
-        $statuses = isset($queryParameters['statuses']) ? explode(',', $queryParameters['statuses']) : null;
-        $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
-        $poaCaseNumbers = isset($queryParameters['poaCaseNumbers'])
-            ? explode(',', $queryParameters['poaCaseNumbers']) : null;
-        $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
-        $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
-
         //  Search claims
-        $claimSummaryPage = $this->claimService->search(
-            $page,
-            $pageSize,
-            $search,
-            $received,
-            $finished,
-            $assignedToFinishedById,
-            $statuses,
-            $accountHash,
-            $poaCaseNumbers,
-            $orderBy,
-            $sort
-        );
+        $claimSummaryPage = $this->claimService->search($queryParameters);
 
         return new JsonResponse($claimSummaryPage->getArrayCopy());
     }

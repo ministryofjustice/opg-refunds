@@ -77,34 +77,16 @@ class Claim
     /**
      * Search all claims
      *
-     * @param int|null $page
-     * @param int|null $pageSize
-     * @param string|null $search
-     * @param string|null $received
-     * @param string|null $finished
-     * @param int|null $assignedToFinishedById
-     * @param array|null $statuses
-     * @param string|null $accountHash
-     * @param array|null $poaCaseNumbers
-     * @param string|null $orderBy
-     * @param string|null $sort
+     * @param array $queryParameters
      * @return ClaimSummaryPage
      */
-    public function search(
-        int $page = null,
-        int $pageSize = null,
-        string $search = null,
-        string $received = null,
-        string $finished = null,
-        int $assignedToFinishedById = null,
-        array $statuses = null,
-        string $accountHash = null,
-        array $poaCaseNumbers = null,
-        string $orderBy = null,
-        string $sort = null
-    ) {
+    public function search(array $queryParameters)
+    {
         //TODO: Get proper migration running via cron job
         $this->applicationIngestionService->ingestAllApplication();
+
+        $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
+        $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
 
         if ($page === null) {
             $page = 1;
@@ -116,111 +98,12 @@ class Claim
             $pageSize = 50;
         }
 
-        $queryBuilder = $this->entityManager->createQueryBuilder()
-            ->select('c')
-            ->from('Cases:Claim', 'c');
-
-        $parameters = [];
-
-        if (isset($search)) {
-            $donorName = $search;
-            $claimId = IdentFormatter::parseId($search);
-
-            if ($claimId !== false) {
-                $queryBuilder->andWhere('c.id = :claimId');
-                $parameters['claimId'] = $claimId;
-            } else {
-                $queryBuilder->andWhere('LOWER(c.donorName) LIKE LOWER(:donorName)');
-                $parameters['donorName'] = "%{$donorName}%";
-            }
-        }
-
-        if (isset($received)) {
-            $receivedRange = explode('-', $received);
-
-            $receivedFrom = DateTime::createFromFormat('d/m/Y', $receivedRange[0]);
-            if ($receivedFrom instanceof DateTime) {
-                $receivedFrom->setTime(0, 0, 0);
-
-                $receivedTo = count($receivedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $receivedRange[1])
-                    : (clone $receivedFrom);
-                if ($receivedTo instanceof DateTime) {
-                    $receivedTo->add(new DateInterval('P1D'));
-                    $receivedTo->setTime(0, 0, 0);
-
-                    $queryBuilder->andWhere('c.receivedDateTime > :receivedFrom AND c.receivedDateTime < :receivedTo');
-                    $parameters['receivedFrom'] = $receivedFrom;
-                    $parameters['receivedTo'] = $receivedTo;
-                }
-            }
-        }
-
-        if (isset($finished)) {
-            $finishedRange = explode('-', $finished);
-
-            $finishedFrom = DateTime::createFromFormat('d/m/Y', $finishedRange[0]);
-            if ($finishedFrom instanceof DateTime) {
-                $finishedFrom->setTime(0, 0, 0);
-
-                $finishedTo = count($finishedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $finishedRange[1])
-                    : (clone $finishedFrom);
-                if ($finishedTo instanceof DateTime) {
-                    $finishedTo->add(new DateInterval('P1D'));
-                    $finishedTo->setTime(0, 0, 0);
-
-                    $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
-                    $parameters['finishedFrom'] = $finishedFrom;
-                    $parameters['finishedTo'] = $finishedTo;
-                }
-            }
-        }
-
-        if (isset($assignedToFinishedById)) {
-            $queryBuilder->addSelect('ua');
-            $queryBuilder->addSelect('uf');
-            $queryBuilder->leftJoin('c.assignedTo', 'ua');
-            $queryBuilder->leftJoin('c.finishedBy', 'uf');
-            $queryBuilder->andWhere('(ua.id = :assignedToFinishedById OR uf.id = :assignedToFinishedById)');
-            $parameters['assignedToFinishedById'] = $assignedToFinishedById;
-        }
-
-        if (isset($statuses)) {
-            $queryBuilder->andWhere('c.status IN (:statuses)');
-            $parameters['statuses'] = $statuses;
-        }
-
-        if (isset($accountHash)) {
-            $queryBuilder->andWhere('c.accountHash = :accountHash');
-            $parameters['accountHash'] = $accountHash;
-        }
-
-        if (isset($poaCaseNumbers)) {
-            $queryBuilder->leftJoin('c.poas', 'p');
-            $queryBuilder->andWhere('p.caseNumber IN (:poaCaseNumbers)');
-            $parameters['poaCaseNumbers'] = $poaCaseNumbers;
-        }
-
-        if (isset($orderBy)) {
-            $sort = strtoupper($sort ?: 'asc');
-
-            if ($orderBy === 'donor') {
-                $queryBuilder->orderBy('c.donorName', $sort);
-            } elseif ($orderBy === 'received') {
-                $queryBuilder->orderBy('c.receivedDateTime', $sort);
-            } elseif ($orderBy === 'modified') {
-                $queryBuilder->orderBy('c.updatedDateTime', $sort);
-            } elseif ($orderBy === 'finished') {
-                $queryBuilder->orderBy('c.finishedDateTime', $sort);
-            } elseif ($orderBy === 'status') {
-                $queryBuilder->orderBy('c.status', $sort);
-            }
-        }
+        $queryBuilder = $this->getSearchQueryBuilder($queryParameters);
 
         $offset = ($page - 1) * $pageSize;
 
         // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/tutorials/pagination.html
         $queryBuilder
-            ->setParameters($parameters)
             ->setFirstResult($offset)
             ->setMaxResults($pageSize);
 
@@ -244,6 +127,24 @@ class Claim
             ->setClaimSummaries($claimSummaries);
 
         return $claimSummaryPage;
+    }
+
+    /**
+     * Returns all claim summaries that match the search with no pagination.
+     * Should only be used to populate a spreadsheet
+     *
+     * @param array $queryParameters
+     * @return ClaimSummaryModel[]
+     */
+    public function searchAll(array $queryParameters)
+    {
+        $queryBuilder = $this->getSearchQueryBuilder($queryParameters);
+
+        $claimSummaries = [];
+
+        foreach ($queryBuilder as $claim) {
+            $claimSummaries[] = $this->translateToDataModel($claim, [], ClaimSummaryModel::class);
+        }
     }
 
     /**
@@ -1104,5 +1005,127 @@ class Claim
                 }
             }
         }
+    }
+
+    /**
+     * @param array $queryParameters
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    private function getSearchQueryBuilder(array $queryParameters): \Doctrine\ORM\QueryBuilder
+    {
+        $search = isset($queryParameters['search']) ? $queryParameters['search'] : null;
+        $received = isset($queryParameters['received']) ? $queryParameters['received'] : null;
+        $finished = isset($queryParameters['finished']) ? $queryParameters['finished'] : null;
+        $assignedToFinishedById = isset($queryParameters['assignedToFinishedById'])
+            ? $queryParameters['assignedToFinishedById'] : null;
+        $statuses = isset($queryParameters['statuses']) ? explode(',', $queryParameters['statuses']) : null;
+        $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
+        $poaCaseNumbers = isset($queryParameters['poaCaseNumbers'])
+            ? explode(',', $queryParameters['poaCaseNumbers']) : null;
+        $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
+        $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
+
+        $queryBuilder = $this->entityManager->createQueryBuilder()
+            ->select('c')
+            ->from('Cases:Claim', 'c');
+
+        $parameters = [];
+
+        if (isset($search)) {
+            $donorName = $search;
+            $claimId = IdentFormatter::parseId($search);
+
+            if ($claimId !== false) {
+                $queryBuilder->andWhere('c.id = :claimId');
+                $parameters['claimId'] = $claimId;
+            } else {
+                $queryBuilder->andWhere('LOWER(c.donorName) LIKE LOWER(:donorName)');
+                $parameters['donorName'] = "%{$donorName}%";
+            }
+        }
+
+        if (isset($received)) {
+            $receivedRange = explode('-', $received);
+
+            $receivedFrom = DateTime::createFromFormat('d/m/Y', $receivedRange[0]);
+            if ($receivedFrom instanceof DateTime) {
+                $receivedFrom->setTime(0, 0, 0);
+
+                $receivedTo = count($receivedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $receivedRange[1])
+                    : (clone $receivedFrom);
+                if ($receivedTo instanceof DateTime) {
+                    $receivedTo->add(new DateInterval('P1D'));
+                    $receivedTo->setTime(0, 0, 0);
+
+                    $queryBuilder->andWhere('c.receivedDateTime > :receivedFrom AND c.receivedDateTime < :receivedTo');
+                    $parameters['receivedFrom'] = $receivedFrom;
+                    $parameters['receivedTo'] = $receivedTo;
+                }
+            }
+        }
+
+        if (isset($finished)) {
+            $finishedRange = explode('-', $finished);
+
+            $finishedFrom = DateTime::createFromFormat('d/m/Y', $finishedRange[0]);
+            if ($finishedFrom instanceof DateTime) {
+                $finishedFrom->setTime(0, 0, 0);
+
+                $finishedTo = count($finishedRange) > 1 ? DateTime::createFromFormat('d/m/Y', $finishedRange[1])
+                    : (clone $finishedFrom);
+                if ($finishedTo instanceof DateTime) {
+                    $finishedTo->add(new DateInterval('P1D'));
+                    $finishedTo->setTime(0, 0, 0);
+
+                    $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    $parameters['finishedFrom'] = $finishedFrom;
+                    $parameters['finishedTo'] = $finishedTo;
+                }
+            }
+        }
+
+        if (isset($assignedToFinishedById)) {
+            $queryBuilder->addSelect('ua');
+            $queryBuilder->addSelect('uf');
+            $queryBuilder->leftJoin('c.assignedTo', 'ua');
+            $queryBuilder->leftJoin('c.finishedBy', 'uf');
+            $queryBuilder->andWhere('(ua.id = :assignedToFinishedById OR uf.id = :assignedToFinishedById)');
+            $parameters['assignedToFinishedById'] = $assignedToFinishedById;
+        }
+
+        if (isset($statuses)) {
+            $queryBuilder->andWhere('c.status IN (:statuses)');
+            $parameters['statuses'] = $statuses;
+        }
+
+        if (isset($accountHash)) {
+            $queryBuilder->andWhere('c.accountHash = :accountHash');
+            $parameters['accountHash'] = $accountHash;
+        }
+
+        if (isset($poaCaseNumbers)) {
+            $queryBuilder->leftJoin('c.poas', 'p');
+            $queryBuilder->andWhere('p.caseNumber IN (:poaCaseNumbers)');
+            $parameters['poaCaseNumbers'] = $poaCaseNumbers;
+        }
+
+        if (isset($orderBy)) {
+            $sort = strtoupper($sort ?: 'asc');
+
+            if ($orderBy === 'donor') {
+                $queryBuilder->orderBy('c.donorName', $sort);
+            } elseif ($orderBy === 'received') {
+                $queryBuilder->orderBy('c.receivedDateTime', $sort);
+            } elseif ($orderBy === 'modified') {
+                $queryBuilder->orderBy('c.updatedDateTime', $sort);
+            } elseif ($orderBy === 'finished') {
+                $queryBuilder->orderBy('c.finishedDateTime', $sort);
+            } elseif ($orderBy === 'status') {
+                $queryBuilder->orderBy('c.status', $sort);
+            }
+        }
+
+        $queryBuilder->setParameters($parameters);
+        return $queryBuilder;
     }
 }

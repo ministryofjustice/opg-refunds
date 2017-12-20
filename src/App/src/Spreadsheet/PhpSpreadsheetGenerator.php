@@ -5,6 +5,7 @@ namespace App\Spreadsheet;
 use App\Exception\InvalidInputException;
 use Exception;
 use InvalidArgumentException;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
@@ -142,5 +143,22 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         } catch (Exception $ex) {
             throw new InvalidInputException('Failed to parse uploaded spreadsheet');
         }
+    }
+
+    /**
+     * @param string $fileFormat The file format of the resulting stream e.g. XLSX
+     * @param ClaimSummary[] $claimSummaries
+     * @param array $queryParameters
+     * @return bool|resource a file pointer resource on success, or false on error.
+     */
+    public function getClaimSearchStream(string $fileFormat, array $claimSummaries, array $queryParameters)
+    {
+        $tempFileName = SpreadsheetFileNameFormatter::getTempFileName($schema, $fileFormat);
+
+        $outputFilePath = $this->generateFile($schema, $fileFormat, $tempFileName, $spreadsheetWorksheet);
+
+        $handle = fopen($outputFilePath, 'r');
+
+        return $handle;
     }
 }
