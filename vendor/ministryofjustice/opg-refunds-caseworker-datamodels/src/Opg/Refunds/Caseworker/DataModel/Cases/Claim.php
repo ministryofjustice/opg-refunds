@@ -28,7 +28,6 @@ class Claim extends AbstractDataModel
     const REJECTION_REASON_PREVIOUSLY_REFUNDED = 'previouslyRefunded';
     const REJECTION_REASON_NO_FEES_PAID = 'noFeesPaid';
     const REJECTION_REASON_CLAIM_NOT_VERIFIED = 'claimNotVerified';
-    const REJECTION_REASON_OTHER = 'other';
 
     /**
      * @var int
