@@ -748,7 +748,7 @@ class Claim
             $claimId,
             $userId,
             NoteModel::TYPE_CLAIM_WITHDRAWN,
-            "Caseworker withdrew the claim on behalf of the claimant"
+            "Administrator withdrew the claim on behalf of the claimant"
         );
     }
 
