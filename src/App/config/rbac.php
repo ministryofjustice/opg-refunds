@@ -40,7 +40,6 @@ return [
             'claim.approve',
             'claim.reject',
             'claim.duplicate',
-            'claim.withdraw',
             'claim.search',
             'claim.search.download',
             'claim.change.outcome',
@@ -63,6 +62,7 @@ return [
             'user.delete',
             'claim.change.outcome',
             'claim.reassign',
+            'claim.withdraw',
         ],
     ],
 ];
