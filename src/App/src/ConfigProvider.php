@@ -74,7 +74,7 @@ class ConfigProvider
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
-                Action\AssistedDigitalRedirectAction::class => Action\AssistedDigitalRedirectActionFactory::class,
+                Action\PhoneClaimAction::class => Action\PhoneClaimActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,

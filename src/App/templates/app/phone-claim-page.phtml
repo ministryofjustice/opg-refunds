@@ -1,0 +1,52 @@
+<?php
+use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
+use Opg\Refunds\Caseworker\DataModel\PhoneClaimTypeFormatter;
+
+$this->layout('layout::default', ['title' => 'Start phone claim'])
+
+/**
+ * @var \App\Form\PhoneClaim $form
+ */
+?>
+
+<h2 class="heading-medium heading-refunds">Start phone claim</h2>
+
+<div class="grid-row">
+    <div class="column-three-fifths">
+
+        <form method="post" class="form" target="_blank">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+            <?php $this->insert('snippet::input-multi', [
+                'formElement' => $form->get('type'),
+                'question' => 'Reason for the phone call',
+                'options' => [
+                    AssistedDigitalModel::TYPE_DONOR_DECEASED =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED)
+                    ],
+                    AssistedDigitalModel::TYPE_ASSISTED_DIGITAL =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL)
+                    ],
+                    AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE)
+                    ],
+                    AssistedDigitalModel::TYPE_DEPUTY =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY)
+                    ],
+                    AssistedDigitalModel::TYPE_CHEQUE =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE)
+                    ],
+                ],
+            ])
+            ?>
+
+            <div class="form-group">
+                <input type='submit' class="button" name='submit' value='Start phone claim'>
+                <a class="button button-link" href="<?= $this->generateUrl('home') ?>">Cancel</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>

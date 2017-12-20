@@ -43,7 +43,7 @@ return [
             'claim.search',
             'claim.change.outcome',
             'claim.confirm.notified',
-            'assisted-digital.start',
+            'phone-claim',
         ],
         User::ROLE_REPORTING => [
             'reporting',
