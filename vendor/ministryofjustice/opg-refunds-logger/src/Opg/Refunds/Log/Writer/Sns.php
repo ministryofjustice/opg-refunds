@@ -48,7 +48,6 @@ class Sns extends Writer\AbstractWriter implements Writer\WriterInterface
                         );
                     } catch (Throwable $e)
                     {
-                        throw $e;
                     }
 
                 } // if
@@ -56,7 +55,6 @@ class Sns extends Writer\AbstractWriter implements Writer\WriterInterface
             } // foreach
         } catch (Throwable $e)
         {
-            throw $e;
         }
 
     }
