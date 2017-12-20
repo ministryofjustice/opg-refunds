@@ -52,6 +52,7 @@ $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}[/{id:\d+}]', App\Act
 $app->post('/claim/{id:\d+}/poa/{system:sirius|meris}/none-found', App\Action\Poa\PoaNoneFoundAction::class, 'claim.poa.none.found');
 $app->route('/claim/{claimId:\d+}/poa/{system:sirius|meris}/{id:\d+}/delete', App\Action\Poa\PoaDeleteAction::class, ['GET', 'POST'], 'claim.poa.delete');
 $app->route('/claim/search', App\Action\Claim\ClaimSearchAction::class, ['GET', 'POST'], 'claim.search');
+$app->get('/claim/search/download', App\Action\Claim\ClaimSearchDownloadAction::class, 'claim.search.download');
 $app->route('/claim/{claimId:\d+}/change-outcome', App\Action\Claim\ClaimChangeOutcomeAction::class, ['GET', 'POST'], 'claim.change.outcome');
 $app->route('/claim/{claimId:\d+}/reassign', App\Action\Claim\ClaimReassignAction::class, ['GET', 'POST'], 'claim.reassign');
 $app->route('/claim/{claimId:\d+}/notified', App\Action\Claim\ConfirmNotifiedAction::class, ['GET', 'POST'], 'claim.confirm.notified');

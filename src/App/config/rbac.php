@@ -42,6 +42,7 @@ return [
             'claim.duplicate',
             'claim.withdraw',
             'claim.search',
+            'claim.search.download',
             'claim.change.outcome',
             'claim.confirm.notified',
             'assisted-digital.start',
