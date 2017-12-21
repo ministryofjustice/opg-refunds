@@ -5,9 +5,13 @@ namespace App\Spreadsheet;
 use App\Exception\InvalidInputException;
 use Exception;
 use InvalidArgumentException;
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
+use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Psr\Http\Message\StreamInterface;
 
 class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
@@ -142,5 +146,93 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         } catch (Exception $ex) {
             throw new InvalidInputException('Failed to parse uploaded spreadsheet');
         }
+    }
+
+    /**
+     * @param string $fileFormat The file format of the resulting stream e.g. XLSX
+     * @param ClaimSummary[] $claimSummaries
+     * @param array $queryParameters
+     * @return bool|resource a file pointer resource on success, or false on error.
+     */
+    public function getClaimSearchStream(string $fileFormat, array $claimSummaries, array $queryParameters)
+    {
+        $tempFileName = SpreadsheetFileNameFormatter::getTempFileName('Claim_Search', $fileFormat);
+        $outputFilePath = $this->tempFolder . $tempFileName;
+        if (file_exists($outputFilePath)) {
+            throw new InvalidArgumentException('Temp file alrady exists');
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $resultsSheet = $spreadsheet->getActiveSheet();
+
+        $resultsSheet->setCellValueByColumnAndRow(0, 1, 'Claim code');
+        $resultsSheet->setCellValueByColumnAndRow(1, 1, 'Donor name');
+        $resultsSheet->setCellValueByColumnAndRow(2, 1, 'Received');
+        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Finished');
+        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Assigned to/Finished by');
+        $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Status');
+
+        $rowIndex = 2;
+        foreach ($claimSummaries as $claimSummary) {
+            $resultsSheet->setCellValueByColumnAndRow(0, $rowIndex, $claimSummary->getReferenceNumber());
+            $resultsSheet->setCellValueByColumnAndRow(1, $rowIndex, $claimSummary->getDonorName());
+            $resultsSheet->setCellValueByColumnAndRow(2, $rowIndex, $claimSummary->getReceivedDateTime());
+            $resultsSheet->setCellValueByColumnAndRow(3, $rowIndex, $claimSummary->getFinishedDateTime());
+            $resultsSheet->setCellValueByColumnAndRow(4, $rowIndex, $claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName());
+            $resultsSheet->setCellValueByColumnAndRow(5, $rowIndex, StatusFormatter::getStatusText($claimSummary->getStatus()));
+
+            $rowIndex++;
+        }
+
+        $queryParametersSheet = $spreadsheet->createSheet();
+
+        $queryParametersSheet->setCellValueByColumnAndRow(0, 1, 'Parameter');
+        $queryParametersSheet->setCellValueByColumnAndRow(1, 1, 'Value');
+
+        $rowIndex = 2;
+        foreach ($queryParameters as $parameter => $value) {
+            $queryParametersSheet->setCellValueByColumnAndRow(0, $rowIndex, $parameter);
+            $queryParametersSheet->setCellValueByColumnAndRow(1, $rowIndex, $value);
+
+            $rowIndex++;
+        }
+
+        $resultsSheet->setTitle('Results');
+
+        //Set header bold
+        $resultsSheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        //Autofilter
+        $resultsSheet->setAutoFilter($resultsSheet->calculateWorksheetDimension());
+
+        //Auto width columns
+        $resultsSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(2)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(3)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(4)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(5)->setAutoSize(true);
+
+        $queryParametersSheet->setTitle('Search parameters');
+
+        //Set header bold
+        $queryParametersSheet->getStyle('A1:B1')->getFont()->setBold(true);
+
+        //Auto width columns
+        $queryParametersSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
+        $queryParametersSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
+
+        $spreadsheet->setActiveSheetIndex(0);
+
+        if ($fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLSX) {
+            $writer = new XlsxWriter($spreadsheet);
+            $writer->save($outputFilePath);
+        } else {
+            throw new InvalidArgumentException('Supplied schema and file format is not supported');
+        }
+
+        $handle = fopen($outputFilePath, 'r');
+
+        return $handle;
     }
 }

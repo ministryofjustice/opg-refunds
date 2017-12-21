@@ -2,6 +2,7 @@
 
 namespace App\Spreadsheet;
 
+use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
 use Psr\Http\Message\StreamInterface;
 
 interface ISpreadsheetGenerator
@@ -45,4 +46,12 @@ interface ISpreadsheetGenerator
      * @return array
      */
     public function getWorksheetData(StreamInterface $spreadsheetStream): array;
+
+    /**
+     * @param string $fileFormat The file format of the resulting stream e.g. XLSX
+     * @param ClaimSummary[] $claimSummaries
+     * @param array $queryParameters
+     * @return bool|resource a file pointer resource on success, or false on error.
+     */
+    public function getClaimSearchStream(string $fileFormat, array $claimSummaries, array $queryParameters);
 }
