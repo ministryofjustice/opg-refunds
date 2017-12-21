@@ -15,6 +15,7 @@ class Note extends AbstractDataModel
     const TYPE_CLAIM_DUPLICATE = 'claim_duplicate';
     const TYPE_CLAIM_REJECTED = 'claim_rejected';
     const TYPE_CLAIM_ACCEPTED = 'claim_accepted';
+    const TYPE_CLAIM_WITHDRAWN = 'claim_withdrawn';
     const TYPE_POA_ADDED = 'poa_added';
     const TYPE_POA_EDITED = 'poa_edited';
     const TYPE_POA_DELETED = 'poa_deleted';

@@ -79,6 +79,13 @@ Mandatory: claim
                     <span>Claim was resolved as a duplicate of<?php foreach ($claim->getDuplicateOfIds() as $duplicateOfId => $claimCode) { ?> <a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a><?php } ?> on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
                 </dd>
             </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_WITHDRAWN) { ?>
+            <div class="">
+                <dt class="details-term">Claim withdrawn</dt>
+                <dd class="details-definition">
+                    <span>Claim was withdrawn on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                </dd>
+            </div>
         <?php } ?>
 
         <?php if ($claim->getDuplicateClaimIds() !== null && count($claim->getDuplicateClaimIds()) > 0) { ?>

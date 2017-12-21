@@ -41,6 +41,7 @@ return [
             'claim.reject',
             'claim.duplicate',
             'claim.search',
+            'claim.search.download',
             'claim.change.outcome',
             'claim.confirm.notified',
             'phone-claim',
@@ -61,6 +62,7 @@ return [
             'user.delete',
             'claim.change.outcome',
             'claim.reassign',
+            'claim.withdraw',
         ],
     ],
 ];
