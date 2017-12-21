@@ -83,12 +83,7 @@ class Claim implements ApiClientInterface
     {
         $queryParameters = $this->getSearchQueryParameters($searchParameters);
 
-        $url = '/v1/claim/search';
-        if ($queryParameters) {
-            $url .= '?' . http_build_query($queryParameters);
-        }
-
-        $claimPageData = $this->getApiClient()->httpGet($url);
+        $claimPageData = $this->getApiClient()->httpGet('/v1/claim/search', $queryParameters);
         $claimSummaryPage = new ClaimSummaryPage($claimPageData);
 
         return $claimSummaryPage;
@@ -104,12 +99,7 @@ class Claim implements ApiClientInterface
     {
         $queryParameters = $this->getSearchQueryParameters($searchParameters);
 
-        $url = '/v1/claim/search/download';
-        if ($queryParameters) {
-            $url .= '?' . http_build_query($queryParameters);
-        }
-
-        $response = $this->getApiClient()->httpGetResponse($url);
+        $response = $this->getApiClient()->httpGetResponse('/v1/claim/search/download', $queryParameters);
 
         $fileContents = $response->getBody();
         $contentDisposition = $response->getHeaderLine('Content-Disposition');
