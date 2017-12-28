@@ -48,6 +48,8 @@ $app->get('/session-finished', App\Action\SessionFinishedAction::class, 'session
 $app->route('/when-were-fees-paid', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when');
 $app->route('/when-were-fees-paid/answer', App\Action\WhenFeesPaidAction::class, ['GET'], 'eligibility.when.answer');
 
+$app->get('/cookies-check', App\Action\CookiesCheckAction::class, 'cookies.check');
+
 //---
 
 $prefix = '/application';
