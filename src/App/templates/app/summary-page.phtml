@@ -71,11 +71,11 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Donor postcode',
-                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered (optional)'
             ],
             [
                 'label' => 'Attorney postcode',
-                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered (optional)'
             ]
         ],
         'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
@@ -86,11 +86,16 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Email address',
-                'value' => ($details['contact']['email']) ?? 'Not entered'
+                'value' => ($details['contact']['email']) ?? 'Not entered (optional)'
             ],
             [
                 'label' => 'Phone number',
-                'value' => ($details['contact']['phone']) ?? 'Not entered'
+                'value' => ($details['contact']['phone']) ?? 'Not entered (optional)'
+            ],
+            [
+                'value' => ($details['contact']['receive-notifications'])
+                    ? 'We will send you updates relating to your application.'
+                    : 'We will not send you any notifications.'
             ],
             [
                 'value' => isset($details['contact']['address']) ? $details['contact']['address'] : null,

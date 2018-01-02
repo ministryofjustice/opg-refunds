@@ -145,6 +145,9 @@ class ContactDetails extends AbstractForm
     {
         $result = parent::getData();
 
+        // Filter out empty values
+        $result = array_filter($result);
+
         $result["receive-notifications"] = (bool)($result["receive-notifications"] == "yes");
 
         unset($result["one-field-required"]);
