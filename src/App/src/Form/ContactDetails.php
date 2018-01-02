@@ -32,19 +32,16 @@ class ContactDetails extends AbstractForm
 
         //------------------------
 
-        $field = new Element\MultiCheckbox('contact-options');
-        $input = new Input($field->getName());
+        $notEmpty = new Validator\NotEmpty();
+        $notEmpty->setMessage('one-field-required', Validator\NotEmpty::IS_EMPTY);
 
-        $input->getValidatorChain()->attach(new Validator\NotEmpty);
+        // Form level input.
+        $input = new Input('one-field-required');
+        $input->getValidatorChain()->attach($notEmpty, true);
 
-        $field->setValueOptions([
-            'email' => 'email',
-            'phone' => 'phone',
-        ]);
+        $input->setRequired(true);
 
-        $this->add($field);
         $inputFilter->add($input);
-
 
         //------------------------
         // Email address field.
@@ -60,6 +57,8 @@ class ContactDetails extends AbstractForm
             ;
 
         //---
+
+        $input->setRequired(false);
 
         $emailValidator = new Validator\EmailAddress;
 
@@ -96,6 +95,21 @@ class ContactDetails extends AbstractForm
             ->attach(new Validator\NotEmpty, true)
             ->attach($this->getPhoneNumberValidator(), true);
 
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //------------------------
+        // Notification opt-out
+
+        $field = new Element\Checkbox('receive-notifications', [
+            'checked_value' => 'no',
+            'unchecked_value' => 'yes'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->setRequired(false);
 
         $this->add($field);
         $inputFilter->add($input);
@@ -103,6 +117,15 @@ class ContactDetails extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+    }
+
+    public function setData($data)
+    {
+        // If at least one field is passed, enter a value into the 'one-field-required' check.
+        $allFieldsEmpty = empty($data['email']) && empty($data['phone']);
+        $data['one-field-required'] = (!$allFieldsEmpty) ? 'valid' : '';
+
+        return parent::setData($data);
     }
 
     /**
@@ -114,5 +137,25 @@ class ContactDetails extends AbstractForm
         return (new Callback(function ($value) {
             return preg_match('/^[+]?[0-9]+$/', $value);
         }))->setMessage('phone-invalid', Callback::INVALID_VALUE);
+    }
+
+    //-----------------------------
+
+    public function getFormattedData()
+    {
+        $result = parent::getData();
+
+        $result["receive-notifications"] = (bool)($result["receive-notifications"] == "yes");
+
+        unset($result["one-field-required"]);
+
+        return $result;
+    }
+
+    public function setFormattedData(array $data)
+    {
+        $data["receive-notifications"] = ($data["receive-notifications"]) ? "yes" : "no";
+
+        return $this->setData($data);
     }
 }
