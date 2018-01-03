@@ -61,7 +61,7 @@ $this->addErrorMap([
                 (strlen($details['case-number']['poa-case-number']) == 12)
                     ? rtrim(chunk_split($details['case-number']['poa-case-number'], 4, '-'), '-')
                     : $details['case-number']['poa-case-number']
-                : 'Not entered (optional)' ]
+                : 'not entered (optional)' ]
         ],
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
@@ -71,11 +71,11 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Donor postcode',
-                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered (optional)'
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'not entered (optional)'
             ],
             [
                 'label' => 'Attorney postcode',
-                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered (optional)'
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'not entered (optional)'
             ]
         ],
         'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
@@ -86,16 +86,16 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Email address',
-                'value' => ($details['contact']['email']) ?? 'Not entered (optional)'
+                'value' => ($details['contact']['email']) ?? 'not entered (optional)'
             ],
             [
                 'label' => 'Phone number',
-                'value' => ($details['contact']['phone']) ?? 'Not entered (optional)'
+                'value' => ($details['contact']['phone']) ?? 'not entered (optional)'
             ],
             [
                 'value' => ($details['contact']['receive-notifications'])
-                    ? 'We will send you updates relating to your application.'
-                    : 'We will not send you any notifications.'
+                    ? 'We\'ll send you updates about your claim'
+                    : 'We won\'t send you updates about your claim'
             ],
             [
                 'value' => isset($details['contact']['address']) ? $details['contact']['address'] : null,
