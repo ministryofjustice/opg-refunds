@@ -26,6 +26,18 @@ class Contact extends AbstractDataModel
     protected $address;
 
     /**
+     * @var bool
+     */
+    protected $receiveNotifications;
+
+    public function __construct($data = null)
+    {
+        $this->receiveNotifications = true;
+
+        parent::__construct($data);
+    }
+
+    /**
      * @return string
      */
     public function getEmail()
@@ -104,5 +116,24 @@ class Contact extends AbstractDataModel
     public function hasAddress(): bool
     {
         return !empty($this->address);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReceiveNotifications(): bool
+    {
+        return $this->receiveNotifications;
+    }
+
+    /**
+     * @param bool $receiveNotifications
+     * @return $this
+     */
+    public function setReceiveNotifications(bool $receiveNotifications)
+    {
+        $this->receiveNotifications = $receiveNotifications;
+
+        return $this;
     }
 }
