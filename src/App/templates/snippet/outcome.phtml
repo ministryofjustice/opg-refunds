@@ -105,6 +105,7 @@ Mandatory: claim
         <div class="">
             <dt class="details-term">Notifications</dt>
             <dd class="details-definition">
+                <?php if ($claim->getApplication()->getContact()->isReceiveNotifications()) { ?>
                 <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
                     <span>None sent</span>
                     <?php if ($claim->shouldSendLetter()) { ?>
@@ -124,6 +125,9 @@ Mandatory: claim
                 <?php } ?>
                 <?php if ($claim->isOutcomePhoneCalled()) { ?>
                     <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
+                <?php } ?>
+                <?php } else { ?>
+                    <span>Claimant has opted out of notifications</span>
                 <?php } ?>
             </dd>
         </div>
