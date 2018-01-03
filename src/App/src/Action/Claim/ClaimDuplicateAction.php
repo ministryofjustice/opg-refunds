@@ -2,12 +2,9 @@
 
 namespace App\Action\Claim;
 
-use Alphagov\Notifications\Client as NotifyClient;
 use Api\Exception\ApiException;
 use App\Form\AbstractForm;
 use App\Form\ClaimDuplicate;
-use App\Service\Claim\Claim as ClaimService;
-use App\View\Details\DetailsFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
@@ -22,22 +19,6 @@ use RuntimeException;
  */
 class ClaimDuplicateAction extends AbstractClaimAction
 {
-    /**
-     * @var NotifyClient
-     */
-    private $notifyClient;
-
-    /**
-     * ClaimDuplicateAction constructor
-     * @param ClaimService $claimService
-     * @param NotifyClient $notifyClient
-     */
-    public function __construct(ClaimService $claimService, NotifyClient $notifyClient)
-    {
-        parent::__construct($claimService);
-        $this->notifyClient = $notifyClient;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
