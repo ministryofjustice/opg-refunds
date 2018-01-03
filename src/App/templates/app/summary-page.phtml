@@ -61,7 +61,7 @@ $this->addErrorMap([
                 (strlen($details['case-number']['poa-case-number']) == 12)
                     ? rtrim(chunk_split($details['case-number']['poa-case-number'], 4, '-'), '-')
                     : $details['case-number']['poa-case-number']
-                : 'Not entered' ]
+                : 'Not entered (optional)' ]
         ],
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
