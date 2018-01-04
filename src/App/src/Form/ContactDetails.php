@@ -135,7 +135,16 @@ class ContactDetails extends AbstractForm
     private function getPhoneNumberValidator() : ValidatorInterface
     {
         return (new Callback(function ($value) {
-            return preg_match('/^[+]?[0-9]+$/', $value);
+
+            if (!preg_match('/^[+]?[0-9]+$/', $value)){
+                return false;
+            }
+
+            // Standardise number
+            $number = preg_replace('/^[+]?[0]*44/', '0', $value);
+
+            // Check it's a mobile number.
+            return preg_match('/^07/', $number) && !preg_match('/^070/', $number);
         }))->setMessage('phone-invalid', Callback::INVALID_VALUE);
     }
 
