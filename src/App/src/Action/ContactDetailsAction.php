@@ -89,6 +89,8 @@ class ContactDetailsAction extends AbstractAction
                 'address' => $form->getData()['address']
             ];
 
+            $session['contact']['receive-notifications'] = true;
+
             return new Response\RedirectResponse(
                 $this->getUrlHelper()->generate(
                     FlowController::getNextRouteName($session)
