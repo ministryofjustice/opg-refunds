@@ -65,7 +65,7 @@ class ClaimChangeOutcomeAction extends AbstractClaimAction
                     throw new RuntimeException('Failed to change outcome claim with id: ' . $this->modelId);
                 }
 
-                $this->setFlashInfoMessage($request, 'Claim outcome changed. Status changed to pending');
+                $this->setFlashInfoMessage($request, 'Claim outcome changed. Status changed to in progress');
 
                 return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
             } catch (ApiException $ex) {
