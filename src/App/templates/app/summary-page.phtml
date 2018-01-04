@@ -61,7 +61,7 @@ $this->addErrorMap([
                 (strlen($details['case-number']['poa-case-number']) == 12)
                     ? rtrim(chunk_split($details['case-number']['poa-case-number'], 4, '-'), '-')
                     : $details['case-number']['poa-case-number']
-                : 'Not entered' ]
+                : 'Not entered (optional)' ]
         ],
         'changeURL' => $this->url('apply.case', ['who'=>$applicant])
     ]) ?>
@@ -71,11 +71,11 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Donor postcode',
-                'value' => ($details['postcodes']['donor-postcode']) ?? 'Not entered'
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'not entered (optional)'
             ],
             [
                 'label' => 'Attorney postcode',
-                'value' => ($details['postcodes']['attorney-postcode']) ?? 'Not entered'
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'not entered (optional)'
             ]
         ],
         'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
@@ -86,11 +86,16 @@ $this->addErrorMap([
         'fields' => [
             [
                 'label' => 'Email address',
-                'value' => ($details['contact']['email']) ?? 'Not entered'
+                'value' => ($details['contact']['email']) ?? 'not entered (optional)'
             ],
             [
                 'label' => 'Phone number',
-                'value' => ($details['contact']['phone']) ?? 'Not entered'
+                'value' => ($details['contact']['phone']) ?? 'not entered (optional)'
+            ],
+            [
+                'value' => ($details['contact']['receive-notifications'])
+                    ? 'We\'ll send you updates about your claim'
+                    : 'We won\'t send you updates about your claim'
             ],
             [
                 'value' => isset($details['contact']['address']) ? $details['contact']['address'] : null,

@@ -45,7 +45,7 @@ class ContactDetailsAction extends AbstractAction
                 $result = $this->processAssistedDigitalForm($adForm, $session);
             } else {
                 $form->setData($data);
-                $result = $this->processStandardForm($form, $data, $session);
+                $result = $this->processStandardForm($form, $session);
             }
 
             if (!is_null($result)) {
@@ -56,7 +56,7 @@ class ContactDetailsAction extends AbstractAction
             if (isset($session['contact']['address'])) {
                 $adForm->setData($session['contact']);
             } else {
-                $form->setData($session['contact']);
+                $form->setFormattedData($session['contact']);
             }
         }
 
@@ -67,24 +67,10 @@ class ContactDetailsAction extends AbstractAction
         ]));
     }
 
-    private function processStandardForm(Form\ContactDetails $form, array $data, Session $session)
+    private function processStandardForm(Form\ContactDetails $form, Session $session)
     {
-        $fields = array_keys($form->getElements() + $form->getFieldsets());
-
-        // Remove these values (initially)
-        $fields = array_diff($fields, ['email', 'phone']);
-
-        $key = 'contact-options';
-        if (isset($data[$key]) && is_array($data[$key]) && count($data[$key]) > 0
-        ) {
-            // Add back in the selected postcode fields.
-            $fields = array_merge($fields, $data[$key]);
-        }
-
-        $form->setValidationGroup($fields);
-
         if ($form->isValid()) {
-            $session['contact'] = $form->getData();
+            $session['contact'] = $form->getFormattedData();
 
             return new Response\RedirectResponse(
                 $this->getUrlHelper()->generate(
@@ -102,6 +88,8 @@ class ContactDetailsAction extends AbstractAction
             $session['contact'] = [
                 'address' => $form->getData()['address']
             ];
+
+            $session['contact']['receive-notifications'] = true;
 
             return new Response\RedirectResponse(
                 $this->getUrlHelper()->generate(

@@ -66,7 +66,9 @@ class ProcessApplicationTest extends TestCase
                     ]
                 ],
             ],
-            'contact' => [],
+            'contact' => [
+                'receive-notifications' => true
+            ],
             'expected' => '12 weeks',
         ];
     }
@@ -194,6 +196,30 @@ class ProcessApplicationTest extends TestCase
 
         $this->notifyClient->sendSms(
             Argument::type('string'),
+            Argument::type('string'),
+            Argument::type('array'))->shouldNotBeCalled();
+
+        $processor->process($data);
+    }
+
+    public function testWithMobileAndEmailButNoNotifications()
+    {
+        $processor = $this->getInstance();
+
+        $data = $this->getTestData();
+
+        $data['contact']['receive-notifications'] = false;
+
+        $data['contact']['phone'] = '07811111111';
+        $data['contact']['email'] = 'test@example.com';
+
+        $this->notifyClient->sendEmail(
+            $data['contact']['email'],
+            Argument::type('string'),
+            Argument::type('array'))->shouldNotBeCalled();
+
+        $this->notifyClient->sendSms(
+            $data['contact']['phone'],
             Argument::type('string'),
             Argument::type('array'))->shouldNotBeCalled();
 

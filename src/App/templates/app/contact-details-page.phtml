@@ -32,11 +32,11 @@ $this->addErrorMap([
     'phone' => [
         'required' => [
             'summary'   => 'You haven\'t given your phone number',
-            'field'     => 'Enter your phone number'
+            'field'     => 'Enter your mobile number'
         ],
         'phone-invalid' => [
             'summary'   => 'Check your phone number',
-            'field'     => 'Enter a valid phone number'
+            'field'     => 'Enter a valid mobile number'
         ]
     ],
     'address' => [
@@ -57,43 +57,51 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$adForm ]) ?>
 <?php $this->stop() ?>
 
-<p>We will use these details to:</p>
-
-<ul class="list list-bullet">
-    <li>send you email or text message updates about the refund</li>
-    <li>contact you if we need more information</li> 
-</ul>
+<p>We need your email address or mobile phone number in order to process your claim.</p>
 
 <form action="" method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
-    
-    <?php $this->insert('snippet::input-checkboxes', [
-        'formElement' => $form->get('contact-options'),
-        'question' => 'What contact details can you give?',
-        'options' => [
-            'email' => [
-                'optionLabel' => "Email",
-                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
-                    'formElement' => $form->get('email'),
-                    'formLabel' => 'Email address',
-                    'formType' => 'email',
-                    'formLabelBold' => true,
-                    'additionFormControlClass' => 'form-control-3-4'
-                ])
-            ],
-            'phone' => [
-                'optionLabel' => "Mobile number",
-                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
-                    'formElement' => $form->get('phone'),
-                    'formLabel' => 'Phone number',
-                    'formType' => 'tel',
-                    'formLabelBold' => true
-                ])
-            ]
-        ],
-    ])
-    ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('email'),
+        'formLabel' => 'Email address',
+        'formType' => 'email',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('phone'),
+        'formLabel' => 'Mobile number',
+        'formType' => 'tel',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+
+    <p>We'll only contact you to confirm that we've received your claim and to let you know if your claim has been approved or rejected.</p>
+
+    <p>We won't send you marketing messages or share your contact details with anyone else.</p>
+
+    <div class="form-group">
+        <div class="multiple-choice" data-target="notification-warning">
+            <?php $element = $form->get('receive-notifications'); ?>
+            <input type="hidden" value="yes" name="<?= $element->getName(); ?>">
+            <input
+                id="receive-notifications-checkbox"
+                name="<?= $element->getName(); ?>"
+                type="checkbox"
+                value="no"
+                <?= ($element->getValue()=='no') ? ' checked="checked"' : '' ?>
+            >
+            <label for="receive-notifications-checkbox">I don’t want updates</label>
+        </div>
+
+        <div class="panel panel-border-narrow js-hidden" id="notification-warning">
+            <p>We won't be able to confirm that we've received your claim or let you know if your claim has been approved or rejected.</p>
+        </div>
+    </div>
 
     <div class="form-group">
         <input type="submit" class="button" value="Continue">

@@ -26,17 +26,25 @@ $this->layout('layout::default', [
 
         <p>We now have your refund claim for <?= $this->e($name) ?>.</p>
 
-        <?php if (!empty($contact['email'])): ?>
-            <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
-        <?php endif ?>
+        <?php if ($contact['receive-notifications']): ?>
 
-        <?php if (!empty($contact['phone'])): ?>
-
-            <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
-
-            <?php if ($phone->isMobile()): ?>
-                <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+            <?php if (!empty($contact['email'])): ?>
+                <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
             <?php endif ?>
+
+            <?php if (!empty($contact['phone'])): ?>
+
+                <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
+
+                <?php if ($phone->isMobile()): ?>
+                    <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+                <?php endif ?>
+
+            <?php endif ?>
+
+        <?php else: ?>
+
+            <p>As you asked us not to contact you, we won't send you any updates about your claim.</p>
 
         <?php endif ?>
 
