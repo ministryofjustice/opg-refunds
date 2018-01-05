@@ -128,6 +128,25 @@ $this->addErrorMap([
         ?>
 
         <div class="form-group">
+            <div class="multiple-choice" data-target="notification-warning-ad">
+                <?php $element = $adForm->get('receive-notifications'); ?>
+                <input type="hidden" value="yes" name="<?= $element->getName(); ?>">
+                <input
+                    id="receive-notifications-checkbox-ad"
+                    name="<?= $element->getName(); ?>"
+                    type="checkbox"
+                    value="no"
+                    <?= ($element->getValue()=='no') ? ' checked="checked"' : '' ?>
+                >
+                <label for="receive-notifications-checkbox-ad">They don’t want updates</label>
+            </div>
+
+            <div class="panel panel-border-narrow js-hidden" id="notification-warning-ad">
+                <p>We won't be able to confirm that we've received their claim or let you know if your claim has been approved or rejected.</p>
+            </div>
+        </div>
+
+        <div class="form-group">
             <input type="submit" class="button" value="Continue">
         </div>
 

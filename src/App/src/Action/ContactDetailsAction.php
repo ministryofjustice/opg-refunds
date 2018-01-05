@@ -54,7 +54,7 @@ class ContactDetailsAction extends AbstractAction
 
         } elseif ($isUpdate) {
             if (isset($session['contact']['address'])) {
-                $adForm->setData($session['contact']);
+                $adForm->setFormattedData($session['contact']);
             } else {
                 $form->setFormattedData($session['contact']);
             }
@@ -85,11 +85,7 @@ class ContactDetailsAction extends AbstractAction
     private function processAssistedDigitalForm(Form\ContactAddress $form, Session $session)
     {
         if ($form->isValid()) {
-            $session['contact'] = [
-                'address' => $form->getData()['address']
-            ];
-
-            $session['contact']['receive-notifications'] = true;
+            $session['contact'] = $form->getFormattedData();
 
             return new Response\RedirectResponse(
                 $this->getUrlHelper()->generate(
