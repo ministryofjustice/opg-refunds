@@ -35,7 +35,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
         // Remove unwanted data
         unset($data['meta']);
         unset($data['case-number']['have-poa-case-number']);
-        unset($data['contact']['contact-options']);
         unset($data['postcodes']['postcode-options']);
         unset($data['donor']['poa']['different-name-on-poa']);
 
@@ -79,64 +78,69 @@ class ProcessApplication implements Initializer\LogSupportInterface
         $name = implode(' ', $data['donor']['current']['name']);
         $contact = $data['contact'];
 
-        /*
-            The logic is:
-                Only email entered - We send them just an email
-                Only mobile number entered - We send them just an SMS
-                Email and landline entered - We send them just an email
-                Email and mobile entered - We send them an email and SMS
-                Only landline number entered - We don't send a notification.
-         */
+        // If we are sending notifications...
+        if ($contact['receive-notifications']) {
 
-        try {
             /*
-             * If an email address was set, we always send them oan email.
+                The logic is:
+                    Only email entered - We send them just an email
+                    Only mobile number entered - We send them just an SMS
+                    Email and landline entered - We send them just an email
+                    Email and mobile entered - We send them an email and SMS
+                    Only landline number entered - We don't send a notification.
              */
-            if (isset($contact['email']) && !empty($contact['email'])) {
-                // Send email...
-                $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
-                    'claim-code' => IdentFormatter::format($reference),
-                    'processed-by-date' => date('j F Y', strtotime($data['expected'])),
-                    'donor-name' => $name,
-                ]);
-            }
-        } catch (ApiException $e) {
-            $this->getLogger()->alert(
-                'Unable to send email via Notify',
-                [
-                    'exception' => $e->getMessage(),
-                    'notify-message' => (string)$e->getResponse()->getBody()
-                ]
-            );
-        }
 
-        //---
-
-        try {
-            /*
-             * If a mobile number was entered, we send a SMS message.
-             */
-            if (isset($contact['phone']) && !empty($contact['phone'])) {
-                $phone = new PhoneNumber($contact['phone']);
-
-                if ($phone->isMobile()) {
-                    // Send SMS...
-                    $this->notifyClient->sendSms($phone->get(), 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+            try {
+                /*
+                 * If an email address was set, we always send them oan email.
+                 */
+                if (isset($contact['email']) && !empty($contact['email'])) {
+                    // Send email...
+                    $this->notifyClient->sendEmail($contact['email'], '45e51dad-9269-4b77-816d-77202514c5e9', [
                         'claim-code' => IdentFormatter::format($reference),
                         'processed-by-date' => date('j F Y', strtotime($data['expected'])),
                         'donor-name' => $name,
                     ]);
                 }
+            } catch (ApiException $e) {
+                $this->getLogger()->alert(
+                    'Unable to send email via Notify',
+                    [
+                        'exception' => $e->getMessage(),
+                        'notify-message' => (string)$e->getResponse()->getBody()
+                    ]
+                );
             }
-        } catch (ApiException $e) {
-            $this->getLogger()->alert(
-                'Unable to send SMS via Notify',
-                [
-                    'exception' => $e->getMessage(),
-                    'notify-message' => (string)$e->getResponse()->getBody()
-                ]
-            );
-        }
+
+            //---
+
+            try {
+                /*
+                 * If a mobile number was entered, we send a SMS message.
+                 */
+                if (isset($contact['phone']) && !empty($contact['phone'])) {
+                    $phone = new PhoneNumber($contact['phone']);
+
+                    if ($phone->isMobile()) {
+                        // Send SMS...
+                        $this->notifyClient->sendSms($phone->get(), 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
+                            'claim-code' => IdentFormatter::format($reference),
+                            'processed-by-date' => date('j F Y', strtotime($data['expected'])),
+                            'donor-name' => $name,
+                        ]);
+                    }
+                }
+            } catch (ApiException $e) {
+                $this->getLogger()->alert(
+                    'Unable to send SMS via Notify',
+                    [
+                        'exception' => $e->getMessage(),
+                        'notify-message' => (string)$e->getResponse()->getBody()
+                    ]
+                );
+            }
+
+        } // if receive-notifications
 
         //---
 

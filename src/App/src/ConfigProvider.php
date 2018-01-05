@@ -52,6 +52,7 @@ class ConfigProvider
                 Action\CookiesPageAction::class => Action\CookiesPageAction::class,
                 Action\ExceptionAction::class => Action\ExceptionAction::class,
                 Action\ContactUsAction::class => Action\ContactUsAction::class,
+                Action\CookiesCheckAction::class => Action\CookiesCheckAction::class,
 
                 // Middleware
                 Middleware\CacheControlMiddleware::class =>  Middleware\CacheControlMiddleware::class,

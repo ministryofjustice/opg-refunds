@@ -195,6 +195,10 @@
           "type": "string",
           "pattern": "^[+]?[0-9]+$"
         },
+        "receive-notifications": {
+          "description": "Applicant to receive notifications.",
+          "type": "boolean"
+        },
         "address": {
           "description": "Applicant's postal address.",
           "type": "string",
