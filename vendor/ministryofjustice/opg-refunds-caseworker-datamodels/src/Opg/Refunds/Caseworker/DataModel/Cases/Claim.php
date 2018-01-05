@@ -1062,7 +1062,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeEmailSent() && $contact->hasEmail();
+        return $contact->isReceiveNotifications() && !$this->isOutcomeEmailSent() && $contact->hasEmail();
     }
 
     /**
@@ -1072,7 +1072,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeTextSent()
+        return $contact->isReceiveNotifications() && !$this->isOutcomeTextSent()
             && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07';
     }
 
@@ -1083,7 +1083,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeLetterSent()
+        return $contact->isReceiveNotifications() && !$this->isOutcomeLetterSent()
             && !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
     }
 
@@ -1094,7 +1094,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomePhoneCalled()
+        return $contact->isReceiveNotifications() && !$this->isOutcomePhoneCalled()
             && !$contact->hasEmail()
             && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
             && !$contact->hasAddress();
