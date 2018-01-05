@@ -116,9 +116,6 @@ class Notify implements Initializer\LogSupportInterface
                 ];
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_DUPLICATE) {
                 $successful = $this->sendDuplicateNotification($claimModel, $claimEntity, $userId);
-
-                //TODO: REMOVE. For now pretend that duplicate emails don't need sending. Remove when we have the text for duplicate emails
-                $notified['total']--;
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_REJECTED) {
                 $successful = $this->sendRejectionNotification($claimModel, $claimEntity, $userId);
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_ACCEPTED) {
@@ -160,7 +157,59 @@ class Notify implements Initializer\LogSupportInterface
     {
         $successful = false;
 
-        //TODO: Send duplicate email when notification template has been finalised
+        $contact = $claimModel->getApplication()->getContact();
+        $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
+            $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+            : $claimModel->getDonorName();
+
+        if ($claimModel->shouldSendEmail()) {
+            try {
+                $this->notifyClient->sendEmail($contact->getEmail(), 'a77309f1-2354-4a1b-ab2f-022a79d9f106', [
+                    'person-completing' => $contactName,
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
+                ]);
+
+                $this->getLogger()->info("Successfully sent duplicate claim email for claim {$claimModel->getReferenceNumber()}");
+
+                $this->claimService->addNote(
+                    $claimModel->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_DUPLICATE_EMAIL_SENT,
+                    'Successfully sent duplicate claim email to ' . $contact->getEmail()
+                );
+
+                $claimEntity->setOutcomeEmailSent(true);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->crit("Failed to send duplicate claim email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
+        }
+
+        if ($claimModel->shouldSendText()) {
+            try {
+                $this->notifyClient->sendSms($contact->getPhone(), 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4', [
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
+                ]);
+
+                $this->getLogger()->info("Successfully sent duplicate claim text for claim {$claimModel->getReferenceNumber()}");
+
+                $this->claimService->addNote(
+                    $claimModel->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_DUPLICATE_TEXT_SENT,
+                    'Successfully sent duplicate claim text to ' . $contact->getPhone()
+                );
+
+                $claimEntity->setOutcomeTextSent(true);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
+        }
 
         return $successful;
     }
