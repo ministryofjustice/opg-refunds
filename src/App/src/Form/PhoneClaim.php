@@ -5,8 +5,7 @@ namespace App\Form;
 use App\Filter\StandardInput as StandardInputFilter;
 use App\Validator;
 use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
-use Opg\Refunds\Caseworker\DataModel\PhoneClaimTypeFormatter;
-use Zend\Form\Element\Select;
+use Zend\Form\Element\Radio;
 use Zend\InputFilter\Input;
 use Zend\InputFilter\InputFilter;
 
@@ -27,7 +26,7 @@ class PhoneClaim extends AbstractForm
         $this->addCsrfElement($inputFilter);
 
         //  Type selection
-        $field = new Select('type');
+        $field = new Radio('type');
         $input = new Input($field->getName());
 
         $input->getFilterChain()
@@ -39,16 +38,11 @@ class PhoneClaim extends AbstractForm
         $input->setRequired(true);
 
         $field->setValueOptions([
-            AssistedDigitalModel::TYPE_DONOR_DECEASED =>
-                PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED),
-            AssistedDigitalModel::TYPE_ASSISTED_DIGITAL =>
-                PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL),
-            AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE =>
-                PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE),
-            AssistedDigitalModel::TYPE_DEPUTY =>
-                PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY),
-            AssistedDigitalModel::TYPE_CHEQUE =>
-                PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE)
+            AssistedDigitalModel::TYPE_DONOR_DECEASED      => AssistedDigitalModel::TYPE_DONOR_DECEASED,
+            AssistedDigitalModel::TYPE_ASSISTED_DIGITAL    => AssistedDigitalModel::TYPE_ASSISTED_DIGITAL,
+            AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE => AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE,
+            AssistedDigitalModel::TYPE_DEPUTY              => AssistedDigitalModel::TYPE_DEPUTY,
+            AssistedDigitalModel::TYPE_CHEQUE              => AssistedDigitalModel::TYPE_CHEQUE
         ]);
 
         $this->add($field);

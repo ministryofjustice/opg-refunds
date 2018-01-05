@@ -79,34 +79,7 @@ class ClaimSearchAction extends AbstractAction
             }
         }
 
-        $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
-        $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
-        $search = isset($searchParameters['search']) ? $searchParameters['search'] : null;
-        $received = isset($searchParameters['received']) ? $searchParameters['received'] : null;
-        $finished = isset($searchParameters['finished']) ? $searchParameters['finished'] : null;
-        $assignedToFinishedById = isset($searchParameters['assignedToFinishedById'])
-            && is_numeric($searchParameters['assignedToFinishedById']) ?
-            (int)$searchParameters['assignedToFinishedById'] : null;
-        $statuses = isset($searchParameters['statuses']) ? $searchParameters['statuses'] : null;
-        $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
-        $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ?
-            explode(',', $searchParameters['poaCaseNumbers']) : null;
-        $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
-        $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
-
-        $claimSummaryPage = $this->claimService->searchClaims(
-            $page,
-            $pageSize,
-            $search,
-            $received,
-            $finished,
-            $assignedToFinishedById,
-            $statuses,
-            $accountHash,
-            $poaCaseNumbers,
-            $orderBy,
-            $sort
-        );
+        $claimSummaryPage = $this->claimService->searchClaims($searchParameters);
 
         //  Unset page so it isn't added to search links
         unset($searchParameters['page']);

@@ -17,7 +17,7 @@ Mandatory: claim
     <h2 id="administrator-functions" class="heading-medium heading-refunds">Administrator</h2>
     <dl class="details">
 
-        <?php if(!$claim->canChangeOutcome() && !$claim->canReassignClaim()) { ?>
+        <?php if(!$claim->canChangeOutcome() && !$claim->canWithdrawClaim() && !$claim->canReassignClaim()) { ?>
             <div class="">
                 <dd class="details-definition">
                     No available administrator functions
@@ -25,12 +25,17 @@ Mandatory: claim
             </div>
         <?php } ?>
 
-        <?php if($claim->canChangeOutcome()) { ?>
+        <?php if($claim->canChangeOutcome() || $claim->canWithdrawClaim()) { ?>
 
             <div class="">
                 <dt class="details-term">Outcome</dt>
                 <dd class="details-definition">
-                    <a class="button button-secondary" href="<?= $this->generateUrl('claim.change.outcome', ['claimId' => $claim->getId()]) ?>">Change claim outcome</a>
+                    <?php if ($claim->canChangeOutcome()) { ?>
+                        <a class="button button-secondary" href="<?= $this->generateUrl('claim.change.outcome', ['claimId' => $claim->getId()]) ?>">Change claim outcome</a>
+                    <?php } ?>
+                    <?php if ($claim->canWithdrawClaim()) { ?>
+                        <a class="button button-secondary" href="<?= $this->generateUrl('claim.withdraw', ['claimId' => $claim->getId()]) ?>">Withdraw claim</a>
+                    <?php } ?>
                 </dd>
             </div>
 

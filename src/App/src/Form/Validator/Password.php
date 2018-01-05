@@ -13,16 +13,18 @@ use Zend\Validator\StringLength;
  */
 class Password extends AbstractValidator
 {
-    const TOO_SHORT               = 'tooShort';
-    const MUST_INCLUDE_DIGIT      = 'mustIncludeDigit';
-    const MUST_INCLUDE_LOWER_CASE = 'mustIncludeLowerCase';
-    const MUST_INCLUDE_UPPER_CASE = 'mustIncludeUpperCase';
+    const TOO_SHORT                      = 'tooShort';
+    const MUST_INCLUDE_DIGIT             = 'mustIncludeDigit';
+    const MUST_INCLUDE_LOWER_CASE        = 'mustIncludeLowerCase';
+    const MUST_INCLUDE_UPPER_CASE        = 'mustIncludeUpperCase';
+    const MUST_INCLUDE_SPECIAL_CHARACTER = 'mustIncludeSpecialCharacter';
 
     protected $messageTemplates = [
-        self::TOO_SHORT               => 'too-short',
-        self::MUST_INCLUDE_DIGIT      => 'must-include-digit',
-        self::MUST_INCLUDE_LOWER_CASE => 'must-include-lower-case',
-        self::MUST_INCLUDE_UPPER_CASE => 'must-include-upper-case',
+        self::TOO_SHORT                      => 'too-short',
+        self::MUST_INCLUDE_DIGIT             => 'must-include-digit',
+        self::MUST_INCLUDE_LOWER_CASE        => 'must-include-lower-case',
+        self::MUST_INCLUDE_UPPER_CASE        => 'must-include-upper-case',
+        self::MUST_INCLUDE_SPECIAL_CHARACTER => 'must-include-special-character',
     ];
 
     /**
@@ -62,6 +64,14 @@ class Password extends AbstractValidator
 
         if (!$regExValidator->isValid($value)) {
             $this->error(self::MUST_INCLUDE_UPPER_CASE);
+            $isValid = false;
+        }
+
+        //  Check that a special character has been provided
+        $regExValidator = new Regex('/.*[^A-Za-z0-9].*/');
+
+        if (!$regExValidator->isValid($value)) {
+            $this->error(self::MUST_INCLUDE_SPECIAL_CHARACTER);
             $isValid = false;
         }
 

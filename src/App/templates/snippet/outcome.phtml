@@ -79,6 +79,13 @@ Mandatory: claim
                     <span>Claim was resolved as a duplicate of<?php foreach ($claim->getDuplicateOfIds() as $duplicateOfId => $claimCode) { ?> <a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a><?php } ?> on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
                 </dd>
             </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_WITHDRAWN) { ?>
+            <div class="">
+                <dt class="details-term">Claim withdrawn</dt>
+                <dd class="details-definition">
+                    <span>Claim was withdrawn on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                </dd>
+            </div>
         <?php } ?>
 
         <?php if ($claim->getDuplicateClaimIds() !== null && count($claim->getDuplicateClaimIds()) > 0) { ?>
@@ -98,25 +105,29 @@ Mandatory: claim
         <div class="">
             <dt class="details-term">Notifications</dt>
             <dd class="details-definition">
-                <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
-                    <span>None sent</span>
-                    <?php if ($claim->shouldSendLetter()) { ?>
-                        <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm letter sent</a></p>
-                    <?php } elseif ($claim->shouldPhone()) { ?>
-                        <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm phone called</a></p>
+                <?php if ($claim->getApplication()->getContact()->isReceiveNotifications()) { ?>
+                    <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
+                        <span>None sent</span>
+                        <?php if ($claim->shouldSendLetter()) { ?>
+                            <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm letter sent</a></p>
+                        <?php } elseif ($claim->shouldPhone()) { ?>
+                            <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm phone called</a></p>
+                        <?php } ?>
                     <?php } ?>
-                <?php } ?>
-                <?php if ($claim->isOutcomeEmailSent()) { ?>
-                    <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
-                <?php } ?>
-                <?php if ($claim->isOutcomeTextSent()) { ?>
-                    <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
-                <?php } ?>
-                <?php if ($claim->isOutcomeLetterSent()) { ?>
-                    <span><?= $this->e($this->getOutcomeLetterDescription($claim)) ?></span>
-                <?php } ?>
-                <?php if ($claim->isOutcomePhoneCalled()) { ?>
-                    <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
+                    <?php if ($claim->isOutcomeEmailSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeTextSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeLetterSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeLetterDescription($claim)) ?></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomePhoneCalled()) { ?>
+                        <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
+                    <?php } ?>
+                <?php } else { ?>
+                    <span>Claimant has opted out of notifications</span>
                 <?php } ?>
             </dd>
         </div>

@@ -41,9 +41,10 @@ return [
             'claim.reject',
             'claim.duplicate',
             'claim.search',
+            'claim.search.download',
             'claim.change.outcome',
             'claim.confirm.notified',
-            'assisted-digital.start',
+            'phone-claim',
         ],
         User::ROLE_REPORTING => [
             'reporting',
@@ -61,6 +62,7 @@ return [
             'user.delete',
             'claim.change.outcome',
             'claim.reassign',
+            'claim.withdraw',
         ],
     ],
 ];

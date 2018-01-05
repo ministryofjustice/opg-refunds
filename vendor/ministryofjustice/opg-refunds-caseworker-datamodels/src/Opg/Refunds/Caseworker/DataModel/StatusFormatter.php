@@ -27,6 +27,8 @@ class StatusFormatter
                 return 'Rejected';
             case ClaimModel::STATUS_ACCEPTED:
                 return 'Accepted';
+            case ClaimModel::STATUS_WITHDRAWN:
+                return 'Withdrawn';
             default:
                 return 'Unknown';
         }

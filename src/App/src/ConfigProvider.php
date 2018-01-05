@@ -54,9 +54,11 @@ class ConfigProvider
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
                 Action\Claim\ClaimChangeOutcomeAction::class => Action\Claim\ClaimChangeOutcomeActionFactory::class,
                 Action\Claim\ClaimDuplicateAction::class => Action\Claim\ClaimDuplicateActionFactory::class,
+                Action\Claim\ClaimWithdrawAction::class => Action\Claim\ClaimWithdrawActionFactory::class,
                 Action\Claim\ClaimReassignAction::class => Action\Claim\ClaimReassignActionFactory::class,
                 Action\Claim\ClaimRejectAction::class => Action\Claim\ClaimRejectActionFactory::class,
                 Action\Claim\ClaimSearchAction::class => Action\Claim\ClaimSearchActionFactory::class,
+                Action\Claim\ClaimSearchDownloadAction::class => Action\Claim\ClaimSearchDownloadActionFactory::class,
                 Action\Claim\ConfirmNotifiedAction::class => Action\Claim\ConfirmNotifiedActionFactory::class,
                 Action\Home\HomeAction::class => Action\Home\HomeActionFactory::class,
                 Action\Password\PasswordChangeAction::class => Action\Password\PasswordChangeActionFactory::class,
@@ -74,7 +76,7 @@ class ConfigProvider
                 Action\User\UserAction::class => Action\User\UserActionFactory::class,
                 Action\User\UserDeleteAction::class => Action\User\UserDeleteActionFactory::class,
                 Action\User\UserUpdateAction::class => Action\User\UserUpdateActionFactory::class,
-                Action\AssistedDigitalRedirectAction::class => Action\AssistedDigitalRedirectActionFactory::class,
+                Action\PhoneClaimAction::class => Action\PhoneClaimActionFactory::class,
 
                 // Middleware
                 Middleware\Authorization\AuthorizationMiddleware::class => Middleware\Authorization\AuthorizationMiddlewareFactory::class,

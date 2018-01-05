@@ -40,9 +40,6 @@ $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
             ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED => [
                 'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED)
             ],
-            ClaimModel::REJECTION_REASON_OTHER => [
-                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_OTHER)
-            ],
         ],
     ])
     ?>

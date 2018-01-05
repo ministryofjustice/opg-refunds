@@ -2,22 +2,23 @@
 
 namespace App\Action\Claim;
 
+use Alphagov\Notifications\Client as NotifyClient;
 use App\Service\Claim\Claim as ClaimService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimDuplicateActionFactory
+ * Class ClaimWithdrawActionFactory
  * @package App\Action\Claim
  */
-class ClaimDuplicateActionFactory
+class ClaimWithdrawActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimDuplicateAction
+     * @return ClaimWithdrawAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimDuplicateAction(
+        return new ClaimWithdrawAction(
             $container->get(ClaimService::class)
         );
     }

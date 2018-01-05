@@ -36,6 +36,8 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'Claim rejected';
             case NoteModel::TYPE_CLAIM_ACCEPTED:
                 return 'Claim accepted';
+            case NoteModel::TYPE_CLAIM_WITHDRAWN:
+                return 'Claim withdrawn';
             case NoteModel::TYPE_POA_ADDED:
                 return 'POA added';
             case NoteModel::TYPE_POA_EDITED:

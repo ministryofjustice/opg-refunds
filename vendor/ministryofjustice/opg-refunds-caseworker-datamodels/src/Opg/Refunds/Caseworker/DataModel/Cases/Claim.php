@@ -23,12 +23,12 @@ class Claim extends AbstractDataModel
     const STATUS_DUPLICATE = 'duplicate';
     const STATUS_REJECTED = 'rejected';
     const STATUS_ACCEPTED = 'accepted';
+    const STATUS_WITHDRAWN = 'withdrawn';
 
     const REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND = 'noEligiblePoasFound';
     const REJECTION_REASON_PREVIOUSLY_REFUNDED = 'previouslyRefunded';
     const REJECTION_REASON_NO_FEES_PAID = 'noFeesPaid';
     const REJECTION_REASON_CLAIM_NOT_VERIFIED = 'claimNotVerified';
-    const REJECTION_REASON_OTHER = 'other';
 
     /**
      * @var int
@@ -1015,7 +1015,8 @@ class Claim extends AbstractDataModel
     {
         return ($this->getStatus() === ClaimModel::STATUS_ACCEPTED && $this->getPayment() === null)
             || $this->getStatus() === ClaimModel::STATUS_REJECTED
-            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE
+            || $this->getStatus() === ClaimModel::STATUS_WITHDRAWN;
     }
 
     /**
@@ -1038,11 +1039,20 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function canWithdrawClaim(): bool
+    {
+        return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * @return bool
+     */
     public function isClaimResolved(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_ACCEPTED
             || $this->getStatus() === ClaimModel::STATUS_REJECTED
-            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE;
+            || $this->getStatus() === ClaimModel::STATUS_DUPLICATE
+            || $this->getStatus() === ClaimModel::STATUS_WITHDRAWN;
     }
 
     /**
@@ -1052,7 +1062,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeEmailSent() && $contact->hasEmail();
+        return $contact->isReceiveNotifications() && !$this->isOutcomeEmailSent() && $contact->hasEmail();
     }
 
     /**
@@ -1062,7 +1072,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeTextSent()
+        return $contact->isReceiveNotifications() && !$this->isOutcomeTextSent()
             && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07';
     }
 
@@ -1073,7 +1083,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomeLetterSent()
+        return $contact->isReceiveNotifications() && !$this->isOutcomeLetterSent()
             && !$contact->hasEmail() && !$contact->hasPhone() && $contact->hasAddress();
     }
 
@@ -1084,7 +1094,7 @@ class Claim extends AbstractDataModel
     {
         $contact = $this->getApplication()->getContact();
 
-        return !$this->isOutcomePhoneCalled()
+        return $contact->isReceiveNotifications() && !$this->isOutcomePhoneCalled()
             && !$contact->hasEmail()
             && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
             && !$contact->hasAddress();

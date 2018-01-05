@@ -76,76 +76,41 @@ class Claim implements ApiClientInterface
     /**
      * Search claims
      *
-     * @param int|null $page
-     * @param int|null $pageSize
-     * @param string|null $search
-     * @param string|null $received
-     * @param string|null $finished
-     * @param int|null $assignedToFinishedById
-     * @param string|null $statuses
-     * @param string|null $accountHash
-     * @param array|null $poaCaseNumbers
-     * @param string|null $orderBy
-     * @param string|null $sort
+     * @param array $searchParameters
      * @return ClaimSummaryPage
      */
-    public function searchClaims(
-        int $page = null,
-        int $pageSize = null,
-        string $search = null,
-        string $received = null,
-        string $finished = null,
-        int $assignedToFinishedById = null,
-        string $statuses = null,
-        string $accountHash = null,
-        array $poaCaseNumbers = null,
-        string $orderBy = null,
-        string $sort = null
-    ) {
-        $queryParameters = [];
-        if ($page != null) {
-            $queryParameters['page'] = $page;
-        }
-        if ($pageSize != null) {
-            $queryParameters['pageSize'] = $pageSize;
-        }
-        if ($received != null) {
-            $queryParameters['received'] = $received;
-        }
-        if ($finished != null) {
-            $queryParameters['finished'] = $finished;
-        }
-        if ($search != null) {
-            $queryParameters['search'] = $search;
-        }
-        if ($assignedToFinishedById != null) {
-            $queryParameters['assignedToFinishedById'] = $assignedToFinishedById;
-        }
-        if ($statuses != null) {
-            $queryParameters['statuses'] = $statuses;
-        }
-        if ($accountHash != null) {
-            $queryParameters['accountHash'] = $accountHash;
-        }
-        if ($poaCaseNumbers != null) {
-            $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
-        }
-        if ($orderBy != null) {
-            $queryParameters['orderBy'] = $orderBy;
-        }
-        if ($sort != null) {
-            $queryParameters['sort'] = $sort;
-        }
+    public function searchClaims(array $searchParameters)
+    {
+        $queryParameters = $this->getSearchQueryParameters($searchParameters);
 
-        $url = '/v1/claim/search';
-        if ($queryParameters) {
-            $url .= '?' . http_build_query($queryParameters);
-        }
-
-        $claimPageData = $this->getApiClient()->httpGet($url);
+        $claimPageData = $this->getApiClient()->httpGet('/v1/claim/search', $queryParameters);
         $claimSummaryPage = new ClaimSummaryPage($claimPageData);
 
         return $claimSummaryPage;
+    }
+
+    /**
+     * Download all the claim summaries specified by the search parameters in a spreadsheet
+     *
+     * @param array $searchParameters
+     * @return array containing spreadsheet stream
+     */
+    public function getSearchClaimsSpreadsheet(array $searchParameters)
+    {
+        $queryParameters = $this->getSearchQueryParameters($searchParameters);
+
+        $response = $this->getApiClient()->httpGetResponse('/v1/claim/search/download', $queryParameters);
+
+        $fileContents = $response->getBody();
+        $contentDisposition = $response->getHeaderLine('Content-Disposition');
+        $fileName = substr($contentDisposition, strpos($contentDisposition, '=') + 1);
+        $contentLength = $response->getHeaderLine('Content-Length');
+
+        return [
+            'stream' => $fileContents,
+            'name'   => $fileName,
+            'length' => $contentLength
+        ];
     }
 
     /**
@@ -256,6 +221,15 @@ class Claim implements ApiClientInterface
         return $this->createDataModel($claimArray);
     }
 
+    public function setStatusWithdrawn(int $claimId)
+    {
+        $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
+            'status' => ClaimModel::STATUS_WITHDRAWN
+        ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
     public function changeClaimOutcome(int $claimId, string $reason)
     {
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
@@ -342,5 +316,63 @@ class Claim implements ApiClientInterface
         };
 
         return $models;
+    }
+
+    /**
+     * @param array $searchParameters
+     * @return array
+     */
+    private function getSearchQueryParameters(array $searchParameters): array
+    {
+        $page = isset($searchParameters['page']) ? $searchParameters['page'] : null;
+        $pageSize = isset($searchParameters['pageSize']) ? $searchParameters['pageSize'] : null;
+        $search = isset($searchParameters['search']) ? $searchParameters['search'] : null;
+        $received = isset($searchParameters['received']) ? $searchParameters['received'] : null;
+        $finished = isset($searchParameters['finished']) ? $searchParameters['finished'] : null;
+        $assignedToFinishedById = isset($searchParameters['assignedToFinishedById'])
+        && is_numeric($searchParameters['assignedToFinishedById']) ?
+            (int)$searchParameters['assignedToFinishedById'] : null;
+        $statuses = isset($searchParameters['statuses']) ? $searchParameters['statuses'] : null;
+        $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
+        $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ?
+            explode(',', $searchParameters['poaCaseNumbers']) : null;
+        $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
+        $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
+
+        $queryParameters = [];
+        if ($page != null) {
+            $queryParameters['page'] = $page;
+        }
+        if ($pageSize != null) {
+            $queryParameters['pageSize'] = $pageSize;
+        }
+        if ($received != null) {
+            $queryParameters['received'] = $received;
+        }
+        if ($finished != null) {
+            $queryParameters['finished'] = $finished;
+        }
+        if ($search != null) {
+            $queryParameters['search'] = $search;
+        }
+        if ($assignedToFinishedById != null) {
+            $queryParameters['assignedToFinishedById'] = $assignedToFinishedById;
+        }
+        if ($statuses != null) {
+            $queryParameters['statuses'] = $statuses;
+        }
+        if ($accountHash != null) {
+            $queryParameters['accountHash'] = $accountHash;
+        }
+        if ($poaCaseNumbers != null) {
+            $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
+        }
+        if ($orderBy != null) {
+            $queryParameters['orderBy'] = $orderBy;
+        }
+        if ($sort != null) {
+            $queryParameters['sort'] = $sort;
+        }
+        return $queryParameters;
     }
 }

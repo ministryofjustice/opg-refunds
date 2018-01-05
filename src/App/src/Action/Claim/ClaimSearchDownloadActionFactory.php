@@ -3,21 +3,22 @@
 namespace App\Action\Claim;
 
 use App\Service\Claim\Claim as ClaimService;
+use App\Service\User\User as UserService;
 use Interop\Container\ContainerInterface;
 
 /**
- * Class ClaimDuplicateActionFactory
+ * Class ClaimSearchDownloadActionFactory
  * @package App\Action\Claim
  */
-class ClaimDuplicateActionFactory
+class ClaimSearchDownloadActionFactory
 {
     /**
      * @param ContainerInterface $container
-     * @return ClaimDuplicateAction
+     * @return ClaimSearchDownloadAction
      */
     public function __invoke(ContainerInterface $container)
     {
-        return new ClaimDuplicateAction(
+        return new ClaimSearchDownloadAction(
             $container->get(ClaimService::class)
         );
     }

@@ -51,12 +51,13 @@ class ClaimSearch extends AbstractForm
 
         $field->setValueOptions([
             '' => 'All',
-            join(',', [ClaimModel::STATUS_DUPLICATE, ClaimModel::STATUS_REJECTED, ClaimModel::STATUS_ACCEPTED]) => 'Completed',
+            join(',', [ClaimModel::STATUS_DUPLICATE, ClaimModel::STATUS_REJECTED, ClaimModel::STATUS_ACCEPTED, ClaimModel::STATUS_WITHDRAWN]) => 'Completed',
             ClaimModel::STATUS_PENDING => StatusFormatter::getStatusText(ClaimModel::STATUS_PENDING),
             ClaimModel::STATUS_IN_PROGRESS => StatusFormatter::getStatusText(ClaimModel::STATUS_IN_PROGRESS),
             ClaimModel::STATUS_DUPLICATE => StatusFormatter::getStatusText(ClaimModel::STATUS_DUPLICATE),
             ClaimModel::STATUS_REJECTED => StatusFormatter::getStatusText(ClaimModel::STATUS_REJECTED),
-            ClaimModel::STATUS_ACCEPTED => StatusFormatter::getStatusText(ClaimModel::STATUS_ACCEPTED)
+            ClaimModel::STATUS_ACCEPTED => StatusFormatter::getStatusText(ClaimModel::STATUS_ACCEPTED),
+            ClaimModel::STATUS_WITHDRAWN => StatusFormatter::getStatusText(ClaimModel::STATUS_WITHDRAWN)
         ]);
 
         $this->add($field);

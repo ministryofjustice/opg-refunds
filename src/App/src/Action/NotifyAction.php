@@ -99,9 +99,9 @@ class NotifyAction extends AbstractModelAction
                 }
             }
 
-            $this->setFlashInfoMessage($request, $message, $lettersCount > 0);
+            $this->setFlashInfoMessage($request, $message, $lettersCount > 0 || $phoneCallsCount > 0);
 
-            if ($lettersCount === 0) {
+            if ($lettersCount === 0 && $phoneCallsCount === 0) {
                 return $this->redirectToRoute('notify');
             }
         }
