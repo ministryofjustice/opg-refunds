@@ -2,6 +2,8 @@
 
 namespace App\Spreadsheet;
 
+use DateTime;
+
 class SpreadsheetFileNameFormatter
 {
     public static function getFileName($schema, $fileFormat, $dateString)
@@ -19,5 +21,12 @@ class SpreadsheetFileNameFormatter
         $fileExtension = strtolower($fileFormat);
 
         return "$fileName.$fileExtension";
+    }
+
+    public static function getClaimSearchFileName($fileFormat)
+    {
+        $timestamp = date('d-M-Y_H-i-s', (new DateTime())->getTimestamp());
+        $fileExtension = strtolower($fileFormat);
+        return "Search_results_{$timestamp}.{$fileExtension}";
     }
 }

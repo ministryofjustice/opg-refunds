@@ -47,18 +47,22 @@ class Notify implements Initializer\LogSupportInterface
         //Plus any accepted claims with a payment. They will have been added to the SOP1 spreadsheet
         $sql = 'SELECT id, finished_datetime FROM claim
                 WHERE outcome_email_sent IS NOT TRUE
+                AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NOT NULL UNION
                 SELECT id, finished_datetime FROM claim
                 WHERE outcome_text_sent IS NOT TRUE
+                AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\' UNION
                 SELECT id, finished_datetime FROM claim
                 WHERE outcome_letter_sent IS NOT TRUE
+                AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND json_data->\'contact\'->\'address\' IS NOT NULL UNION
                 SELECT id, finished_datetime FROM claim
                 WHERE outcome_phone_called IS NOT TRUE
+                AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'address\' IS NULL
                 AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' NOT LIKE \'07%\'
@@ -112,16 +116,8 @@ class Notify implements Initializer\LogSupportInterface
                 ];
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_DUPLICATE) {
                 $successful = $this->sendDuplicateNotification($claimModel, $claimEntity, $userId);
-
-                //TODO: REMOVE. For now pretend that duplicate emails don't need sending. Remove when we have the text for duplicate emails
-                $notified['total']--;
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_REJECTED) {
                 $successful = $this->sendRejectionNotification($claimModel, $claimEntity, $userId);
-
-                if (!$successful && $claimModel->getRejectionReason() === ClaimModel::REJECTION_REASON_OTHER) {
-                    //TODO: REMOVE. For now pretend that rejection reason 'other' emails don't need sending. Remove when we have decided what to do with the 'other' option
-                    $notified['total']--;
-                }
             } elseif ($claimModel->getStatus() === ClaimModel::STATUS_ACCEPTED) {
                 $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
@@ -161,7 +157,59 @@ class Notify implements Initializer\LogSupportInterface
     {
         $successful = false;
 
-        //TODO: Send duplicate email when notification template has been finalised
+        $contact = $claimModel->getApplication()->getContact();
+        $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
+            $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
+            : $claimModel->getDonorName();
+
+        if ($claimModel->shouldSendEmail()) {
+            try {
+                $this->notifyClient->sendEmail($contact->getEmail(), 'a77309f1-2354-4a1b-ab2f-022a79d9f106', [
+                    'person-completing' => $contactName,
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
+                ]);
+
+                $this->getLogger()->info("Successfully sent duplicate claim email for claim {$claimModel->getReferenceNumber()}");
+
+                $this->claimService->addNote(
+                    $claimModel->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_DUPLICATE_EMAIL_SENT,
+                    'Successfully sent duplicate claim email to ' . $contact->getEmail()
+                );
+
+                $claimEntity->setOutcomeEmailSent(true);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->crit("Failed to send duplicate claim email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
+        }
+
+        if ($claimModel->shouldSendText()) {
+            try {
+                $this->notifyClient->sendSms($contact->getPhone(), 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4', [
+                    'donor-name' => $claimModel->getDonorName(),
+                    'claim-code' => $claimModel->getReferenceNumber()
+                ]);
+
+                $this->getLogger()->info("Successfully sent duplicate claim text for claim {$claimModel->getReferenceNumber()}");
+
+                $this->claimService->addNote(
+                    $claimModel->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_DUPLICATE_TEXT_SENT,
+                    'Successfully sent duplicate claim text to ' . $contact->getPhone()
+                );
+
+                $claimEntity->setOutcomeTextSent(true);
+
+                $successful = true;
+            } catch (Exception $ex) {
+                $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
+            }
+        }
 
         return $successful;
     }
@@ -197,7 +245,6 @@ class Notify implements Initializer\LogSupportInterface
                 $emailPersonalisation['details-not-verified'] = 'yes';
                 $smsTemplate = '2bb54224-0cab-44b9-9623-fd12f6ee6e77';
                 break;
-            case ClaimModel::REJECTION_REASON_OTHER:
             default:
                 $sendRejectionMessage = false;
         }

@@ -37,6 +37,7 @@ $app->route('/v1/claim/{id:\d+}', App\Action\ClaimAction::class, ['GET', 'PATCH'
 $app->route('/v1/claim/{claimId:\d+}/note[/{id:\d+}]', App\Action\ClaimNoteAction::class, ['GET', 'POST'], 'claim.log');
 $app->route('/v1/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
 $app->get('/v1/claim/search', App\Action\ClaimSearchAction::class, 'claim.search');
+$app->get('/v1/claim/search/download', App\Action\ClaimSearchDownloadAction::class, 'claim.search.download');
 $app->route('/v1/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');
 $app->route('/v1/user/{id:\d+}/claim[/{claimId:\d+}]', App\Action\UserClaimAction::class, ['GET', 'PUT', 'DELETE'], 'user.claim');
 $app->get('/v1/user/search', App\Action\UserSearchAction::class, 'user.search');

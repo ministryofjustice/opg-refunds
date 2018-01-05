@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c0a9461cf6812d06b2f41b42081f9ce3",
+    "content-hash": "52db0003e67afa31d6ee446158795fe0",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -1211,16 +1211,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "1.9.0",
+            "version": "1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "fb5230f0fe639d93ba0b3ba4173f8417b13966fb"
+                "reference": "541c281fe503c359913922cfe698fe65bba4bc3f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/fb5230f0fe639d93ba0b3ba4173f8417b13966fb",
-                "reference": "fb5230f0fe639d93ba0b3ba4173f8417b13966fb",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/541c281fe503c359913922cfe698fe65bba4bc3f",
+                "reference": "541c281fe503c359913922cfe698fe65bba4bc3f",
                 "shasum": ""
             },
             "require": {
@@ -1240,23 +1240,23 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.9.0",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.12",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2017-12-08T11:09:34+00:00"
+            "time": "2018-01-05T15:17:08+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
-            "version": "v1.1.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-logger.git",
-                "reference": "84fb465fa7eddd22e47c46de8111a46cf54cacfa"
+                "reference": "a4a078325213712392f948fee254c3e05dcc4760"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/84fb465fa7eddd22e47c46de8111a46cf54cacfa",
-                "reference": "84fb465fa7eddd22e47c46de8111a46cf54cacfa",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/a4a078325213712392f948fee254c3e05dcc4760",
+                "reference": "a4a078325213712392f948fee254c3e05dcc4760",
                 "shasum": ""
             },
             "require": {
@@ -1286,10 +1286,10 @@
             ],
             "description": "Common logging component for OPG Refunds",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/v1.1.0",
+                "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/2.0.0",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
             },
-            "time": "2017-09-28T12:47:32+00:00"
+            "time": "2017-12-08T11:48:29+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
