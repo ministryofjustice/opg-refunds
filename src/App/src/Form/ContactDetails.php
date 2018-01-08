@@ -33,7 +33,6 @@ class ContactDetails extends AbstractForm
         //------------------------
 
         $notEmpty = new Validator\NotEmpty();
-        $notEmpty->setMessage('one-field-required', Validator\NotEmpty::IS_EMPTY);
 
         // Form level input.
         $input = new Input('one-field-required');
