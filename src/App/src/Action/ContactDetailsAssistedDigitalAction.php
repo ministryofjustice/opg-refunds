@@ -23,7 +23,7 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
 
         $session = $request->getAttribute('session');
 
-        $isUpdate = isset($session['contact']['address']);
+        $isUpdate = isset($session['contact']);
 
         //---
 
@@ -48,7 +48,24 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
 
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
+        } else {
+            // If here, pre-populate with Donor's current address.
+
+            $address = $session['donor']['current']['address']['address-1'];
+
+            $address.= (!empty($session['donor']['current']['address']['address-2'])) ?
+                "\n".$session['donor']['current']['address']['address-2'] : '';
+
+            $address.= (!empty($session['donor']['current']['address']['address-3'])) ?
+                "\n".$session['donor']['current']['address']['address-3'] : '';
+
+            $address.= (!empty($session['donor']['current']['address']['address-postcode'])) ?
+                "\n".$session['donor']['current']['address']['address-postcode'] : '';
+
+            $form->get('address')->setValue($address);
         }
+
+
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::contact-details-ad-page', [
             'form' => $form,
