@@ -5,6 +5,7 @@ use Zend\Log\Logger;
 return [
 
     'token_ttl' => 60 * 60 * 1, //  1 hour
+    'password_reset_ttl' => 60 * 60 * 1, //  1 hour
 
     'security' => [
 

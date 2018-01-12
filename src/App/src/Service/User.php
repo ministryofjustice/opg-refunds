@@ -37,18 +37,27 @@ class User
     private $tokenGenerator;
 
     /**
+     * The number of seconds before a reset token expires
+     *
+     * @var int
+     */
+    private $passwordResetTtl;
+
+    /**
      * User constructor
      *
      * @param EntityManager $entityManager
      * @param TokenGenerator $tokenGenerator
+     * @param int $passwordResetTtl
      */
-    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGenerator)
+    public function __construct(EntityManager $entityManager, TokenGenerator $tokenGenerator, int $passwordResetTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->tokenGenerator = $tokenGenerator;
+        $this->passwordResetTtl = $passwordResetTtl;
     }
-    
+
     /**
      * Search all users
      *
@@ -219,8 +228,20 @@ class User
         ]);
 
         //  If the token is being treated as a password token then ensure that the token expiry value is set as -1
-        if ($asPasswordToken && $user instanceof UserEntity && $user->getTokenExpires() > 0) {
-            throw new InvalidInputException('Token can not be used as a password token');
+        if ($asPasswordToken) {
+            if (!$user instanceof UserEntity) {
+                throw new InvalidInputException('Password reset token has expired');
+            } elseif ($user->getPasswordResetExpires() < time()) {
+                $message = 'Password reset token has expired';
+
+                if ($user->getStatus() == UserModel::STATUS_PENDING) {
+                    $message = 'Account set up token has expired';
+                }
+
+                throw new InvalidInputException($message);
+            } elseif ($user->getTokenExpires() > 0) {
+                throw new InvalidInputException('Token can not be used as a password token');
+            }
         }
 
         return $this->translateToDataModel($user);
@@ -242,6 +263,7 @@ class User
         //  Set the new user with a token that can be used to set the password the first time
         $user->setToken($this->tokenGenerator->generate());
         $user->setTokenExpires(-1);
+        $user->setPasswordResetExpires(time() + $this->passwordResetTtl);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -336,6 +358,11 @@ class User
         }
 
         $user->setTokenExpires($tokenExpires);
+
+        //  If the password is being reset (tokenExpires = -1) then set the password reset expires value also
+        if ($tokenExpires == -1) {
+            $user->setPasswordResetExpires(time() + $this->passwordResetTtl);
+        }
 
         $this->entityManager->flush();
 

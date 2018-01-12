@@ -90,6 +90,23 @@ class UserAction extends AbstractRestfulAction
     }
 
     /**
+     * UPDATE/PUT edit action - override in subclass if required
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return JsonResponse
+     */
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        //  Get the user ID and refresh the set up token value
+        $userId = $request->getAttribute('id');
+
+        $user = $this->userService->refreshToken($userId, -1);
+
+        return new JsonResponse($user->getArrayCopy());
+    }
+
+    /**
      * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
