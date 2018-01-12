@@ -2,32 +2,18 @@
 
 namespace App\Action\User;
 
-use App\Action\AbstractModelAction;
-use App\Service\User\User as UserService;
+use App\Form\AccountSetUp;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
+use Exception;
 
 /**
  * Class UserAction
  * @package App\Action
  */
-class UserAction extends AbstractModelAction
+class UserAction extends AbstractUserAction
 {
-    /**
-     * @var UserService
-     */
-    protected $userService;
-
-    /**
-     * UserAction constructor.
-     * @param UserService $userService
-     */
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
@@ -39,8 +25,14 @@ class UserAction extends AbstractModelAction
             //  Get the specific user
             $user = $this->userService->getUser($this->modelId);
 
+            $form = $this->getForm($request);
+
+            $form->bind($user);
+
             return new HtmlResponse($this->getTemplateRenderer()->render('app::user-page', [
-                'user' => $user,
+                'user'     => $user,
+                'form'     => $form,
+                'messages' => $this->getFlashMessages($request)
             ]));
         }
 
@@ -50,5 +42,58 @@ class UserAction extends AbstractModelAction
         return new HtmlResponse($this->getTemplateRenderer()->render('app::users-page', [
             'userSummaryPage' => $userSummaryPage,
         ]));
+    }
+
+    /**
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @throws Exception
+     */
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        $form = $this->getForm($request);
+
+        $userId = null;
+
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $userId = $data['id'];
+
+            $message = 'Set up email resent';
+
+            try {
+                $user = $this->userService->refreshSetUpToken($userId);
+
+                $this->sendAccountSetUpEmail($request, $user);
+            } catch (Exception $ex) {
+                $message = 'Set up email error';
+            }
+
+            $this->setFlashMessage($request, 'info', $message);
+        }
+
+        return $this->redirectToRoute('user', ['id' => $userId]);
+    }
+
+    /**
+     * Get the form for the model concerned
+     *
+     * @param ServerRequestInterface $request
+     * @return AccountSetUp
+     */
+    private function getForm(ServerRequestInterface $request)
+    {
+        $session = $request->getAttribute('session');
+
+        $form = new AccountSetUp([
+            'csrf' => $session['meta']['csrf']
+        ]);
+
+        if ($request->getMethod() == 'POST') {
+            $form->setData($request->getParsedBody());
+        }
+
+        return $form;
     }
 }

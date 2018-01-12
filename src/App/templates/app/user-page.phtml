@@ -3,6 +3,8 @@
 <div class="grid-row">
     <div class="column-full">
 
+        <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
         <h2 class="heading-medium heading-refunds">
             <?= $user->getName() ?>
             <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
@@ -28,11 +30,20 @@
 </div>
 
 <div class="grid-row">
-    <div class="column-full">
-        <p>
-            <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
-            <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
-            <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
-        </p>
+    <div class="column-full" style="padding-top: 10px;">
+        <a class="button" href="<?= $this->generateUrl('user.edit', ['id' => $user->getId()]) ?>">Edit</a>
+        <?php if ($user->getStatus() == \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_PENDING) { ?>
+            <form method="post" style="display: inline;">
+
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('id')]) ?>
+
+                <input type="submit" class="button button-secondary" value="Resend Set Up Email" />
+
+            </form>
+        <?php } ?>
+        <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
+        <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
     </div>
 </div>

@@ -61,7 +61,15 @@ class PasswordChangeAction extends AbstractAction
             try {
                 $user = $this->userService->getUserByToken($token);
             } catch (ApiException $aex) {
-                throw new Exception($aex->getMessage(), 403);
+                $message = $aex->getMessage();
+
+                if ($message == 'Account set up token has expired') {
+                    return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-token-expired'));
+                } elseif ($message == 'Password reset token has expired') {
+                    return new HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-token-expired'));
+                }
+
+                throw new Exception($message, 403);
             }
         }
 
