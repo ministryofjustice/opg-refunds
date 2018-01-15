@@ -621,11 +621,17 @@ class Claim
         $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
+        $message = "Caseworker rejected the claim due to '{$rejectionReasonText}'";
+
+        if (empty($rejectionReasonDescription) === false) {
+            $message .= " with description '{$rejectionReasonDescription}'";
+        }
+
         $this->addNote(
             $claimId,
             $userId,
             NoteModel::TYPE_CLAIM_REJECTED,
-            "Caseworker rejected the claim due to '{$rejectionReasonText}'"
+            $message
         );
     }
 
