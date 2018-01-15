@@ -34,6 +34,8 @@ $app->get('/beta/{betaId:\d+}/{betaExpires:\d+}/{betaSignature:[A-Za-z0-9]+}', A
 //---
 
 $app->get('/', App\Action\HomePageAction::class, 'home');
+$app->get('/start', App\Action\StartRedirectAction::class, 'start');
+
 $app->get('/exception', App\Action\ExceptionAction::class, 'exception');
 $app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck.json');
 
