@@ -20,6 +20,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
         'terms',
         'cookies',
         'contact',
+        'start',
         'eligibility.when',
         'eligibility.when.answer',
     ];
