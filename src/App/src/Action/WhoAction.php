@@ -43,6 +43,9 @@ class WhoAction extends AbstractAction
                         ['who'=>$session['applicant']]
                     )
                 );
+            } elseif (isset($form->getMessages()['secret'])) {
+                // Special case - a CSRF error here is most likely an undetected session expiry.
+                return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
             }
         } elseif ($isUpdate) {
             $form->setData(['who' => $session['applicant']]);
