@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Service\Claim as ClaimService;
-use App\Spreadsheet\SpreadsheetWorksheet;
 use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -246,11 +245,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
         /** @var ClaimModel $claim */
         $claim = $this->translateToDataModel($entity);
 
-        $refundAmount = RefundCalculator::getRefundTotalAmount($claim, time());
-        $refundAmountString = money_format('£%i', $refundAmount);
-
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
+            $refundAmount = RefundCalculator::getRefundTotalAmount($claim, time());
+            $refundAmountString = money_format('£%i', $refundAmount);
+
             //Create and persist payment
             $payment = new PaymentEntity($refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer');
             $this->entityManager->persist($payment);
@@ -258,15 +257,9 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
             $message = "A refund amount of $refundAmountString was added to the claim";
             $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_ADDED, $message);
-        } elseif (abs(($entity->getPayment()->getAmount()-$refundAmount)/$refundAmount) > 0.00001) {
-            $originalPaymentAmount = $entity->getPayment()->getAmount();
-
-            //Update amount in case interest has changed
-            $entity->getPayment()->setAmount($refundAmount);
-
-            $newRefundAmountString = money_format('£%i', $originalPaymentAmount);
-            $message = "The refund amount for claim was changed from $refundAmountString to $newRefundAmountString";
-            $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_UPDATED, $message);
+        } else {
+            $refundAmount = $entity->getPayment()->getAmount();
+            $refundAmountString = money_format('£%i', $refundAmount);
         }
 
         $message = "A refundable claim for $refundAmountString was downloaded";

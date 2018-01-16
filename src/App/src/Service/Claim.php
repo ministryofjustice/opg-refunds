@@ -10,7 +10,6 @@ use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
-use Ingestion\Service\ApplicationIngestion;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
@@ -55,23 +54,16 @@ class Claim
     private $entityManager;
 
     /**
-     * @var ApplicationIngestion
-     */
-    private $applicationIngestionService;
-
-    /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
-     * @param ApplicationIngestion $applicationIngestionService
      */
-    public function __construct(EntityManager $entityManager, ApplicationIngestion $applicationIngestionService)
+    public function __construct(EntityManager $entityManager)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
-        $this->applicationIngestionService = $applicationIngestionService;
     }
 
     /**
@@ -82,9 +74,6 @@ class Claim
      */
     public function search(array $queryParameters)
     {
-        //TODO: Get proper migration running via cron job
-        $this->applicationIngestionService->ingestAllApplication();
-
         $page = isset($queryParameters['page']) ? $queryParameters['page'] : null;
         $pageSize = isset($queryParameters['pageSize']) ? $queryParameters['pageSize'] : null;
 
@@ -176,9 +165,6 @@ class Claim
      */
     public function assignNextClaim(int $userId)
     {
-        //TODO: Get proper migration running via cron job
-        $this->applicationIngestionService->ingestApplication();
-
         $user = $this->getUser($userId);
 
         //Using SQL directly to update claim in single atomic call to prevent race conditions
@@ -621,11 +607,17 @@ class Claim
         $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
         $rejectionReasonText = RejectionReasonsFormatter::getRejectionReasonText($rejectionReason);
+        $message = "Caseworker rejected the claim due to '{$rejectionReasonText}'";
+
+        if (empty($rejectionReasonDescription) === false) {
+            $message .= " with description '{$rejectionReasonDescription}'";
+        }
+
         $this->addNote(
             $claimId,
             $userId,
             NoteModel::TYPE_CLAIM_REJECTED,
-            "Caseworker rejected the claim due to '{$rejectionReasonText}'"
+            $message
         );
     }
 
