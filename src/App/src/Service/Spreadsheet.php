@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use App\Service\Claim as ClaimService;
-use App\Spreadsheet\SpreadsheetWorksheet;
 use DateInterval;
 use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;

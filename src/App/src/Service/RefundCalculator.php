@@ -18,7 +18,6 @@ class RefundCalculator
      */
     public static function getRefundAmount($originalPaymentAmount, DateTime $receivedDate): float
     {
-        //TODO: Use Neil's calculations
         if (empty($originalPaymentAmount) || $originalPaymentAmount === 'noRefund') {
             return 0.0;
         }
@@ -51,7 +50,6 @@ class RefundCalculator
         DateTime $receivedDate,
         int $refundTime
     ): float {
-        //TODO: Use Neil's calculations
         $refundAmount = self::getRefundAmount($originalPaymentAmount, $receivedDate);
 
         $diff = $refundTime - $receivedDate->getTimestamp();

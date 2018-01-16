@@ -7,7 +7,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateInterval;
 use DateTime;
 use Doctrine\ORM\EntityManager;
-use Ingestion\Service\ApplicationIngestion;
 
 /**
  * Class Reporting
@@ -23,22 +22,13 @@ class Reporting
      */
     private $entityManager;
 
-    /**
-     * @var ApplicationIngestion
-     */
-    private $applicationIngestionService;
-
-    public function __construct(EntityManager $claimsEntityManager, ApplicationIngestion $applicationIngestionService)
+    public function __construct(EntityManager $claimsEntityManager)
     {
         $this->entityManager = $claimsEntityManager;
-        $this->applicationIngestionService = $applicationIngestionService;
     }
 
     public function getAllReports()
     {
-        //TODO: Get proper migration running via cron job
-        $this->applicationIngestionService->ingestAllApplication();
-
         $start = microtime(true);
 
         $dateOfFirstClaim = new DateTime($this->entityManager->getConnection()->executeQuery(

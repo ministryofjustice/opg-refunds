@@ -10,9 +10,12 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Opg\Refunds\Log\Initializer;
 
-class ApplicationIngestion
+class ApplicationIngestion implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
+
     /**
      * @var EntityManager
      */
@@ -174,11 +177,33 @@ class ApplicationIngestion
                     $this->casesEntityManager->flush();
 
                     $this->setProcessed($application);
+
+                    $this->getLogger()->info("Application with id {$claim->getId()} was successfully ingested");
                 } catch (UniqueConstraintViolationException $ex) {
+                    // Doctrine 2’s EntityManager class will permanently close connections upon failed transactions
+                    if (!$this->casesEntityManager->isOpen()) {
+                        // So check if this is the case and recreate if so
+                        $this->getLogger()->warn('Cases entity manager was permanently closed after failed transation. Recreating');
+
+                        $this->casesEntityManager = $this->casesEntityManager->create(
+                            $this->casesEntityManager->getConnection(),
+                            $this->casesEntityManager->getConfiguration()
+                        );
+
+                        $this->claimRepository = $this->casesEntityManager->getRepository(Claim::class);
+                        $this->userRepository = $this->casesEntityManager->getRepository(User::class);
+
+                        $this->getLogger()->info(' Successfully recreated cases entity manager');
+                    }
+
                     $this->setProcessed($application);
+
+                    $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker");
                 }
             } else {
                 $this->setProcessed($application);
+
+                $this->getLogger()->info("Application with id {$claim->getId()} has previously been successfully ingested");
             }
 
             return true;
