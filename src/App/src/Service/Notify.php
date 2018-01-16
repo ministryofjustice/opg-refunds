@@ -161,12 +161,14 @@ class Notify implements Initializer\LogSupportInterface
         $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
             $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
             : $claimModel->getDonorName();
+        $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         if ($claimModel->shouldSendEmail()) {
             try {
                 $this->notifyClient->sendEmail($contact->getEmail(), 'a77309f1-2354-4a1b-ab2f-022a79d9f106', [
                     'person-completing' => $contactName,
                     'donor-name' => $claimModel->getDonorName(),
+                    'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
@@ -191,6 +193,7 @@ class Notify implements Initializer\LogSupportInterface
             try {
                 $this->notifyClient->sendSms($contact->getPhone(), 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4', [
                     'donor-name' => $claimModel->getDonorName(),
+                    'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
@@ -254,12 +257,14 @@ class Notify implements Initializer\LogSupportInterface
             $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
                 $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
                 : $claimModel->getDonorName();
+            $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
             if ($claimModel->shouldSendEmail()) {
                 try {
                     $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
                         'donor-name' => $claimModel->getDonorName(),
+                        'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]));
 
@@ -284,6 +289,7 @@ class Notify implements Initializer\LogSupportInterface
                 try {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
                         'donor-name' => $claimModel->getDonorName(),
+                        'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]);
 
@@ -316,6 +322,7 @@ class Notify implements Initializer\LogSupportInterface
         $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
             $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
             : $claimModel->getDonorName();
+        $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         if ($claimModel->shouldSendEmail()) {
             try {
@@ -324,6 +331,7 @@ class Notify implements Initializer\LogSupportInterface
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $claimModel->getDonorName(),
+                    'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
@@ -350,6 +358,7 @@ class Notify implements Initializer\LogSupportInterface
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $claimModel->getDonorName(),
+                    'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
 
