@@ -37,7 +37,7 @@ return [
     ],
 
     'home' => [
-        'redirect' => 'https://www.gov.uk/government/news/lasting-and-enduring-power-of-attorney-fees-are-changing',
+        'redirect' => 'https://www.gov.uk/power-of-attorney-refund',
     ],
 
     // Assisted digital
