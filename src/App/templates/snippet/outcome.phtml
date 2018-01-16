@@ -33,25 +33,27 @@ Mandatory: claim
 
 <dl class="details">
 
-    <div class="">
-        <dt class="details-term">Expected refund date</dt>
-        <dd class="details-definition"><?= $this->e($this->getDayAndFullTextMonth($claim->getApplication()->getExpected())) ?></dd>
-        <dd class="details-definition">
-            <?php if ($claim->isClaimComplete() && !$claim->isReadOnly()) { ?>
-                <p>
-                    <?php if ($claim->isClaimVerified() && $claim->isClaimRefundNonZero()) { ?>
-                        <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
-                    <?php } ?>
-                    <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
-                </p>
-            <?php } ?>
-            <?php if ($claim->canResolveAsDuplicate() && !$claim->isReadOnly()) { ?>
-                <p>
-                    <a class="button" href="<?= $this->generateUrl('claim.duplicate', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Resolve as duplicate</a>
-                </p>
-            <?php } ?>
-        </dd>
-    </div>
+    <?php if ($claim->getStatus() === ClaimModel::STATUS_PENDING || $claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS || $claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
+        <div class="">
+            <dt class="details-term">Expected refund date</dt>
+            <dd class="details-definition"><?= $this->e($this->getDayAndFullTextMonth($claim->getApplication()->getExpected())) ?></dd>
+            <dd class="details-definition">
+                <?php if ($claim->isClaimComplete() && !$claim->isReadOnly()) { ?>
+                    <p>
+                        <?php if ($claim->isClaimVerified() && $claim->isClaimRefundNonZero()) { ?>
+                            <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
+                        <?php } ?>
+                        <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
+                    </p>
+                <?php } ?>
+                <?php if ($claim->canResolveAsDuplicate() && !$claim->isReadOnly()) { ?>
+                    <p>
+                        <a class="button" href="<?= $this->generateUrl('claim.duplicate', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Resolve as duplicate</a>
+                    </p>
+                <?php } ?>
+            </dd>
+        </div>
+    <?php } ?>
 
     <?php if($claim->isClaimResolved()) { ?>
         
