@@ -218,10 +218,17 @@ class Poa extends AbstractEntity
                 );
             },
             'RefundInterestAmount' => function () {
+                $refundTime = time();
+
+                $payment = $this->claim->getPayment();
+                if ($payment !== null) {
+                    $refundTime = $payment->getAddedDateTime()->getTimestamp();
+                }
+
                 return RefundCalculatorService::getRefundInterestAmount(
                     $this->getOriginalPaymentAmount(),
                     $this->getReceivedDate(),
-                    time()
+                    $refundTime
                 );
             },
         ]);
