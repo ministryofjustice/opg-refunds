@@ -59,7 +59,12 @@ const specsModules = [
   `${paths.build}/javascripts/vendor.js`,
   `${paths.build}/javascripts/custom-analytics.js`,
   `${paths.specs}/app/**/*.spec.js`
-]
+];
+
+const imagesPaths = [
+  `${paths.src}/images/**/*.png`,
+  `${paths.src}/images/**/*.svg`
+];
 
 const stylesPath = `${paths.src}/scss/**/*.scss`;
 
@@ -124,6 +129,12 @@ function analyticScripts() {
     .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
 
+// Images
+function images() {
+  return gulp.src(imagesPaths)
+    .pipe(gulp.dest(`${paths.build}/images`));
+}
+
 // Styles
 function styles() {
   return gulp.src(stylesPath)
@@ -149,7 +160,7 @@ function watch() {
 
 // Task sets
 const compile = gulp.series(clean, 
-  gulp.parallel(vendorScripts,appScripts,analyticScripts,govuk_template,styles,govuk_frontend_toolkit_images)
+  gulp.parallel(vendorScripts,appScripts,analyticScripts,govuk_template,images,styles,govuk_frontend_toolkit_images)
 );
 
 gulp.task('build', gulp.series(compile));
