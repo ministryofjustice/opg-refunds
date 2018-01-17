@@ -33,3 +33,11 @@ $path: "../images/";
 .icon-print{
   @include icon(icon-printer, 35, 35);
 }
+
+@media print
+{
+  .no-print, .no-print *
+  {
+    display: none !important;
+  }
+}
