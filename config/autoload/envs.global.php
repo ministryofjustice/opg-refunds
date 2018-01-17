@@ -36,6 +36,10 @@ return [
         ]
     ],
 
+    'home' => [
+        'redirect' => 'https://www.gov.uk/power-of-attorney-refund',
+    ],
+
     // Assisted digital
     'ad' => [
 

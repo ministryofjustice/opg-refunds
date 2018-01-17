@@ -37,7 +37,6 @@ class ConfigProvider
         return [
             'invokables' => [
                 // Actions
-                Action\HomePageAction::class => Action\HomePageAction::class,
                 Action\WhoAction::class => Action\WhoAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
                 Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,
@@ -53,6 +52,7 @@ class ConfigProvider
                 Action\ExceptionAction::class => Action\ExceptionAction::class,
                 Action\ContactUsAction::class => Action\ContactUsAction::class,
                 Action\CookiesCheckAction::class => Action\CookiesCheckAction::class,
+                Action\StartRedirectAction::class => Action\StartRedirectAction::class,
                 Action\ContactDetailsAssistedDigitalAction::class => Action\ContactDetailsAssistedDigitalAction::class,
 
                 // Middleware
@@ -68,6 +68,7 @@ class ConfigProvider
                 Action\SummaryAction::class => Action\Factory\SummaryFactory::class,
                 Action\BetaAction::class => Action\Factory\BetaFactory::class,
                 Action\AssistedDigitalAction::class => Action\Factory\AssistedDigitalFactory::class,
+                Action\HomePageAction::class => Action\Factory\HomePageFactory::class,
 
                 // Middleware
                 Middleware\Beta\BetaCheckMiddleware::class => Middleware\Beta\BetaCheckMiddlewareFactory::class,
