@@ -42,6 +42,7 @@ const vendorModules = [
 const applicationModules = [
   `${paths.src}/js/app/back-link.js`,
   `${paths.src}/js/app/scroll-to-hash.js`,
+  `${paths.src}/js/app/print-link.js`,
   `${paths.src}/js/app/application.js`
 ];
 
