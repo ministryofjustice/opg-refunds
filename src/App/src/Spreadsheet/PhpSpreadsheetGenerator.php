@@ -9,7 +9,11 @@ use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
 use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Psr\Http\Message\StreamInterface;
@@ -172,16 +176,24 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Assigned to/Finished by');
         $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Status');
 
-        $rowIndex = 2;
+        $resultsRowIndex = 1;
         foreach ($claimSummaries as $claimSummary) {
-            $resultsSheet->setCellValueByColumnAndRow(0, $rowIndex, $claimSummary->getReferenceNumber());
-            $resultsSheet->setCellValueByColumnAndRow(1, $rowIndex, $claimSummary->getDonorName());
-            $resultsSheet->setCellValueByColumnAndRow(2, $rowIndex, $claimSummary->getReceivedDateTime());
-            $resultsSheet->setCellValueByColumnAndRow(3, $rowIndex, $claimSummary->getFinishedDateTime());
-            $resultsSheet->setCellValueByColumnAndRow(4, $rowIndex, $claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName());
-            $resultsSheet->setCellValueByColumnAndRow(5, $rowIndex, StatusFormatter::getStatusText($claimSummary->getStatus()));
+            $resultsRowIndex++;
 
-            $rowIndex++;
+            $resultsSheet->setCellValueByColumnAndRow(0, $resultsRowIndex, $claimSummary->getReferenceNumber());
+            $resultsSheet->setCellValueByColumnAndRow(1, $resultsRowIndex, $claimSummary->getDonorName());
+            $this->setCellDateTime($resultsSheet, 'C' . $resultsRowIndex, $claimSummary->getReceivedDateTime());
+            $this->setCellDateTime($resultsSheet, 'D' . $resultsRowIndex, $claimSummary->getFinishedDateTime());
+            $resultsSheet->setCellValueByColumnAndRow(
+                4,
+                $resultsRowIndex,
+                $claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()
+            );
+            $resultsSheet->setCellValueByColumnAndRow(
+                5,
+                $resultsRowIndex,
+                StatusFormatter::getStatusText($claimSummary->getStatus())
+            );
         }
 
         $queryParametersSheet = $spreadsheet->createSheet();
@@ -189,12 +201,12 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         $queryParametersSheet->setCellValueByColumnAndRow(0, 1, 'Parameter');
         $queryParametersSheet->setCellValueByColumnAndRow(1, 1, 'Value');
 
-        $rowIndex = 2;
+        $searchParametersRowIndex = 1;
         foreach ($queryParameters as $parameter => $value) {
-            $queryParametersSheet->setCellValueByColumnAndRow(0, $rowIndex, $parameter);
-            $queryParametersSheet->setCellValueByColumnAndRow(1, $rowIndex, $value);
+            $searchParametersRowIndex++;
 
-            $rowIndex++;
+            $queryParametersSheet->setCellValueByColumnAndRow(0, $searchParametersRowIndex, $parameter);
+            $queryParametersSheet->setCellValueByColumnAndRow(1, $searchParametersRowIndex, $value);
         }
 
         $resultsSheet->setTitle('Results');
@@ -212,6 +224,9 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         $resultsSheet->getColumnDimensionByColumn(3)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(4)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(5)->setAutoSize(true);
+
+        //Horizontal alignment
+        $resultsSheet->getStyle("A1:F{$resultsRowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
 
         $queryParametersSheet->setTitle('Search parameters');
 
@@ -234,5 +249,16 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
         $handle = fopen($outputFilePath, 'r');
 
         return $handle;
+    }
+
+    private function setCellDateTime(Worksheet $worksheet, string $coordinate, $dateTime)
+    {
+        if ($dateTime instanceof \DateTime) {
+            // Set cell with the Excel date/time value
+            $worksheet->setCellValue($coordinate, Date::PHPToExcel($dateTime));
+
+            // Set the number format mask so that the excel timestamp will be displayed as a human-readable date/time
+            $worksheet->getStyle($coordinate)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+        }
     }
 }
