@@ -43,7 +43,7 @@ class ClaimSearchDownloadAction extends AbstractAction
         $response = new Response();
 
         return $response
-            ->withHeader('Content-Type', 'application/vnd.ms-excel')
+            ->withHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             ->withHeader(
                 'Content-Disposition',
                 "attachment; filename=" . basename($claimSummarySpreadsheet['name'])
