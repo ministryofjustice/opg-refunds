@@ -47,7 +47,7 @@ class AssistedDigitalAction extends AbstractAction
         //---
 
         // We're redirecting them to the homepage.
-        $response = new Response\RedirectResponse($this->getUrlHelper()->generate('home'));
+        $response = new Response\RedirectResponse($this->getUrlHelper()->generate('start'));
 
         $response = FigResponseCookies::set($response, SetCookie::create($this->cookieName)
             ->withValue($token)
