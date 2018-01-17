@@ -15,15 +15,22 @@ class BetaAction extends AbstractAction
 {
     private $checker;
     private $cookieName;
+    private $enabled;
 
-    public function __construct(BetaLinkChecker $checker, string $cookieName)
+
+    public function __construct(BetaLinkChecker $checker, string $cookieName, bool $enabled)
     {
         $this->checker = $checker;
         $this->cookieName = $cookieName;
+        $this->enabled = $enabled;
     }
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->enabled) {
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('home'));
+        }
+
         $session = $request->getAttribute('session');
 
         // Clear out any existing session data if there is any.
