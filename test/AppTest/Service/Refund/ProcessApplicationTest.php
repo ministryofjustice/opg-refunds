@@ -63,7 +63,8 @@ class ProcessApplicationTest extends TestCase
                     'name' => [
                         'first' => 'Fred',
                         'last' => 'Sanders',
-                    ]
+                    ],
+                    'dob' => '1978-10-23'
                 ],
             ],
             'contact' => [

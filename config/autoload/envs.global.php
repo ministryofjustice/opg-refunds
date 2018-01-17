@@ -58,7 +58,7 @@ return [
     'beta' => [
 
         // Set to false when we move out of beta
-        'enabled' => false,
+        'enabled' => (bool)getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_ENABLED') ?: false,
 
         'cookie' => [
             'name' => 'beta'
