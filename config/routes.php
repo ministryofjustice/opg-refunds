@@ -63,6 +63,7 @@ $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class
 $app->route($prefix.'/case-number', App\Action\CaseNumberAction::class, ['GET', 'POST'], 'apply.case');
 $app->route($prefix.'/postcode', App\Action\PostcodeAction::class, ['GET', 'POST'], 'apply.postcode');
 $app->route($prefix.'/contact', App\Action\ContactDetailsAction::class, ['GET', 'POST'], 'apply.contact');
+$app->route($prefix.'/contact-address', App\Action\ContactDetailsAssistedDigitalAction::class, ['GET', 'POST'], 'apply.contact.address');
 $app->route($prefix.'/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
 $app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET', 'POST'], 'apply.summary');
 $app->route($prefix.'/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
