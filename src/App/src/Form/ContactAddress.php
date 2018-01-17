@@ -45,9 +45,47 @@ class ContactAddress extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+        //------------------------
+        // Notification opt-out
+
+        $field = new Element\Checkbox('receive-notifications', [
+            'checked_value' => 'no',
+            'unchecked_value' => 'yes'
+        ]);
+        $input = new Input($field->getName());
+
+        $input->setRequired(false);
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //---
+
         //---
 
         $this->addCsrfElement($inputFilter);
     }
 
+    //-----------------------------
+
+    public function getFormattedData()
+    {
+        $result = parent::getData();
+
+        // Filter out empty values
+        $result = array_filter($result);
+
+        $result["receive-notifications"] = (bool)($result["receive-notifications"] == "yes");
+
+        return $result;
+    }
+
+    public function setFormattedData(array $data)
+    {
+        $data["receive-notifications"] = ($data["receive-notifications"]) ? "yes" : "no";
+
+        return $this->setData($data);
+    }
+
 }
+
