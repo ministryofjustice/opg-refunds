@@ -1041,7 +1041,17 @@ class Claim extends AbstractDataModel
      */
     public function isOutcomeChanged():bool
     {
-        return $this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED);
+        if ($this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED) === true) {
+            if ($this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED) === false) {
+                return true;
+            }
+
+            //Check if outcome changed is the most recent event
+            return $this->getNotesOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED)[0]->getCreatedDateTime()
+                > $this->getNotesOfType(Note::TYPE_CLAIM_REASSIGNED)[0]->getCreatedDateTime();
+        }
+
+        return false;
     }
 
     /**
@@ -1057,7 +1067,17 @@ class Claim extends AbstractDataModel
      */
     public function isReassigned():bool
     {
-        return $this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED);
+        if ($this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED) === true) {
+            if ($this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED) === false) {
+                return true;
+            }
+
+            //Check if reassigned is the most recent event
+            return $this->getNotesOfType(Note::TYPE_CLAIM_REASSIGNED)[0]->getCreatedDateTime()
+                > $this->getNotesOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED)[0]->getCreatedDateTime();
+        }
+
+        return false;
     }
 
     /**

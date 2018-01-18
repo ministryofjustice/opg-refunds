@@ -55,7 +55,8 @@
                                 <div>
                                     <strong class="phase-tag">Failed QC</strong>
                                 </div>
-                            <?php } elseif ($claim->isReassigned()) { ?>
+                            <?php } ?>
+                            <?php if ($claim->isReassigned()) { ?>
                                 <div>
                                     <strong class="phase-tag">Reallocated</strong>
                                 </div>
