@@ -51,6 +51,16 @@
                     <td>
                         <div>
                             <a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getReferenceNumber()) ?></a>
+                            <?php if ($claim->isOutcomeChanged()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Failed QC</strong>
+                                </div>
+                            <?php } ?>
+                            <?php if ($claim->isReassigned()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Reallocated</strong>
+                                </div>
+                            <?php } ?>
                         </div>
                         <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
                             <div>
