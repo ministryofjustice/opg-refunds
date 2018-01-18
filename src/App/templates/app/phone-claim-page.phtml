@@ -22,10 +22,6 @@ $this->layout('layout::default', ['title' => 'Start phone claim'])
                 'formElement' => $form->get('type'),
                 'question' => 'Reason for the phone call',
                 'options' => [
-                    AssistedDigitalModel::TYPE_DONOR_DECEASED =>[
-                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED),
-                        'optionLabelSuffix' => 'The donor has died'
-                    ],
                     AssistedDigitalModel::TYPE_ASSISTED_DIGITAL =>[
                         'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL),
                         'optionLabelSuffix' => 'The caller can\'t make the claim online because they don\'t have internet access or the necessary digital skills'
@@ -34,13 +30,17 @@ $this->layout('layout::default', ['title' => 'Start phone claim'])
                         'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE),
                         'optionLabelSuffix' => 'The caller is able to claim online, but doesn\'t want to. This option should only be used in exceptional cases, for example, if the caller has a complaint or doesn\'t want to enter their bank details'
                     ],
+                    AssistedDigitalModel::TYPE_CHEQUE =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE),
+                        'optionLabelSuffix' => 'This option should only be used in exceptional cases, for example, if the caller won\'t provide their bank details or if the donor only has a foreign bank account'
+                    ],
                     AssistedDigitalModel::TYPE_DEPUTY =>[
                         'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY),
                         'optionLabelSuffix' => 'The LPA or EPA has been cancelled and a deputy is now managing the donor\'s affairs'
                     ],
-                    AssistedDigitalModel::TYPE_CHEQUE =>[
-                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE),
-                        'optionLabelSuffix' => 'This option should only be used in exceptional cases, for example, if the caller won\'t provide their bank details or if the donor only has a foreign bank account'
+                    AssistedDigitalModel::TYPE_DONOR_DECEASED =>[
+                        'optionLabel' => PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED),
+                        'optionLabelSuffix' => 'The donor has died'
                     ],
                 ],
             ])
