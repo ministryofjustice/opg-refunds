@@ -1009,6 +1009,23 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @param string $type
+     * @return bool
+     */
+    public function hasNoteOfType(string $type): bool
+    {
+        if ($this->getNotes() !== null) {
+            foreach ($this->getNotes() as $note) {
+                if ($note->getType() === $type) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return bool
      */
     public function canChangeOutcome(): bool
@@ -1022,9 +1039,25 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function isOutcomeChanged():bool
+    {
+        return $this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED);
+    }
+
+    /**
+     * @return bool
+     */
     public function canReassignClaim(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReassigned():bool
+    {
+        return $this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED);
     }
 
     /**
