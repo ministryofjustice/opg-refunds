@@ -25,3 +25,19 @@ $path: "../images/";
 .button-secondary{
   @include button($grey-3);
 }
+
+.print {
+  float: right;
+}
+
+.icon-print{
+  @include icon(icon-printer, 35, 35);
+}
+
+@media print
+{
+  .no-print, .no-print *
+  {
+    display: none !important;
+  }
+}

@@ -13,4 +13,6 @@ $(document).ready(function () {
 
   $('.error-summary').focus()
   new GOVUK.ScrollToHash('.error-summary-list')
+
+  new GOVUK.Print('.print')
 })

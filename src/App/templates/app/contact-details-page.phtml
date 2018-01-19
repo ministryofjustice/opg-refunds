@@ -9,7 +9,7 @@ $this->layout('layout::standard',
 $this->addErrorMap([
     'one-field-required' => [
         'required' => [
-            'summary'   => 'You must choose a way to be contacted',
+            'summary'   => 'For security reasons, you must provide your email address or mobile number in order for us to process your claim',
             'field'     => 'Choose how we contact you'
         ]
     ],
@@ -46,7 +46,7 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>
 
-<p>For security reasons, you must provide your email address or mobile number in order for us to process your claim.</p>
+<p>We need your email address or mobile phone number in order to process your claim.</p>
 
 <form action="" method="post" class="form">
 

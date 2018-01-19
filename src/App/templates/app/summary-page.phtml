@@ -20,6 +20,15 @@ $this->addErrorMap([
 
 <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 
+<p class="notice print no-print">
+    <a href="#">
+        <i class="icon icon-print">
+            <span class="visually-hidden">Print</span>
+        </i>
+        <strong>print this page</strong>
+    </a>
+</p>
+
 <dl class="govuk-check-your-answers cya-questions-short">
     
     <?php $this->insert('snippet::check-your-details-section', [
@@ -157,7 +166,7 @@ $this->addErrorMap([
     </div>
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
-    
+
     <input type="submit" class="button" value="Confirm and submit claim">
     
 </form>
