@@ -44,6 +44,24 @@ return [
             ],
 
         ],
+
+        'cases' => [
+
+            'postgresql' => [
+
+                'adapter' => 'pgsql',
+                'host' => getenv('OPG_REFUNDS_DB_CASES_HOSTNAME') ?: null,
+                'port' => getenv('OPG_REFUNDS_DB_CASES_PORT') ?: null,
+                'dbname' => getenv('OPG_REFUNDS_DB_CASES_NAME') ?: null,
+                'username' => getenv('OPG_REFUNDS_DB_CASES_FULL_USERNAME') ?: null,
+                'password' => getenv('OPG_REFUNDS_DB_CASES_FULL_PASSWORD') ?: null,
+                'options' => [
+                    PDO::ATTR_PERSISTENT => false
+                ]
+
+            ],
+
+        ],
     ],
 
     'spreadsheet' => [
