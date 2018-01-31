@@ -123,10 +123,13 @@ class UserAction extends AbstractRestfulAction
 
         if (!empty($token)) {
             //  If a token value has been provided in the request then we are attempting to set the password for a user
-            //  This can only be done if the token expires value has been set to -1 also
+            //  This can only be done if the token expires value in the database has been set to -1 also
             $user = $this->userService->getByToken($token, true);
 
             $user = $this->userService->setPassword($user->getId(), $requestBody['password']);
+
+            //  Refresh the token to remove the old copy value
+            $this->userService->refreshToken($user->getId(), -1);
         } else {
             //  Define the request field to update functions mappings
             $updateMappings = [
