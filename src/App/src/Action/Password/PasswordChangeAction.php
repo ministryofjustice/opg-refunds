@@ -49,7 +49,7 @@ class PasswordChangeAction extends AbstractAction
 
         //  If the user is logged in a token can not be provided
         if (!empty($token) && $loggedIn) {
-            throw new Exception('Password tokens can not be provided for authenticated users', 403);
+            return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-failure-page'));
         } elseif (empty($token) && !$loggedIn) {
             //  If no token has been provided and the user isn't logged in then bounce them
             return $this->redirectToRoute('sign.in');
