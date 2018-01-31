@@ -48,15 +48,11 @@ class PasswordChangeAction extends AbstractAction
         $token = $request->getAttribute('token');
 
         //  If the user is logged in a token can not be provided
-        if (!empty($token) && $loggedIn) {
-            return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-failure-page'));
-        } elseif (empty($token) && !$loggedIn) {
-            //  If no token has been provided and the user isn't logged in then bounce them
-            return $this->redirectToRoute('sign.in');
-        }
-
-        //  If a token was provided then get the user details now
         if (!empty($token)) {
+            if ($loggedIn) {
+                return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-failure-page'));
+            }
+
             //  The checks to determine if the user is in the correct state (i.e. token expires = -1) will take place in the API
             try {
                 $user = $this->userService->getUserByToken($token);
@@ -64,12 +60,18 @@ class PasswordChangeAction extends AbstractAction
                 $message = $aex->getMessage();
 
                 if ($message == 'Account set up token has expired') {
-                    return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-token-expired'));
+                    return new HtmlResponse($this->getTemplateRenderer()->render('app::account-setup-token-expired-page'));
                 } elseif ($message == 'Password reset token has expired') {
-                    return new HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-token-expired'));
+                    return new HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-token-expired-page'));
+                } else {
+                    //  This is probably a user trying to use an old link - just bounce then to the login screen
+                    return $this->redirectToRoute('sign.in');
                 }
-
-                throw new Exception($message, 403);
+            }
+        } else {
+            if (!$loggedIn) {
+                //  If no token has been provided and the user isn't logged in then bounce them
+                return $this->redirectToRoute('sign.in');
             }
         }
 
