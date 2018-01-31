@@ -230,7 +230,7 @@ class User
         //  If the token is being treated as a password token then ensure that the token expiry value is set as -1
         if ($asPasswordToken) {
             if (!$user instanceof UserEntity) {
-                throw new InvalidInputException('Password reset token has expired');
+                throw new InvalidInputException('Invalid token');
             } elseif ($user->getPasswordResetExpires() < time()) {
                 $message = 'Password reset token has expired';
 

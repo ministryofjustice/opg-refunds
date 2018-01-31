@@ -122,7 +122,7 @@ class UserAction extends AbstractRestfulAction
         $requestBody = $request->getParsedBody();
 
         if (!empty($token)) {
-            //  If a token value has been provided then we are attempting to set the password for a user
+            //  If a token value has been provided in the request then we are attempting to set the password for a user
             //  This can only be done if the token expires value has been set to -1 also
             $user = $this->userService->getByToken($token, true);
 
