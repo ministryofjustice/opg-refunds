@@ -15,4 +15,6 @@ $(document).ready(function () {
   new GOVUK.ScrollToHash('.error-summary-list')
 
   new GOVUK.Print('.print')
+
+  new GOVUK.SingleUse('form')
 })
