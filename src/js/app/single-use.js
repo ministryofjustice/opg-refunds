@@ -5,10 +5,10 @@
     var GOVUK = global.GOVUK || {}
 
     var SingleUse = function (selector) {
-        $(selector).on('click', '.js-single-use', this.handleClick)
+        $(selector).on('click', 'input[type="submit"].js-single-use', this.handleClick)
     }
 
-    SingleUse.prototype.handleClick = function(event) {
+    SingleUse.prototype.handleClick = function(e) {
         // Disable submit button
         $(e.target).attr('disabled', 'disabled');
     }
