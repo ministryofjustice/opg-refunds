@@ -13,6 +13,12 @@ class DonorDeceasedAction extends AbstractAction
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        if (!$this->isActionAccessible($request)) {
+            return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
+        }
+
+        //---
+
         $session = $request->getAttribute('session');
 
         $form = new Form\DonorDeceased([
