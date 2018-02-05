@@ -40,6 +40,13 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
+        // Tidy up data - strip out quote marks
+        array_walk_recursive($data, function(&$item, $key){
+            $item = str_replace('"', '', $item);
+        });
+
+        //---
+
         // Include the date submitted
         $data['version'] = 1;
 
