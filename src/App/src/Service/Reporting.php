@@ -57,6 +57,8 @@ class Reporting
 
     public function getClaimReport(DateTime $dateOfFirstClaim)
     {
+        $now = microtime(true);
+
         $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim UNION ALL
                 SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
@@ -66,6 +68,20 @@ class Reporting
         );
 
         $allTime = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+        $generated = new DateTime();
+        $generatedTimeInMs = round((microtime(true) - $now) * 1000);
+        $now = microtime(true);
+
+        $this->entityManager->getConnection()->executeUpdate('INSERT INTO report (type, title, start_datetime, end_datetime, report_data, generated_datetime, generation_time_ms) VALUES (:type, :title, :startDatetime, :endDatetime, :reportData, :generatedDatetime, :generationTimeMs)', [
+            'type' => 'claim',
+            'title' => 'All time',
+            'startDatetime' => $dateOfFirstClaim,
+            'endDatetime' => $generated,
+            'reportData' => $allTime,
+            'generatedDatetime' => $generated,
+            'generationTimeMs' => $generatedTimeInMs
+        ]);
 
         $sql = 'SELECT status, count(*) FROM claim WHERE status = :statusPending AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
