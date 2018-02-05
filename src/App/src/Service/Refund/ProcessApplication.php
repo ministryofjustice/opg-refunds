@@ -61,7 +61,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
