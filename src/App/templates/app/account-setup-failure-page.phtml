@@ -1,0 +1,15 @@
+<?php $this->layout('layout::default', ['title' => 'Account set up failure']); ?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds">Account set up failure</h2>
+
+        <p>It looks like you're trying to set up an account for a user but you are already logged.</p>
+
+        <p>Please log out and try again.</p>
+
+        <p><a class="button" href="<?= $this->generateUrl('home') ?>">Continue</a></p>
+
+    </div>
+</div>
