@@ -18,7 +18,7 @@ class Notify implements Initializer\LogSupportInterface
 
     const NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM                = 'a77309f1-2354-4a1b-ab2f-022a79d9f106';
     const NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED                 = '810b6370-7162-4d9a-859c-34b61f3fecde';
-    const NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE          = '525c6409-dbc3-4b94-bcd0-66e944f93873';
+    const NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE          = 'e303f8ef-95b4-4f48-b62c-bccb6a72dcd7';
     const NOTIFY_TEMPLATE_EMAIL_REJECTION                      = '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1';
 
     const NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM                  = 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4';
@@ -414,8 +414,12 @@ class Notify implements Initializer\LogSupportInterface
         return $successful;
     }
 
-    public function getSmsDonorName(string $smsTemplate, string $donorName)
+    public function getDonorNameForTemplate(string $templateId, string $donorName)
     {
+        if (array_key_exists($templateId, $this->maxDonorNameLength)) {
+            return substr($donorName, 0, $this->maxDonorNameLength[$templateId] - 1);
+        }
 
+        return $donorName;
     }
 }
