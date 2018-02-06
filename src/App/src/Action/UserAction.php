@@ -90,6 +90,23 @@ class UserAction extends AbstractRestfulAction
     }
 
     /**
+     * UPDATE/PUT edit action - override in subclass if required
+     *
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface $delegate
+     * @return JsonResponse
+     */
+    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    {
+        //  Get the user ID and refresh the set up token value
+        $userId = $request->getAttribute('id');
+
+        $user = $this->userService->refreshToken($userId, -1);
+
+        return new JsonResponse($user->getArrayCopy());
+    }
+
+    /**
      * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
@@ -105,11 +122,14 @@ class UserAction extends AbstractRestfulAction
         $requestBody = $request->getParsedBody();
 
         if (!empty($token)) {
-            //  If a token value has been provided then we are attempting to set the password for a user
-            //  This can only be done if the token expires value has been set to -1 also
+            //  If a token value has been provided in the request then we are attempting to set the password for a user
+            //  This can only be done if the token expires value in the database has been set to -1 also
             $user = $this->userService->getByToken($token, true);
 
             $user = $this->userService->setPassword($user->getId(), $requestBody['password']);
+
+            //  Refresh the token to remove the old copy value
+            $this->userService->refreshToken($user->getId(), -1);
         } else {
             //  Define the request field to update functions mappings
             $updateMappings = [
