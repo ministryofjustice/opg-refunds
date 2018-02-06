@@ -34,7 +34,7 @@ $app->get('/exception', App\Action\ExceptionAction::class, 'exception');
 
 //  Authenticated routes - see AuthorizationMiddleware
 $app->get('/', App\Action\Home\HomeAction::class, 'home');
-$app->get('/user[/{id:\d+}]', App\Action\User\UserAction::class, 'user');
+$app->route('/user[/{id:\d+}]', App\Action\User\UserAction::class, ['GET', 'POST'], 'user');
 $app->route('/user/add', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.add');
 $app->route('/user/edit/{id:\d+}', App\Action\User\UserUpdateAction::class, ['GET', 'POST'], 'user.edit');
 $app->route('/user/delete/{id:\d+}', App\Action\User\UserDeleteAction::class, ['GET', 'POST'], 'user.delete');

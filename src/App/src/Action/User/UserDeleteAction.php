@@ -2,10 +2,9 @@
 
 namespace App\Action\User;
 
-use App\Action\AbstractModelAction;
 use App\Form\UserDelete;
-use App\Service\User\User as UserService;
 use Interop\Http\ServerMiddleware\DelegateInterface;
+use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
@@ -14,22 +13,8 @@ use Exception;
  * Class UserDeleteAction
  * @package App\Action
  */
-class UserDeleteAction extends AbstractModelAction
+class UserDeleteAction extends AbstractUserAction
 {
-    /**
-     * @var UserService
-     */
-    protected $userService;
-
-    /**
-     * UserDeleteAction constructor.
-     * @param UserService $userService
-     */
-    public function __construct(UserService $userService)
-    {
-        $this->userService = $userService;
-    }
-
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate

@@ -100,6 +100,19 @@ class User implements ApiClientInterface
     }
 
     /**
+     * Refresh the user account set up token
+     *
+     * @param int $userId
+     * @return null|UserModel
+     */
+    public function refreshSetUpToken(int $userId)
+    {
+        $userData = $this->getApiClient()->httpPut('/v1/user/' . $userId);
+
+        return $this->createDataModel($userData);
+    }
+
+    /**
      * Update existing user
      *
      * @param int $userId

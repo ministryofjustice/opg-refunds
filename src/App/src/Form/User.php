@@ -22,8 +22,6 @@ use Zend\InputFilter\InputFilter;
 class User extends AbstractForm
 {
     /**
-     * SignIn constructor
-     *
      * @param array $options
      * @param bool $pendingUser
      */
