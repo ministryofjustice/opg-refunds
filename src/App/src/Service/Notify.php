@@ -162,7 +162,6 @@ class Notify implements Initializer\LogSupportInterface
             }
         }
 
-
         $notified['processed'] = $processedCount;
         $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
 
@@ -191,9 +190,10 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendEmail()) {
             try {
-                $this->notifyClient->sendEmail($contact->getEmail(), self::NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM, [
+                $templateId = self::NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM;
+                $this->notifyClient->sendEmail($contact->getEmail(), $templateId, [
                     'person-completing' => $contactName,
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -217,8 +217,9 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendText()) {
             try {
-                $this->notifyClient->sendSms($contact->getPhone(), self::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM, [
-                    'donor-name' => $claimModel->getDonorName(),
+                $templateId = self::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM;
+                $this->notifyClient->sendSms($contact->getPhone(), $templateId, [
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -287,9 +288,10 @@ class Notify implements Initializer\LogSupportInterface
 
             if ($claimModel->shouldSendEmail()) {
                 try {
-                    $this->notifyClient->sendEmail($contact->getEmail(), self::NOTIFY_TEMPLATE_EMAIL_REJECTION, array_merge($emailPersonalisation, [
+                    $templateId = self::NOTIFY_TEMPLATE_EMAIL_REJECTION;
+                    $this->notifyClient->sendEmail($contact->getEmail(), $templateId, array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
-                        'donor-name' => $claimModel->getDonorName(),
+                        'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                         'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]));
@@ -314,7 +316,7 @@ class Notify implements Initializer\LogSupportInterface
             if ($claimModel->shouldSendText() && $smsTemplate) {
                 try {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
-                        'donor-name' => $claimModel->getDonorName(),
+                        'donor-name' => $this->getDonorNameForTemplate($smsTemplate, $claimModel->getDonorName()),
                         'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]);
@@ -359,7 +361,7 @@ class Notify implements Initializer\LogSupportInterface
                     'person-completing' => $contactName,
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -389,7 +391,7 @@ class Notify implements Initializer\LogSupportInterface
                 $this->notifyClient->sendSms($contact->getPhone(), $templateId, [
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
