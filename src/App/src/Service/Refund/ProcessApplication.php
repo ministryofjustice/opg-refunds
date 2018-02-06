@@ -137,7 +137,9 @@ class ProcessApplication implements Initializer\LogSupportInterface
                     'Unable to send SMS via Notify',
                     [
                         'exception' => $e->getMessage(),
-                        'notify-message' => (string)$e->getResponse()->getBody()
+                        'notify-message' => (string)$e->getResponse()->getBody(),
+                        'number-original' => $contact['phone'],
+                        'number-sanitised' => (new PhoneNumber($contact['phone']))->get(),
                     ]
                 );
             }
