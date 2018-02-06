@@ -199,7 +199,7 @@ class User extends AbstractEntity
     /**
      * @return int
      */
-    public function getPasswordResetExpires(): int
+    public function getPasswordResetExpires()
     {
         return $this->passwordResetExpires;
     }
