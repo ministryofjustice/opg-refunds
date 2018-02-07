@@ -144,15 +144,15 @@ class PoaLookup {
         }
 
         if (isset($params['first-name'])) {
-            $name = str_replace(' ', '%', '%'.trim($params['first-name']).'%');
-            $name = mb_strtolower($name, 'UTF-8');
-            $statement->bindParam(':fname', $name, PDO::PARAM_STR);
+            $fname = str_replace(' ', '%', '%'.trim($params['first-name']).'%');
+            $fname = mb_strtolower($fname, 'UTF-8');
+            $statement->bindParam(':fname', $fname, PDO::PARAM_STR);
         }
 
         if (isset($params['last-name'])) {
-            $name = str_replace(' ', '%', '%'.trim($params['last-name']).'%');
-            $name = mb_strtolower($name, 'UTF-8');
-            $statement->bindParam(':lname', $name, PDO::PARAM_STR);
+            $lname = str_replace(' ', '%', '%'.trim($params['last-name']).'%');
+            $lname = mb_strtolower($lname, 'UTF-8');
+            $statement->bindParam(':lname', $lname, PDO::PARAM_STR);
         }
 
         //---
