@@ -163,11 +163,22 @@ class PoaLookup {
 
         //---
 
+        // JSON decode the data
         $results = array_map(function($v){
-            // JSON decode the data
             $v['data'] = json_decode($v['data'], true);
             return $v;
         }, $results);
+
+        //---
+
+        // Ues the case number (& sequence) as the array's index.
+        $results = array_combine(array_map(function($v){
+            $index = (string)$v['case_number'];
+            if (isset($v['sequence_number'])) {
+                $index .= '/' . $v['sequence_number'];
+            }
+            return $index;
+        }, $results), $results);
 
         //---
 
