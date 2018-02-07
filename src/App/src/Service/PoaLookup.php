@@ -111,7 +111,7 @@ class PoaLookup {
                 $query .= " AND ";
             }
 
-            $query .= "data->>'donor-forename' LIKE :lname";
+            $query .= "data->>'donor-lastname' LIKE :lname";
         }
 
         if (empty($query)) {
