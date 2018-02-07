@@ -16,6 +16,19 @@ class Notify implements Initializer\LogSupportInterface
 {
     use Initializer\LogSupportTrait;
 
+    const NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM                = 'a77309f1-2354-4a1b-ab2f-022a79d9f106';
+    const NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED                 = '810b6370-7162-4d9a-859c-34b61f3fecde';
+    const NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE          = 'e303f8ef-95b4-4f48-b62c-bccb6a72dcd7';
+    const NOTIFY_TEMPLATE_EMAIL_REJECTION                      = '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1';
+
+    const NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM                  = 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4';
+    const NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED                   = 'df4ffd99-fcb0-4f77-b001-0c89b666d02f';
+    const NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE            = '525c6409-dbc3-4b94-bcd0-66e944f93873';
+    const NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND = 'f90cdca8-cd8b-4e22-ac66-d328b219f53e';
+    const NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED    = '5ccfdd66-0040-423a-8426-1458f912d41a';
+    const NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID           = '80b81c91-667e-47d8-bd8e-b87fdfa1b3de';
+    const NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED     = '2bb54224-0cab-44b9-9623-fd12f6ee6e77';
+
     /**
      * @var EntityManager
      */
@@ -30,6 +43,19 @@ class Notify implements Initializer\LogSupportInterface
      * @var Claim
      */
     private $claimService;
+
+    /**
+     * @var array
+     */
+    private $maxDonorNameLength = [
+        self::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM                  => 56,  //SMS - caseworker - duplicate claim
+        self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED                   => 138, //SMS - refund approved
+        self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE            => 129, //SMS - refund approved - cheque
+        self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND => 48,  //SMS - rejection - no poas found
+        self::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED    => 131, //SMS - rejection - POAs already refunded
+        self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID           => 105, //SMS - rejection - no fees paid
+        self::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED     => 80,  //SMS - rejection - details not verified
+    ];
 
     public function __construct(EntityManager $entityManager, NotifyClient $notifyClient, ClaimService $claimService)
     {
@@ -136,7 +162,6 @@ class Notify implements Initializer\LogSupportInterface
             }
         }
 
-
         $notified['processed'] = $processedCount;
         $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
 
@@ -165,9 +190,10 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendEmail()) {
             try {
-                $this->notifyClient->sendEmail($contact->getEmail(), 'a77309f1-2354-4a1b-ab2f-022a79d9f106', [
+                $templateId = self::NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM;
+                $this->notifyClient->sendEmail($contact->getEmail(), $templateId, [
                     'person-completing' => $contactName,
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -191,8 +217,9 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendText()) {
             try {
-                $this->notifyClient->sendSms($contact->getPhone(), 'df57d1b0-c489-4f8f-990c-1bc58f0d44b4', [
-                    'donor-name' => $claimModel->getDonorName(),
+                $templateId = self::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM;
+                $this->notifyClient->sendSms($contact->getPhone(), $templateId, [
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -234,19 +261,19 @@ class Notify implements Initializer\LogSupportInterface
         switch ($claimModel->getRejectionReason()) {
             case ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND:
                 $emailPersonalisation['no-poas-found'] = 'yes';
-                $smsTemplate = 'f90cdca8-cd8b-4e22-ac66-d328b219f53e';
+                $smsTemplate = self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND;
                 break;
             case ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED:
                 $emailPersonalisation['poas-already-refunded'] = 'yes';
-                $smsTemplate = '5ccfdd66-0040-423a-8426-1458f912d41a';
+                $smsTemplate = self::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED;
                 break;
             case ClaimModel::REJECTION_REASON_NO_FEES_PAID:
                 $emailPersonalisation['no-fees-paid'] = 'yes';
-                $smsTemplate = '80b81c91-667e-47d8-bd8e-b87fdfa1b3de';
+                $smsTemplate = self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID;
                 break;
             case ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED:
                 $emailPersonalisation['details-not-verified'] = 'yes';
-                $smsTemplate = '2bb54224-0cab-44b9-9623-fd12f6ee6e77';
+                $smsTemplate = self::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED;
                 break;
             default:
                 $sendRejectionMessage = false;
@@ -261,9 +288,10 @@ class Notify implements Initializer\LogSupportInterface
 
             if ($claimModel->shouldSendEmail()) {
                 try {
-                    $this->notifyClient->sendEmail($contact->getEmail(), '018ab571-a2a5-41e6-a1d4-ae369e2d3cd1', array_merge($emailPersonalisation, [
+                    $templateId = self::NOTIFY_TEMPLATE_EMAIL_REJECTION;
+                    $this->notifyClient->sendEmail($contact->getEmail(), $templateId, array_merge($emailPersonalisation, [
                         'person-completing' => $contactName,
-                        'donor-name' => $claimModel->getDonorName(),
+                        'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                         'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]));
@@ -288,7 +316,7 @@ class Notify implements Initializer\LogSupportInterface
             if ($claimModel->shouldSendText() && $smsTemplate) {
                 try {
                     $this->notifyClient->sendSms($contact->getPhone(), $smsTemplate, [
-                        'donor-name' => $claimModel->getDonorName(),
+                        'donor-name' => $this->getDonorNameForTemplate($smsTemplate, $claimModel->getDonorName()),
                         'donor-dob' => $donorDob,
                         'claim-code' => $claimModel->getReferenceNumber()
                     ]);
@@ -326,11 +354,14 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendEmail()) {
             try {
-                $this->notifyClient->sendEmail($contact->getEmail(), '810b6370-7162-4d9a-859c-34b61f3fecde', [
+                $templateId = $claimModel->getApplication()->isRefundByCheque() ?
+                    self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED;
+
+                $this->notifyClient->sendEmail($contact->getEmail(), $templateId, [
                     'person-completing' => $contactName,
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -354,10 +385,13 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendText()) {
             try {
-                $this->notifyClient->sendSms($contact->getPhone(), 'df4ffd99-fcb0-4f77-b001-0c89b666d02f', [
+                $templateId = $claimModel->getApplication()->isRefundByCheque() ?
+                    self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED;
+
+                $this->notifyClient->sendSms($contact->getPhone(), $templateId, [
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
-                    'donor-name' => $claimModel->getDonorName(),
+                    'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
                     'claim-code' => $claimModel->getReferenceNumber()
                 ]);
@@ -380,5 +414,14 @@ class Notify implements Initializer\LogSupportInterface
         }
 
         return $successful;
+    }
+
+    public function getDonorNameForTemplate(string $templateId, string $donorName)
+    {
+        if (array_key_exists($templateId, $this->maxDonorNameLength)) {
+            return substr($donorName, 0, $this->maxDonorNameLength[$templateId] - 1);
+        }
+
+        return $donorName;
     }
 }
