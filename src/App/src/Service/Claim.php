@@ -215,7 +215,7 @@ class Claim implements Initializer\LogSupportInterface
     private function addMerisAndSiriusPoaData(int $claimId, int $userId)
     {
         /*
-         * Method is not critical, there exceptions should be logged,
+         * Method is not critical, therefore exceptions should be logged
          * but not prevent everything else continuing.
          */
         try {
