@@ -19,6 +19,7 @@ class Note extends AbstractDataModel
     const TYPE_POA_ADDED = 'poa_added';
     const TYPE_POA_EDITED = 'poa_edited';
     const TYPE_POA_DELETED = 'poa_deleted';
+    const TYPE_POA_AUTOMATION_RAN = 'poa_automation_ran';
     const TYPE_NO_MERIS_POAS = 'no_meris_poas';
     const TYPE_MERIS_POAS_FOUND = 'meris_poas_found';
     const TYPE_NO_SIRIUS_POAS = 'no_sirius_poas';

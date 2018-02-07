@@ -15,6 +15,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\User as UserEntity;
 use App\Entity\Cases\Note as NoteEntity;
@@ -24,14 +25,16 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
+use Opg\Refunds\Log\Initializer;
 
 /**
  * Class Claim
  * @package App\Service
  */
-class Claim
+class Claim implements Initializer\LogSupportInterface
 {
     use EntityToModelTrait;
+    use Initializer\LogSupportTrait;
 
     /**
      * @var EntityRepository
@@ -54,16 +57,23 @@ class Claim
     private $entityManager;
 
     /**
+     * @var PoaLookup
+     */
+    private $poaLookup;
+
+    /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
+     * @param PoaLookup $poaLookup
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, PoaLookup $poaLookup)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
+        $this->poaLookup = $poaLookup;
     }
 
     /**
@@ -193,9 +203,156 @@ class Claim
                 NoteModel::TYPE_CLAIM_IN_PROGRESS,
                 "Caseworker has begun to process this claim"
             );
+
+            // Attempt to pre-populate POA data
+            $this->addMerisAndSiriusPoaData($assignedClaimId, $userId);
         }
 
         return ['assignedClaimId' => $assignedClaimId];
+    }
+
+
+    private function addMerisAndSiriusPoaData(int $claimId, int $userId)
+    {
+        /*
+         * Method is not critical, there exceptions should be logged,
+         * but not prevent everything else continuing.
+         */
+        try {
+            $claim = $this->get($claimId, $userId);
+
+            $donor = $claim->getApplication()->getDonor();
+
+            if ($donor->hasPoaName()) {
+                $poaByDonor = $this->poaLookup->queryByDobAndName(
+                    $donor->getCurrent()->getDob()->format('Y-m-d'),
+                    $donor->getPoa()->getName()->getFirst(),
+                    $donor->getPoa()->getName()->getLast()
+                );
+            } else {
+                $poaByDonor = $this->poaLookup->queryByDobAndName(
+                    $donor->getCurrent()->getDob()->format('Y-m-d'),
+                    $donor->getCurrent()->getName()->getFirst(),
+                    $donor->getCurrent()->getName()->getLast()
+                );
+            }
+
+            $meris = $poaByDonor['meris'];
+            $sirius = $poaByDonor['sirius'];
+
+            //---
+
+            if ($claim->getApplication()->hasCaseNumber()) {
+                $poaByCase = $this->poaLookup->queryByCaseNumber(
+                    (int)$claim->getApplication()->getCaseNumber()->getPoaCaseNumber()
+                );
+
+                // Merge into the data (if found)
+                // The fact the array's index contains the case numbers prevents duplicates.
+                $meris = $meris + $poaByCase['meris'];
+                $sirius = $sirius + $poaByCase['sirius'];
+            }
+
+            //---
+
+            // Add the Meris POAs
+            foreach ($meris as $poa) {
+                $poaModel = new PoaModel;
+
+                $poaModel->setSystem( PoaModel::SYSTEM_MERIS );
+                $poaModel->setCaseNumber($poa['case_number'] . '/' . $poa['sequence_number']);
+                $poaModel->setReceivedDate( new DateTime($poa['data']['date-of-receipt']) );
+
+                //---
+
+                // Check if we can verify the case number
+                if ($claim->getApplication()->hasCaseNumber()) {
+                    if ($poa['case_number'] == $claim->getApplication()->getCaseNumber()->getPoaCaseNumber()) {
+                        $verifications = $poaModel->getVerifications();
+                        $verifications[] = new VerificationModel([
+                            'type' => VerificationModel::TYPE_CASE_NUMBER,
+                            'passes' => 'yes'
+                        ]);
+                        $poaModel->setVerifications($verifications);
+                    }
+                }
+
+                // Check if we can verify the Donor postcode
+                if ($claim->getApplication()->hasDonorPostcode()) {
+                    $postcode = $claim->getApplication()->getPostcodes()->getDonorPostcode();
+                    $postcode = preg_replace('/\s+/', '', strtolower($postcode));
+
+                    if ($poa['data']['donor-postcode'] === $postcode) {
+                        $verifications = $poaModel->getVerifications();
+                        $verifications[] = new VerificationModel([
+                            'type' => VerificationModel::TYPE_DONOR_POSTCODE,
+                            'passes' => 'yes'
+                        ]);
+                        $poaModel->setVerifications($verifications);
+                    }
+                }
+
+                //---
+
+                $this->addPoa($claimId, $userId, $poaModel);
+            }
+
+            // Add the Sirius POAs
+            foreach ($sirius as $poa) {
+                $poaModel = new PoaModel;
+
+                $poaModel->setSystem( PoaModel::SYSTEM_SIRIUS );
+                $poaModel->setCaseNumber($poa['case_number']);
+                $poaModel->setReceivedDate( new DateTime($poa['data']['date-of-receipt']) );
+
+                //---
+
+                // Check if we can verify the case number
+                if ($claim->getApplication()->hasCaseNumber()) {
+                    if ($poa['case_number'] == $claim->getApplication()->getCaseNumber()->getPoaCaseNumber()) {
+                        $verifications = $poaModel->getVerifications();
+                        $verifications[] = new VerificationModel([
+                            'type' => VerificationModel::TYPE_CASE_NUMBER,
+                            'passes' => 'yes'
+                        ]);
+                        $poaModel->setVerifications($verifications);
+                    }
+                }
+
+                // Check if we can verify the Donor postcode
+                if ($claim->getApplication()->hasDonorPostcode()) {
+                    $postcode = $claim->getApplication()->getPostcodes()->getDonorPostcode();
+                    $postcode = preg_replace('/\s+/', '', strtolower($postcode));
+
+                    if ($poa['data']['donor-postcode'] === $postcode) {
+                        $verifications = $poaModel->getVerifications();
+                        $verifications[] = new VerificationModel([
+                            'type' => VerificationModel::TYPE_DONOR_POSTCODE,
+                            'passes' => 'yes'
+                        ]);
+                        $poaModel->setVerifications($verifications);
+                    }
+                }
+
+                //---
+
+                $this->addPoa($claimId, $userId, $poaModel);
+            }
+
+            //---
+
+            $total = count($meris) + count($sirius);
+
+            $this->addNote(
+                $claimId,
+                $userId,
+                NoteModel::TYPE_POA_AUTOMATION_RAN,
+                "{$total} POAs have been automatically added"
+            );
+
+        } catch (Exception $e){
+            $this->getLogger()->crit("Error processing Meris or Sirius data for claim {$claimId} - " . $e->getMessage());
+        }
     }
 
     /**

@@ -171,7 +171,7 @@ class PoaLookup {
 
         //---
 
-        // Ues the case number (& sequence) as the array's index.
+        // Use the case number (& sequence) as the array's index.
         $results = array_combine(array_map(function($v){
             $index = (string)$v['case_number'];
             if (isset($v['sequence_number'])) {
