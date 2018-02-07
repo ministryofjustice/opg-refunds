@@ -142,6 +142,10 @@ class ContactDetails extends AbstractForm
             // Standardise number
             $number = preg_replace('/^[+]?[0]*44/', '0', $value);
 
+            if (strlen($number) != 11) {
+                return false;
+            }
+
             // Check it's a mobile number.
             return preg_match('/^07/', $number) && !preg_match('/^070/', $number);
         }))->setMessage('phone-invalid', Callback::INVALID_VALUE);
