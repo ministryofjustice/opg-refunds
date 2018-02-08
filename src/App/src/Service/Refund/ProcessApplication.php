@@ -42,6 +42,13 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
+        // Tidy up data - strip out quote marks
+        array_walk_recursive($data, function(&$item, $key){
+            $item = (is_string($item)) ? str_replace('"', '', $item) : $item;
+        });
+
+        //---
+
         // Include the date submitted
         $data['version'] = 1;
 
@@ -63,7 +70,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
