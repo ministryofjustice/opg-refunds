@@ -22,7 +22,7 @@ class ClaimDuplicateAction extends AbstractClaimAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -31,6 +31,8 @@ class ClaimDuplicateAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
+        } elseif ($claim->isClaimResolved()) {
+            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         } elseif (!$claim->canResolveAsDuplicate()) {
             throw new Exception('Claim cannot be resolved as a duplicate', 400);
         }
