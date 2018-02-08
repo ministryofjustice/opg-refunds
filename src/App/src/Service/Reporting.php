@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Entity\Cases\Report as ReportEntity;
+use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use DateInterval;
@@ -16,15 +18,22 @@ class Reporting
 {
     const GENERATED_DATE_FORMAT = 'd/m/Y H:i:s';
     const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
+    const CACHE_MODIFIER = '+5 seconds';
 
     /**
      * @var EntityManager
      */
     private $entityManager;
 
+    /**
+     * @var EntityRepository
+     */
+    private $reportRepository;
+
     public function __construct(EntityManager $claimsEntityManager)
     {
         $this->entityManager = $claimsEntityManager;
+        $this->reportRepository = $this->entityManager->getRepository(ReportEntity::class);
     }
 
     public function getAllReports()
@@ -57,31 +66,36 @@ class Reporting
 
     public function getClaimReport(DateTime $dateOfFirstClaim)
     {
-        $now = microtime(true);
+        /** @var ReportEntity $claimAllTime */
+        $claimAllTime = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $dateOfFirstClaim]);
 
-        $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
+        if ($claimAllTime === null || $claimAllTime->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim UNION ALL
                 SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
 
-        $allTime = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
 
-        $generated = new DateTime();
-        $generatedTimeInMs = round((microtime(true) - $now) * 1000);
-        $now = microtime(true);
+            $claimAllTime = $this->upsertReport(
+                $claimAllTime,
+                'claim',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
 
-        $this->entityManager->getConnection()->executeUpdate('INSERT INTO report (type, title, start_datetime, end_datetime, report_data, generated_datetime, generation_time_ms) VALUES (:type, :title, :startDatetime, :endDatetime, :reportData, :generatedDatetime, :generationTimeMs)', [
-            'type' => 'claim',
-            'title' => 'All time',
-            'startDatetime' => $dateOfFirstClaim,
-            'endDatetime' => $generated,
-            'reportData' => $allTime,
-            'generatedDatetime' => $generated,
-            'generationTimeMs' => $generatedTimeInMs
-        ]);
+        $allTime = $claimAllTime->getData();
 
         $sql = 'SELECT status, count(*) FROM claim WHERE status = :statusPending AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
@@ -106,14 +120,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $claimByDay */
+            $claimByDay = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($claimByDay === null || ($i === 0 && $claimByDay->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
 
-            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $this->addStatusColumns($day);
+                $day = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $claimByDay = $this->upsertReport(
+                    $claimByDay,
+                    'claim',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$claimByDay->getTitle()] = $claimByDay->getData();
 
             $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
             $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
@@ -127,14 +158,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $claimByWeek */
+            $claimByWeek = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
+            if ($claimByWeek === null || ($i === 0 && $claimByWeek->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
 
-            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->addStatusColumns($week);
+                $week = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $claimByWeek = $this->upsertReport(
+                    $claimByWeek,
+                    'claim',
+                    date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1),
+                    $startOfWeek,
+                    $endOfWeek,
+                    $week,
+                    $startMicroTime
+                );
+            }
+
+            $byWeek[$claimByWeek->getTitle()] = $claimByWeek->getData();
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -148,14 +196,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $claimByMonth */
+            $claimByMonth = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($claimByMonth === null || ($i === 0 && $claimByMonth->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
 
-            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $this->addStatusColumns($month);
+                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $claimByMonth = $this->upsertReport(
+                    $claimByMonth,
+                    'claim',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$claimByMonth->getTitle()] = $claimByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
@@ -675,5 +740,44 @@ class Reporting
         return [
             'allTime' => $allTime
         ];
+    }
+
+    /**
+     * @param ReportEntity $report
+     * @param string $type
+     * @param string $title
+     * @param DateTime $startDateTime
+     * @param DateTime $endDateTime
+     * @param array $data
+     * @param float $startMicroTime
+     * @return ReportEntity
+     */
+    private function upsertReport(
+        $report,
+        string $type,
+        string $title,
+        DateTime $startDateTime,
+        DateTime $endDateTime,
+        array $data,
+        float $startMicroTime
+    ) {
+        $generated = new DateTime();
+        $generationTimeInMs = round((microtime(true) - $startMicroTime) * 1000);
+
+        if ($report === null) {
+            //Persist report
+            $report = new ReportEntity($type, $title, $startDateTime, $endDateTime, $data, $generationTimeInMs);
+            $this->entityManager->persist($report);
+        } else {
+            $report->setStartDateTime($startDateTime);
+            $report->setEndDateTime($endDateTime);
+            $report->setData($data);
+            $report->setGeneratedDateTime($generated);
+            $report->setGenerationTimeInMs($generationTimeInMs);
+        }
+
+        $this->entityManager->flush();
+
+        return $report;
     }
 }

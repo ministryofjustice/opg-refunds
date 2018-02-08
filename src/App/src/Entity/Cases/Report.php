@@ -65,6 +65,24 @@ class Report extends AbstractEntity
      */
     protected $generationTimeInMs;
 
+    public function __construct(
+        string $type,
+        string $title,
+        DateTime $startDateTime,
+        DateTime $endDateTime,
+        array $data,
+        int $generationTimeInMs
+    ) {
+        $this->type = $type;
+        $this->title = $title;
+        $this->startDateTime = $startDateTime;
+        $this->endDateTime = $endDateTime;
+        $this->data = $data;
+        $this->generationTimeInMs = $generationTimeInMs;
+
+        $this->generatedDateTime = new DateTime();
+    }
+
     /**
      * @return int
      */
