@@ -15,6 +15,8 @@ class ProcessApplication implements Initializer\LogSupportInterface
 {
     use Initializer\LogSupportTrait;
 
+    const MAX_SMS_DONOR_NAME_LENGTH = 103;
+
     private $notifyClient;
     private $dataHandler;
     private $jsonSchemaPath;
@@ -40,6 +42,13 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
+        // Tidy up data - strip out quote marks
+        array_walk_recursive($data, function(&$item, $key){
+            $item = (is_string($item)) ? str_replace('"', '', $item) : $item;
+        });
+
+        //---
+
         // Include the date submitted
         $data['version'] = 1;
 
@@ -61,7 +70,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         if ($validator->fails()) {
             $errors = $validator->errors();
-            $this->getLogger()->alert('Invalid JSON generated', [ 'errors' => $errors ]);
             throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
         }
 
@@ -127,7 +135,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
                         $this->notifyClient->sendSms($phone->get(), 'dfa0cd3c-fcd5-431d-a380-3e4aa420e630', [
                             'claim-code' => IdentFormatter::format($reference),
                             'processed-by-date' => date('j F Y', strtotime($data['expected'])),
-                            'donor-name' => $name,
+                            'donor-name' => $this->getDonorNameForSms($name),
                             'donor-dob' => date('d/m/y', strtotime($data['donor']['current']['dob']))
                         ]);
                     }
@@ -149,5 +157,10 @@ class ProcessApplication implements Initializer\LogSupportInterface
         //---
 
         return $reference;
+    }
+
+    private function getDonorNameForSms(string $donorName)
+    {
+        return substr($donorName, 0, self::MAX_SMS_DONOR_NAME_LENGTH - 1);
     }
 }
