@@ -266,17 +266,38 @@ class Reporting
 
     public function getClaimSourceReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT \'donor\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'donor\' UNION ALL
+        /** @var ReportEntity $claimAllTime */
+        $claimSourceAllTime = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $dateOfFirstClaim]);
+
+        if ($claimSourceAllTime === null || $claimSourceAllTime->getGeneratedDateTime()->modify('+1 hour') < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT \'donor\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'donor\' UNION ALL
                 SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
                 SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
                 SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
                 SELECT \'total\', count(*) FROM claim';
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $endDateTime = new DateTime();
+
+            $claimSourceAllTime = $this->upsertReport(
+                $claimSourceAllTime,
+                'claimSource',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $claimSourceAllTime->getData();
 
         $sql = 'SELECT \'donor\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'applicant\' = \'donor\' UNION ALL
                 SELECT \'attorney\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'applicant\' = \'attorney\' UNION ALL
@@ -292,17 +313,34 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            /** @var ReportEntity $claimSourceByMonth */
+            $claimSourceByMonth = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($claimSourceByMonth === null || ($i === 0 && $claimSourceByMonth->getGeneratedDateTime()->modify('+1 hour') < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $claimSourceByMonth = $this->upsertReport(
+                    $claimSourceByMonth,
+                    'claimSource',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$claimSourceByMonth->getTitle()] = $claimSourceByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
