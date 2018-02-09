@@ -19,7 +19,7 @@ class Reporting
     const GENERATED_DATE_FORMAT = 'd/m/Y H:i:s';
     const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
     const SHORT_CACHE_MODIFIER = '+5 seconds';
-    const LONG_CACHE_MODIFIER = '+1 hour';
+    const LONG_CACHE_MODIFIER = '+5 minutes';
 
     /**
      * @var EntityManager
@@ -765,14 +765,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $processingTimeByDay */
+            $processingTimeByDay = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($processingTimeByDay === null || ($i === 0 && $processingTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
 
-            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $day;
+                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $processingTimeByDay = $this->upsertReport(
+                    $processingTimeByDay,
+                    'processingTime',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$processingTimeByDay->getTitle()] = $processingTimeByDay->getData();
 
             $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
             $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
@@ -786,14 +803,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $processingTimeByWeek */
+            $processingTimeByWeek = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
+            if ($processingTimeByWeek === null || ($i === 0 && $processingTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
 
-            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $week;
+                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $processingTimeByWeek = $this->upsertReport(
+                    $processingTimeByWeek,
+                    'processingTime',
+                    date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1),
+                    $startOfWeek,
+                    $endOfWeek,
+                    $week,
+                    $startMicroTime
+                );
+            }
+
+            $byWeek[$processingTimeByWeek->getTitle()] = $processingTimeByWeek->getData();
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -807,14 +841,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $processingTimeByMonth */
+            $processingTimeByMonth = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($processingTimeByMonth === null || ($i === 0 && $processingTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
 
-            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $processingTimeByMonth = $this->upsertReport(
+                    $processingTimeByMonth,
+                    'processingTime',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$processingTimeByMonth->getTitle()] = $processingTimeByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
@@ -856,14 +907,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $completionTimeByDay */
+            $completionTimeByDay = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($completionTimeByDay === null || ($i === 0 && $completionTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfDay->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfDay->format(self::SQL_DATE_FORMAT);
 
-            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $day;
+                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $completionTimeByDay = $this->upsertReport(
+                    $completionTimeByDay,
+                    'completionTime',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$completionTimeByDay->getTitle()] = $completionTimeByDay->getData();
 
             $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
             $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
@@ -877,14 +945,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $completionTimeByWeek */
+            $completionTimeByWeek = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
+            if ($completionTimeByWeek === null || ($i === 0 && $completionTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfWeek->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfWeek->format(self::SQL_DATE_FORMAT);
 
-            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $week;
+                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $completionTimeByWeek = $this->upsertReport(
+                    $completionTimeByWeek,
+                    'completionTime',
+                    date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1),
+                    $startOfWeek,
+                    $endOfWeek,
+                    $week,
+                    $startMicroTime
+                );
+            }
+
+            $byWeek[$completionTimeByWeek->getTitle()] = $completionTimeByWeek->getData();
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -898,14 +983,31 @@ class Reporting
                 break;
             }
 
-            $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
-            $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
+            /** @var ReportEntity $completionTimeByMonth */
+            $completionTimeByMonth = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($completionTimeByMonth === null || ($i === 0 && $completionTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
+                $parameters['startOfDay'] = $startOfMonth->format(self::SQL_DATE_FORMAT);
+                $parameters['endOfDay'] = $endOfMonth->format(self::SQL_DATE_FORMAT);
 
-            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $completionTimeByMonth = $this->upsertReport(
+                    $completionTimeByMonth,
+                    'completionTime',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$completionTimeByMonth->getTitle()] = $completionTimeByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
@@ -921,13 +1023,34 @@ class Reporting
 
     private function getPoasPerClaim($dateOfFirstClaim)
     {
-        $sql = 'SELECT poas_per_claim, count(*) AS frequency FROM (SELECT count(*) as poas_per_claim FROM poa GROUP BY claim_id) AS poas_per_claim GROUP BY poas_per_claim ORDER BY poas_per_claim';
+        /** @var ReportEntity $poasPerClaimAllTime */
+        $poasPerClaimAllTime = $this->reportRepository->findOneBy(['type' => 'poasPerClaim', 'startDateTime' => $dateOfFirstClaim]);
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+        if ($poasPerClaimAllTime === null || $poasPerClaimAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $sql = 'SELECT poas_per_claim, count(*) AS frequency FROM (SELECT count(*) as poas_per_claim FROM poa GROUP BY claim_id) AS poas_per_claim GROUP BY poas_per_claim ORDER BY poas_per_claim';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $endDateTime = new DateTime();
+
+            $poasPerClaimAllTime = $this->upsertReport(
+                $poasPerClaimAllTime,
+                'poasPerClaim',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $poasPerClaimAllTime->getData();
 
         return [
             'allTime' => $allTime
