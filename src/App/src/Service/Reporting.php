@@ -18,7 +18,8 @@ class Reporting
 {
     const GENERATED_DATE_FORMAT = 'd/m/Y H:i:s';
     const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
-    const CACHE_MODIFIER = '+5 seconds';
+    const SHORT_CACHE_MODIFIER = '+5 seconds';
+    const LONG_CACHE_MODIFIER = '+1 hour';
 
     /**
      * @var EntityManager
@@ -69,7 +70,7 @@ class Reporting
         /** @var ReportEntity $claimAllTime */
         $claimAllTime = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($claimAllTime === null || $claimAllTime->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime()) {
+        if ($claimAllTime === null || $claimAllTime->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -122,7 +123,7 @@ class Reporting
 
             /** @var ReportEntity $claimByDay */
             $claimByDay = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($claimByDay === null || ($i === 0 && $claimByDay->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByDay === null || ($i === 0 && $claimByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -160,7 +161,7 @@ class Reporting
 
             /** @var ReportEntity $claimByWeek */
             $claimByWeek = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($claimByWeek === null || ($i === 0 && $claimByWeek->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByWeek === null || ($i === 0 && $claimByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -198,7 +199,7 @@ class Reporting
 
             /** @var ReportEntity $claimByMonth */
             $claimByMonth = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimByMonth === null || ($i === 0 && $claimByMonth->getGeneratedDateTime()->modify(self::CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByMonth === null || ($i === 0 && $claimByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -269,7 +270,7 @@ class Reporting
         /** @var ReportEntity $claimAllTime */
         $claimSourceAllTime = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($claimSourceAllTime === null || $claimSourceAllTime->getGeneratedDateTime()->modify('+1 hour') < new DateTime()) {
+        if ($claimSourceAllTime === null || $claimSourceAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -315,7 +316,7 @@ class Reporting
 
             /** @var ReportEntity $claimSourceByMonth */
             $claimSourceByMonth = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimSourceByMonth === null || ($i === 0 && $claimSourceByMonth->getGeneratedDateTime()->modify('+1 hour') < new DateTime())) {
+            if ($claimSourceByMonth === null || ($i === 0 && $claimSourceByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -354,14 +355,35 @@ class Reporting
 
     public function getPhoneClaimTypeReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type
+        /** @var ReportEntity $phoneClaimTypeAllTime */
+        $phoneClaimTypeAllTime = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $dateOfFirstClaim]);
+
+        if ($phoneClaimTypeAllTime === null || $phoneClaimTypeAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type
                 UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
 
-        $allTime = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
+
+            $phoneClaimTypeAllTime = $this->upsertReport(
+                $phoneClaimTypeAllTime,
+                'phoneClaimType',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $phoneClaimTypeAllTime->getData();
 
         $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY type
                 UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
@@ -374,17 +396,34 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            /** @var ReportEntity $phoneClaimTypeByMonth */
+            $phoneClaimTypeByMonth = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($phoneClaimTypeByMonth === null || ($i === 0 && $phoneClaimTypeByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $month = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $month;
+                $month = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $phoneClaimTypeByMonth = $this->upsertReport(
+                    $phoneClaimTypeByMonth,
+                    'phoneClaimType',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$phoneClaimTypeByMonth->getTitle()] = $phoneClaimTypeByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
