@@ -461,13 +461,34 @@ class Reporting
 
     public function getRejectionReasonReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason UNION ALL SELECT \'total\', count(*) FROM claim WHERE status = \'rejected\'';
+        /** @var ReportEntity $rejectionReasonAllTime */
+        $rejectionReasonAllTime = $this->reportRepository->findOneBy(['type' => 'rejectionReason', 'startDateTime' => $dateOfFirstClaim]);
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+        if ($rejectionReasonAllTime === null || $rejectionReasonAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
 
-        $allTime = $this->addRejectionReasonColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $sql = 'SELECT rejection_reason, count(*) FROM claim WHERE status = \'rejected\' GROUP BY rejection_reason UNION ALL SELECT \'total\', count(*) FROM claim WHERE status = \'rejected\'';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $data = $this->addRejectionReasonColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
+
+            $rejectionReasonAllTime = $this->upsertReport(
+                $rejectionReasonAllTime,
+                'rejectionReason',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $rejectionReasonAllTime->getData();
 
         return [
             'allTime' => $allTime
@@ -494,13 +515,34 @@ class Reporting
 
     public function getDuplicateBankDetailReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT times_used, count(*) AS frequency FROM (SELECT count(*) AS times_used FROM claim WHERE account_hash IS NOT NULL GROUP BY account_hash) AS hash_duplication GROUP BY times_used ORDER BY times_used';
+        /** @var ReportEntity $duplicateBankDetailAllTime */
+        $duplicateBankDetailAllTime = $this->reportRepository->findOneBy(['type' => 'duplicateBankDetail', 'startDateTime' => $dateOfFirstClaim]);
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+        if ($duplicateBankDetailAllTime === null || $duplicateBankDetailAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $sql = 'SELECT times_used, count(*) AS frequency FROM (SELECT count(*) AS times_used FROM claim WHERE account_hash IS NOT NULL GROUP BY account_hash) AS hash_duplication GROUP BY times_used ORDER BY times_used';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $endDateTime = new DateTime();
+
+            $duplicateBankDetailAllTime = $this->upsertReport(
+                $duplicateBankDetailAllTime,
+                'duplicateBankDetail',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $duplicateBankDetailAllTime->getData();
 
         return [
             'allTime' => $allTime
