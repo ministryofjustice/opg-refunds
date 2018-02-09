@@ -13,7 +13,21 @@ use Doctrine\ORM\Mapping as ORM;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 /**
- * @ORM\Entity @ORM\Table(name="claim", indexes={@ORM\Index(name="idx_status", columns={"status"})})
+ * @ORM\Entity @ORM\Table(name="claim", indexes={
+ * @ORM\Index(name="idx_claim_status", columns={"status"}),
+ * @ORM\Index(name="idx_claim_created_datetime", columns={"created_datetime"}),
+ * @ORM\Index(name="idx_claim_updated_datetime", columns={"updated_datetime"}),
+ * @ORM\Index(name="idx_claim_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_finished_datetime", columns={"finished_datetime"}),
+ * @ORM\Index(name="idx_claim_donor_name", columns={"donor_name"}),
+ * @ORM\Index(name="idx_claim_account_hash", columns={"account_hash"}),
+ * @ORM\Index(name="idx_claim_rejection_reason", columns={"rejection_reason"}),
+ * @ORM\Index(name="idx_claim_status_created_datetime", columns={"status", "created_datetime"}),
+ * @ORM\Index(name="idx_claim_status_updated_datetime", columns={"status", "updated_datetime"}),
+ * @ORM\Index(name="idx_claim_status_received_datetime", columns={"status", "received_datetime"}),
+ * @ORM\Index(name="idx_claim_status_finished_datetime", columns={"status", "finished_datetime"}),
+ * @ORM\Index(name="idx_claim_status_rejection_reason", columns={"status", "rejection_reason"})
+ * })
  **/
 class Claim extends AbstractEntity
 {
