@@ -16,8 +16,6 @@ class ReportingFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get('config');
-
         return new Reporting(
             $container->get('doctrine.entity_manager.orm_cases')
         );
