@@ -24,7 +24,7 @@ class ClaimRejectAction extends AbstractClaimAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -33,6 +33,8 @@ class ClaimRejectAction extends AbstractClaimAction
 
         if ($claim === null) {
             throw new Exception('Claim not found', 404);
+        } elseif ($claim->isClaimResolved()) {
+            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         } elseif (!$claim->isClaimComplete()) {
             throw new Exception('Claim is not complete', 400);
         }
