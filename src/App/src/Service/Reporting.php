@@ -551,16 +551,37 @@ class Reporting
 
     public function getRefundReport(DateTime $dateOfFirstClaim)
     {
-        $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment UNION ALL
+        /** @var ReportEntity $refundAllTime */
+        $refundAllTime = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $dateOfFirstClaim]);
+
+        if ($refundAllTime === null || $refundAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment UNION ALL
                 SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
                 SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
                 SELECT \'total\', count(*) FROM payment';
 
-        $statement = $this->entityManager->getConnection()->executeQuery(
-            $sql
-        );
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
 
-        $allTime = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
+
+            $refundAllTime = $this->upsertReport(
+                $refundAllTime,
+                'refund',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $refundAllTime->getData();
 
         $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay UNION ALL
                 SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment WHERE added_datetime >= :startOfDay AND added_datetime <= :endOfDay GROUP BY method UNION ALL
@@ -575,19 +596,37 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            /** @var ReportEntity $refundByDay */
+            $refundByDay = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($refundByDay === null || ($startOfDay === new DateTime('today') && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
 
-            if ((int)$day['number_of_spreadsheets'] === 1) {
-                $byDay[date('D d/m/Y', $startOfDay->getTimestamp())] = $this->formatRefundReport($day);
-            } elseif ((int)$day['number_of_spreadsheets'] > 0) {
+                $day = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $refundByDay = $this->upsertReport(
+                    $refundByDay,
+                    'refund',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $numberOfSpreadsheets = (int)$refundByDay->getData()['number_of_spreadsheets'];
+            if ($numberOfSpreadsheets === 1) {
+                $byDay[$refundByDay->getTitle()] = $refundByDay->getData();
+            } elseif ($numberOfSpreadsheets > 0) {
                 throw new \Exception("There should never be more than one spreadsheet per day. Found {$day['number_of_spreadsheets']}");
             }
 
@@ -603,17 +642,34 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfWeek->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfWeek->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            /** @var ReportEntity $refundByWeek */
+            $refundByWeek = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
+            if ($refundByWeek === null || ($i === 0 && $refundByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfWeek->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfWeek->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
 
-            $byWeek[date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1)] = $this->formatRefundReport($week);
+                $week = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $refundByWeek = $this->upsertReport(
+                    $refundByWeek,
+                    'refund',
+                    date('D d/m/Y', $startOfWeek->getTimestamp()) . ' - ' . date('D d/m/Y', $endOfWeek->getTimestamp() - 1),
+                    $startOfWeek,
+                    $endOfWeek,
+                    $week,
+                    $startMicroTime
+                );
+            }
+
+            $byWeek[$refundByWeek->getTitle()] = $refundByWeek->getData();
 
             $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
             $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
@@ -627,17 +683,34 @@ class Reporting
                 break;
             }
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                $sql,
-                [
-                    'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
-                    'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
-                ]
-            );
+            /** @var ReportEntity $refundByMonth */
+            $refundByMonth = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($refundByMonth === null || ($i === 0 && $refundByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
 
-            $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
 
-            $byMonth[date('F Y', $startOfMonth->getTimestamp())] = $this->formatRefundReport($month);
+                $month = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $refundByMonth = $this->upsertReport(
+                    $refundByMonth,
+                    'refund',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$refundByMonth->getTitle()] = $refundByMonth->getData();
 
             $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
             $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
