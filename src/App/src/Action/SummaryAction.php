@@ -25,6 +25,10 @@ class SummaryAction extends AbstractAction
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
         if (!$this->isActionAccessible($request)) {
+            if (isset($request->getCookieParams()['complete'])) {
+                return new Response\RedirectResponse($this->getUrlHelper()->generate('apply.done'));
+            }
+
             return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
         }
 
