@@ -19,7 +19,8 @@ class Reporting
     const GENERATED_DATE_FORMAT = 'd/m/Y H:i:s';
     const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
     const SHORT_CACHE_MODIFIER = '+5 seconds';
-    const LONG_CACHE_MODIFIER = '+5 minutes';
+    const MEDIUM_CACHE_MODIFIER = '+5 minutes';
+    const LONG_CACHE_MODIFIER = '+1 hour';
 
     /**
      * @var EntityManager
@@ -464,7 +465,7 @@ class Reporting
         /** @var ReportEntity $rejectionReasonAllTime */
         $rejectionReasonAllTime = $this->reportRepository->findOneBy(['type' => 'rejectionReason', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($rejectionReasonAllTime === null || $rejectionReasonAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($rejectionReasonAllTime === null || $rejectionReasonAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -518,7 +519,7 @@ class Reporting
         /** @var ReportEntity $duplicateBankDetailAllTime */
         $duplicateBankDetailAllTime = $this->reportRepository->findOneBy(['type' => 'duplicateBankDetail', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($duplicateBankDetailAllTime === null || $duplicateBankDetailAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($duplicateBankDetailAllTime === null || $duplicateBankDetailAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -554,7 +555,7 @@ class Reporting
         /** @var ReportEntity $refundAllTime */
         $refundAllTime = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($refundAllTime === null || $refundAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($refundAllTime === null || $refundAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -1026,7 +1027,7 @@ class Reporting
         /** @var ReportEntity $poasPerClaimAllTime */
         $poasPerClaimAllTime = $this->reportRepository->findOneBy(['type' => 'poasPerClaim', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($poasPerClaimAllTime === null || $poasPerClaimAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($poasPerClaimAllTime === null || $poasPerClaimAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
