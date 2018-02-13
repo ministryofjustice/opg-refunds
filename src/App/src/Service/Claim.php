@@ -242,6 +242,10 @@ class Claim implements Initializer\LogSupportInterface
 
             //---
 
+            /*
+             * Disabled lookup by case number.
+             * We may add a note if a case number is given and found, but not returned above.
+             *
             if ($claim->getApplication()->hasCaseNumber()) {
                 $poaByCase = $this->poaLookup->queryByCaseNumber(
                     (int)$claim->getApplication()->getCaseNumber()->getPoaCaseNumber()
@@ -252,6 +256,7 @@ class Claim implements Initializer\LogSupportInterface
                 $meris = $meris + $poaByCase['meris'];
                 $sirius = $sirius + $poaByCase['sirius'];
             }
+            */
 
             //---
 
