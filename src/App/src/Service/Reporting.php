@@ -307,6 +307,47 @@ class Reporting
                 SELECT \'donor_deceased\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'deceased\' = \'true\' UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
 
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $claimSourceByDay */
+            $claimSourceByDay = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($claimSourceByDay === null || ($i === 0 && $claimSourceByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $claimSourceByDay = $this->upsertReport(
+                    $claimSourceByDay,
+                    'claimSource',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$claimSourceByDay->getTitle()] = $claimSourceByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
         $byMonth = [];
         $startOfMonth = new DateTime('midnight first day of this month');
         $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
@@ -329,7 +370,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
                 $claimSourceByMonth = $this->upsertReport(
                     $claimSourceByMonth,
@@ -350,6 +391,7 @@ class Reporting
 
         return [
             'allTime' => $allTime,
+            'byDay'   => $byDay,
             'byMonth' => $byMonth
         ];
     }
@@ -388,6 +430,47 @@ class Reporting
 
         $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY type
                 UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
+
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $phoneClaimTypeByDay */
+            $phoneClaimTypeByDay = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($phoneClaimTypeByDay === null || ($i === 0 && $phoneClaimTypeByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $phoneClaimTypeByDay = $this->upsertReport(
+                    $phoneClaimTypeByDay,
+                    'phoneClaimType',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$phoneClaimTypeByDay->getTitle()] = $phoneClaimTypeByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
 
         $byMonth = [];
         $startOfMonth = new DateTime('midnight first day of this month');
@@ -432,6 +515,7 @@ class Reporting
 
         return [
             'allTime' => $allTime,
+            'byDay'   => $byDay,
             'byMonth' => $byMonth
         ];
     }
