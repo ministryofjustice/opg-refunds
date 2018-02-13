@@ -36,7 +36,6 @@ class CaseNumber extends AbstractForm
 
         $input->getValidatorChain()
             ->attach(new Validator\NotEmpty, true)
-            ->attach(new Validator\Digits, true)
             ->attach($this->getOnlineLapValidator(), true)
             ->attach($this->getCaseNumberValidator(), true)
             ->attach((new Validator\StringLength(['max' => 12])));
@@ -77,7 +76,7 @@ class CaseNumber extends AbstractForm
     private function getOnlineLapValidator() : ValidatorInterface
     {
         return (new Callback(function ($value) {
-            return !(bool)preg_match('/^A(\d){11}$/', $value);
+            return !(bool)preg_match('/^A(\d){11}$/i', $value);
         }))->setMessage('lpa-tool-ref', Callback::INVALID_VALUE);
     }
 
