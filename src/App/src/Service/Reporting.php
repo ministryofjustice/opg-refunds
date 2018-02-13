@@ -55,6 +55,7 @@ class Reporting
             'refund' => $this->getRefundReport($dateOfFirstClaim),
             'processingTime' => $this->getProcessingTime($dateOfFirstClaim),
             'completionTime' => $this->getCompletionTime($dateOfFirstClaim),
+            'notifications' => $this->getNotifications($dateOfFirstClaim),
             'poasPerClaim' => $this->getPoasPerClaim($dateOfFirstClaim),
         ];
 
@@ -76,8 +77,8 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
-                SELECT \'total\', count(*) FROM claim UNION ALL
-                SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
+                    SELECT \'total\', count(*) FROM claim UNION ALL
+                    SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -276,10 +277,10 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT \'donor\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'donor\' UNION ALL
-                SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
-                SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
-                SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
-                SELECT \'total\', count(*) FROM claim';
+                    SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
+                    SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
+                    SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
+                    SELECT \'total\', count(*) FROM claim';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -406,7 +407,7 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type
-                UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
+                    UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -644,9 +645,9 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment UNION ALL
-                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
-                SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
-                SELECT \'total\', count(*) FROM payment';
+                    SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
+                    SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
+                    SELECT \'total\', count(*) FROM payment';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -1102,6 +1103,136 @@ class Reporting
             'allTime' => $allTime,
             'byDay'   => $byDay,
             'byWeek'  => $byWeek,
+            'byMonth' => $byMonth
+        ];
+    }
+
+    private function getNotifications($dateOfFirstClaim)
+    {
+        /** @var ReportEntity $notifyAllTime */
+        $notifyAllTime = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $dateOfFirstClaim]);
+
+        if ($notifyAllTime === null || $notifyAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS TRUE UNION ALL
+                    SELECT \'outcome_email_sent\', count(*) FROM claim WHERE outcome_email_sent IS TRUE UNION ALL
+                    SELECT \'outcome_text_sent\', count(*) FROM claim WHERE outcome_text_sent IS TRUE UNION ALL
+                    SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE outcome_letter_sent IS TRUE UNION ALL
+                    SELECT \'outcome_phone_called\', count(*) FROM claim WHERE outcome_phone_called IS TRUE';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
+
+            $notifyAllTime = $this->upsertReport(
+                $notifyAllTime,
+                'notify',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $notifyAllTime->getData();
+
+        $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS TRUE UNION ALL
+                SELECT \'outcome_email_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_email_sent IS TRUE UNION ALL
+                SELECT \'outcome_text_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_text_sent IS TRUE UNION ALL
+                SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_letter_sent IS TRUE UNION ALL
+                SELECT \'outcome_phone_called\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_phone_called IS TRUE';
+
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $notifyByDay */
+            $notifyByDay = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($notifyByDay === null || ($i === 0 && $notifyByDay->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $notifyByDay = $this->upsertReport(
+                    $notifyByDay,
+                    'notify',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$notifyByDay->getTitle()] = $notifyByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $notifyByMonth */
+            $notifyByMonth = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($notifyByMonth === null || ($i === 0 && $notifyByMonth->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $notifyByMonth = $this->upsertReport(
+                    $notifyByMonth,
+                    'notify',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$notifyByMonth->getTitle()] = $notifyByMonth->getData();
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byDay'   => $byDay,
             'byMonth' => $byMonth
         ];
     }
