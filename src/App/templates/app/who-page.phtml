@@ -35,7 +35,10 @@ $this->addErrorMap([
             ],
             'attorney' => [
                 'optionLabel' => "I am an 'attorney'",
-                'optionLabelSuffix' => "Trusted and chosen by the donor to make decisions on their behalf.",
+                'optionLabelSuffix' => "
+                    <p>Appointed by the donor to make decisions on their behalf.</p>
+                    <p>If you were appointed as a replacement attorney, you can only claim if you've formally replaced an attorney and are now able to make decisions on the donor's behalf.</p>
+                ",
                 'dataTarget' => 'attorney-info',
                 'dataTargetMarkup' => "
                     <p>You should check that any other attorneys haven’t already claimed the refund.</p>
