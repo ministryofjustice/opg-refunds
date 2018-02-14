@@ -279,6 +279,24 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                // Check if we can match the attorney postcode
+                if ($claim->getApplication()->hasAttorneyPostcode()) {
+                    $postcode = $claim->getApplication()->getPostcodes()->getAttorneyPostcode();
+                    $postcode = preg_replace('/\s+/', '', strtolower($postcode));
+
+                    foreach ($poa['data']['attorneys'] as $attorney) {
+                        if ($attorney['attorney-postcode'] === $postcode) {
+                            $verifications = $poaModel->getVerifications();
+                            $verifications[] = new VerificationModel([
+                                'type' => VerificationModel::TYPE_ATTORNEY_POSTCODE,
+                                'passes' => 'yes'
+                            ]);
+                            $poaModel->setVerifications($verifications);
+                            break;
+                        }
+                    }
+                }
+
                 //---
 
                 $this->addPoa($claimId, $userId, $poaModel);
