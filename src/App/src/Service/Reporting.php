@@ -1116,7 +1116,7 @@ class Reporting
             //Generate stat
             $startMicroTime = microtime(true);
 
-            $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS TRUE UNION ALL
+            $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS FALSE UNION ALL
                     SELECT \'outcome_email_sent\', count(*) FROM claim WHERE outcome_email_sent IS TRUE UNION ALL
                     SELECT \'outcome_text_sent\', count(*) FROM claim WHERE outcome_text_sent IS TRUE UNION ALL
                     SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE outcome_letter_sent IS TRUE UNION ALL
@@ -1142,7 +1142,7 @@ class Reporting
 
         $allTime = $notifyAllTime->getData();
 
-        $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS TRUE UNION ALL
+        $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS FALSE UNION ALL
                 SELECT \'outcome_email_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_email_sent IS TRUE UNION ALL
                 SELECT \'outcome_text_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_text_sent IS TRUE UNION ALL
                 SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_letter_sent IS TRUE UNION ALL
