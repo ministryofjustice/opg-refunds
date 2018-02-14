@@ -242,24 +242,6 @@ class Claim implements Initializer\LogSupportInterface
 
             //---
 
-            /*
-             * Disabled lookup by case number.
-             * We may add a note if a case number is given and found, but not returned above.
-             *
-            if ($claim->getApplication()->hasCaseNumber()) {
-                $poaByCase = $this->poaLookup->queryByCaseNumber(
-                    (int)$claim->getApplication()->getCaseNumber()->getPoaCaseNumber()
-                );
-
-                // Merge into the data (if found)
-                // The fact the array's index contains the case numbers prevents duplicates.
-                $meris = $meris + $poaByCase['meris'];
-                $sirius = $sirius + $poaByCase['sirius'];
-            }
-            */
-
-            //---
-
             // Add the Meris POAs
             foreach ($meris as $poa) {
                 $poaModel = new PoaModel;
@@ -355,6 +337,42 @@ class Claim implements Initializer\LogSupportInterface
                 "{$total} POAs have been automatically added"
             );
 
+            //-----------------------------------------------------------------------
+            // If a case number was supplied, check we have a matching POA from above
+            // If not, add a note.
+
+            if ($claim->getApplication()->hasCaseNumber()) {
+                $caseNumber = $claim->getApplication()->getCaseNumber()->getPoaCaseNumber();
+
+                $poaByCase = $this->poaLookup->queryByCaseNumber((int)$caseNumber);
+
+                // If a POA was found...
+                // (2 based items; so > 2 means one was found)
+                if (count($poaByCase, COUNT_RECURSIVE) > 2) {
+
+                    $found = false;
+
+                    // Check it against each we've already seen
+                    foreach(array_merge($meris, $sirius) as $poa) {
+                        if ($poa['case_number'] == $caseNumber) {
+                            $found = true;
+                            break;
+                        }
+                    }
+
+                    //---
+
+                    // If it doesn't match any
+                    if (!$found) {
+                        $this->addNote(
+                            $claimId,
+                            $userId,
+                            NoteModel::TYPE_POA_AUTOMATION_DONOR_MISMATCH,
+                            "The supplied case reference - {$caseNumber} - matched a POA, but that POA did not match the donor's name and/or date or birth"
+                        );
+                    }
+                }
+            }
         } catch (Exception $e){
             $this->getLogger()->crit("Error processing Meris or Sirius data for claim {$claimId} - " . $e->getMessage());
         }
