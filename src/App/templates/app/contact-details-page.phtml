@@ -48,6 +48,8 @@ $this->addErrorMap([
 
 <p>We need your email address or mobile phone number in order to process your claim.</p>
 
+<p>We won't send you marketing messages or share your contact details with anyone else.</p>
+
 <form action="" method="post" class="form">
 
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
@@ -68,13 +70,10 @@ $this->addErrorMap([
         'additionFormControlClass' => 'form-control-3-4'
     ]) ?>
 
-
-    <p>We'll only contact you to confirm that we've received your claim and to let you know if your claim has been approved or rejected.</p>
-
-    <p>We won't send you marketing messages or share your contact details with anyone else.</p>
+    <p>We'll only contact you to update you about your claim. We'll confirm that we've received your claim and let you know when it's been approved or rejected.</p>
 
     <div class="form-group">
-        <div class="multiple-choice" data-target="notification-warning">
+        <div class="multiple-choice">
             <?php $element = $form->get('receive-notifications'); ?>
             <input type="hidden" value="yes" name="<?= $element->getName(); ?>">
             <input
@@ -84,11 +83,7 @@ $this->addErrorMap([
                 value="no"
                 <?= ($element->getValue()=='no') ? ' checked="checked"' : '' ?>
             >
-            <label for="receive-notifications-checkbox">I don’t want updates</label>
-        </div>
-
-        <div class="panel panel-border-narrow js-hidden" id="notification-warning">
-            <p>We won't be able to confirm that we've received your claim or let you know if your claim has been approved or rejected.</p>
+            <label for="receive-notifications-checkbox">I don’t want these updates</label>
         </div>
     </div>
 
