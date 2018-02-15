@@ -100,7 +100,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
             $refundableClaims[] = $this->getRefundable($claim, $userId);
 
-            $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . 'added in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
         }
 
         $this->clearBankDetails();
