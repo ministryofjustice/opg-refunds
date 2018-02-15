@@ -3,6 +3,8 @@
 namespace AppTest\Spreadsheet;
 
 use DateTime;
+use Mockery;
+use Mockery\MockInterface;
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
@@ -20,6 +22,7 @@ use Opg\Refunds\Caseworker\DataModel\Common\Address;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
+use Zend\Log\Logger;
 
 class PhpSpreadsheetGeneratorTest extends TestCase
 {
@@ -42,6 +45,10 @@ class PhpSpreadsheetGeneratorTest extends TestCase
      */
     private $spreadsheetGenerator;
     /**
+     * @var Logger|MockInterface
+     */
+    private $logger;
+    /**
      * @var SpreadsheetWorksheet
      */
     private $worksheet;
@@ -61,6 +68,10 @@ class PhpSpreadsheetGeneratorTest extends TestCase
     public function setUp()
     {
         $this->spreadsheetGenerator = new PhpSpreadsheetGenerator($this->sourceFolder, $this->tempFolder);
+        $this->logger = Mockery::mock(Logger::class);
+        $this->logger->shouldReceive('info');
+        $this->logger->shouldReceive('debug');
+        $this->spreadsheetGenerator->setLogger($this->logger);
 
         $claimBuilder = new ClaimBuilder();
         $applicationBuilder = new ApplicationBuilder();
