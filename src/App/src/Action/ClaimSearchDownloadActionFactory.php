@@ -5,6 +5,7 @@ namespace App\Action;
 use App\Service\Claim as ClaimService;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use Interop\Container\ContainerInterface;
+use Zend;
 
 /**
  * Class ClaimSearchDownloadActionFactory
@@ -24,6 +25,7 @@ class ClaimSearchDownloadActionFactory
         $tempFolder = $config['spreadsheet']['temp_folder'];
 
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
+        $spreadsheetGenerator->setLogger($container->get(Zend\Log\Logger::class));
 
         return new ClaimSearchDownloadAction(
             $container->get(ClaimService::class),
