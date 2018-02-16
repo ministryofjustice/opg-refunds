@@ -2,43 +2,83 @@
 
 namespace App\Service;
 
-class Account
+use Opg\Refunds\Log\Initializer;
+
+class Account implements Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
+
     /**
      * @var array
      */
-    private $buildingSocietyHashes = [];
+    private static $buildingSocietyHashes = null;
+
+    /**
+     * @var string
+     */
+    private $sourceFolder;
+
+    /**
+     * @var string
+     */
+    private $salt;
 
     public function __construct(string $sourceFolder, string $salt)
     {
-        if (substr($sourceFolder, -1) !== '/') {
-            $sourceFolder .= '/';
+        $this->sourceFolder = $sourceFolder;
+        $this->salt = $salt;
+
+        if (substr($this->sourceFolder, -1) !== '/') {
+            $this->sourceFolder .= '/';
         }
+    }
 
-        $buildingSocietyCsvFilename = $sourceFolder . 'building_society.csv';
+    public function getBuildingSocietyHashes()
+    {
+        if (self::$buildingSocietyHashes === null) {
+            $buildingSocietyCsvFilename = $this->sourceFolder . 'building_society.csv';
 
-        $buildingSocietyCsvHandle = fopen($buildingSocietyCsvFilename, "r");
-        if ($buildingSocietyCsvHandle) {
-            while (($line = fgets($buildingSocietyCsvHandle)) !== false) {
-                $account = explode(',', $line);
+            $this->getLogger()->info("Loading Building Society details from {$buildingSocietyCsvFilename}");
 
-                $accountDetails = json_encode([
-                    'sort-code' => substr($account[1], 0, 6),
-                    'account-number' => substr($account[2], 0, 8),
-                ]);
+            $buildingSocietyHashes = [];
 
-                var_dump($accountDetails);
+            $buildingSocietyCsvHandle = fopen($buildingSocietyCsvFilename, "r");
+            if ($buildingSocietyCsvHandle) {
+                while (($line = fgets($buildingSocietyCsvHandle)) !== false) {
+                    $account = explode(',', $line);
 
-                $hash = hash('sha512', $salt . $accountDetails);
+                    $accountDetails = json_encode([
+                        'sort-code' => substr($account[1], 0, 6),
+                        'account-number' => substr($account[2], 0, 8),
+                    ]);
 
-                $this->buildingSocietyHashes[$hash] = $account[0];
+                    $hash = hash('sha512', $this->salt . $accountDetails);
+
+                    $buildingSocietyHashes[$hash] = $account[0];
+
+                    $this->getLogger()->debug("Added Building Society details {$account[0]} {$accountDetails} {$hash}");
+                }
+
+                fclose($buildingSocietyCsvHandle);
+            } else {
+                throw new \Exception("Failed to open building society CSV file {$buildingSocietyCsvFilename}");
             }
 
-            fclose($buildingSocietyCsvHandle);
-        } else {
-            throw new \Exception("Failed to open building society CSV file {$buildingSocietyCsvFilename}");
+            self::$buildingSocietyHashes = $buildingSocietyHashes;
+
+            $this->getLogger()->info('Successfully loaded ' . count($buildingSocietyHashes) . ' Building Society details from');
         }
 
-        var_dump($this->buildingSocietyHashes);
+        return self::$buildingSocietyHashes;
+    }
+
+    public function isBuildingSociety(string $accountHash): bool
+    {
+        return array_key_exists($accountHash, $this->getBuildingSocietyHashes());
+    }
+
+    public function getBuildingSocietyName(string $accountHash)
+    {
+        return $this->isBuildingSociety($accountHash) ? $this->getBuildingSocietyHashes()[$accountHash] : null;
     }
 }
