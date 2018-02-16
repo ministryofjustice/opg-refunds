@@ -20,6 +20,7 @@ use App\Entity\Cases\User as UserEntity;
 use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
+use App\Service\Account as AccountService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
@@ -54,16 +55,23 @@ class Claim
     private $entityManager;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
+     * @param Account $accountService
      */
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, AccountService $accountService)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
+        $this->accountService = $accountService;
     }
 
     /**

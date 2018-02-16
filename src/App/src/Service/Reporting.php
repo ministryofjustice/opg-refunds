@@ -684,7 +684,7 @@ class Reporting
 
             /** @var ReportEntity $refundByDay */
             $refundByDay = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($refundByDay === null || ($startOfDay === new DateTime('today') && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByDay === null || (($startOfDay === new DateTime('today') || $startOfDay === new DateTime('yesterday')) && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 

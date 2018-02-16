@@ -1009,6 +1009,23 @@ class Claim extends AbstractDataModel
     }
 
     /**
+     * @param string $type
+     * @return bool
+     */
+    public function hasNoteOfType(string $type): bool
+    {
+        if ($this->getNotes() !== null) {
+            foreach ($this->getNotes() as $note) {
+                if ($note->getType() === $type) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return bool
      */
     public function canChangeOutcome(): bool
@@ -1022,9 +1039,45 @@ class Claim extends AbstractDataModel
     /**
      * @return bool
      */
+    public function isOutcomeChanged():bool
+    {
+        if ($this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED) === true) {
+            if ($this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED) === false) {
+                return true;
+            }
+
+            //Check if outcome changed is the most recent event
+            return $this->getNotesOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED)[0]->getCreatedDateTime()
+                > $this->getNotesOfType(Note::TYPE_CLAIM_REASSIGNED)[0]->getCreatedDateTime();
+        }
+
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
     public function canReassignClaim(): bool
     {
         return $this->getStatus() === ClaimModel::STATUS_IN_PROGRESS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isReassigned():bool
+    {
+        if ($this->hasNoteOfType(Note::TYPE_CLAIM_REASSIGNED) === true) {
+            if ($this->hasNoteOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED) === false) {
+                return true;
+            }
+
+            //Check if reassigned is the most recent event
+            return $this->getNotesOfType(Note::TYPE_CLAIM_REASSIGNED)[0]->getCreatedDateTime()
+                > $this->getNotesOfType(Note::TYPE_CLAIM_OUTCOME_CHANGED)[0]->getCreatedDateTime();
+        }
+
+        return false;
     }
 
     /**

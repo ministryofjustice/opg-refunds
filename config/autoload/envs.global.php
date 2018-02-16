@@ -25,6 +25,11 @@ return [
             ],
         ],
 
+        'hash' => [
+            // ! < 32 characters.
+            'salt' => getenv('OPG_REFUNDS_BANK_HASH_SALT') ?: '',
+        ],
+
     ],
 
     'db' => [
