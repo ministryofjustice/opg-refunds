@@ -37,9 +37,9 @@ class Account extends AbstractDataModel
 
     public function __construct($data = null)
     {
-        parent::__construct($data);
-
         $this->buildingSociety = false;
+
+        parent::__construct($data);
     }
 
     /**

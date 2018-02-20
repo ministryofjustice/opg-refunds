@@ -1092,6 +1092,13 @@ class Claim
         $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
         $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
 
+        if ($this->accountService->isBuildingSociety($claim->getAccountHash()) === true) {
+            $claimModel->getApplication()->getAccount()->setBuildingSociety(true);
+            $claimModel->getApplication()->getAccount()->setInstitutionName(
+                $this->accountService->getBuildingSocietyName($claim->getAccountHash())
+            );
+        }
+
         return $claimModel;
     }
 

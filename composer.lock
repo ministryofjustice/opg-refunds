@@ -1215,12 +1215,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "6824dbaa6a67357b7fa91f42a669b79e2ffa998f"
+                "reference": "9d2df25f463592547b6aa2caa5cdacfdd26826e2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/6824dbaa6a67357b7fa91f42a669b79e2ffa998f",
-                "reference": "6824dbaa6a67357b7fa91f42a669b79e2ffa998f",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9d2df25f463592547b6aa2caa5cdacfdd26826e2",
+                "reference": "9d2df25f463592547b6aa2caa5cdacfdd26826e2",
                 "shasum": ""
             },
             "require": {
@@ -1243,7 +1243,7 @@
                 "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-799-building-society",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2018-02-16T10:49:37+00:00"
+            "time": "2018-02-18T15:15:59+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
