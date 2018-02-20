@@ -39,7 +39,7 @@ Mandatory: claim
         <dt class="details-term">Refund by</dt>
         <dd class="details-definition">
             <?php if ($claim->getApplication()->isRefundByCheque()) { ?>
-                <?= $claim->getApplication()->getAccount()->isBuildingSociety() ? 'Cheque as building society savings account supplied' : 'Cheque' ?>
+                <?= $claim->getApplication()->hasAccount() && $claim->getApplication()->getAccount()->isBuildingSociety() ? 'Cheque as building society savings account supplied' : 'Cheque' ?>
             <?php } else { ?>
                 Bank transfer
             <?php } ?>
