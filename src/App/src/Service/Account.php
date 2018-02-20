@@ -72,8 +72,12 @@ class Account implements Initializer\LogSupportInterface
         return self::$buildingSocietyHashes;
     }
 
-    public function isBuildingSociety(string $accountHash): bool
+    public function isBuildingSociety($accountHash): bool
     {
+        if (is_string($accountHash) === false) {
+            return false;
+        }
+
         return array_key_exists($accountHash, $this->getBuildingSocietyHashes());
     }
 
