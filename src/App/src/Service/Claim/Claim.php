@@ -10,7 +10,6 @@ use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
-use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 
 class Claim implements ApiClientInterface
 {
