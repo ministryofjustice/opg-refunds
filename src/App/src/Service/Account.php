@@ -79,6 +79,14 @@ class Account implements Initializer\LogSupportInterface
 
     public function getBuildingSocietyName(string $accountHash)
     {
-        return $this->isBuildingSociety($accountHash) ? $this->getBuildingSocietyHashes()[$accountHash] : null;
+        if ($this->isBuildingSociety($accountHash)) {
+            $name = $this->getBuildingSocietyHashes()[$accountHash];
+            if (strpos($name, 'Building Society') === false) {
+                $name .= ' (Building Society)';
+            }
+            return $name;
+        }
+
+        return null;
     }
 }
