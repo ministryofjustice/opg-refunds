@@ -13,6 +13,14 @@ class DonorDeceasedAction extends AbstractAction
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)
     {
+        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
+
+        if ($matchedRoute === 'eligibility.donor.deceased') {
+            return new Response\HtmlResponse(
+                $this->getTemplateRenderer()->render('app::ineligible-deceased-page')
+            );
+        }
+
         if (!$this->isActionAccessible($request)) {
             return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
         }
@@ -35,8 +43,8 @@ class DonorDeceasedAction extends AbstractAction
 
                 // If they are deceased, and it's not an AD session, return page.
                 if ($session['deceased'] && $request->getAttribute('ad') == null) {
-                    return new Response\HtmlResponse(
-                        $this->getTemplateRenderer()->render('app::ineligible-deceased-page')
+                    return new Response\RedirectResponse(
+                        $this->getUrlHelper()->generate('eligibility.donor.deceased')
                     );
                 }
 

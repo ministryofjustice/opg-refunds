@@ -23,6 +23,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
         'start',
         'eligibility.when',
         'eligibility.when.answer',
+        'eligibility.donor.deceased',
     ];
 
     public function process(ServerRequestInterface $request, DelegateInterface $delegate)

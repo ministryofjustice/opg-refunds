@@ -27,7 +27,21 @@ $path: "../images/";
 }
 
 .print {
-  float: right;
+  text-align: right;
+  margin-bottom: 0;
+  position: relative;
+  top: em(-30, 32);
+
+  @include media(tablet) {
+    top: em(-60, 48);
+  }
+
+  .icon {
+    margin-right: 10px;
+    margin-top: -18px;
+    position: relative;
+    top: 11px;
+  }
 }
 
 .icon-print{

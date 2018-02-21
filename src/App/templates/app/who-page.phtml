@@ -19,7 +19,7 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>
 
-<p>You can only claim a refund if you are the donor or one of their attorneys.</p>
+<p>You can only claim a refund if you are the donor or one of their attorneys. You should check that no one else has already claimed.</p>
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
@@ -35,10 +35,11 @@ $this->addErrorMap([
             ],
             'attorney' => [
                 'optionLabel' => "I am an 'attorney'",
-                'optionLabelSuffix' => "Trusted and chosen by the donor to make decisions on their behalf.",
-                'dataTarget' => 'attorney-info',
-                'dataTargetMarkup' => "
-                    <p>You should check that any other attorneys haven’t already claimed the refund.</p>
+                'optionLabelSuffix' => "
+                    <p>Appointed by the donor to make decisions on their behalf.</p>
+                    <div class=\"panel panel-border-narrow\">
+                        <p>If you were appointed as a replacement attorney, you can only claim if you've formally replaced an attorney and are now able to make decisions on the donor's behalf.</p>
+                    </div>
                 "
             ]
         ],
