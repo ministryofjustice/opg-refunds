@@ -12,25 +12,38 @@ Mandatory: claim
 <h2 id="payment-details" class="heading-medium heading-refunds">Payment details</h2>
 <dl class="details">
     <?php if ($claim->hasAccountHash() && $claim->hasAccountHashCount()) { ?>
-        <div class="<?= $this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount()) ? 'details-warning' : '' ?>">
+        <div class="">
             <dd class="details-definition">
                 <?php if ($this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount())) { ?>
-                    <p class="notice">
+                    <p class="<?= $this->shouldShowPaymentDetailsUsedCountWarning($claim->getAccountHashCount()) ? 'details-warning' : '' ?> notice">
                         <i class="icon icon-important">
                             <span class="visually-hidden">Warning</span>
                         </i>
                         <strong class="bold-small"><?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?></strong>
                     </p>
+                    <?php if ($claim->getApplication()->getAccount()->isBuildingSociety()) { ?>
+                        <p><?= $claim->getApplication()->getAccount()->getInstitutionName() ?></p>
+                    <?php } ?>
                     <a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['accountHash' => $this->e($claim->getAccountHash())])) ?>">Search for claims that use these details</a>
                 <?php } else { ?>
-                    <?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?>
+                    <?php if ($claim->getApplication()->getAccount()->isBuildingSociety()) { ?>
+                        <?= $claim->getApplication()->getAccount()->getInstitutionName() ?>
+                    <?php } else { ?>
+                        <?= $this->e($this->getPaymentDetailsUsedText($claim->getAccountHashCount())) ?>
+                    <?php } ?>
                 <?php } ?>
             </dd>
         </div>
     <?php } ?>
     <div class="">
         <dt class="details-term">Refund by</dt>
-        <dd class="details-definition"><?= $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer' ?></dd>
+        <dd class="details-definition">
+            <?php if ($claim->getApplication()->isRefundByCheque()) { ?>
+                <?= $claim->getApplication()->hasAccount() && $claim->getApplication()->getAccount()->isBuildingSociety() ? 'Cheque as building society savings account supplied' : 'Cheque' ?>
+            <?php } else { ?>
+                Bank transfer
+            <?php } ?>
+        </dd>
     </div>
     <div class="">
         <dt class="details-term">Total refund</dt>

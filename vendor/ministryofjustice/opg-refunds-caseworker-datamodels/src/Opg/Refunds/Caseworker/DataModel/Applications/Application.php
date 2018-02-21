@@ -318,7 +318,7 @@ class Application extends AbstractDataModel
      */
     public function isRefundByCheque(): bool
     {
-        return $this->cheque !== null && $this->cheque;
+        return ($this->cheque !== null && $this->cheque) || $this->account->isBuildingSociety();
     }
 
     /**

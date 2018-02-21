@@ -16,6 +16,7 @@ $duplicateBankDetail = $reports['duplicateBankDetail'];
 $refund = $reports['refund'];
 $processingTime = $reports['processingTime'];
 $completionTime = $reports['completionTime'];
+$notifications = $reports['notifications'];
 $poasPerClaim = $reports['poasPerClaim'];
 
 $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER, $identity->getRoles());
@@ -37,6 +38,7 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
             <li><a href="#refunds">Refunds</a></li>
             <li><a href="#processing-time">Processing time</a></li>
             <li><a href="#completion-time">Completion time</a></li>
+            <li><a href="#notifications">Notifications</a></li>
             <li><a href="#poas-per-claim">POAs per claim</a></li>
         </ul>
 
@@ -234,6 +236,33 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
             </tbody>
         </table>
 
+        <?php $claimSourceByDay = $claimSource['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($claimSourceByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Phone claim</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimSourceByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
         <?php $claimSourceByMonth = $claimSource['byMonth']; ?>
 
         <h3 class="heading-small">By month - last <?= count($claimSourceByMonth) ?> months</h3>
@@ -287,6 +316,35 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                 <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
                 <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
             </tr>
+            </tbody>
+        </table>
+
+        <?php $phoneClaimTypeByDay = $phoneClaimType['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($phoneClaimTypeByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($phoneClaimTypeByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
+                </tr>
+            <?php } ?>
             </tbody>
         </table>
 
@@ -634,6 +692,87 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                     <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
                     <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
                     <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="notifications">Notifications</h2>
+
+        <?php $notificationsAllTime = $notifications['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $notificationsAllTime['notifications_opt_out'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_email_sent'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_text_sent'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_letter_sent'] ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $notificationsByDay = $notifications['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($notificationsByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($notificationsByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $counts['notifications_opt_out'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_email_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_text_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_letter_sent'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $notificationsByMonth = $notifications['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($notificationsByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($notificationsByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['notifications_opt_out'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_email_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_text_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_letter_sent'] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
