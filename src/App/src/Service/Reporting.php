@@ -19,7 +19,8 @@ class Reporting
     const GENERATED_DATE_FORMAT = 'd/m/Y H:i:s';
     const SQL_DATE_FORMAT = 'Y-m-d H:i:s';
     const SHORT_CACHE_MODIFIER = '+5 seconds';
-    const LONG_CACHE_MODIFIER = '+5 minutes';
+    const MEDIUM_CACHE_MODIFIER = '+5 minutes';
+    const LONG_CACHE_MODIFIER = '+1 hour';
 
     /**
      * @var EntityManager
@@ -54,6 +55,7 @@ class Reporting
             'refund' => $this->getRefundReport($dateOfFirstClaim),
             'processingTime' => $this->getProcessingTime($dateOfFirstClaim),
             'completionTime' => $this->getCompletionTime($dateOfFirstClaim),
+            'notifications' => $this->getNotifications($dateOfFirstClaim),
             'poasPerClaim' => $this->getPoasPerClaim($dateOfFirstClaim),
         ];
 
@@ -75,8 +77,8 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
-                SELECT \'total\', count(*) FROM claim UNION ALL
-                SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
+                    SELECT \'total\', count(*) FROM claim UNION ALL
+                    SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -123,7 +125,7 @@ class Reporting
 
             /** @var ReportEntity $claimByDay */
             $claimByDay = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($claimByDay === null || ($i === 0 && $claimByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByDay === null || ($i < 7 && $claimByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -161,7 +163,7 @@ class Reporting
 
             /** @var ReportEntity $claimByWeek */
             $claimByWeek = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($claimByWeek === null || ($i === 0 && $claimByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByWeek === null || ($i < 2 && $claimByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -199,7 +201,7 @@ class Reporting
 
             /** @var ReportEntity $claimByMonth */
             $claimByMonth = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimByMonth === null || ($i === 0 && $claimByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByMonth === null || ($i < 2 && $claimByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -275,10 +277,10 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT \'donor\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'donor\' UNION ALL
-                SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
-                SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
-                SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
-                SELECT \'total\', count(*) FROM claim';
+                    SELECT \'attorney\', count(*) FROM claim WHERE json_data->>\'applicant\' = \'attorney\' UNION ALL
+                    SELECT \'assisted_digital\', count(*) FROM claim WHERE json_data->\'ad\' IS NOT NULL UNION ALL
+                    SELECT \'donor_deceased\', count(*) FROM claim WHERE json_data->>\'deceased\' = \'true\' UNION ALL
+                    SELECT \'total\', count(*) FROM claim';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -306,6 +308,47 @@ class Reporting
                 SELECT \'donor_deceased\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND json_data->>\'deceased\' = \'true\' UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
 
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $claimSourceByDay */
+            $claimSourceByDay = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($claimSourceByDay === null || ($i < 7 && $claimSourceByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $claimSourceByDay = $this->upsertReport(
+                    $claimSourceByDay,
+                    'claimSource',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$claimSourceByDay->getTitle()] = $claimSourceByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
         $byMonth = [];
         $startOfMonth = new DateTime('midnight first day of this month');
         $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
@@ -316,7 +359,7 @@ class Reporting
 
             /** @var ReportEntity $claimSourceByMonth */
             $claimSourceByMonth = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimSourceByMonth === null || ($i === 0 && $claimSourceByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimSourceByMonth === null || ($i < 2 && $claimSourceByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -328,7 +371,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
 
                 $claimSourceByMonth = $this->upsertReport(
                     $claimSourceByMonth,
@@ -349,6 +392,7 @@ class Reporting
 
         return [
             'allTime' => $allTime,
+            'byDay'   => $byDay,
             'byMonth' => $byMonth
         ];
     }
@@ -363,7 +407,7 @@ class Reporting
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL GROUP BY type
-                UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
+                    UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -388,6 +432,47 @@ class Reporting
         $sql = 'SELECT json_data->\'ad\'->\'meta\'->>\'type\' AS type, count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay GROUP BY type
                 UNION ALL SELECT \'total\', count(*) FROM claim WHERE json_data->\'ad\'->\'meta\'->\'type\' IS NOT NULL AND received_datetime >= :startOfDay AND received_datetime <= :endOfDay';
 
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $phoneClaimTypeByDay */
+            $phoneClaimTypeByDay = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($phoneClaimTypeByDay === null || ($i < 7 && $phoneClaimTypeByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $phoneClaimTypeByDay = $this->upsertReport(
+                    $phoneClaimTypeByDay,
+                    'phoneClaimType',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$phoneClaimTypeByDay->getTitle()] = $phoneClaimTypeByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
         $byMonth = [];
         $startOfMonth = new DateTime('midnight first day of this month');
         $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
@@ -398,7 +483,7 @@ class Reporting
 
             /** @var ReportEntity $phoneClaimTypeByMonth */
             $phoneClaimTypeByMonth = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($phoneClaimTypeByMonth === null || ($i === 0 && $phoneClaimTypeByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($phoneClaimTypeByMonth === null || ($i < 2 && $phoneClaimTypeByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -431,6 +516,7 @@ class Reporting
 
         return [
             'allTime' => $allTime,
+            'byDay'   => $byDay,
             'byMonth' => $byMonth
         ];
     }
@@ -464,7 +550,7 @@ class Reporting
         /** @var ReportEntity $rejectionReasonAllTime */
         $rejectionReasonAllTime = $this->reportRepository->findOneBy(['type' => 'rejectionReason', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($rejectionReasonAllTime === null || $rejectionReasonAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($rejectionReasonAllTime === null || $rejectionReasonAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -518,7 +604,7 @@ class Reporting
         /** @var ReportEntity $duplicateBankDetailAllTime */
         $duplicateBankDetailAllTime = $this->reportRepository->findOneBy(['type' => 'duplicateBankDetail', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($duplicateBankDetailAllTime === null || $duplicateBankDetailAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($duplicateBankDetailAllTime === null || $duplicateBankDetailAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
@@ -554,14 +640,14 @@ class Reporting
         /** @var ReportEntity $refundAllTime */
         $refundAllTime = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($refundAllTime === null || $refundAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($refundAllTime === null || $refundAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 
             $sql = 'SELECT \'number_of_spreadsheets\', count(DISTINCT date_trunc(\'day\', added_datetime)) FROM payment UNION ALL
-                SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
-                SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
-                SELECT \'total\', count(*) FROM payment';
+                    SELECT replace(lower(method), \' \', \'_\'), count(*) FROM payment GROUP BY method UNION ALL
+                    SELECT \'total_refund_amount\', SUM(amount) FROM payment UNION ALL
+                    SELECT \'total\', count(*) FROM payment';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -591,6 +677,7 @@ class Reporting
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        $i = 0;
         while (count($byDay) < 45) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
@@ -598,7 +685,7 @@ class Reporting
 
             /** @var ReportEntity $refundByDay */
             $refundByDay = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($refundByDay === null || ($startOfDay === new DateTime('today') && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByDay === null || ($i < 7 && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -632,6 +719,8 @@ class Reporting
 
             $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
             $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+
+            $i++;
         }
 
         $byWeek = [];
@@ -644,7 +733,7 @@ class Reporting
 
             /** @var ReportEntity $refundByWeek */
             $refundByWeek = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($refundByWeek === null || ($i === 0 && $refundByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByWeek === null || ($i < 2 && $refundByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -685,7 +774,7 @@ class Reporting
 
             /** @var ReportEntity $refundByMonth */
             $refundByMonth = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($refundByMonth === null || ($i === 0 && $refundByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByMonth === null || ($i < 2 && $refundByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -767,7 +856,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByDay */
             $processingTimeByDay = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($processingTimeByDay === null || ($i === 0 && $processingTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByDay === null || ($i < 7 && $processingTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -805,7 +894,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByWeek */
             $processingTimeByWeek = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($processingTimeByWeek === null || ($i === 0 && $processingTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByWeek === null || ($i < 2 && $processingTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -843,7 +932,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByMonth */
             $processingTimeByMonth = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($processingTimeByMonth === null || ($i === 0 && $processingTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByMonth === null || ($i < 2 && $processingTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -909,7 +998,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByDay */
             $completionTimeByDay = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($completionTimeByDay === null || ($i === 0 && $completionTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByDay === null || ($i < 7 && $completionTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -947,7 +1036,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByWeek */
             $completionTimeByWeek = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($completionTimeByWeek === null || ($i === 0 && $completionTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByWeek === null || ($i < 2 && $completionTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -985,7 +1074,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByMonth */
             $completionTimeByMonth = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($completionTimeByMonth === null || ($i === 0 && $completionTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByMonth === null || ($i < 2 && $completionTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -1021,12 +1110,142 @@ class Reporting
         ];
     }
 
+    private function getNotifications($dateOfFirstClaim)
+    {
+        /** @var ReportEntity $notifyAllTime */
+        $notifyAllTime = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $dateOfFirstClaim]);
+
+        if ($notifyAllTime === null || $notifyAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
+            //Generate stat
+            $startMicroTime = microtime(true);
+
+            $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS FALSE UNION ALL
+                    SELECT \'outcome_email_sent\', count(*) FROM claim WHERE outcome_email_sent IS TRUE UNION ALL
+                    SELECT \'outcome_text_sent\', count(*) FROM claim WHERE outcome_text_sent IS TRUE UNION ALL
+                    SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE outcome_letter_sent IS TRUE UNION ALL
+                    SELECT \'outcome_phone_called\', count(*) FROM claim WHERE outcome_phone_called IS TRUE';
+
+            $statement = $this->entityManager->getConnection()->executeQuery(
+                $sql
+            );
+
+            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $endDateTime = new DateTime();
+
+            $notifyAllTime = $this->upsertReport(
+                $notifyAllTime,
+                'notify',
+                'All time',
+                $dateOfFirstClaim,
+                $endDateTime,
+                $data,
+                $startMicroTime
+            );
+        }
+
+        $allTime = $notifyAllTime->getData();
+
+        $sql = 'SELECT \'notifications_opt_out\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay AND ((json_data->>\'contact\')::JSON->>\'receive-notifications\')::BOOLEAN IS FALSE UNION ALL
+                SELECT \'outcome_email_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_email_sent IS TRUE UNION ALL
+                SELECT \'outcome_text_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_text_sent IS TRUE UNION ALL
+                SELECT \'outcome_letter_sent\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_letter_sent IS TRUE UNION ALL
+                SELECT \'outcome_phone_called\', count(*) FROM claim WHERE finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay AND outcome_phone_called IS TRUE';
+
+        $byDay = [];
+        $startOfDay = new DateTime('today');
+        $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        for ($i = 0; $i < 45; $i++) {
+            if ($endOfDay < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $notifyByDay */
+            $notifyByDay = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
+            if ($notifyByDay === null || ($i < 7 && $notifyByDay->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfDay->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfDay->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+
+                $notifyByDay = $this->upsertReport(
+                    $notifyByDay,
+                    'notify',
+                    date('D d/m/Y', $startOfDay->getTimestamp()),
+                    $startOfDay,
+                    $endOfDay,
+                    $day,
+                    $startMicroTime
+                );
+            }
+
+            $byDay[$notifyByDay->getTitle()] = $notifyByDay->getData();
+
+            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
+            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+        }
+
+        $byMonth = [];
+        $startOfMonth = new DateTime('midnight first day of this month');
+        $endOfMonth = (clone $startOfMonth)->add(new DateInterval('P1M'));
+        for ($i = 0; $i < 12; $i++) {
+            if ($endOfMonth < $dateOfFirstClaim) {
+                break;
+            }
+
+            /** @var ReportEntity $notifyByMonth */
+            $notifyByMonth = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
+            if ($notifyByMonth === null || ($i < 2 && $notifyByMonth->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+                //Generate stat
+                $startMicroTime = microtime(true);
+
+                $statement = $this->entityManager->getConnection()->executeQuery(
+                    $sql,
+                    [
+                        'startOfDay' => $startOfMonth->format(self::SQL_DATE_FORMAT),
+                        'endOfDay' => $endOfMonth->format(self::SQL_DATE_FORMAT)
+                    ]
+                );
+
+                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+
+                $notifyByMonth = $this->upsertReport(
+                    $notifyByMonth,
+                    'notify',
+                    date('F Y', $startOfMonth->getTimestamp()),
+                    $startOfMonth,
+                    $endOfMonth,
+                    $month,
+                    $startMicroTime
+                );
+            }
+
+            $byMonth[$notifyByMonth->getTitle()] = $notifyByMonth->getData();
+
+            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
+            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+        }
+
+        return [
+            'allTime' => $allTime,
+            'byDay'   => $byDay,
+            'byMonth' => $byMonth
+        ];
+    }
+
     private function getPoasPerClaim($dateOfFirstClaim)
     {
         /** @var ReportEntity $poasPerClaimAllTime */
         $poasPerClaimAllTime = $this->reportRepository->findOneBy(['type' => 'poasPerClaim', 'startDateTime' => $dateOfFirstClaim]);
 
-        if ($poasPerClaimAllTime === null || $poasPerClaimAllTime->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime()) {
+        if ($poasPerClaimAllTime === null || $poasPerClaimAllTime->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime()) {
             //Generate stat
             $startMicroTime = microtime(true);
 

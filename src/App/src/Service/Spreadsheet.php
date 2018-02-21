@@ -11,6 +11,7 @@ use App\Entity\Cases\Claim as ClaimEntity;
 use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
 use App\Entity\Cases\User as UserEntity;
+use App\Service\Account as AccountService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
@@ -59,6 +60,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private $claimService;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
      * @var array
      */
     private $spreadsheetConfig;
@@ -70,9 +76,10 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * @param KmsClient $kmsClient
      * @param Rsa $bankCipher
      * @param Claim $claimService
+     * @param AccountService $accountService
      * @param array $spreadsheetConfig
      */
-    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
+    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, AccountService $accountService, array $spreadsheetConfig)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
@@ -80,6 +87,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $this->kmsClient = $kmsClient;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
+        $this->accountService = $accountService;
         $this->spreadsheetConfig = $spreadsheetConfig;
     }
 
@@ -323,6 +331,13 @@ class Spreadsheet implements Initializer\LogSupportInterface
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
         $claim = $this->translateToDataModel($entity);
+
+        if ($this->accountService->isBuildingSociety($claim->getAccountHash()) === true) {
+            $claim->getApplication()->getAccount()->setBuildingSociety(true);
+            $claim->getApplication()->getAccount()->setInstitutionName(
+                $this->accountService->getBuildingSocietyName($claim->getAccountHash())
+            );
+        }
 
         $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' retrieved and translated to datamodel in ' . $this->getElapsedTimeInMs($start) . 'ms');
         $start = microtime(true);
