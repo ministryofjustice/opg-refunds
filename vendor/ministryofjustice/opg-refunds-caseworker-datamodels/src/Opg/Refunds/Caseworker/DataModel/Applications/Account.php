@@ -26,6 +26,23 @@ class Account extends AbstractDataModel
     protected $sortCode;
 
     /**
+     * @var string
+     */
+    protected $institutionName;
+
+    /**
+     * @var bool
+     */
+    protected $buildingSociety;
+
+    public function __construct($data = null)
+    {
+        $this->buildingSociety = false;
+
+        parent::__construct($data);
+    }
+
+    /**
      * @return string
      */
     public function getName(): string
@@ -78,6 +95,44 @@ class Account extends AbstractDataModel
     public function setSortCode(string $sortCode)
     {
         $this->sortCode = $sortCode;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInstitutionName()
+    {
+        return $this->institutionName;
+    }
+
+    /**
+     * @param string $institutionName
+     * @return $this
+     */
+    public function setInstitutionName($institutionName)
+    {
+        $this->institutionName = $institutionName;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isBuildingSociety(): bool
+    {
+        return $this->buildingSociety;
+    }
+
+    /**
+     * @param bool $buildingSociety
+     * @return $this
+     */
+    public function setBuildingSociety(bool $buildingSociety)
+    {
+        $this->buildingSociety = $buildingSociety;
 
         return $this;
     }

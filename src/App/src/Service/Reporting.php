@@ -125,7 +125,7 @@ class Reporting
 
             /** @var ReportEntity $claimByDay */
             $claimByDay = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($claimByDay === null || ($i === 0 && $claimByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByDay === null || ($i < 7 && $claimByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -163,7 +163,7 @@ class Reporting
 
             /** @var ReportEntity $claimByWeek */
             $claimByWeek = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($claimByWeek === null || ($i === 0 && $claimByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByWeek === null || ($i < 2 && $claimByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -201,7 +201,7 @@ class Reporting
 
             /** @var ReportEntity $claimByMonth */
             $claimByMonth = $this->reportRepository->findOneBy(['type' => 'claim', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimByMonth === null || ($i === 0 && $claimByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimByMonth === null || ($i < 2 && $claimByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -318,7 +318,7 @@ class Reporting
 
             /** @var ReportEntity $claimSourceByDay */
             $claimSourceByDay = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($claimSourceByDay === null || ($i === 0 && $claimSourceByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimSourceByDay === null || ($i < 7 && $claimSourceByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -359,7 +359,7 @@ class Reporting
 
             /** @var ReportEntity $claimSourceByMonth */
             $claimSourceByMonth = $this->reportRepository->findOneBy(['type' => 'claimSource', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($claimSourceByMonth === null || ($i === 0 && $claimSourceByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($claimSourceByMonth === null || ($i < 2 && $claimSourceByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -442,7 +442,7 @@ class Reporting
 
             /** @var ReportEntity $phoneClaimTypeByDay */
             $phoneClaimTypeByDay = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($phoneClaimTypeByDay === null || ($i === 0 && $phoneClaimTypeByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($phoneClaimTypeByDay === null || ($i < 7 && $phoneClaimTypeByDay->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -483,7 +483,7 @@ class Reporting
 
             /** @var ReportEntity $phoneClaimTypeByMonth */
             $phoneClaimTypeByMonth = $this->reportRepository->findOneBy(['type' => 'phoneClaimType', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($phoneClaimTypeByMonth === null || ($i === 0 && $phoneClaimTypeByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
+            if ($phoneClaimTypeByMonth === null || ($i < 2 && $phoneClaimTypeByMonth->getGeneratedDateTime()->modify(self::LONG_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -677,6 +677,7 @@ class Reporting
         $byDay = [];
         $startOfDay = new DateTime('today');
         $endOfDay = (clone $startOfDay)->add(new DateInterval('P1D'));
+        $i = 0;
         while (count($byDay) < 45) {
             if ($endOfDay < $dateOfFirstClaim) {
                 break;
@@ -684,7 +685,7 @@ class Reporting
 
             /** @var ReportEntity $refundByDay */
             $refundByDay = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($refundByDay === null || ($startOfDay === new DateTime('today') && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByDay === null || ($i < 7 && $refundByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -718,6 +719,8 @@ class Reporting
 
             $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
             $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+
+            $i++;
         }
 
         $byWeek = [];
@@ -730,7 +733,7 @@ class Reporting
 
             /** @var ReportEntity $refundByWeek */
             $refundByWeek = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($refundByWeek === null || ($i === 0 && $refundByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByWeek === null || ($i < 2 && $refundByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -771,7 +774,7 @@ class Reporting
 
             /** @var ReportEntity $refundByMonth */
             $refundByMonth = $this->reportRepository->findOneBy(['type' => 'refund', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($refundByMonth === null || ($i === 0 && $refundByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($refundByMonth === null || ($i < 2 && $refundByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -853,7 +856,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByDay */
             $processingTimeByDay = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($processingTimeByDay === null || ($i === 0 && $processingTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByDay === null || ($i < 7 && $processingTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -891,7 +894,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByWeek */
             $processingTimeByWeek = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($processingTimeByWeek === null || ($i === 0 && $processingTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByWeek === null || ($i < 2 && $processingTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -929,7 +932,7 @@ class Reporting
 
             /** @var ReportEntity $processingTimeByMonth */
             $processingTimeByMonth = $this->reportRepository->findOneBy(['type' => 'processingTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($processingTimeByMonth === null || ($i === 0 && $processingTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($processingTimeByMonth === null || ($i < 2 && $processingTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -995,7 +998,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByDay */
             $completionTimeByDay = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($completionTimeByDay === null || ($i === 0 && $completionTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByDay === null || ($i < 7 && $completionTimeByDay->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -1033,7 +1036,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByWeek */
             $completionTimeByWeek = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfWeek, 'endDateTime' => $endOfWeek]);
-            if ($completionTimeByWeek === null || ($i === 0 && $completionTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByWeek === null || ($i < 2 && $completionTimeByWeek->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -1071,7 +1074,7 @@ class Reporting
 
             /** @var ReportEntity $completionTimeByMonth */
             $completionTimeByMonth = $this->reportRepository->findOneBy(['type' => 'completionTime', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($completionTimeByMonth === null || ($i === 0 && $completionTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
+            if ($completionTimeByMonth === null || ($i < 2 && $completionTimeByMonth->getGeneratedDateTime()->modify(self::SHORT_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -1158,7 +1161,7 @@ class Reporting
 
             /** @var ReportEntity $notifyByDay */
             $notifyByDay = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfDay, 'endDateTime' => $endOfDay]);
-            if ($notifyByDay === null || ($i === 0 && $notifyByDay->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+            if ($notifyByDay === null || ($i < 7 && $notifyByDay->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
@@ -1199,7 +1202,7 @@ class Reporting
 
             /** @var ReportEntity $notifyByMonth */
             $notifyByMonth = $this->reportRepository->findOneBy(['type' => 'notify', 'startDateTime' => $startOfMonth, 'endDateTime' => $endOfMonth]);
-            if ($notifyByMonth === null || ($i === 0 && $notifyByMonth->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
+            if ($notifyByMonth === null || ($i < 2 && $notifyByMonth->getGeneratedDateTime()->modify(self::MEDIUM_CACHE_MODIFIER) < new DateTime())) {
                 //Generate stat
                 $startMicroTime = microtime(true);
 
