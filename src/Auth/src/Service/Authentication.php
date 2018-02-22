@@ -96,6 +96,10 @@ class Authentication
         }
 
         if ($user->getFailedLoginAttempts() > 0) {
+            if ($user->getFailedLoginAttempts() >= self::MAX_FAILED_LOGIN_ATTEMPTS) {
+                throw new AccountLockedException('Account locked');
+            }
+
             $user->setFailedLoginAttempts(0);
             $this->entityManager->flush();
         }
