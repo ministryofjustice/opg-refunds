@@ -2,6 +2,7 @@
 
 namespace App\Action;
 
+use App\Service\User\User as UserService;
 use Interop\Container\ContainerInterface;
 use Zend\Authentication\AuthenticationService;
 
@@ -18,7 +19,9 @@ class SignInActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new SignInAction(
-            $container->get(AuthenticationService::class)
+            $container->get(AuthenticationService::class),
+            $container->get(UserService::class),
+            $container->get(\Alphagov\Notifications\Client::class)
         );
     }
 }
