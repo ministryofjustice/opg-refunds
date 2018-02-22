@@ -70,6 +70,12 @@ class User extends AbstractEntity
     protected $passwordResetExpires;
 
     /**
+     * @var int
+     * @ORM\Column(name="failed_login_attempts", type="integer", options={"default" : 0})
+     */
+    protected $failedLoginAttempts;
+
+    /**
      * @var Collection|Claim[]
      * @ORM\OneToMany(targetEntity="Claim", mappedBy="assignedTo")
      * @ORM\OrderBy({"updatedDateTime" = "ASC"})
@@ -210,6 +216,22 @@ class User extends AbstractEntity
     public function setPasswordResetExpires(int $passwordResetExpires)
     {
         $this->passwordResetExpires = $passwordResetExpires;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFailedLoginAttempts(): int
+    {
+        return $this->failedLoginAttempts;
+    }
+
+    /**
+     * @param int $failedLoginAttempts
+     */
+    public function setFailedLoginAttempts(int $failedLoginAttempts)
+    {
+        $this->failedLoginAttempts = $failedLoginAttempts;
     }
 
     /**
