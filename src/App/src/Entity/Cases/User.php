@@ -250,6 +250,11 @@ class User extends AbstractEntity
         $this->assignedClaims = $assignedClaims;
     }
 
+    public function __construct()
+    {
+        $this->failedLoginAttempts = 0;
+    }
+
     /**
      * Returns the entity as a datamodel structure
      *
