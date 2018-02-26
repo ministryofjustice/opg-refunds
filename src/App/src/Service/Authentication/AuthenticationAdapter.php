@@ -6,7 +6,6 @@ use Api\Exception\ApiException;
 use Api\Service\Client as ApiClient;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Authentication\Result;
 
 /**
  * Class AuthenticationAdapter
@@ -79,9 +78,19 @@ class AuthenticationAdapter implements AdapterInterface
 
             return new Result(Result::SUCCESS, $user);
         } catch (ApiException $apiEx) {
+            if ($apiEx->getCode() === 401) {
+                return new Result(Result::FAILURE_CREDENTIAL_INVALID, null, [
+                    $apiEx->getMessage()
+                ]);
+            } elseif ($apiEx->getCode() === 403) {
+                return new Result(Result::FAILURE_ACCOUNT_LOCKED, null, [
+                    $apiEx->getMessage()
+                ]);
+            }
+
             return new Result(Result::FAILURE, null, [
                 $apiEx->getMessage()
             ]);
-       }
+        }
     }
 }

@@ -3,6 +3,9 @@
 namespace App\Action;
 
 use App\Form\SignIn;
+use App\Service\Authentication\Result;
+use App\Service\User\User as UserService;
+use Alphagov\Notifications\Client as NotifyClient;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
@@ -20,13 +23,30 @@ class SignInAction extends AbstractAction
     private $authService;
 
     /**
+     * @var UserService
+     */
+    protected $userService;
+
+    /**
+     * @var NotifyClient
+     */
+    private $notifyClient;
+
+    /**
      * SignInAction constructor
      *
      * @param AuthenticationService $authService
+     * @param UserService $userService
+     * @param NotifyClient $notifyClient
      */
-    public function __construct(AuthenticationService $authService)
-    {
+    public function __construct(
+        AuthenticationService $authService,
+        UserService $userService,
+        NotifyClient $notifyClient
+    ) {
         $this->authService = $authService;
+        $this->userService = $userService;
+        $this->notifyClient = $notifyClient;
     }
 
     /**
@@ -52,8 +72,9 @@ class SignInAction extends AbstractAction
 
             if ($form->isValid()) {
                 //  Set the session as the authentication storage and the credentials
+                $email = $form->get('email')->getValue();
                 $this->authService->getAdapter()
-                    ->setEmail($form->get('email')->getValue())
+                    ->setEmail($email)
                     ->setPassword($form->get('password')->getValue());
 
                 $result = $this->authService->authenticate();
@@ -62,7 +83,26 @@ class SignInAction extends AbstractAction
                     return $this->redirectToRoute('home');
                 }
 
-                $form->setAuthError();
+                if ($result->getCode() === Result::FAILURE_ACCOUNT_LOCKED) {
+                    //  Reset the password and set the token in the email to the user
+                    $user = $this->userService->resetPassword($email);
+
+                    //  Generate the change password URL
+                    $host = sprintf('%s://%s', $request->getUri()->getScheme(), $request->getUri()->getAuthority());
+
+                    $changePasswordUrl = $host . $this->getUrlHelper()->generate('password.change', [
+                            'token' => $user->getToken(),
+                        ]);
+
+                    //  Send the set password email to the new user
+                    $this->notifyClient->sendEmail($email, '3346472f-a804-496c-b443-af317f4b16a5', [
+                        'change-password-url' => $changePasswordUrl,
+                    ]);
+
+                    $form->setAuthError('account-locked');
+                } else {
+                    $form->setAuthError('auth-error');
+                }
             }
         }
 

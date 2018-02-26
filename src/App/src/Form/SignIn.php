@@ -66,12 +66,13 @@ class SignIn extends AbstractForm
 
     /**
      * Set the authentication error reference
+     * @param string $errorReference
      */
-    public function setAuthError()
+    public function setAuthError(string $errorReference)
     {
         $this->setMessages([
             'email' => [
-                'auth-error' => 'auth-error',
+                $errorReference => $errorReference,
             ],
         ]);
     }
