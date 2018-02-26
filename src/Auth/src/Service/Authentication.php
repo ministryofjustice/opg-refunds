@@ -6,11 +6,11 @@ use App\Entity\Cases\User as UserEntity;
 use App\Exception\InvalidInputException;
 use App\Service\EntityToModelTrait;
 use App\Service\User as UserService;
+use Auth\Exception\AccountLockedException;
 use Auth\Exception\UnauthorizedException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Exception;
 
 /**
  * Class Authentication
@@ -20,10 +20,17 @@ class Authentication
 {
     use EntityToModelTrait;
 
+    const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+
     /**
      * @var EntityRepository
      */
     private $repository;
+
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
 
     /**
      * @var UserService
@@ -47,6 +54,7 @@ class Authentication
     public function __construct(EntityManager $entityManager, UserService $userService, int $tokenTtl)
     {
         $this->repository = $entityManager->getRepository(UserEntity::class);
+        $this->entityManager = $entityManager;
         $this->userService = $userService;
         $this->tokenTtl = $tokenTtl;
     }
@@ -67,13 +75,33 @@ class Authentication
             'status' => User::STATUS_ACTIVE,
         ]);
 
-        if (is_null($user) || !password_verify($password, $user->getPasswordHash())) {
+        if (is_null($user)) {
             throw new InvalidInputException('User not found');
+        }
+
+        if (!password_verify($password, $user->getPasswordHash())) {
+            $user->setFailedLoginAttempts($user->getFailedLoginAttempts() + 1);
+            $this->entityManager->flush();
+
+            if ($user->getFailedLoginAttempts() >= self::MAX_FAILED_LOGIN_ATTEMPTS) {
+                throw new AccountLockedException('Account locked');
+            }
+
+            throw new InvalidInputException('Invalid password');
         }
 
         //  Confirm that the user is active
         if ($user->getStatus() !== User::STATUS_ACTIVE) {
             throw new UnauthorizedException('User is inactive');
+        }
+
+        if ($user->getFailedLoginAttempts() > 0) {
+            if ($user->getFailedLoginAttempts() >= self::MAX_FAILED_LOGIN_ATTEMPTS) {
+                throw new AccountLockedException('Account locked');
+            }
+
+            $user->setFailedLoginAttempts(0);
+            $this->entityManager->flush();
         }
 
         //  Use the user service to set a token for the user

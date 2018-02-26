@@ -382,6 +382,7 @@ class User
 
         $user->setPasswordHash(password_hash($password, PASSWORD_DEFAULT));
         $user->setStatus(UserModel::STATUS_ACTIVE);
+        $user->setFailedLoginAttempts(0);
 
         $this->entityManager->flush();
 
