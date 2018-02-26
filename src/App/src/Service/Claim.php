@@ -21,6 +21,7 @@ use App\Entity\Cases\User as UserEntity;
 use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Poa as PoaEntity;
 use App\Entity\Cases\Verification as VerificationEntity;
+use App\Service\Account as AccountService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
@@ -62,18 +63,26 @@ class Claim implements Initializer\LogSupportInterface
     private $poaLookup;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+
+    /**
      * Claim constructor
      *
      * @param EntityManager $entityManager
      * @param PoaLookup $poaLookup
+     * @param AccountService $accountService
      */
-    public function __construct(EntityManager $entityManager, PoaLookup $poaLookup)
+    public function __construct(EntityManager $entityManager, PoaLookup $poaLookup, AccountService $accountService)
     {
         $this->claimRepository = $entityManager->getRepository(ClaimEntity::class);
         $this->poaRepository = $entityManager->getRepository(PoaEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->poaLookup = $poaLookup;
+        $this->accountService = $accountService;
     }
 
     /**
@@ -409,43 +418,52 @@ class Claim implements Initializer\LogSupportInterface
     public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
         $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
+        $originalClaim = clone $claim;
 
-        if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
-            throw new InvalidInputException('You cannot (re)assign this claim');
-        }
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $assignedTo = $this->getUser($assignToUserId);
 
-        $claim->setUpdatedDateTime(new DateTime());
         $originalAssignedTo = $claim->getAssignedTo();
         $claim->setAssignedTo($assignedTo);
-        $claim->setAssignedDateTime(new DateTime());
 
-        if ($claim->getStatus() === ClaimModel::STATUS_PENDING) {
-            // Explicit assignment
-            $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim != $originalClaim) {
+            //Changed
 
-            $this->addNote(
-                $claim->getId(),
-                $userId,
-                NoteModel::TYPE_CLAIM_IN_PROGRESS,
-                "Caseworker has begun to process this claim"
-            );
-        } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
-            // Reassignment
-            $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
-
-            if (!empty($reason)) {
-                $message .= " due to '{$reason}'";
+            if ($claim->getStatus() !== ClaimModel::STATUS_PENDING && !$claimModel->canReassignClaim()) {
+                throw new InvalidInputException('You cannot (re)assign this claim');
             }
 
-            $this->addNote(
-                $claim->getId(),
-                $userId,
-                NoteModel::TYPE_CLAIM_REASSIGNED,
-                $message
-            );
+            $claim->setUpdatedDateTime(new DateTime());
+            $claim->setAssignedDateTime(new DateTime());
+
+            if ($claim->getStatus() === ClaimModel::STATUS_PENDING) {
+                // Explicit assignment
+                $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
+
+                $this->addNote(
+                    $claim->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_IN_PROGRESS,
+                    "Caseworker has begun to process this claim"
+                );
+            } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
+                // Reassignment
+                $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
+
+                if (!empty($reason)) {
+                    $message .= " due to '{$reason}'";
+                }
+
+                $this->addNote(
+                    $claim->getId(),
+                    $userId,
+                    NoteModel::TYPE_CLAIM_REASSIGNED,
+                    $message
+                );
+            }
         }
 
         return [
@@ -463,13 +481,22 @@ class Claim implements Initializer\LogSupportInterface
     public function unAssignClaim(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
-
-        $this->checkCanEdit($claim, $userId);
+        $originalClaim = clone $claim;
 
         $claim->setStatus(ClaimModel::STATUS_PENDING);
-        $claim->setUpdatedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        $this->checkCanEdit($originalClaim, $userId);
+
+        $claim->setUpdatedDateTime(new DateTime());
 
         $this->addNote(
             $claimId,
@@ -488,13 +515,22 @@ class Claim implements Initializer\LogSupportInterface
     public function removeClaim(int $claimId, int $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+        $originalClaim = clone $claim;
+
+        $claim->setStatus(ClaimModel::STATUS_PENDING);
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
 
         $assignedUser = $claim->getAssignedTo();
 
-        $claim->setStatus(ClaimModel::STATUS_PENDING);
         $claim->setUpdatedDateTime(new DateTime());
-        $claim->setAssignedTo(null);
-        $claim->setAssignedDateTime(null);
 
         $this->addNote(
             $claimId,
@@ -512,10 +548,19 @@ class Claim implements Initializer\LogSupportInterface
     public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
     {
         $claim = $this->getClaimEntity($claimId);
-
-        $this->checkCanEdit($claim, $userId);
+        $originalClaim = clone $claim;
 
         $claim->setNoSiriusPoas($noSiriusPoas);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        $this->checkCanEdit($originalClaim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         if ($noSiriusPoas) {
@@ -543,10 +588,19 @@ class Claim implements Initializer\LogSupportInterface
     public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
     {
         $claim = $this->getClaimEntity($claimId);
-
-        $this->checkCanEdit($claim, $userId);
+        $originalClaim = clone $claim;
 
         $claim->setNoMerisPoas($noMerisPoas);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        $this->checkCanEdit($originalClaim, $userId);
+
         $claim->setUpdatedDateTime(new DateTime());
 
         if ($noMerisPoas) {
@@ -577,6 +631,20 @@ class Claim implements Initializer\LogSupportInterface
     {
         $claim = $this->getClaimEntity($claimId);
 
+        if ($type === NoteModel::TYPE_USER) {
+            $claimModel = $this->getClaimModel($userId, $claim);
+            
+            $notes = $claimModel->getNotes();
+
+            /** @var NoteModel $firstNote */
+            $firstNote = reset($notes);
+            if ($firstNote instanceof NoteModel && $firstNote->getType() === $type && $firstNote->getMessage() === $message
+                && $firstNote->getUserId() === $userId) {
+                //Note has already been added
+                return $firstNote;
+            }
+        }
+
         $user = $this->getUser($userId);
 
         $note = new NoteEntity($type, $message, $claim, $user);
@@ -599,28 +667,36 @@ class Claim implements Initializer\LogSupportInterface
     {
         $claim = $this->getClaimEntity($claimId);
 
-        $this->checkCanEdit($claim, $userId);
+        /** @var PoaEntity $poa */
+        $poa = $this->poaRepository->findOneBy([
+            'claim' => $claim,
+            'caseNumber' => $poaModel->getCaseNumber()
+        ]);
 
-        $claim->setUpdatedDateTime(new DateTime());
+        if ($poa === null) {
+            $this->checkCanEdit($claim, $userId);
 
-        $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
-        $this->entityManager->persist($poa);
+            $claim->setUpdatedDateTime(new DateTime());
 
-        if ($poaModel->getVerifications() !== null) {
-            foreach ($poaModel->getVerifications() as $verificationModel) {
-                $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
-                $this->entityManager->persist($verification);
+            $poa = new PoaEntity($poaModel->getSystem(), $poaModel->getCaseNumber(), $poaModel->getReceivedDate(), $poaModel->getOriginalPaymentAmount(), $claim);
+            $this->entityManager->persist($poa);
+
+            if ($poaModel->getVerifications() !== null) {
+                foreach ($poaModel->getVerifications() as $verificationModel) {
+                    $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
+                    $this->entityManager->persist($verification);
+                }
             }
+
+            $this->flushPoaChanges($poaModel);
+
+            $this->addNote(
+                $claimId,
+                $userId,
+                NoteModel::TYPE_POA_ADDED,
+                "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully added to this claim"
+            );
         }
-
-        $this->flushPoaChanges($poaModel);
-
-        $this->addNote(
-            $claimId,
-            $userId,
-            NoteModel::TYPE_POA_ADDED,
-            "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully added to this claim"
-        );
 
         $claim = $this->getClaimEntity($claimId);
 
@@ -648,6 +724,9 @@ class Claim implements Initializer\LogSupportInterface
         $poa = $this->poaRepository->findOneBy([
             'id' => $poaId,
         ]);
+
+        /** @var PoaModel $originalPoaModel */
+        $originalPoaModel = $poa->getAsDataModel();
 
         $poa->setCaseNumber($poaModel->getCaseNumber());
         $poa->setReceivedDate($poaModel->getReceivedDate());
@@ -698,14 +777,24 @@ class Claim implements Initializer\LogSupportInterface
 
         $this->flushPoaChanges($poaModel);
 
-        $this->addNote(
-            $claimId,
-            $userId,
-            NoteModel::TYPE_POA_EDITED,
-            "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully edited"
-        );
+        /** @var PoaEntity $updatedPoa */
+        $updatedPoa = $this->poaRepository->findOneBy([
+            'id' => $poaId,
+        ]);
 
-        $claim = $this->getClaimEntity($claimId);
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($originalPoaModel != $updatedPoa->getAsDataModel()) {
+            //Changed
+            $this->addNote(
+                $claimId,
+                $userId,
+                NoteModel::TYPE_POA_EDITED,
+                "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully edited"
+            );
+
+            $claim = $this->getClaimEntity($claimId);
+        }
 
         /** @var ClaimModel $claimModel */
         $claimModel = $this->translateToDataModel($claim);
@@ -722,26 +811,28 @@ class Claim implements Initializer\LogSupportInterface
     {
         $claim = $this->getClaimEntity($claimId);
 
-        $this->checkCanEdit($claim, $userId);
-
-        $claim->setUpdatedDateTime(new DateTime());
-
         /** @var PoaEntity $poa */
         $poa = $this->poaRepository->findOneBy([
             'id' => $poaId,
         ]);
 
-        $this->entityManager->remove($poa);
-        $this->entityManager->flush();
+        if ($poa instanceof PoaEntity) {
+            $this->checkCanEdit($claim, $userId);
 
-        $this->addNote(
-            $claimId,
-            $userId,
-            NoteModel::TYPE_POA_DELETED,
-            "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted"
-        );
+            $claim->setUpdatedDateTime(new DateTime());
 
-        $claim = $this->getClaimEntity($claimId);
+            $this->entityManager->remove($poa);
+            $this->entityManager->flush();
+
+            $this->addNote(
+                $claimId,
+                $userId,
+                NoteModel::TYPE_POA_DELETED,
+                "Power of attorney with case number {$poa->getCaseNumber()} was successfully deleted"
+            );
+
+            $claim = $this->getClaimEntity($claimId);
+        }
 
         /** @var ClaimModel $claimModel */
         $claimModel = $this->translateToDataModel($claim);
@@ -755,18 +846,28 @@ class Claim implements Initializer\LogSupportInterface
     public function setStatusAccepted($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
+        $originalClaim = clone $claim;
 
-        $this->checkCanEdit($claim, $userId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $user = $this->getUser($userId);
 
         $claim->setStatus(ClaimModel::STATUS_ACCEPTED);
-        $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedBy($user);
-        $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedDateTime(new DateTime());
+
+        $this->checkCanEdit($originalClaim, $userId);
 
         $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel);
 
@@ -787,20 +888,30 @@ class Claim implements Initializer\LogSupportInterface
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
         $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
+        $originalClaim = clone $claim;
 
-        $this->checkCanEdit($claim, $userId);
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $user = $this->getUser($userId);
 
         $claim->setStatus(ClaimModel::STATUS_REJECTED);
         $claim->setRejectionReason($rejectionReason);
         $claim->setRejectionReasonDescription($rejectionReasonDescription);
-        $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedBy($user);
-        $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedDateTime(new DateTime());
+
+        $this->checkCanEdit($originalClaim, $userId);
 
         $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
@@ -828,23 +939,33 @@ class Claim implements Initializer\LogSupportInterface
     public function setStatusInProgress($claimId, $userId, $reason)
     {
         $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
+        $originalClaim = clone $claim;
 
-        if (!$claimModel->canChangeOutcome() || $claim->getFinishedBy() === null) {
-            throw new InvalidInputException('You cannot set this claim\'s status back to pending');
-        }
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $finishedBy = $claim->getFinishedBy();
 
         $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
         $claim->setRejectionReason(null);
         $claim->setRejectionReasonDescription(null);
-        $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedBy(null);
         $claim->setFinishedDateTime(null);
         $claim->setAssignedTo($finishedBy);
-        $claim->setAssignedDateTime(new DateTime());
         $claim->getDuplicateOf()->clear();
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        if (!$claimModel->canChangeOutcome()) {
+            throw new InvalidInputException('You cannot set this claim\'s status back to pending');
+        }
+
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setAssignedDateTime(new DateTime());
 
         $this->resetPoaCaseNumbersRejectionCount($claim, $claimModel);
 
@@ -874,18 +995,16 @@ class Claim implements Initializer\LogSupportInterface
      */
     public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
     {
-        $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
-
-        if (!$claimModel->canResolveAsDuplicate()) {
-            throw new InvalidInputException('You cannot resolve this claim as a duplicate');
-        }
-
         $duplicateOfClaim = $this->getClaimEntity($duplicateOfClaimId);
 
         if ($duplicateOfClaim === null) {
             throw new InvalidInputException('Supplied duplicate claim id does not reference a valid claim');
         }
+
+        $claim = $this->getClaimEntity($claimId);
+        $originalClaim = clone $claim;
+
+        $claimModel = $this->getClaimModel($userId, $claim);
 
         $duplicateOf = $claim->getDuplicateOf();
         $duplicateOf->add($duplicateOfClaim);
@@ -893,11 +1012,23 @@ class Claim implements Initializer\LogSupportInterface
         $user = $this->getUser($userId);
 
         $claim->setStatus(ClaimModel::STATUS_DUPLICATE);
-        $claim->setUpdatedDateTime(new DateTime());
         $claim->setFinishedBy($user);
-        $claim->setFinishedDateTime(new DateTime());
         $claim->setAssignedTo(null);
         $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
+
+        if (!$claimModel->canResolveAsDuplicate()) {
+            throw new InvalidInputException('You cannot resolve this claim as a duplicate');
+        }
+
+        $claim->setUpdatedDateTime(new DateTime());
+        $claim->setFinishedDateTime(new DateTime());
 
         $duplicateOfReferenceNumber = IdentFormatter::format($duplicateOfClaim->getId());
 
@@ -917,20 +1048,30 @@ class Claim implements Initializer\LogSupportInterface
     public function setStatusWithdrawn($claimId, $userId)
     {
         $claim = $this->getClaimEntity($claimId);
+        $originalClaim = clone $claim;
+
         $claimModel = $this->getClaimModel($userId, $claim);
+
+        $user = $this->getUser($userId);
+
+        $claim->setStatus(ClaimModel::STATUS_WITHDRAWN);
+        $claim->setFinishedBy($user);
+        $claim->setAssignedTo(null);
+        $claim->setAssignedDateTime(null);
+
+        //Want simple comparison not identity comparison
+        /** @noinspection PhpNonStrictObjectEqualityInspection */
+        if ($claim == $originalClaim) {
+            //No changes
+            return;
+        }
 
         if (!$claimModel->canWithdrawClaim()) {
             throw new InvalidInputException('You cannot withdraw this claim');
         }
 
-        $user = $this->getUser($userId);
-
-        $claim->setStatus(ClaimModel::STATUS_WITHDRAWN);
         $claim->setUpdatedDateTime(new DateTime());
-        $claim->setFinishedBy($user);
         $claim->setFinishedDateTime(new DateTime());
-        $claim->setAssignedTo(null);
-        $claim->setAssignedDateTime(null);
 
         $this->incrementPoaCaseNumbersRejectionCount($claim, $claimModel);
 
@@ -1149,6 +1290,13 @@ class Claim implements Initializer\LogSupportInterface
         /** @var ClaimModel $claimModel */
         $claimModelToEntityMappings = $this->getClaimModelToEntityMappings($accountHashCount, $claim, $userId);
         $claimModel = $this->translateToDataModel($claim, $claimModelToEntityMappings);
+
+        if ($this->accountService->isBuildingSociety($claim->getAccountHash()) === true) {
+            $claimModel->getApplication()->getAccount()->setBuildingSociety(true);
+            $claimModel->getApplication()->getAccount()->setInstitutionName(
+                $this->accountService->getBuildingSocietyName($claim->getAccountHash())
+            );
+        }
 
         return $claimModel;
     }

@@ -9,7 +9,11 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity @ORM\Table(name="payment")
+ * @ORM\Entity @ORM\Table(name="payment", indexes={
+ * @ORM\Index(name="idx_payment_amount", columns={"amount"}),
+ * @ORM\Index(name="idx_payment_method", columns={"method"}),
+ * @ORM\Index(name="idx_payment_added_datetime", columns={"added_datetime"})
+ * })
  **/
 class Payment extends AbstractEntity
 {

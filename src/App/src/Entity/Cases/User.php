@@ -64,6 +64,12 @@ class User extends AbstractEntity
     protected $tokenExpires;
 
     /**
+     * @var int
+     * @ORM\Column(name="password_reset_expires", type="integer", nullable=true)
+     */
+    protected $passwordResetExpires;
+
+    /**
      * @var Collection|Claim[]
      * @ORM\OneToMany(targetEntity="Claim", mappedBy="assignedTo")
      * @ORM\OrderBy({"updatedDateTime" = "ASC"})
@@ -188,6 +194,22 @@ class User extends AbstractEntity
     public function setTokenExpires(int $tokenExpires)
     {
         $this->tokenExpires = $tokenExpires;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPasswordResetExpires()
+    {
+        return $this->passwordResetExpires;
+    }
+
+    /**
+     * @param int $passwordResetExpires
+     */
+    public function setPasswordResetExpires(int $passwordResetExpires)
+    {
+        $this->passwordResetExpires = $passwordResetExpires;
     }
 
     /**

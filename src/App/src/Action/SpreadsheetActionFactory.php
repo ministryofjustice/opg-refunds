@@ -6,6 +6,7 @@ use App\Service\Spreadsheet;
 use App\Spreadsheet\PhpSpreadsheetGenerator;
 use App\Spreadsheet\SsclWorksheetGenerator;
 use Interop\Container\ContainerInterface;
+use Zend;
 
 /**
  * Class SpreadsheetActionFactory
@@ -26,6 +27,7 @@ class SpreadsheetActionFactory
 
         $spreadsheetWorksheetGenerator = new SsclWorksheetGenerator($config['spreadsheet']['sscl']);
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
+        $spreadsheetGenerator->setLogger($container->get(Zend\Log\Logger::class));
 
         return new SpreadsheetAction(
             $container->get(Spreadsheet::class),

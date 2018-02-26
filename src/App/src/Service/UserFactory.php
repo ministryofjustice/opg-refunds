@@ -16,9 +16,12 @@ class UserFactory
      */
     public function __invoke(ContainerInterface $container)
     {
+        $config = $container->get('config');
+
         return new User(
             $container->get('doctrine.entity_manager.orm_cases'),
-            $container->get(TokenGenerator::class)
+            $container->get(TokenGenerator::class),
+            $config['password_reset_ttl']
         );
     }
 }

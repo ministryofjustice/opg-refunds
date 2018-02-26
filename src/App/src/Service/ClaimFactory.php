@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Service\Account as AccountService;
 use Interop\Container\ContainerInterface;
 
 /**
@@ -18,8 +19,8 @@ class ClaimFactory
     {
         return new Claim(
             $container->get('doctrine.entity_manager.orm_cases'),
-            $container->get(PoaLookup::class)
-
+            $container->get(PoaLookup::class),
+            $container->get(AccountService::class)
         );
     }
 }

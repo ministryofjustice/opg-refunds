@@ -67,6 +67,7 @@ class ConfigProvider
 
                 //  Services
                 NotifyClient::class => Service\NotifyClientFactory::class,
+                Service\Account::class => Service\AccountFactory::class,
                 Service\Claim::class => Service\ClaimFactory::class,
                 Service\Notify::class => Service\NotifyFactory::class,
                 Service\User::class => Service\UserFactory::class,

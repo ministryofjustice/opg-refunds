@@ -62,7 +62,7 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(10, $rowIndex, $donorCurrent->getAddress()->getAddressPostcode());
             //Remittance Email Address
             $cells[] = new SpreadsheetCell(11, $rowIndex, $claim->getApplication()->getContact()->getEmail());
-            if ($claim->getApplication()->hasAccount()) {
+            if ($claim->getApplication()->hasAccount() && $claim->getApplication()->isRefundByCheque() === false) {
                 $account = $claim->getApplication()->getAccount();
 
                 //Payment Method

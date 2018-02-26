@@ -7,6 +7,7 @@ use Exception;
 use InvalidArgumentException;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary;
 use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
+use Opg\Refunds\Log\Initializer;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -18,8 +19,10 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Psr\Http\Message\StreamInterface;
 
-class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
+class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogSupportInterface
 {
+    use Initializer\LogSupportTrait;
+
     /**
      * @var string
      */
@@ -64,23 +67,43 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
             throw new InvalidArgumentException('Supplied filename already exists in temp folder');
         }
 
+        $this->getLogger()->info("Generating spreadsheet with schema {$schema}, file format {$fileFormat} and file name {$fileName} in {$outputFilePath}");
+
         if ($schema === ISpreadsheetGenerator::SCHEMA_SSCL && $fileFormat === ISpreadsheetGenerator::FILE_FORMAT_XLS) {
+            $start = microtime(true);
+
             $reader = new XlsxReader();
             //$reader->setReadDataOnly(true);
             $reader->setLoadSheetsOnly($spreadsheetWorksheet->getName());
             $ssclSourceSpreadsheetFilename = $this->sourceFolder . 'BulkSOP1 MOJ No Formatting.xlsx';
             $ssclSourceSpreadsheet = $reader->load($ssclSourceSpreadsheetFilename);
 
+            $this->getLogger()->debug('Spreadsheet file ' . $ssclSourceSpreadsheetFilename . ' loaded in ' . $this->getElapsedTimeInMs($start) . 'ms');
+
             $dataSheet = $ssclSourceSpreadsheet->getSheetByName($spreadsheetWorksheet->getName());
 
+            $rowStart = microtime(true);
+
             foreach ($spreadsheetWorksheet->getRows() as $row) {
+                $start = microtime(true);
+
                 foreach ($row->getCells() as $cell) {
                     $dataSheet->setCellValueByColumnAndRow($cell->getColumn(), $cell->getRow(), $cell->getData());
                 }
+
+                $this->getLogger()->debug('Spreadsheet row set in ' . $this->getElapsedTimeInMs($start) . 'ms');
             }
+
+            $this->getLogger()->debug('All spreadsheet rows set in ' . $this->getElapsedTimeInMs($rowStart) . 'ms');
+
+            $start = microtime(true);
 
             $writer = new XlsWriter($ssclSourceSpreadsheet);
             $writer->save($outputFilePath);
+
+            $this->getLogger()->debug('Spreadsheet file ' . $outputFilePath . ' written in ' . $this->getElapsedTimeInMs($start) . 'ms');
+
+            $this->getLogger()->info("Successfully generated spreadsheet with schema {$schema}, file format {$fileFormat} and file name {$fileName} to {$outputFilePath}");
 
             return $outputFilePath;
         }
@@ -260,5 +283,14 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator
             // Set the number format mask so that the excel timestamp will be displayed as a human-readable date/time
             $worksheet->getStyle($coordinate)->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
         }
+    }
+
+    /**
+     * @param $start
+     * @return float
+     */
+    private function getElapsedTimeInMs($start): float
+    {
+        return round((microtime(true) - $start) * 1000);
     }
 }

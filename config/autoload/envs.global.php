@@ -5,6 +5,7 @@ use Zend\Log\Logger;
 return [
 
     'token_ttl' => 60 * 60 * 1, //  1 hour
+    'password_reset_ttl' => 60 * 60 * 1, //  1 hour
 
     'security' => [
 
@@ -22,6 +23,11 @@ return [
                     'bank' => getenv('OPG_REFUNDS_CASEWORKER_API_BANK_KEY_PRIVATE') ?: null,
                 ],
             ],
+        ],
+
+        'hash' => [
+            // ! < 32 characters.
+            'salt' => getenv('OPG_REFUNDS_BANK_HASH_SALT') ?: '',
         ],
 
     ],

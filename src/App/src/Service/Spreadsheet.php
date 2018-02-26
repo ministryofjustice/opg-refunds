@@ -8,7 +8,10 @@ use DateTime;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use App\Entity\Cases\Claim as ClaimEntity;
+use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
+use App\Entity\Cases\User as UserEntity;
+use App\Service\Account as AccountService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
@@ -32,6 +35,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private $repository;
 
     /**
+     * @var EntityRepository
+     */
+    private $userRepository;
+
+    /**
      * @var EntityManager
      */
     private $entityManager;
@@ -52,6 +60,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private $claimService;
 
     /**
+     * @var AccountService
+     */
+    private $accountService;
+
+    /**
      * @var array
      */
     private $spreadsheetConfig;
@@ -63,15 +76,18 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * @param KmsClient $kmsClient
      * @param Rsa $bankCipher
      * @param Claim $claimService
+     * @param AccountService $accountService
      * @param array $spreadsheetConfig
      */
-    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, array $spreadsheetConfig)
+    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, AccountService $accountService, array $spreadsheetConfig)
     {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
+        $this->userRepository = $entityManager->getRepository(UserEntity::class);
         $this->entityManager = $entityManager;
         $this->kmsClient = $kmsClient;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
+        $this->accountService = $accountService;
         $this->spreadsheetConfig = $spreadsheetConfig;
     }
 
@@ -80,17 +96,43 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * maximum of 3000
      *
      * @param DateTime $date
+     * @param int $userId
      * @return ClaimModel[]
      */
     public function getAllRefundable(DateTime $date, int $userId)
     {
+        $this->getLogger()->info('Getting all refundable claims for ' . date('c', $date->getTimestamp()) . ' user id ' . $userId);
+
+        $start = microtime(true);
+
         $claims = $this->getSpreadsheetClaims($date);
+
+        $this->getLogger()->debug(count($claims) . ' refundable claims retrieved in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
         $refundableClaims = [];
 
+        /** @var UserEntity $user */
+        $user = $this->userRepository->findOneBy([
+            'id' => $userId,
+        ]);
+
+        $addStart = microtime(true);
+
         foreach ($claims as $claim) {
-            $refundableClaims[] = $this->getRefundable($claim, $userId);
+            $start = microtime(true);
+
+            $refundableClaims[] = $this->getRefundable($claim, $user);
+
+            $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
         }
+
+        $this->getLogger()->debug('All refundable claims ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
+
+        $start = microtime(true);
+
+        $this->entityManager->flush();
+
+        $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
         $this->clearBankDetails();
 
@@ -234,16 +276,24 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
     /**
      * @param ClaimEntity $entity
-     * @param int $userId
+     * @param UserEntity $user
      * @return ClaimModel
      */
-    private function getRefundable(ClaimEntity $entity, int $userId)
+    private function getRefundable(ClaimEntity $entity, UserEntity $user)
     {
         $claimId = $entity->getId();
+        $userId = $user->getId();
+
+        $this->getLogger()->info("Getting and decrypting refundable claim with id {$claimId} user id {$userId}");
+
+        $start = microtime(true);
 
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
         $claim = $this->translateToDataModel($entity);
+
+        $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' translated to datamodel in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        $start = microtime(true);
 
         /** @var ClaimEntity $entity */
         if ($entity->getPayment() === null) {
@@ -256,14 +306,22 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $entity->setPayment($payment);
 
             $message = "A refund amount of $refundAmountString was added to the claim";
-            $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_ADDED, $message);
+            $note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
+            $this->entityManager->persist($note);
         } else {
             $refundAmount = $entity->getPayment()->getAmount();
             $refundAmountString = money_format('£%i', $refundAmount);
         }
 
+        $this->getLogger()->debug('Payment for refundable claim with id ' . $claim->getId() . ' calculated in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        $start = microtime(true);
+
         $message = "A refundable claim for $refundAmountString was downloaded";
-        $this->claimService->addNote($claimId, $userId, NoteModel::TYPE_REFUND_DOWNLOADED, $message);
+        $note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
+        $this->entityManager->persist($note);
+
+        $this->getLogger()->debug('Downloaded note for refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        $start = microtime(true);
 
         //  Retrieve updated claim
         $entity = $this->repository->findOneBy([
@@ -273,6 +331,16 @@ class Spreadsheet implements Initializer\LogSupportInterface
         //  Get the claim using the trait method
         /** @var ClaimModel $claim */
         $claim = $this->translateToDataModel($entity);
+
+        if ($this->accountService->isBuildingSociety($claim->getAccountHash()) === true) {
+            $claim->getApplication()->getAccount()->setBuildingSociety(true);
+            $claim->getApplication()->getAccount()->setInstitutionName(
+                $this->accountService->getBuildingSocietyName($claim->getAccountHash())
+            );
+        }
+
+        $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' retrieved and translated to datamodel in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        $start = microtime(true);
 
         if (!$claim->getApplication()->isRefundByCheque()) {
             //  Deserialize the application from the JSON data
@@ -285,6 +353,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $account->setAccountNumber($accountDetails['account-number'])
                 ->setSortCode($accountDetails['sort-code']);
         }
+
+        $this->getLogger()->debug('Bank details decrypted for refundable claim with id ' . $claim->getId() . ' in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
         return $claim;
     }
@@ -336,5 +406,14 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $this->getLogger()->warn('RSA decryption still used');
 
         return $this->bankCipher->decrypt($ciphertext);
+    }
+
+    /**
+     * @param $start
+     * @return float
+     */
+    private function getElapsedTimeInMs($start): float
+    {
+        return round((microtime(true) - $start) * 1000);
     }
 }
