@@ -66,10 +66,25 @@ $postcodes = $claim->getApplication()->getPostcodes();
         ]) ?>
     </div>
 
-    <?php if ($form->has('attorney')) {
+    <?php if ($form->has('attorney-name')) {
         $this->insert('snippet::input-multi', [
-            'formElement' => $form->get('attorney'),
-            'rawQuestion' => "Does <strong class=\"bold-small\">{$attorneyName}</strong> and <strong class=\"bold-small\">{$this->getDateOfBirthString($attorney->getCurrent()->getDob())}</strong> match one attorney's details on the POA?",
+            'formElement' => $form->get('attorney-name'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$attorneyName}</strong> match one attorney's name on the POA?",
+            'options' => [
+                'yes' => [
+                    'optionLabel' => 'Yes'
+                ],
+                'no' => [
+                    'optionLabel' => 'No'
+                ],
+            ],
+        ]);
+    } ?>
+
+    <?php if ($form->has('attorney-dob')) {
+        $this->insert('snippet::input-multi', [
+            'formElement' => $form->get('attorney-dob'),
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$this->getDateOfBirthString($attorney->getCurrent()->getDob())}</strong> match one attorney's date of birth on the POA?",
             'options' => [
                 'yes' => [
                     'optionLabel' => 'Yes'

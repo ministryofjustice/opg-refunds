@@ -124,9 +124,14 @@ class Poa extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        //  Attorney details. Only present if not already verified
-        if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
-            $this->addVerificationRadio('attorney', $inputFilter);
+        //  Attorney name. Only present if not already verified
+        if (!$claim->isAttorneyNameVerified() || ($poa !== null && $poa->hasAttorneyNameVerification())) {
+            $this->addVerificationRadio('attorney-name', $inputFilter);
+        }
+
+        //  Attorney dob. Only present if not already verified
+        if (!$claim->isAttorneyDobVerified() || ($poa !== null && $poa->hasAttorneyDobVerification())) {
+            $this->addVerificationRadio('attorney-dob', $inputFilter);
         }
 
         //  Donor postcode. Only if supplied by claimant and not already verified
@@ -189,10 +194,16 @@ class Poa extends AbstractForm
         }
 
         $verifications = [];
-        if (array_key_exists('attorney', $formData) && !empty($formData['attorney'])) {
+        if (array_key_exists('attorney-name', $formData) && !empty($formData['attorney-name'])) {
             $verifications[] = [
-                'type'   => VerificationModel::TYPE_ATTORNEY,
-                'passes' => $formData['attorney'] === 'yes',
+                'type'   => VerificationModel::TYPE_ATTORNEY_NAME,
+                'passes' => $formData['attorney-name'] === 'yes',
+            ];
+        }
+        if (array_key_exists('attorney-dob', $formData) && !empty($formData['attorney-dob'])) {
+            $verifications[] = [
+                'type'   => VerificationModel::TYPE_ATTORNEY_DOB,
+                'passes' => $formData['attorney-dob'] === 'yes',
             ];
         }
         if (array_key_exists('donor-postcode', $formData) && !empty($formData['donor-postcode'])) {
