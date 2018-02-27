@@ -124,6 +124,11 @@ class Poa extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
+        //  Attorney. Only present if not already verified and for backwards compatibility with older claims
+        if (!$claim->isAttorneyVerified() || ($poa !== null && $poa->hasAttorneyVerification())) {
+            $this->addVerificationRadio('attorney', $inputFilter);
+        }
+
         //  Attorney name. Only present if not already verified
         if (!$claim->isAttorneyNameVerified() || ($poa !== null && $poa->hasAttorneyNameVerification())) {
             $this->addVerificationRadio('attorney-name', $inputFilter);
@@ -194,6 +199,16 @@ class Poa extends AbstractForm
         }
 
         $verifications = [];
+        if (array_key_exists('attorney', $formData) && !empty($formData['attorney'])) {
+            $verifications[] = [
+                'type'   => VerificationModel::TYPE_ATTORNEY_NAME,
+                'passes' => $formData['attorney-name'] === 'yes',
+            ];
+            $verifications[] = [
+                'type'   => VerificationModel::TYPE_ATTORNEY_DOB,
+                'passes' => $formData['attorney-dob'] === 'yes',
+            ];
+        }
         if (array_key_exists('attorney-name', $formData) && !empty($formData['attorney-name'])) {
             $verifications[] = [
                 'type'   => VerificationModel::TYPE_ATTORNEY_NAME,
@@ -249,6 +264,11 @@ class Poa extends AbstractForm
                 //Case number verification is automatic and is not displayed on the page so do not include it
                 if ($verification->getType() !== VerificationModel::TYPE_CASE_NUMBER) {
                     $poaArray[$verification->getType()] = $verification->isPasses() ? 'yes' : 'no';
+                }
+                //Combined attorney verification has been deprecated and replaced with separate name and dob
+                if ($verification->getType() === VerificationModel::TYPE_ATTORNEY) {
+                    $poaArray[VerificationModel::TYPE_ATTORNEY_NAME] = $verification->isPasses() ? 'yes' : 'no';
+                    $poaArray[VerificationModel::TYPE_ATTORNEY_DOB] = $verification->isPasses() ? 'yes' : 'no';
                 }
             }
         }
