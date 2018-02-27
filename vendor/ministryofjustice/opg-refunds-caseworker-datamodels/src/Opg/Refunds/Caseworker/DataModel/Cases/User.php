@@ -10,10 +10,11 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
  */
 class User extends AbstractDataModel
 {
-    const ROLE_CASEWORKER = 'Caseworker';
-    const ROLE_REPORTING  = 'Reporting';
-    const ROLE_REFUND     = 'RefundManager';
-    const ROLE_ADMIN      = 'Admin';
+    const ROLE_CASEWORKER       = 'Caseworker';
+    const ROLE_REPORTING        = 'Reporting';
+    const ROLE_REFUND           = 'RefundManager';
+    const ROLE_ADMIN            = 'Admin';
+    const ROLE_QUALITY_CHECKING = 'QualityChecking';
 
     const STATUS_ACTIVE   = 'active';
     const STATUS_INACTIVE = 'inactive';
