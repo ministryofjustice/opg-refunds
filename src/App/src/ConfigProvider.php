@@ -73,6 +73,7 @@ class ConfigProvider
                 Service\User::class => Service\UserFactory::class,
                 Service\Reporting::class => Service\ReportingFactory::class,
                 Service\Spreadsheet::class => Service\SpreadsheetFactory::class,
+                Service\PoaLookup::class => Service\PoaLookupFactory::class,
 
                 //Crypt
                 Crypt\Hybrid::class => Crypt\HybridFactory::class,
