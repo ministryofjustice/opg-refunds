@@ -58,6 +58,7 @@ class Claim implements Initializer\LogSupportInterface
     private $entityManager;
 
     /**
+
      * @var PoaLookup
      */
     private $poaLookup;
