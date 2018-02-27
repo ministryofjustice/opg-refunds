@@ -74,10 +74,11 @@ class User extends AbstractForm
         $input->setRequired(true);
 
         $field->setValueOptions([
-            UserModel::ROLE_CASEWORKER => UserModel::ROLE_CASEWORKER,
-            UserModel::ROLE_REFUND     => UserModel::ROLE_REFUND,
-            UserModel::ROLE_REPORTING  => UserModel::ROLE_REPORTING,
-            UserModel::ROLE_ADMIN      => UserModel::ROLE_ADMIN,
+            UserModel::ROLE_CASEWORKER       => UserModel::ROLE_CASEWORKER,
+            UserModel::ROLE_REFUND           => UserModel::ROLE_REFUND,
+            UserModel::ROLE_REPORTING        => UserModel::ROLE_REPORTING,
+            UserModel::ROLE_ADMIN            => UserModel::ROLE_ADMIN,
+            UserModel::ROLE_QUALITY_CHECKING => UserModel::ROLE_QUALITY_CHECKING,
         ]);
 
         $this->add($field);
