@@ -5149,17 +5149,17 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "1.15",
-        "version_normalized": "1.15.0.0",
+        "version": "dev-REF-814-qc-role",
+        "version_normalized": "dev-REF-814-qc-role",
         "source": {
             "type": "git",
             "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "c7358a0bfc6f0d39b79293761c71441f91596f37"
+            "reference": "9c318ec4e0924f0df47420f40d7aec73cc426b04"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/c7358a0bfc6f0d39b79293761c71441f91596f37",
-            "reference": "c7358a0bfc6f0d39b79293761c71441f91596f37",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/9c318ec4e0924f0df47420f40d7aec73cc426b04",
+            "reference": "9c318ec4e0924f0df47420f40d7aec73cc426b04",
             "shasum": ""
         },
         "require": {
@@ -5168,7 +5168,7 @@
         "require-dev": {
             "phpunit/phpunit": "^6.0.8 || ^5.7.15"
         },
-        "time": "2018-02-21T09:20:26+00:00",
+        "time": "2018-02-27T12:06:41+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -5181,7 +5181,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.15",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/REF-814-qc-role",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     }
