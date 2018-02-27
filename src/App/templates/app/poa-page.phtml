@@ -12,6 +12,12 @@ $this->addErrorMap([
             'summary'   => 'Invalid case number. ' . ($system === \Opg\Refunds\Caseworker\DataModel\Cases\Poa::SYSTEM_SIRIUS ? 'A Sirius case number is twelve digits with or without hyphens' : 'A meris case number is seven digits plus a sequence number separated by a \'/\' e.g. 1234567/1'),
             'field'     => 'Invalid case number'
         ]
+    ],
+    'attorney-dob' => [
+        'invalid-combination' => [
+            'summary'   => 'Attorney date of birth can only match if the attorney\'s name is also a match',
+            'field'     => 'Invalid selection'
+        ]
     ]
 ]);
 ?>
@@ -84,7 +90,7 @@ $postcodes = $claim->getApplication()->getPostcodes();
     <?php if ($form->has('attorney-dob')) {
         $this->insert('snippet::input-multi', [
             'formElement' => $form->get('attorney-dob'),
-            'rawQuestion' => "Does <strong class=\"bold-small\">{$this->getDateOfBirthString($attorney->getCurrent()->getDob())}</strong> match one attorney's date of birth on the POA?",
+            'rawQuestion' => "Does <strong class=\"bold-small\">{$this->getDateOfBirthString($attorney->getCurrent()->getDob())}</strong> match <strong class=\"bold - small\">{$attorneyName}'s</strong> date of birth on the POA?",
             'options' => [
                 'yes' => [
                     'optionLabel' => 'Yes'

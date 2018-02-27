@@ -129,14 +129,16 @@ class Poa extends AbstractForm
             $this->addVerificationRadio('attorney', $inputFilter);
         }
 
-        //  Attorney name. Only present if not already verified
-        if (!$claim->isAttorneyNameVerified() || ($poa !== null && $poa->hasAttorneyNameVerification())) {
+        //  Attorney name and dob. Only present if neither already verified
+        if (!$claim->isAttorneyNameVerified() || !$claim->isAttorneyDobVerified()
+            || ($poa !== null && ($poa->hasAttorneyNameVerification() || $poa->hasAttorneyDobVerification()))) {
             $this->addVerificationRadio('attorney-name', $inputFilter);
-        }
-
-        //  Attorney dob. Only present if not already verified
-        if (!$claim->isAttorneyDobVerified() || ($poa !== null && $poa->hasAttorneyDobVerification())) {
-            $this->addVerificationRadio('attorney-dob', $inputFilter);
+            $this->addVerificationRadio('attorney-dob', $inputFilter)->getValidatorChain()->attach(
+                new Validator\InvalidValueCombination($this->get('attorney-dob'), $this->get('attorney-name'), [
+                    'value' => 'yes',
+                    'dependentValue' => 'no'
+                ])
+            );
         }
 
         //  Donor postcode. Only if supplied by claimant and not already verified
@@ -155,6 +157,7 @@ class Poa extends AbstractForm
     /**
      * @param string $inputName
      * @param InputFilter $inputFilter
+     * @return Input
      */
     private function addVerificationRadio(string $inputName, InputFilter $inputFilter)
     {
@@ -170,6 +173,8 @@ class Poa extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
+
+        return $input;
     }
 
     /**
