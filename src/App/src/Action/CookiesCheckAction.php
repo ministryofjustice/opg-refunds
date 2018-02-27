@@ -20,9 +20,16 @@ class CookiesCheckAction extends AbstractAction
 
         // If the cookie is there, forward to next page.
         if (isset($cookies[self::COOKIE_NAME])) {
-            return new Response\RedirectResponse(
+            $response = new Response\RedirectResponse(
                 $this->getUrlHelper()->generate('apply.who')
             );
+
+            // If the 'complete' cookie is set, take this chance to remove it.
+            if (isset($cookies['complete'])) {
+                $response = FigResponseCookies::set($response, SetCookie::createExpired('complete'));
+            }
+
+            return $response;
         }
 
 
