@@ -44,6 +44,10 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'POA edited';
             case NoteModel::TYPE_POA_DELETED:
                 return 'POA deleted';
+            case NoteModel::TYPE_POA_AUTOMATION_RAN:
+                return 'Pre-population ran';
+            case NoteModel::TYPE_POA_AUTOMATION_DONOR_MISMATCH:
+                return 'Pre-population donor/case reference mismatch';
             case NoteModel::TYPE_NO_MERIS_POAS:
                 return 'No Meris POAs';
             case NoteModel::TYPE_MERIS_POAS_FOUND:
