@@ -13,7 +13,6 @@ return [
             'user.by.token',
             'password.reset',
             'ping',
-            'poa.lookup',
         ],
         'authenticated-user' => [
             'claim',
