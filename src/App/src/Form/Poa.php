@@ -197,8 +197,8 @@ class Poa extends AbstractForm
                 !empty($receivedDateDateArr['day'])) {
                 $receivedDateDateStr =
                     $receivedDateDateArr['year'] . '-' .
-                    $receivedDateDateArr['month'] . '-' .
-                    $receivedDateDateArr['day'];
+                    sprintf('%02d', $receivedDateDateArr['month']) . '-' .
+                    sprintf('%02d', $receivedDateDateArr['day']);
             }
             $formData['received-date'] = $receivedDateDateStr;
         }
