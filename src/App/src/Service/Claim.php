@@ -250,6 +250,8 @@ class Claim implements Initializer\LogSupportInterface
             $meris = $poaByDonor['meris'];
             $sirius = $poaByDonor['sirius'];
 
+            $duplicatePoas = [];
+
             //---
 
             // Add the Meris POAs
@@ -309,7 +311,11 @@ class Claim implements Initializer\LogSupportInterface
 
                 //---
 
-                $this->addPoa($claimId, $userId, $poaModel);
+                try {
+                    $this->addPoa($claimId, $userId, $poaModel);
+                } catch (AlreadyExistsException $ex) {
+                    $duplicatePoas[] = $poaModel->getCaseNumber();
+                }
             }
 
             // Add the Sirius POAs
@@ -351,19 +357,39 @@ class Claim implements Initializer\LogSupportInterface
 
                 //---
 
-                $this->addPoa($claimId, $userId, $poaModel);
+                try {
+                    $this->addPoa($claimId, $userId, $poaModel);
+                } catch (AlreadyExistsException $ex) {
+                    $duplicatePoas[] = join('-', str_split($poaModel->getCaseNumber(), 4));
+                }
             }
 
             //---
 
-            $total = count($meris) + count($sirius);
+            $total = count($meris) + count($sirius) - count($duplicatePoas);
 
-            $this->addNote(
-                $claimId,
-                $userId,
-                NoteModel::TYPE_POA_AUTOMATION_RAN,
-                "{$total} POAs have been automatically added"
-            );
+            if ($total === 0) {
+                $this->addNote(
+                    $claimId,
+                    $userId,
+                    NoteModel::TYPE_POA_AUTOMATION_RAN,
+                    "No POAs were automatically added"
+                );
+            } elseif ($total === 1) {
+                $this->addNote(
+                    $claimId,
+                    $userId,
+                    NoteModel::TYPE_POA_AUTOMATION_RAN,
+                    "{$total} POA has been automatically added"
+                );
+            } else {
+                $this->addNote(
+                    $claimId,
+                    $userId,
+                    NoteModel::TYPE_POA_AUTOMATION_RAN,
+                    "{$total} POAs have been automatically added"
+                );
+            }
 
             //-----------------------------------------------------------------------
             // If a case number was supplied, check we have a matching POA from above
@@ -401,6 +427,44 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
             }
+
+            if (count($duplicatePoas) > 0) {
+                $possibleDuplicateClaims = $this->search([
+                    'poaCaseNumbers' => str_replace('-', '', join(',', $duplicatePoas))
+                ]);
+
+                $message = 'Could not add ';
+
+                if (count($duplicatePoas) === 1) {
+                    $message .= 'the POA with case reference ';
+                } else {
+                    $message .= 'POAs with case references ';
+                }
+
+                $message .= join(', ', $duplicatePoas) . ' because they have already been added to ';
+
+                if ($possibleDuplicateClaims->getTotal() === 1) {
+                    $message .= 'the claim with code ';
+                } else {
+                    $message .= 'claims with codes ';
+                }
+
+                $possibleDuplicateClaimCodes = [];
+                foreach ($possibleDuplicateClaims->getClaimSummaries() as $claimSummary) {
+                    $possibleDuplicateClaimCodes[] = $claimSummary->getReferenceNumber();
+                }
+
+                $message .= join(', ', $possibleDuplicateClaimCodes) . '. This claim is likely a duplicate';
+
+                $this->addNote(
+                    $claimId,
+                    $userId,
+                    NoteModel::TYPE_POA_AUTOMATION_DUPLICATE,
+                    $message
+                );
+            }
+
+
         } catch (Exception $e){
             $this->getLogger()->crit("Error processing Meris or Sirius data for claim {$claimId} - " . $e->getMessage());
         }
@@ -1195,6 +1259,23 @@ class Claim implements Initializer\LogSupportInterface
             $this->entityManager->flush();
         } catch (DriverException $ex) {
             if ($ex->getErrorCode() === 7) {
+                // Doctrine 2’s EntityManager class will permanently close connections upon failed transactions
+                if (!$this->entityManager->isOpen()) {
+                    // So check if this is the case and recreate if so
+                    $this->getLogger()->warn('Entity manager was permanently closed after failed transaction. Recreating');
+
+                    $this->entityManager = $this->entityManager->create(
+                        $this->entityManager->getConnection(),
+                        $this->entityManager->getConfiguration()
+                    );
+
+                    $this->claimRepository = $this->entityManager->getRepository(ClaimEntity::class);
+                    $this->poaRepository = $this->entityManager->getRepository(PoaEntity::class);
+                    $this->userRepository = $this->entityManager->getRepository(UserEntity::class);
+
+                    $this->getLogger()->info(' Successfully recreated entity manager');
+                }
+
                 //Duplicate case number
                 throw new AlreadyExistsException("Case number {$poaModel->getCaseNumber()} is already registered with another claim");
             }
