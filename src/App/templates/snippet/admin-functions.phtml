@@ -70,7 +70,7 @@ Mandatory: claim
             <div class="">
                 <dt class="details-term">Outcome</dt>
                 <dd class="details-definition">
-                    <?php if ($claim->canChangeOutcome()) { ?>
+                    <?php if ($claim->canChangeOutcome() && $claim->getStatus() !== ClaimModel::STATUS_WITHDRAWN) { ?>
                         <a class="button button-secondary" href="<?= $this->generateUrl('claim.change.outcome', ['claimId' => $claim->getId()]) ?>">Change claim outcome</a>
                     <?php } ?>
                 </dd>
