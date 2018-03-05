@@ -37,7 +37,8 @@ class SummaryAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\Summary([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         //---
@@ -50,7 +51,7 @@ class SummaryAction extends AbstractAction
                 if (($ad = $request->getAttribute('ad')) != null) {
                     $session['ad'] = [
                         'meta' => $ad,
-                        'notes' => $form->getData()['notes']
+                        'notes' => $form->getNotes()
                     ];
                 }
 
@@ -72,6 +73,9 @@ class SummaryAction extends AbstractAction
                     )
                 );
             }
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         //---
