@@ -35,7 +35,22 @@ class ContactDetailsAction extends AbstractAction
         //---
 
         if ($request->getMethod() == 'POST') {
-            $form->setData($request->getParsedBody());
+            $data = $request->getParsedBody();
+            $form->setData($data);
+
+            if (isset($data['address']) && $request->getAttribute('ad') != null) {
+                $form->setValidationGroup(['notes']);
+
+                if ($form->isValid()) {
+                    $session['notes'] = $form->getNotes();
+                }
+
+                //---
+
+                return new Response\RedirectResponse(
+                    $this->getUrlHelper()->generate('apply.contact.address')
+                );
+            }
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getFormattedData();

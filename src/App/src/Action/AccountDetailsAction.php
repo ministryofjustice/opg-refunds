@@ -37,7 +37,6 @@ class AccountDetailsAction extends AbstractAction
 
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
-
             $form->setData($data);
 
             //---------------------
