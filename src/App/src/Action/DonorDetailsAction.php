@@ -38,7 +38,7 @@ class DonorDetailsAction extends AbstractAction
                 $fieldsToValidate = array_flip(array_diff_key(
                     array_flip(array_keys($form->getElements() + $form->getFieldsets())),
                     // Remove the fields below from the validator.
-                    array_flip(['poa-ti tle', 'poa-first', 'poa-last'])
+                    array_flip(['poa-title', 'poa-first', 'poa-last'])
                 ));
 
                 $form->setValidationGroup($fieldsToValidate);
