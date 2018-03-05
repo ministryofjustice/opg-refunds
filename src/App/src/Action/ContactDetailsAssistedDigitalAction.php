@@ -28,7 +28,8 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
         //---
 
         $form = new Form\ContactAddress([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         //---
@@ -38,6 +39,7 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
