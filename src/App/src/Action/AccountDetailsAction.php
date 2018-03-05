@@ -31,17 +31,30 @@ class AccountDetailsAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\AccountDetails([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
+
+            $form->setData($data);
 
             //---------------------
             // Check for cheque
 
             if (isset($data['cheque']) && $request->getAttribute('ad') != null) {
                 $session['cheque'] = true;
+
+                //---
+
+                $form->setValidationGroup(['notes']);
+
+                if ($form->isValid()) {
+                    $session['notes'] = $form->getNotes();
+                }
+
+                //---
 
                 if (isset($session['account'])) {
                     unset($session['account']);
@@ -55,19 +68,21 @@ class AccountDetailsAction extends AbstractAction
 
             //---------------------
 
-            $form->setData($data);
-
             if ($form->isValid()) {
                 // Prep the account before storage.
                 $session['account'] = $this->bankDetailsHandlerService->process($form->getData());
 
                 $session['cheque'] = false;
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
                         FlowController::getNextRouteName($session))
                 );
             }
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::account-details-page', [

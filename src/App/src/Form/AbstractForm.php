@@ -47,11 +47,6 @@ class AbstractForm extends ZendForm
 
         $this->add($field);
         $inputFilter->add($input);
-
-        //---
-
-        $options = $this->getOptions();
-        $this->get('notes')->setValue( isset($options['notes']) ?? null );
     }
 
     public function setData($data = [])

@@ -115,4 +115,7 @@ $this->addErrorMap([
             <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Send cheque to donor" name="cheque" >
         <?php endif ?>
     </div>
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
 </form>

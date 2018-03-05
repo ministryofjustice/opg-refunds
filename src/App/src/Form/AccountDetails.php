@@ -57,10 +57,6 @@ class AccountDetails extends AbstractForm
         $this->add($field);
         $inputFilter->add($input);
 
-        //---
-
-        $this->addCsrfElement($inputFilter);
-
         //------------------------
         // Sort Code
 
@@ -81,5 +77,10 @@ class AccountDetails extends AbstractForm
 
         $this->add($field);
         $inputFilter->add($input);
+
+        //---
+
+        $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 }
