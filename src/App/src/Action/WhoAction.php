@@ -16,7 +16,8 @@ class WhoAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\AboutYou([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['applicant']);
@@ -36,6 +37,7 @@ class WhoAction extends AbstractAction
                 }
 
                 $session['applicant'] = $applicant;
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
