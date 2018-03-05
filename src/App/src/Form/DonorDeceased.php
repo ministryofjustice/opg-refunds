@@ -35,5 +35,6 @@ class DonorDeceased extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 }
