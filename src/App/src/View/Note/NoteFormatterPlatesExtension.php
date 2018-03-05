@@ -48,6 +48,8 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'Pre-population ran';
             case NoteModel::TYPE_POA_AUTOMATION_DONOR_MISMATCH:
                 return 'Pre-population donor/case reference mismatch';
+            case NoteModel::TYPE_POA_AUTOMATION_DUPLICATE:
+                return 'Pre-population detected likely duplicate claim';
             case NoteModel::TYPE_NO_MERIS_POAS:
                 return 'No Meris POAs';
             case NoteModel::TYPE_MERIS_POAS_FOUND:
