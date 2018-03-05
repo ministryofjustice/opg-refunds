@@ -11,6 +11,8 @@ use Opg\Refunds\Caseworker\DataModel\AbstractDataModel;
 class Verification extends AbstractDataModel
 {
     const TYPE_ATTORNEY = 'attorney';
+    const TYPE_ATTORNEY_NAME = 'attorney-name';
+    const TYPE_ATTORNEY_DOB = 'attorney-dob';
     const TYPE_CASE_NUMBER = 'case-number';
     const TYPE_DONOR_POSTCODE = 'donor-postcode';
     const TYPE_ATTORNEY_POSTCODE = 'attorney-postcode';
