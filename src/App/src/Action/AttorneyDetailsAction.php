@@ -22,7 +22,8 @@ class AttorneyDetailsAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\AttorneyDetails([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['attorney']);
@@ -45,6 +46,7 @@ class AttorneyDetailsAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['attorney'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -56,6 +58,9 @@ class AttorneyDetailsAction extends AbstractAction
         } elseif ($isUpdate) {
             // We are editing previously entered details.
             $form->setFormattedData($session['attorney']);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::attorney-details-page', [
