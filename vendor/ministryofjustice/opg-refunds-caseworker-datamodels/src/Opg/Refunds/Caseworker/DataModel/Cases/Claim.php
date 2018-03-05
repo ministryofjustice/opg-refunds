@@ -780,7 +780,27 @@ class Claim extends AbstractDataModel
      */
     public function isAttorneyVerified(): bool
     {
-        return $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY)
+            || ($this->isVerified(VerificationModel::TYPE_ATTORNEY_NAME)
+                && $this->isVerified(VerificationModel::TYPE_ATTORNEY_DOB));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyNameVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_NAME)
+            || $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyDobVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_DOB)
+            || $this->isVerified(VerificationModel::TYPE_ATTORNEY);
     }
 
     /**
@@ -814,9 +834,12 @@ class Claim extends AbstractDataModel
     {
         $verificationCount = 0;
 
-        if ($this->isAttorneyVerified()) {
-            //Means that both the attorney's name and dob have been verified so counts for 2
-            $verificationCount+=2;
+        if ($this->isAttorneyNameVerified()) {
+            $verificationCount++;
+        }
+
+        if ($this->isAttorneyDobVerified()) {
+            $verificationCount++;
         }
 
         if ($this->isCaseNumberVerified()) {
