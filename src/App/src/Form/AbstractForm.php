@@ -49,7 +49,7 @@ class AbstractForm extends ZendForm
         $inputFilter->add($input);
     }
 
-    public function setData($data)
+    public function setData($data = [])
     {
         $options = $this->getOptions();
 

@@ -51,6 +51,9 @@ class WhoAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             $form->setData(['who' => $session['applicant']]);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::who-page', [
