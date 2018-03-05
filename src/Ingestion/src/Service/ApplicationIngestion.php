@@ -183,7 +183,7 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
                     // Doctrine 2’s EntityManager class will permanently close connections upon failed transactions
                     if (!$this->casesEntityManager->isOpen()) {
                         // So check if this is the case and recreate if so
-                        $this->getLogger()->warn('Cases entity manager was permanently closed after failed transation. Recreating');
+                        $this->getLogger()->warn('Cases entity manager was permanently closed after failed transaction. Recreating');
 
                         $this->casesEntityManager = $this->casesEntityManager->create(
                             $this->casesEntityManager->getConnection(),
