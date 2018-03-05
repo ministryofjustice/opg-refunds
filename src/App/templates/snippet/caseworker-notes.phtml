@@ -1,0 +1,15 @@
+
+<?php if (!(empty($ad))): ?>
+    <div style="margin-top: 2em; width: 75%;">
+        <?php
+        $this->insert('snippet::input-textarea', [
+            'formElement' => $form->get('notes'),
+            'formLabel' => 'Caseworker notes',
+            'formType' => 'text',
+            'formLabelBold' => true,
+            'additionFormControlClass' => 'form-control-3-4'
+        ]);
+        ?>
+    </div>
+<?php endif ?>
+
