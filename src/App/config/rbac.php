@@ -4,15 +4,17 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User;
 
 return [
     'roles' => [
-        User::ROLE_ADMIN      => [],
-        User::ROLE_REFUND     => [],
-        User::ROLE_REPORTING  => [],
-        User::ROLE_CASEWORKER => [],
+        User::ROLE_ADMIN            => [],
+        User::ROLE_REFUND           => [],
+        User::ROLE_REPORTING        => [],
+        User::ROLE_CASEWORKER       => [],
+        User::ROLE_QUALITY_CHECKING => [],
         'authenticated-user'        => [
             User::ROLE_ADMIN,
             User::ROLE_REFUND,
             User::ROLE_REPORTING,
             User::ROLE_CASEWORKER,
+            User::ROLE_QUALITY_CHECKING,
         ],
         'guest'                     => [
             'authenticated-user'
@@ -42,7 +44,6 @@ return [
             'claim.duplicate',
             'claim.search',
             'claim.search.download',
-            'claim.change.outcome',
             'claim.confirm.notified',
             'phone-claim',
         ],
@@ -63,6 +64,9 @@ return [
             'claim.change.outcome',
             'claim.reassign',
             'claim.withdraw',
+        ],
+        User::ROLE_QUALITY_CHECKING => [
+            'claim.change.outcome',
         ],
     ],
 ];

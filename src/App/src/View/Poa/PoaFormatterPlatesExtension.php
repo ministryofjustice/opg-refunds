@@ -68,7 +68,11 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
     {
         switch ($verification->getType()) {
             case VerificationModel::TYPE_ATTORNEY:
-                return 'Attorney details';
+                return 'Attorney name, Attorney date of birth';
+            case VerificationModel::TYPE_ATTORNEY_NAME:
+                return 'Attorney name';
+            case VerificationModel::TYPE_ATTORNEY_DOB:
+                return 'Attorney date of birth';
             case VerificationModel::TYPE_CASE_NUMBER:
                 return 'Case number';
             case VerificationModel::TYPE_DONOR_POSTCODE:

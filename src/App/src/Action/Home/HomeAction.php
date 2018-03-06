@@ -67,6 +67,8 @@ class HomeAction extends AbstractAction
             return $this->redirectToRoute('refund');
         } elseif (in_array(User::ROLE_ADMIN, $identity->getRoles())) {
             return $this->redirectToRoute('user');
+        } elseif (in_array(User::ROLE_QUALITY_CHECKING, $identity->getRoles())) {
+            return $this->redirectToRoute('claim.search');
         }
 
         //No roles!

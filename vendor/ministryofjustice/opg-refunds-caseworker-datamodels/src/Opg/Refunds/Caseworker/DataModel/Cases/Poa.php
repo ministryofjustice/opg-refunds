@@ -237,7 +237,27 @@ class Poa extends AbstractDataModel
      */
     public function isAttorneyVerified(): bool
     {
-        return $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY)
+            || ($this->isVerified(VerificationModel::TYPE_ATTORNEY_NAME)
+                && $this->isVerified(VerificationModel::TYPE_ATTORNEY_DOB));
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyNameVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_NAME)
+            || $this->isVerified(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttorneyDobVerified(): bool
+    {
+        return $this->isVerified(VerificationModel::TYPE_ATTORNEY_DOB)
+            || $this->isVerified(VerificationModel::TYPE_ATTORNEY);
     }
 
     /**
@@ -288,7 +308,27 @@ class Poa extends AbstractDataModel
      */
     public function hasAttorneyVerification(): bool
     {
-        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY);
+        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY)
+            || ($this->hasVerification(VerificationModel::TYPE_ATTORNEY_NAME)
+                && $this->hasVerification(VerificationModel::TYPE_ATTORNEY_DOB));
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyNameVerification(): bool
+    {
+        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY_NAME)
+            || $this->hasVerification(VerificationModel::TYPE_ATTORNEY);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasAttorneyDobVerification(): bool
+    {
+        return $this->hasVerification(VerificationModel::TYPE_ATTORNEY_DOB)
+            || $this->hasVerification(VerificationModel::TYPE_ATTORNEY);
     }
 
     /**

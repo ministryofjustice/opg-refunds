@@ -35,7 +35,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <div class="">
         <dt class="details-term">Attorney name</dt>
         <dd class="details-definition"><?= $this->e($attorney->getCurrent()->getName()->getFormattedName()) ?></dd>
-        <?php if (!$attorney->hasPoaName() && $claim->isAttorneyVerified()) { ?>
+        <?php if (!$attorney->hasPoaName() && $claim->isAttorneyNameVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
@@ -46,7 +46,7 @@ $attorney = $claim->getApplication()->getAttorney();
     <div class="">
         <dt class="details-term">Attorney date of birth</dt>
         <dd class="details-definition"><?= $this->e($this->getDateOfBirthString($attorney->getCurrent()->getDob())) ?></dd>
-        <?php if ($claim->isAttorneyVerified()) { ?>
+        <?php if ($claim->isAttorneyDobVerified()) { ?>
             <dd class="details-verified">
                 <i class="icon icon-tick" title="Verified">
                     <span class="visually-hidden">Verified</span>
@@ -58,7 +58,7 @@ $attorney = $claim->getApplication()->getAttorney();
         <div class="">
             <dt class="details-term">Attorney name on POA</dt>
             <dd class="details-definition"><?= $this->e($attorney->getPoa()->getName()->getFormattedName()) ?></dd>
-            <?php if ($claim->isAttorneyVerified()) { ?>
+            <?php if ($claim->isAttorneyNameVerified()) { ?>
                 <dd class="details-verified">
                     <i class="icon icon-tick" title="Verified">
                         <span class="visually-hidden">Verified</span>
