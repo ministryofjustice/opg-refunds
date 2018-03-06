@@ -1573,8 +1573,14 @@ class Claim implements Initializer\LogSupportInterface
         }
 
         if (isset($statuses)) {
-            $queryBuilder->andWhere('c.status IN (:statuses)');
-            $parameters['statuses'] = $statuses;
+            if (in_array('outcome_changed', $statuses)) {
+                $queryBuilder->leftJoin('c.notes', 'n');
+                $queryBuilder->andWhere('n.type = :noteType');
+                $parameters['noteType'] = NoteModel::TYPE_CLAIM_OUTCOME_CHANGED;
+            } else {
+                $queryBuilder->andWhere('c.status IN (:statuses)');
+                $parameters['statuses'] = $statuses;
+            }
         }
 
         if (isset($accountHash)) {
