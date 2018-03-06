@@ -61,10 +61,12 @@ $this->addErrorMap([
 <?php $this->stop() ?>
 
 <p>
-    If a refund is approved it will be paid to this account.
+    If a refund is approved it will be paid to this account. We can only pay refunds to UK bank accounts.
 </p>
 
-<p>We can only pay refunds to UK bank accounts.</p>
+<div class="panel panel-border-narrow">
+    <p>We can't pay refunds into building society accounts that have a roll number</p>
+</div>
 
 <?php $this->insert('snippet::help-text', [
         'title' => 'How we keep bank details safe',

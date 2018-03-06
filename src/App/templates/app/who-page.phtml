@@ -35,11 +35,10 @@ $this->addErrorMap([
             ],
             'attorney' => [
                 'optionLabel' => "I am an 'attorney'",
-                'optionLabelSuffix' => "
-                    <p>Appointed by the donor to make decisions on their behalf.</p>
-                    <div class=\"panel panel-border-narrow\">
-                        <p>If you were appointed as a replacement attorney, you can only claim if you've formally replaced an attorney and are now able to make decisions on the donor's behalf.</p>
-                    </div>
+                'optionLabelSuffix' => "Appointed by the donor to make decisions on their behalf.",
+                'dataTarget' => 'attorney-info',
+                'dataTargetMarkup' => "
+                    <p>If you were appointed as a replacement attorney, you can only claim if you've formally replaced an attorney and are now able to make decisions on the donor's behalf.</p>
                 "
             ]
         ],
