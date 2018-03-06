@@ -73,6 +73,7 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></a></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></td>
                         <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
@@ -80,8 +81,8 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></td>
                     <?php } ?>
-                    <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></td>
                 </tr>
             </tbody>
         </table>
@@ -113,14 +114,15 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $counts[ClaimModel::STATUS_REJECTED] ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $counts[ClaimModel::STATUS_WITHDRAWN] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $counts['outcome_changed'] ?></a></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $counts['total'] ?></td>
                         <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
                         <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
                         <td class="numeric"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></td>
                         <td class="numeric"><?= $counts[ClaimModel::STATUS_WITHDRAWN] ?></td>
+                        <td class="numeric"><?= $counts['outcome_changed'] ?></td>
                     <?php } ?>
-                    <td class="numeric"><?= $counts['outcome_changed'] ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -154,14 +156,15 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></a></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $counts['total'] ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                     <?php } ?>
-                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
             </tbody>
@@ -196,14 +199,15 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></a></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $counts['total'] ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                     <?php } ?>
-                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
                 </tr>
             <?php } ?>
             </tbody>
