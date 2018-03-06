@@ -51,6 +51,9 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
         } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
+            
             // If here, pre-populate with Donor's current address.
 
             $address = $session['donor']['current']['address']['address-1'];
