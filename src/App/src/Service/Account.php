@@ -55,8 +55,6 @@ class Account implements Initializer\LogSupportInterface
                     $hash = hash('sha512', $this->salt . $accountDetails);
 
                     $buildingSocietyHashes[$hash] = $account[0];
-
-                    $this->getLogger()->debug("Added Building Society details {$account[0]} {$accountDetails} {$hash}");
                 }
 
                 fclose($buildingSocietyCsvHandle);
