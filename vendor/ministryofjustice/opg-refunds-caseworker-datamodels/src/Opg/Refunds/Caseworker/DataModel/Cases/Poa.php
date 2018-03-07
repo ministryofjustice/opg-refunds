@@ -371,7 +371,11 @@ class Poa extends AbstractDataModel
      */
     public function isComplete(): bool
     {
-        return !empty($this->caseNumber) && !empty($this->receivedDate) && !empty($this->originalPaymentAmount);
+        $isAttorneyComplete = (!$this->hasAttorneyNameVerification() && !$this->hasAttorneyDobVerification())
+            || ($this->hasAttorneyNameVerification() && $this->hasAttorneyDobVerification());
+
+        return !empty($this->caseNumber) && !empty($this->receivedDate) && !empty($this->originalPaymentAmount)
+            && $isAttorneyComplete;
     }
 
     /**
