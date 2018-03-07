@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "30e725baf357316964d8e521184b85b4",
+    "content-hash": "ee0f3a5d844ee9eeea294fb0fc16b86e",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -605,16 +605,16 @@
         },
         {
             "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-            "version": "1.18",
+            "version": "1.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-                "reference": "990a321d10aeca192baa55ddbd4513027b824af0"
+                "reference": "a7fb711b3578081110ef7d1f118e907eaf3c6254"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/990a321d10aeca192baa55ddbd4513027b824af0",
-                "reference": "990a321d10aeca192baa55ddbd4513027b824af0",
+                "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/a7fb711b3578081110ef7d1f118e907eaf3c6254",
+                "reference": "a7fb711b3578081110ef7d1f118e907eaf3c6254",
                 "shasum": ""
             },
             "require": {
@@ -634,10 +634,10 @@
             ],
             "description": "PHP data models for the LPA Refunds project",
             "support": {
-                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.18",
+                "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/1.19",
                 "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
             },
-            "time": "2018-03-05T10:36:49+00:00"
+            "time": "2018-03-07T12:06:32+00:00"
         },
         {
             "name": "ministryofjustice/opg-refunds-logger",
