@@ -262,9 +262,9 @@ class Claim implements Initializer\LogSupportInterface
                 $poaModel->setCaseNumber($poa['case_number'] . '/' . $poa['sequence_number']);
                 $poaModel->setReceivedDate( new DateTime($poa['data']['date-of-receipt']) );
 
-                //---
-
+                //------------------------------------------
                 // Check if we can verify the case number
+
                 if ($claim->getApplication()->hasCaseNumber()) {
                     if ($poa['case_number'] == $claim->getApplication()->getCaseNumber()->getPoaCaseNumber()) {
                         $verifications = $poaModel->getVerifications();
@@ -276,7 +276,9 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                //------------------------------------------
                 // Check if we can verify the Donor postcode
+
                 if ($claim->getApplication()->hasDonorPostcode()) {
                     $postcode = $claim->getApplication()->getPostcodes()->getDonorPostcode();
                     $postcode = preg_replace('/\s+/', '', strtolower($postcode));
@@ -291,7 +293,9 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                //------------------------------------------
                 // Check if we can match the attorney postcode
+
                 if ($claim->getApplication()->hasAttorneyPostcode()) {
                     $postcode = $claim->getApplication()->getPostcodes()->getAttorneyPostcode();
                     $postcode = preg_replace('/\s+/', '', strtolower($postcode));
@@ -309,7 +313,56 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
-                //---
+                //------------------------------------------
+                // Check if we can match the attorney Name
+
+                $attorneyName = $claim->getApplication()->getAttorney()->getCurrent()->getName();
+
+                if ($claim->getApplication()->getAttorney()->hasPoaName()) {
+                    $attorneyName = $claim->getApplication()->getAttorney()->getPoa()->getName();
+                }
+
+                $attorneyNameStr = "{$attorneyName->getFirst()} {$attorneyName->getLast()}";
+
+                foreach ($poa['data']['attorneys'] as $attorney) {
+                    $name = trim($attorney['attorney-name']);
+
+                    // Strip off the title and ensure we only have single spaces.
+                    $name = trim(substr($name, strpos($name, ' ') ));
+                    $name = preg_replace('/\s+/', ' ', $name);
+
+                    if (mb_strtolower($name) === mb_strtolower($attorneyNameStr)) {
+                        $verifications = $poaModel->getVerifications();
+                        $verifications[] = new VerificationModel([
+                            'type' => VerificationModel::TYPE_ATTORNEY_NAME,
+                            'passes' => 'yes'
+                        ]);
+                        $poaModel->setVerifications($verifications);
+
+                        //----------------
+                        // Verify the DOB
+
+                        // Only done if the name has already matches.
+                        // We must use the same attorney the name matches.
+
+                        $dob = $claim->getApplication()->getAttorney()->getCurrent()->getDob();
+
+                        if ( $dob->format('Y-m-d') === $attorney['attorney-dob'] ) {
+                            $verifications = $poaModel->getVerifications();
+                            $verifications[] = new VerificationModel([
+                                'type' => VerificationModel::TYPE_ATTORNEY_DOB,
+                                'passes' => 'yes'
+                            ]);
+                            $poaModel->setVerifications($verifications);
+                        }
+
+                        //---
+
+                        break;
+                    } // if name matches
+                } // foreach attorney
+
+                //--------------------
 
                 try {
                     $this->addPoa($claimId, $userId, $poaModel);
@@ -328,7 +381,9 @@ class Claim implements Initializer\LogSupportInterface
 
                 //---
 
+                //------------------------------------------
                 // Check if we can verify the case number
+
                 if ($claim->getApplication()->hasCaseNumber()) {
                     if ($poa['case_number'] == $claim->getApplication()->getCaseNumber()->getPoaCaseNumber()) {
                         $verifications = $poaModel->getVerifications();
@@ -340,7 +395,9 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                //------------------------------------------
                 // Check if we can verify the Donor postcode
+
                 if ($claim->getApplication()->hasDonorPostcode()) {
                     $postcode = $claim->getApplication()->getPostcodes()->getDonorPostcode();
                     $postcode = preg_replace('/\s+/', '', strtolower($postcode));
