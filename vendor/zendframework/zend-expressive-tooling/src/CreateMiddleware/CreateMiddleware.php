@@ -41,10 +41,11 @@ EOS;
     /**
      * @param string $class
      * @param string|null $projectRoot
+     * @param string $classSkeleton
      * @return string
      * @throws CreateMiddlewareException
      */
-    public function process($class, $projectRoot = null)
+    public function process($class, $projectRoot = null, $classSkeleton = self::CLASS_SKELETON)
     {
         $projectRoot = $projectRoot ?: getcwd();
 
@@ -55,8 +56,12 @@ EOS;
         $content = str_replace(
             ['%namespace%', '%class%'],
             [$namespace, $class],
-            self::CLASS_SKELETON
+            $classSkeleton
         );
+
+        if (is_file($path)) {
+            throw CreateMiddlewareException::classExists($path, $class);
+        }
 
         file_put_contents($path, $content);
         return $path;
@@ -135,7 +140,6 @@ EOS;
      */
     private function discoverNamespaceAndPath($class, array $autoloaders)
     {
-        $discoveredPath = false;
         foreach ($autoloaders as $namespace => $path) {
             if (0 === strpos($class, $namespace)) {
                 $path = trim(
