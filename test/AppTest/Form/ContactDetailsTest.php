@@ -30,7 +30,7 @@ class ContactDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(4, $elements);
+        $this->assertCount(5, $elements);
         $this->assertArrayHasKey( 'email', $elements);
         $this->assertArrayHasKey( 'phone', $elements);
         $this->assertArrayHasKey( 'secret', $elements);

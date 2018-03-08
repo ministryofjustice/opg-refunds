@@ -52,7 +52,7 @@ class DonorDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(12, $elements);
+        $this->assertCount(13, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);
