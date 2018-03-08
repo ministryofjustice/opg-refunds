@@ -66,12 +66,10 @@ class ConfigProvider
                 Action\AccountDetailsAction::class => Action\Factory\AccountDetailsFactory::class,
                 Action\HealthCheckAction::class => Action\Factory\HealthCheckFactory::class,
                 Action\SummaryAction::class => Action\Factory\SummaryFactory::class,
-                Action\BetaAction::class => Action\Factory\BetaFactory::class,
                 Action\AssistedDigitalAction::class => Action\Factory\AssistedDigitalFactory::class,
                 Action\HomePageAction::class => Action\Factory\HomePageFactory::class,
 
                 // Middleware
-                Middleware\Beta\BetaCheckMiddleware::class => Middleware\Beta\BetaCheckMiddlewareFactory::class,
                 Middleware\Session\SessionMiddleware::class => Middleware\Session\SessionMiddlewareFactory::class,
                 Middleware\ProcessingTime\ProcessingTimeMiddleware::class => Middleware\ProcessingTime\ProcessingTimeMiddlewareFactory::class,
                 Middleware\AssistedDigital\AssistedDigitalMiddleware::class => Middleware\AssistedDigital\AssistedDigitalMiddlewareFactory::class,
@@ -82,7 +80,6 @@ class ConfigProvider
                 Service\Refund\ProcessApplication::class => Service\Refund\ProcessApplicationFactory::class,
                 Service\Refund\Data\DataHandlerInterface::class => Service\Refund\Data\DataHandlerFactory::class,
                 Service\Refund\Data\BankDetailsHandler::class => Service\Refund\Data\BankDetailsHandlerFactory::class,
-                Service\Refund\Beta\BetaLinkChecker::class => Service\Refund\Beta\BetaLinkCheckerFactory::class,
                 Service\Refund\AssistedDigital\LinkToken::class => Service\Refund\AssistedDigital\LinkTokenFactory::class,
                 Service\ErrorMapper\ErrorMapper::class => Service\ErrorMapper\ErrorMapperFactory::class,
 
