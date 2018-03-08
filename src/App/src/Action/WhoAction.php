@@ -16,7 +16,8 @@ class WhoAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\AboutYou([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['applicant']);
@@ -36,6 +37,7 @@ class WhoAction extends AbstractAction
                 }
 
                 $session['applicant'] = $applicant;
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -49,6 +51,9 @@ class WhoAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             $form->setData(['who' => $session['applicant']]);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::who-page', [

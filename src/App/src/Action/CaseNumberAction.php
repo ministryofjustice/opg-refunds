@@ -22,7 +22,8 @@ class CaseNumberAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\CaseNumber([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['case-number']);
@@ -44,6 +45,7 @@ class CaseNumberAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['case-number'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -55,6 +57,9 @@ class CaseNumberAction extends AbstractAction
         } elseif ($isUpdate) {
             // We are editing previously entered details.
             $form->setData($session['case-number']);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::case-number-page', [

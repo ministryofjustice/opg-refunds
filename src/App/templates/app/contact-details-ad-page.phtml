@@ -61,4 +61,6 @@ $this->addErrorMap([
         <input type="submit" class="button" value="Continue">
     </div>
 
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
 </form>

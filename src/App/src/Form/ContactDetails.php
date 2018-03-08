@@ -116,9 +116,10 @@ class ContactDetails extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
-    public function setData($data)
+    public function setData($data = array())
     {
         // If at least one field is passed, enter a value into the 'one-field-required' check.
         $allFieldsEmpty = empty($data['email']) && empty($data['phone']);

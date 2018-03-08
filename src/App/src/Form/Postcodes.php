@@ -42,6 +42,7 @@ class Postcodes extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
     private function addTextInput(string $name, InputFilter $inputFilter)

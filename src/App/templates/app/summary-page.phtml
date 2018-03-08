@@ -125,19 +125,7 @@ $this->addErrorMap([
 
 <form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
 
-    <?php if (!(empty($ad))): ?>
-        <div style="margin-top: 2em; width: 75%;">
-            <?php
-                $this->insert('snippet::input-textarea', [
-                    'formElement' => $form->get('notes'),
-                    'formLabel' => 'Caseworker notes',
-                    'formType' => 'text',
-                    'formLabelBold' => true,
-                    'additionFormControlClass' => 'form-control-3-4'
-                ]);
-            ?>
-        </div>
-    <?php endif ?>
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
 
     <h2 class="heading-medium">Statement of truth</h2>
 

@@ -28,7 +28,8 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
         //---
 
         $form = new Form\ContactAddress([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         //---
@@ -38,6 +39,7 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -49,6 +51,9 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
         } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
+            
             // If here, pre-populate with Donor's current address.
 
             $address = $session['donor']['current']['address']['address-1'];

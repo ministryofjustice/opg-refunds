@@ -22,7 +22,8 @@ class DonorDetailsAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\DonorDetails([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['donor']);
@@ -45,6 +46,7 @@ class DonorDetailsAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['donor'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -56,6 +58,9 @@ class DonorDetailsAction extends AbstractAction
         } elseif ($isUpdate) {
             // We are editing previously entered details.
             $form->setFormattedData($session['donor']);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-details-page', [
