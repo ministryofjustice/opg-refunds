@@ -2,6 +2,80 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.1.0 - 2017-12-11
+
+### Added
+
+- [#480](https://github.com/zendframework/zend-expressive/pull/480) updates the
+  `ImplicitHeadMiddleware` to add a request attribute indicating the request was
+  originally generated for a `HEAD` request before delegating the request; you
+  can now pull the attribute `Zend\Expressive\Middleware\ImplicitHeadMiddleware::FORWARDED_HTTP_METHOD_ATTRIBUTE`
+  in your own middleware in order to vary behavior in these scenarios.
+
+### Changed
+
+- [#505](https://github.com/zendframework/zend-expressive/pull/505) modifies
+  `Zend\Expressive\Application` to remove implementation of `__call()` in favor
+  of the following new methods:
+
+  - `get($path, $middleware, $name = null)`
+  - `post($path, $middleware, $name = null)`
+  - `put($path, $middleware, $name = null)`
+  - `patch($path, $middleware, $name = null)`
+  - `delete($path, $middleware, $name = null)`
+
+  This change is an internal implementation detail only, and will not affect
+  existing implementations or extensions.
+
+- [#511](https://github.com/zendframework/zend-expressive/pull/511) modifies
+  the `NotFoundDelegate` to accept an optional `$layout` argument to its
+  constructor; the value defaults to `layout::default` if not provided. That
+  value will be passed for the `layout` template variable when the delegate
+  renders a template, allowing zend-view users (and potentially other template
+  systems) to customize the layout template used for reporting errors.
+
+  You may provide the template via the configuration
+  `zend-expressive.error_handler.layout`.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.0.6 - 2017-12-11
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#534](https://github.com/zendframework/zend-expressive/pull/534) provides a
+  fix for how it detects `callable` middleware. Previously, it relied on PHP's
+  `is_callable()`, but that function can result in false positives when provided
+  a 2-element array where the first element is an object, as the function does
+  not verify that the second argument is a valid method of the first. We now
+  implement additional verifications to prevent such false positives.
+
 ## 2.0.5 - 2017-10-09
 
 ### Added

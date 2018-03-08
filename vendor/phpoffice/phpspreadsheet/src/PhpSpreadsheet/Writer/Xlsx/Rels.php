@@ -7,28 +7,6 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\MemoryDrawing;
 use PhpOffice\PhpSpreadsheet\Writer\Exception as WriterException;
 
-/**
- * Copyright (c) 2006 - 2016 PhpSpreadsheet.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
- * @category   PhpSpreadsheet
- *
- * @copyright  Copyright (c) 2006 - 2016 PhpSpreadsheet (https://github.com/PHPOffice/PhpSpreadsheet)
- * @license    http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- */
 class Rels extends WriterPart
 {
     /**
@@ -190,7 +168,7 @@ class Rels extends WriterPart
      *     rId1                 - Drawings
      *  rId_hyperlink_x     - Hyperlinks
      *
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet
      * @param int $pWorksheetId
      * @param bool $includeCharts Flag indicating if we should write charts
      *
@@ -198,7 +176,7 @@ class Rels extends WriterPart
      *
      * @return string XML Output
      */
-    public function writeWorksheetRelationships(\PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet, $pWorksheetId = 1, $includeCharts = false)
+    public function writeWorksheetRelationships(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet, $pWorksheetId = 1, $includeCharts = false)
     {
         // Create XML writer
         $objWriter = null;
@@ -285,7 +263,7 @@ class Rels extends WriterPart
     /**
      * Write drawing relationships to XML format.
      *
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet
      * @param int &$chartRef Chart ID
      * @param bool $includeCharts Flag indicating if we should write charts
      *
@@ -293,7 +271,7 @@ class Rels extends WriterPart
      *
      * @return string XML Output
      */
-    public function writeDrawingRelationships(\PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet, &$chartRef, $includeCharts = false)
+    public function writeDrawingRelationships(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet, &$chartRef, $includeCharts = false)
     {
         // Create XML writer
         $objWriter = null;
@@ -352,13 +330,13 @@ class Rels extends WriterPart
     /**
      * Write header/footer drawing relationships to XML format.
      *
-     * @param \PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet
+     * @param \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet
      *
      * @throws WriterException
      *
      * @return string XML Output
      */
-    public function writeHeaderFooterDrawingRelationships(\PhpOffice\PhpSpreadsheet\Worksheet $pWorksheet)
+    public function writeHeaderFooterDrawingRelationships(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet $pWorksheet)
     {
         // Create XML writer
         $objWriter = null;

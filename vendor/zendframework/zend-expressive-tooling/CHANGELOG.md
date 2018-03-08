@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.4.6 - 2018-01-29
+
+### Added
+
+- [#46](https://github.com/zendframework/zend-expressive-tooling/pull/46) adds
+  compatibility with symfony/console `^4.0`.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 0.4.5 - 2017-12-11
+
+### Added
+
+- [#32](https://github.com/zendframework/zend-expressive-tooling/pull/32) adds a
+  new argument to `CreateMiddleware::process()`, `$classSkeleton`; if provided,
+  the value will be used as the skeleton for a new middleware class to generate,
+  instead of the default provided with the tooling.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#31](https://github.com/zendframework/zend-expressive-tooling/pull/31)
+  provides fixes to the various generators such that they will now throw
+  exceptions if the middleware they are attempting to create already exist on
+  the filesystem.
+
 ## 0.4.4 - 2017-05-09
 
 ### Added
