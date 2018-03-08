@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "13881a0416edec95772d8262281b39fb",
+    "content-hash": "eace6bc4d14163ac60d9bfdab8975e5d",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -1509,6 +1509,49 @@
                 "service proxies"
             ],
             "time": "2016-11-04T15:53:15+00:00"
+        },
+        {
+            "name": "opsway/doctrine-dbal-postgresql",
+            "version": "v0.8.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opsway/doctrine-dbal-postgresql.git",
+                "reference": "65e55c569f44dd145c319119b7a21a10e50429fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opsway/doctrine-dbal-postgresql/zipball/65e55c569f44dd145c319119b7a21a10e50429fc",
+                "reference": "65e55c569f44dd145c319119b7a21a10e50429fc",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "~2.4",
+                "doctrine/orm": "~2.4",
+                "php": ">=5.4"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opsway\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alexandr Vronskiy",
+                    "email": "alvro@opsway.com"
+                }
+            ],
+            "description": "Extensions for support Postgres in Doctrine DBAL & DQL",
+            "time": "2018-02-06T20:40:07+00:00"
         },
         {
             "name": "paragonie/random_compat",

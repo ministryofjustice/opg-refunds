@@ -40,6 +40,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'PhpOffice\\PhpSpreadsheet\\' => array($vendorDir . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet'),
     'PackageVersions\\' => array($vendorDir . '/ocramius/package-versions/src/PackageVersions'),
+    'Opsway\\' => array($vendorDir . '/opsway/doctrine-dbal-postgresql/src'),
     'Opg\\Refunds\\Log\\' => array($vendorDir . '/ministryofjustice/opg-refunds-logger/src/Opg/Refunds/Log'),
     'Opg\\Refunds\\Caseworker\\DataModel\\' => array($vendorDir . '/ministryofjustice/opg-refunds-caseworker-datamodels/src/Opg/Refunds/Caseworker/DataModel'),
     'JmesPath\\' => array($vendorDir . '/mtdowling/jmespath.php/src'),

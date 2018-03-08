@@ -91,7 +91,12 @@ return [
         ],
         'orm_cases' => [
             'proxy_dir' => sys_get_temp_dir(),
-            'entity_namespaces' => ['Cases' => 'App\Entity\Cases']
+            'entity_namespaces' => ['Cases' => 'App\Entity\Cases'],
+            'string_functions'   => [
+                //https://packagist.org/packages/opsway/doctrine-dbal-postgresql
+                'GET_JSON_FIELD' => 'Opsway\Doctrine\ORM\Query\AST\Functions\GetJsonField',
+                'GET_JSON_FIELD_BY_KEY' => 'Opsway\Doctrine\ORM\Query\AST\Functions\GetJsonFieldByKey'
+            ]
         ],
         'orm_cases_migration' => [
             'proxy_dir' => sys_get_temp_dir(),

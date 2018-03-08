@@ -1501,6 +1501,7 @@ class Claim implements Initializer\LogSupportInterface
         $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
         $poaCaseNumbers = isset($queryParameters['poaCaseNumbers'])
             ? explode(',', $queryParameters['poaCaseNumbers']) : null;
+        $source = isset($queryParameters['source']) ? $queryParameters['source'] : null;
         $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
         $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
 
@@ -1592,6 +1593,22 @@ class Claim implements Initializer\LogSupportInterface
             $queryBuilder->leftJoin('c.poas', 'p');
             $queryBuilder->andWhere('p.caseNumber IN (:poaCaseNumbers)');
             $parameters['poaCaseNumbers'] = $poaCaseNumbers;
+        }
+
+        if (isset($source)) {
+            if ($source === 'donor' || $source === 'attorney') {
+                $queryBuilder->andWhere('GET_JSON_FIELD(c.jsonData, \'applicant\') = :applicant');
+                $parameters['applicant'] = $source;
+            } elseif ($source === 'phone') {
+                $queryBuilder->andWhere('GET_JSON_FIELD_BY_KEY(c.jsonData, \'ad\') IS NOT NULL');
+            }
+
+            /*SELECT 'donor', count(*) FROM claim WHERE json_data->>'applicant' = 'donor' UNION ALL
+                    SELECT 'attorney', count(*) FROM claim WHERE json_data->>'applicant' = 'attorney' UNION ALL
+                    SELECT 'assisted_digital', count(*) FROM claim WHERE json_data->'ad' IS NOT NULL UNION ALL
+
+            $queryBuilder->andWhere('c.accountHash = :accountHash');
+            $parameters['accountHash'] = $accountHash;*/
         }
 
         if (isset($orderBy)) {

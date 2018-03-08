@@ -72,6 +72,7 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         ),
         'O' => 
         array (
+            'Opsway\\' => 7,
             'Opg\\Refunds\\Log\\' => 16,
             'Opg\\Refunds\\Caseworker\\DataModel\\' => 33,
         ),
@@ -266,6 +267,10 @@ class ComposerStaticInit3a9350408aa07ae80173e34fb79a98e2
         'PackageVersions\\' => 
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
+        ),
+        'Opsway\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/opsway/doctrine-dbal-postgresql/src',
         ),
         'Opg\\Refunds\\Log\\' => 
         array (
