@@ -21,7 +21,7 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
     {
         switch ($poa->getSystem()) {
             case PoaModel::SYSTEM_SIRIUS:
-                return join('-', str_split($poa->getCaseNumber(), 4));
+                return $poa->getCaseNumber();
             case PoaModel::SYSTEM_MERIS:
                 return $poa->getCaseNumber();
             default:
