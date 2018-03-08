@@ -6,7 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
+    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/reflection-docblock/src', $vendorDir . '/phpdocumentor/type-resolver/src'),
     'Zend\\Validator\\' => array($vendorDir . '/zendframework/zend-validator/src'),
     'Zend\\Stratigility\\' => array($vendorDir . '/zendframework/zend-stratigility/src'),
     'Zend\\Stdlib\\' => array($vendorDir . '/zendframework/zend-stdlib/src'),
@@ -20,7 +20,7 @@ return array(
     'Zend\\Filter\\' => array($vendorDir . '/zendframework/zend-filter/src'),
     'Zend\\Expressive\\Tooling\\' => array($vendorDir . '/zendframework/zend-expressive-tooling/src'),
     'Zend\\Expressive\\Template\\' => array($vendorDir . '/zendframework/zend-expressive-template/src'),
-    'Zend\\Expressive\\Router\\' => array($vendorDir . '/zendframework/zend-expressive-router/src', $vendorDir . '/zendframework/zend-expressive-fastroute/src'),
+    'Zend\\Expressive\\Router\\' => array($vendorDir . '/zendframework/zend-expressive-fastroute/src', $vendorDir . '/zendframework/zend-expressive-router/src'),
     'Zend\\Expressive\\Plates\\' => array($vendorDir . '/zendframework/zend-expressive-platesrenderer/src'),
     'Zend\\Expressive\\Helper\\' => array($vendorDir . '/zendframework/zend-expressive-helpers/src'),
     'Zend\\Expressive\\' => array($vendorDir . '/zendframework/zend-expressive/src'),
@@ -35,6 +35,7 @@ return array(
     'ZF\\ComposerAutoloading\\' => array($vendorDir . '/zfcampus/zf-composer-autoloading/src'),
     'Whoops\\' => array($vendorDir . '/filp/whoops/src/Whoops'),
     'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
+    'Webimpress\\ComposerExtraDependency\\' => array($vendorDir . '/webimpress/composer-extra-dependency/src'),
     'Symfony\\Polyfill\\Mbstring\\' => array($vendorDir . '/symfony/polyfill-mbstring'),
     'Symfony\\Component\\Debug\\' => array($vendorDir . '/symfony/debug'),
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),

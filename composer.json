@@ -19,6 +19,7 @@
         "aws/aws-sdk-php": "^3.36",
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.2",
+        "http-interop/http-middleware": "^0.4.1",
         "league/json-guard": "^1.0",
         "league/json-reference": "^1.0",
         "ministryofjustice/opg-refunds-logger": "^2.0",

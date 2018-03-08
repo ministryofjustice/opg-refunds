@@ -6,6 +6,91 @@ Versions prior to 1.0 were originally released as `phly/conduit`; please visit
 its [CHANGELOG](https://github.com/phly/conduit/blob/master/CHANGELOG.md) for
 details.
 
+## 2.1.2 - 2017-10-12
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#119](https://github.com/zendframework/zend-stratigility/pull/119) updates to
+  webimpress/http-middleware-compatibility `^0.1.3`. This was done to ensure
+  backwards compatibilty by injecting the project `composer.json` with the
+  currently installed version of http-interop/http-middleware, and in cases
+  where that package is not yet installed, prompting the user to install it.
+  This approach provides a tiered migration path to http-middleware 0.5.0 for
+  users.
+
+## 2.1.1 - 2017-10-10
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#118](https://github.com/zendframework/zend-stratigility/pull/118) fixes how
+  the `MiddlewarePipe` detects if the second parameter of callable middleware is
+  a delegate/request handler when choosing whether or not to decorate it to
+  ensure that it will properly decorate it when used with
+  http-interop/http-middleware 0.5.0
+
+## 2.1.0 - 2017-10-09
+
+### Added
+
+- [#112](https://github.com/zendframework/zend-stratigility/pull/112) adds
+  support for http-interop/http-middleware 0.5.0 via a polyfill provided by the
+  package webimpress/http-middleware-compatibility. Essentially, this means you
+  can drop this package into an application targeting either the 0.4.1 or 0.5.0
+  versions of http-middleware, and it will "just work".
+
+- Adds support for PHP 7.2.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Removes support for HHVM.
+
+- [#107](https://github.com/zendframework/zend-stratigility/pull/107) removes
+  the unused `$raiseThrowables` property from `Zend\Stratigility\Next`.
+
+### Fixed
+
+- Nothing.
+
 ## 2.0.1 - 2017-01-25
 
 ### Added
