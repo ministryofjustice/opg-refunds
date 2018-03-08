@@ -7,14 +7,15 @@
 
 namespace Zend\Stratigility;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use SplQueue;
-use Throwable;
+use Webimpress\HttpMiddlewareCompatibility\HandlerInterface as DelegateInterface;
+
+use const Webimpress\HttpMiddlewareCompatibility\HANDLER_METHOD;
 
 /**
  * Iterate a queue of middlewares and execute them.
@@ -22,7 +23,7 @@ use Throwable;
 class Next implements DelegateInterface
 {
     /**
-     * @var callable|DelegateInterface
+     * @var null|DelegateInterface
      */
     private $nextDelegate;
 
@@ -30,15 +31,6 @@ class Next implements DelegateInterface
      * @var SplQueue
      */
     private $queue;
-
-    /**
-     * Flag indicating whether or not the dispatcher should raise throwables
-     * when encountered, and whether or not $err arguments should raise them;
-     * defaults false.
-     *
-     * @var bool
-     */
-    private $raiseThrowables = false;
 
     /**
      * @var string
@@ -80,6 +72,30 @@ class Next implements DelegateInterface
     }
 
     /**
+     * Proxy to handle method.
+     * It is needed to support http-interop/http-middleware 0.1.1.
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     */
+    public function next(RequestInterface $request)
+    {
+        return $this->handle($request);
+    }
+
+    /**
+     * Proxy to handle method.
+     * It is needed to support http-interop/http-middleware 0.2-0.4.1.
+     *
+     * @param ServerRequestInterface $request
+     * @return ResponseInterface
+     */
+    public function process(ServerRequestInterface $request)
+    {
+        return $this->handle($request);
+    }
+
+    /**
      * @param ServerRequestInterface $request
      * @return ResponseInterface
      * @throws Exception\MissingResponseException If the queue is exhausted, and
@@ -87,14 +103,14 @@ class Next implements DelegateInterface
      * @throws Exception\MissingResponseException If the middleware executed does
      *     not return a response.
      */
-    public function process(ServerRequestInterface $request)
+    public function handle(ServerRequestInterface $request)
     {
         $request  = $this->resetPath($request);
 
         // No middleware remains; done
         if ($this->queue->isEmpty()) {
             if ($this->nextDelegate) {
-                return $this->nextDelegate->process($request);
+                return $this->nextDelegate->{HANDLER_METHOD}($request);
             }
 
             throw new Exception\MissingResponseException(sprintf(

@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.1.2 - 2017-12-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#42](https://github.com/zendframework/zend-expressive-fastroute/pull/42)
+  removes support for the 3.0.0-dev versions of zend-expressive-router, as it
+  contains backwards-incompatible API changes.
+
+### Fixed
+
+- Nothing.
+
+## 2.1.1 - 2017-12-05
+
+### Added
+
+- [#40](https://github.com/zendframework/zend-expressive-fastroute/pull/40) adds
+  support for 3.0.0-dev versions of zend-expressive-router, as there are no API
+  changes at this time.
+
+### Changed
+
+- [#38](https://github.com/zendframework/zend-expressive-fastroute/pull/38)
+  updates the zend-stdlib dependency to also allow v2 releases, as the
+  functionality we consume is the same between both major versions.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.1.0 - 2017-08-11
 
 ### Added
