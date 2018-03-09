@@ -335,6 +335,7 @@ class Claim implements ApiClientInterface
         $accountHash = isset($searchParameters['accountHash']) ? $searchParameters['accountHash'] : null;
         $poaCaseNumbers = isset($searchParameters['poaCaseNumbers']) ?
             explode(',', $searchParameters['poaCaseNumbers']) : null;
+        $source = isset($searchParameters['source']) ? $searchParameters['source'] : null;
         $orderBy = isset($searchParameters['orderBy']) ? $searchParameters['orderBy'] : null;
         $sort = isset($searchParameters['sort']) ? $searchParameters['sort'] : null;
 
@@ -365,6 +366,9 @@ class Claim implements ApiClientInterface
         }
         if ($poaCaseNumbers != null) {
             $queryParameters['poaCaseNumbers'] = join(',', $poaCaseNumbers);
+        }
+        if ($source != null) {
+            $queryParameters['source'] = $source;
         }
         if ($orderBy != null) {
             $queryParameters['orderBy'] = $orderBy;

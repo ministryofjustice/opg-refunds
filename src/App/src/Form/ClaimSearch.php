@@ -57,7 +57,8 @@ class ClaimSearch extends AbstractForm
             ClaimModel::STATUS_DUPLICATE => StatusFormatter::getStatusText(ClaimModel::STATUS_DUPLICATE),
             ClaimModel::STATUS_REJECTED => StatusFormatter::getStatusText(ClaimModel::STATUS_REJECTED),
             ClaimModel::STATUS_ACCEPTED => StatusFormatter::getStatusText(ClaimModel::STATUS_ACCEPTED),
-            ClaimModel::STATUS_WITHDRAWN => StatusFormatter::getStatusText(ClaimModel::STATUS_WITHDRAWN)
+            ClaimModel::STATUS_WITHDRAWN => StatusFormatter::getStatusText(ClaimModel::STATUS_WITHDRAWN),
+            'outcome_changed' => 'Outcome Changed'
         ]);
 
         $this->add($field);
