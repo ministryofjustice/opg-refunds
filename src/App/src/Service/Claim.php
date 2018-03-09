@@ -1557,7 +1557,11 @@ class Claim implements Initializer\LogSupportInterface
                     $finishedTo->add(new DateInterval('P1D'));
                     $finishedTo->setTime(0, 0, 0);
 
-                    $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    if (isset($statuses) && in_array('outcome_changed', $statuses)) {
+                        $queryBuilder->andWhere('n.createdDateTime > :finishedFrom AND n.createdDateTime < :finishedTo');
+                    } else {
+                        $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    }
                     $parameters['finishedFrom'] = $finishedFrom;
                     $parameters['finishedTo'] = $finishedTo;
                 }
@@ -1602,13 +1606,6 @@ class Claim implements Initializer\LogSupportInterface
             } elseif ($source === 'phone') {
                 $queryBuilder->andWhere('GET_JSON_FIELD_BY_KEY(c.jsonData, \'ad\') IS NOT NULL');
             }
-
-            /*SELECT 'donor', count(*) FROM claim WHERE json_data->>'applicant' = 'donor' UNION ALL
-                    SELECT 'attorney', count(*) FROM claim WHERE json_data->>'applicant' = 'attorney' UNION ALL
-                    SELECT 'assisted_digital', count(*) FROM claim WHERE json_data->'ad' IS NOT NULL UNION ALL
-
-            $queryBuilder->andWhere('c.accountHash = :accountHash');
-            $parameters['accountHash'] = $accountHash;*/
         }
 
         if (isset($orderBy)) {
