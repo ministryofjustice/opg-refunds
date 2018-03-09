@@ -114,7 +114,7 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $counts[ClaimModel::STATUS_REJECTED] ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $counts[ClaimModel::STATUS_WITHDRAWN] ?></a></td>
-                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $counts['outcome_changed'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $counts['outcome_changed'] ?></a></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $counts['total'] ?></td>
                         <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
