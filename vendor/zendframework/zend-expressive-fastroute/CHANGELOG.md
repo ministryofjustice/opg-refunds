@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.2.0 - 2018-03-08
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#52](https://github.com/zendframework/zend-expressive-fastroute/pull/52)
+  updates the minimum supported version of zend-expressive-router to 2.4.0.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 2.1.2 - 2017-12-06
 
 ### Added
