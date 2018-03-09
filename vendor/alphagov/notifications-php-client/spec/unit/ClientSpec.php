@@ -389,6 +389,100 @@ class ClientSpec extends ObjectBehavior
 
     }
 
+    function it_generates_the_expected_request_when_listing_received_texts(){
+
+        //---------------------------------
+        // Test Setup
+
+        $filters = [
+            'older_than'=>'uuid'
+        ];
+
+        $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+            new Response(
+                200,
+                ['Content-type'  => 'application/json'],
+                json_encode(['received_text_messages' => array()])
+            )
+        );
+
+        //---------------------------------
+        // Perform action
+
+        $this->listReceivedTexts( $filters );
+
+        //---------------------------------
+        // Check result
+
+        // Check the expected Request was sent.
+        $this->httpClient->sendRequest( Argument::that(function( $v ) use ($filters) {
+
+            // Check a request was sent.
+            if( !( $v instanceof RequestInterface ) ){
+                return false;
+            }
+
+            //---
+
+            $url = new Uri( self::BASE_URL . Client::PATH_RECEIVED_TEXT_LIST );
+
+            foreach( $filters as $name => $value ){
+                $url = URI::withQueryValue($url, $name, $value );
+            }
+
+            // With the correct URL
+            if( $v->getUri() != $url ){
+                return false;
+            }
+
+            //---
+
+            // Include the correct token header
+            if( $v->getHeader('Authorization') != [ 'Bearer '.self::TEST_JWT_TOKEN ] ){
+                return false;
+            }
+
+            // And correct Content-type
+            if( $v->getHeader('Content-type') != [ 'application/json' ] ){
+                return false;
+            }
+
+            return true;
+
+        }))->shouldHaveBeenCalled();
+
+    }
+
+    function it_receives_the_expected_response_when_listing_received_texts(){
+
+        //---------------------------------
+        // Test Setup
+
+        $data = [[
+            'created_at'=> '2016-04-06T11:06:10.260722+00:00',
+            'id' => '217ce465-d16a-4179-928d-c1a73eb3f377'
+        ]];
+
+        $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+            new Response(
+                200,
+                ['Content-type'  => 'application/json'],
+                json_encode(['received_text_messages' => $data])
+            )
+        );
+
+        //---------------------------------
+        // Perform action
+
+        $response = $this->listReceivedTexts();
+
+        //---------------------------------
+        // Check result
+
+        $response->shouldHaveKeyWithValue('received_text_messages', $data);
+
+    }
+
     //----------------------------------------------------------------------------------------------------------
     // Sending (POSTs) with expected success
 
@@ -473,6 +567,33 @@ class ClientSpec extends ObjectBehavior
         // Perform action
 
         $response = $this->sendSms( '+447834000000', 118, [ 'name'=>'Fred' ] );
+
+        //---------------------------------
+        // Check result
+
+        $response->shouldHaveKeyWithValue('notification_id', $id);
+
+    }
+
+    function it_receives_the_expected_response_when_sending_sms_with_sms_sender_id(){
+        
+        //---------------------------------
+        // Test Setup
+
+        $id = self::SAMPLE_ID;
+
+        $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+            new Response(
+                201,
+                ['Content-type'  => 'application/json'],
+                json_encode(['notification_id' => $id])
+            )
+        );
+
+        //---------------------------------
+        // Perform action
+
+        $response = $this->sendSms( '+447834000000', 118, [ 'name'=>'Fred' ], 'ref123', '1234567' );
 
         //---------------------------------
         // Check result
@@ -571,6 +692,33 @@ class ClientSpec extends ObjectBehavior
 
     }
 
+    function it_receives_the_expected_response_when_sending_email_with_valid_emailReplyToId(){
+
+                //---------------------------------
+                // Test Setup
+
+                $id = self::SAMPLE_ID;
+
+                $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+                    new Response(
+                        201,
+                        ['Content-type'  => 'application/json'],
+                        json_encode(['notification_id' => $id])
+                    )
+                );
+
+                //---------------------------------
+                // Perform action
+
+                $response = $this->sendEmail( 'text@example.com', 118, [ 'name'=>'Fred' ], '',  uniqid() );
+
+                //---------------------------------
+                // Check result
+
+                $response->shouldHaveKeyWithValue('notification_id', $id);
+
+            }
+
 
     //----------------------------------------------------------------------------------------------------------
     // Actions with expected errors
@@ -607,18 +755,19 @@ class ClientSpec extends ObjectBehavior
         // Test Setup
 
         $code = 500;
+        $body = [
+          'status' => $code,
+          'errors' => [
+            [
+              'error' => 'SomeErrorType',
+              'message' => 'Some error message'
+            ]
+          ]
+        ];
         $response = new Response(
             $code,
             ['Content-type'  => 'application/json'],
-            json_encode([
-                'status' => $code,
-                'error' => [
-                  [
-                    'error' => 'SomeErrorType',
-                    'reason' => 'Some error message'
-                  ]
-                ]
-            ])
+            json_encode($body)
         );
 
         $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
@@ -629,7 +778,7 @@ class ClientSpec extends ObjectBehavior
         // Perform action & check result
 
         $this->shouldThrow(
-            new NotifyException\ApiException( "HTTP:{$code}", $code, $response )
+            new NotifyException\ApiException( "HTTP:{$code}", $code, $body, $response )
         )->duringSendSms( '+447834000000', 118, [ 'name'=>'Fred' ] );
 
     }
@@ -805,6 +954,104 @@ class ClientSpec extends ObjectBehavior
 
             // With the expected body.
             if( json_decode( $v->getBody(), true ) != $body ){
+                return false;
+            }
+
+            return true;
+
+        }))->shouldHaveBeenCalled();
+
+    }
+
+    function it_receives_the_expected_response_when_sending_letter(){
+
+        //---------------------------------
+        // Test Setup
+
+        $id = self::SAMPLE_ID;
+        
+        $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+            new Response(
+                201,
+                ['Content-type'  => 'application/json'],
+                json_encode(['notification_id' => $id])
+            )
+        );
+
+        //---------------------------------
+        // Perform action
+
+        $response = $this->sendLetter( 118, [ 
+                'name'=>'Fred',
+                'address_line_1' => 'Foo',
+                'address_line_2' => 'Bar',
+                'postcode' => 'Baz'
+            ] 
+        );
+
+        //---------------------------------
+        // Check result
+
+        $response->shouldHaveKeyWithValue('notification_id', $id);
+
+    }
+
+    function it_generates_the_expected_request_when_sending_letter(){
+        
+        //---------------------------------
+        // Test Setup
+
+        $payload = [
+            'template_id'=> 118,
+            'personalisation' => [ 
+                'name'=>'Fred',
+                'address_line_1' => 'Foo',
+                'address_line_2' => 'Bar',
+                'postcode' => 'Baz'
+            ],
+            'reference'=>'client-ref'
+        ];
+
+        $this->httpClient->sendRequest( Argument::type('Psr\Http\Message\RequestInterface') )->willReturn(
+            new Response(
+                201,
+                [ 'Content-type'  => 'application/json' ],
+                json_encode([ 'notification_id' => 'xxx' ])
+            )
+        );
+
+        //---------------------------------
+        // Perform action
+
+        $this->sendLetter( $payload['template_id'], $payload['personalisation'], $payload['reference']);
+
+        //---------------------------------
+        // Check result
+
+        $this->httpClient->sendRequest( Argument::that(function( $v ) use ($payload) {
+
+            // Check a request was sent.
+            if( !( $v instanceof RequestInterface ) ){
+                return false;
+            }
+
+            // With the correct URL
+            if( $v->getUri() != self::BASE_URL . Client::PATH_NOTIFICATION_SEND_LETTER ){
+                return false;
+            }
+
+            // Include the correct token header
+            if( $v->getHeader('Authorization') != [ 'Bearer '.self::TEST_JWT_TOKEN ] ){
+                return false;
+            }
+
+            // And correct Content-type
+            if( $v->getHeader('Content-type') != [ 'application/json' ] ){
+                return false;
+            }
+
+            // With the expected body.
+            if( json_decode( $v->getBody(), true ) != $payload ){
                 return false;
             }
 

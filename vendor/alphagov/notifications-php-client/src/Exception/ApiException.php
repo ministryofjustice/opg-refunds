@@ -9,13 +9,21 @@ class ApiException extends NotifyException {
      * @var ResponseInterface
      */
     private $response;
+    private $errors;
+    private $msg;
 
 
-    public function __construct($message, $code, ResponseInterface $response) {
+    public function __construct($message, $code, $body, ResponseInterface $response) {
 
         $this->response = $response;
+        $this->errors = $body["errors"];
 
-        parent::__construct( $message, $code );
+        $this->msg = '';
+        foreach ($this->errors as $err) {
+          $this->msg .= $err['error'] . ': "' . $err['message'] . '"';
+        }
+
+        parent::__construct( $this->msg, $code );
 
     }
 
@@ -26,6 +34,24 @@ class ApiException extends NotifyException {
      */
     public function getResponse(){
         return $this->response;
+    }
+
+    /**
+     * Returns an error message summary
+     *
+     * @return ResponseInterface
+     */
+    public function getErrorMessage(){
+        return $this->msg;
+    }
+
+    /**
+     * Returns the original error messages from the Api.
+     *
+     * @return ResponseInterface
+     */
+    public function getErrors(){
+        return $this->errors;
     }
 
 }

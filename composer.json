@@ -4,7 +4,6 @@
     "type": "project",
     "homepage": "https://github.com/ministryofjustice/opg-refunds-caseworker-api",
     "license": "MIT",
-    "minimum-stability": "beta",
     "prefer-stable": true,
     "config": {
         "sort-packages": true
@@ -30,7 +29,7 @@
         "ministryofjustice/opg-refunds-caseworker-datamodels": "^1.19",
         "ministryofjustice/opg-refunds-logger": "^2.0",
         "php-http/guzzle6-adapter": "^1.1",
-        "phpoffice/phpspreadsheet": "^1.0@beta",
+        "phpoffice/phpspreadsheet": "^1.2.0",
         "roave/security-advisories": "dev-master",
         "symfony/yaml": "^3.3",
         "wp-cli/php-cli-tools": "^0.11.8",

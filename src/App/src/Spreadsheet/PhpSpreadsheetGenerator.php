@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
-use PhpOffice\PhpSpreadsheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls as XlsWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use Psr\Http\Message\StreamInterface;
@@ -88,7 +88,7 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
                 $start = microtime(true);
 
                 foreach ($row->getCells() as $cell) {
-                    $dataSheet->setCellValueByColumnAndRow($cell->getColumn(), $cell->getRow(), $cell->getData());
+                    $dataSheet->setCellValueByColumnAndRow($cell->getColumn() + 1, $cell->getRow(), $cell->getData());
                 }
 
                 $this->getLogger()->debug('Spreadsheet row set in ' . $this->getElapsedTimeInMs($start) . 'ms');
@@ -192,28 +192,28 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
         $spreadsheet = new Spreadsheet();
         $resultsSheet = $spreadsheet->getActiveSheet();
 
-        $resultsSheet->setCellValueByColumnAndRow(0, 1, 'Claim code');
-        $resultsSheet->setCellValueByColumnAndRow(1, 1, 'Donor name');
-        $resultsSheet->setCellValueByColumnAndRow(2, 1, 'Received');
-        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Finished');
-        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Assigned to/Finished by');
-        $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Status');
+        $resultsSheet->setCellValueByColumnAndRow(1, 1, 'Claim code');
+        $resultsSheet->setCellValueByColumnAndRow(2, 1, 'Donor name');
+        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Received');
+        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Finished');
+        $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Assigned to/Finished by');
+        $resultsSheet->setCellValueByColumnAndRow(6, 1, 'Status');
 
         $resultsRowIndex = 1;
         foreach ($claimSummaries as $claimSummary) {
             $resultsRowIndex++;
 
-            $resultsSheet->setCellValueByColumnAndRow(0, $resultsRowIndex, $claimSummary->getReferenceNumber());
-            $resultsSheet->setCellValueByColumnAndRow(1, $resultsRowIndex, $claimSummary->getDonorName());
+            $resultsSheet->setCellValueByColumnAndRow(1, $resultsRowIndex, $claimSummary->getReferenceNumber());
+            $resultsSheet->setCellValueByColumnAndRow(2, $resultsRowIndex, $claimSummary->getDonorName());
             $this->setCellDateTime($resultsSheet, 'C' . $resultsRowIndex, $claimSummary->getReceivedDateTime());
             $this->setCellDateTime($resultsSheet, 'D' . $resultsRowIndex, $claimSummary->getFinishedDateTime());
             $resultsSheet->setCellValueByColumnAndRow(
-                4,
+                5,
                 $resultsRowIndex,
                 $claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()
             );
             $resultsSheet->setCellValueByColumnAndRow(
-                5,
+                6,
                 $resultsRowIndex,
                 StatusFormatter::getStatusText($claimSummary->getStatus())
             );
@@ -221,15 +221,15 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
 
         $queryParametersSheet = $spreadsheet->createSheet();
 
-        $queryParametersSheet->setCellValueByColumnAndRow(0, 1, 'Parameter');
-        $queryParametersSheet->setCellValueByColumnAndRow(1, 1, 'Value');
+        $queryParametersSheet->setCellValueByColumnAndRow(1, 1, 'Parameter');
+        $queryParametersSheet->setCellValueByColumnAndRow(2, 1, 'Value');
 
         $searchParametersRowIndex = 1;
         foreach ($queryParameters as $parameter => $value) {
             $searchParametersRowIndex++;
 
-            $queryParametersSheet->setCellValueByColumnAndRow(0, $searchParametersRowIndex, $parameter);
-            $queryParametersSheet->setCellValueByColumnAndRow(1, $searchParametersRowIndex, $value);
+            $queryParametersSheet->setCellValueByColumnAndRow(1, $searchParametersRowIndex, $parameter);
+            $queryParametersSheet->setCellValueByColumnAndRow(2, $searchParametersRowIndex, $value);
         }
 
         $resultsSheet->setTitle('Results');
@@ -241,12 +241,12 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
         $resultsSheet->setAutoFilter($resultsSheet->calculateWorksheetDimension());
 
         //Auto width columns
-        $resultsSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(2)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(3)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(4)->setAutoSize(true);
         $resultsSheet->getColumnDimensionByColumn(5)->setAutoSize(true);
+        $resultsSheet->getColumnDimensionByColumn(6)->setAutoSize(true);
 
         //Horizontal alignment
         $resultsSheet->getStyle("A1:F{$resultsRowIndex}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -257,8 +257,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
         $queryParametersSheet->getStyle('A1:B1')->getFont()->setBold(true);
 
         //Auto width columns
-        $queryParametersSheet->getColumnDimensionByColumn(0)->setAutoSize(true);
         $queryParametersSheet->getColumnDimensionByColumn(1)->setAutoSize(true);
+        $queryParametersSheet->getColumnDimensionByColumn(2)->setAutoSize(true);
 
         $spreadsheet->setActiveSheetIndex(0);
 
