@@ -21,7 +21,7 @@ return array(
     'Zend\\Filter\\' => array($vendorDir . '/zendframework/zend-filter/src'),
     'Zend\\Expressive\\Tooling\\' => array($vendorDir . '/zendframework/zend-expressive-tooling/src'),
     'Zend\\Expressive\\Template\\' => array($vendorDir . '/zendframework/zend-expressive-template/src'),
-    'Zend\\Expressive\\Router\\' => array($vendorDir . '/zendframework/zend-expressive-fastroute/src', $vendorDir . '/zendframework/zend-expressive-router/src'),
+    'Zend\\Expressive\\Router\\' => array($vendorDir . '/zendframework/zend-expressive-router/src', $vendorDir . '/zendframework/zend-expressive-fastroute/src'),
     'Zend\\Expressive\\Plates\\' => array($vendorDir . '/zendframework/zend-expressive-platesrenderer/src'),
     'Zend\\Expressive\\Helper\\' => array($vendorDir . '/zendframework/zend-expressive-helpers/src'),
     'Zend\\Expressive\\' => array($vendorDir . '/zendframework/zend-expressive/src'),
