@@ -8,6 +8,7 @@ use Prophecy\Argument;
 use Alphagov\Notifications\Authentication\JWTAuthenticationInterface;
 use Alphagov\Notifications\Client;
 use Alphagov\Notifications\Exception\UnexpectedValueException;
+use Alphagov\Notifications\Exception\ApiException;
 
 use GuzzleHttp\Psr7\Uri;
 use Http\Client\HttpClient as HttpClientInterface;
@@ -27,7 +28,7 @@ class ClientSpec extends ObjectBehavior
 
     function let(){
 
-        $this->beConstructedWith([
+      $this->beConstructedWith([
             'baseUrl'       => getenv('NOTIFY_API_URL'),
             'apiKey'        => getenv('API_KEY'),
             'httpClient'    => new \Http\Adapter\Guzzle6\Client
@@ -57,7 +58,7 @@ class ClientSpec extends ObjectBehavior
         $response['content']['from_email']->shouldBeString();
         $response['content']->shouldHaveKey( 'body' );
         $response['content']['body']->shouldBeString();
-        $response['content']['body']->shouldBe("Hello Foo\n\nFunctional test help make our world a better place");
+        $response['content']['body']->shouldBe("Hello Foo\r\n\r\nFunctional test help make our world a better place");
         $response['content']->shouldHaveKey( 'subject' );
         $response['content']['subject']->shouldBeString();
         $response['content']['subject']->shouldBe("Functional Tests are good");
@@ -77,6 +78,58 @@ class ClientSpec extends ObjectBehavior
 
     }
 
+    function it_receives_the_expected_response_when_sending_an_email_notification_with_vaild_emailReplyToId(){
+
+        $response = $this->sendEmail(
+          getenv('FUNCTIONAL_TEST_EMAIL'),
+          getenv('EMAIL_TEMPLATE_ID'),
+          [ "name" => "Foo" ],
+          '',
+          getenv('EMAIL_REPLY_TO_ID')
+        );
+
+        $response->shouldBeArray();
+        $response->shouldHaveKey( 'id' );
+        $response['id']->shouldBeString();
+
+        $response->shouldHaveKey( 'reference' );
+
+        $response->shouldHaveKey( 'content' );
+        $response['content']->shouldBeArray();
+        $response['content']->shouldHaveKey( 'from_email' );
+        $response['content']['from_email']->shouldBeString();
+        $response['content']->shouldHaveKey( 'body' );
+        $response['content']['body']->shouldBeString();
+        $response['content']['body']->shouldBe("Hello Foo\r\n\r\nFunctional test help make our world a better place");
+        $response['content']->shouldHaveKey( 'subject' );
+        $response['content']['subject']->shouldBeString();
+        $response['content']['subject']->shouldBe("Functional Tests are good");
+
+        $response->shouldHaveKey( 'template' );
+        $response['template']->shouldBeArray();
+        $response['template']->shouldHaveKey( 'id' );
+        $response['template']['id']->shouldBeString();
+        $response['template']->shouldHaveKey( 'version' );
+        $response['template']['version']->shouldBeInteger();
+        $response['template']->shouldHaveKey( 'uri' );
+
+        $response->shouldHaveKey( 'uri' );
+        $response['uri']->shouldBeString();
+
+        self::$notificationId = $response['id']->getWrappedObject();
+    }
+
+    function it_receives_the_expected_response_when_sending_an_email_notification_with_invaild_emailReplyToId(){
+
+      $this->shouldThrow('Alphagov\Notifications\Exception\ApiException')->duringSendEmail(
+        getenv('FUNCTIONAL_TEST_EMAIL'),
+        getenv('EMAIL_TEMPLATE_ID'),
+        [ "name" => "Foo" ],
+        '',
+        'invlaid_uuid'
+      );
+    }
+
     function it_receives_the_expected_response_when_looking_up_an_email_notification() {
 
       // Requires the 'it_receives_the_expected_response_when_sending_an_email_notification' test to have completed successfully
@@ -94,7 +147,7 @@ class ClientSpec extends ObjectBehavior
 
       $response->shouldHaveKey( 'body' );
       $response['body']->shouldBeString();
-      $response['body']->shouldBe("Hello Foo\n\nFunctional test help make our world a better place");
+      $response['body']->shouldBe("Hello Foo\r\n\r\nFunctional test help make our world a better place");
 
       $response->shouldHaveKey( 'subject' );
       $response->shouldHaveKey( 'reference' );
@@ -149,7 +202,7 @@ class ClientSpec extends ObjectBehavior
         $response['content']['from_number']->shouldBeString();
         $response['content']->shouldHaveKey( 'body' );
         $response['content']['body']->shouldBeString();
-        $response['content']['body']->shouldBe("Hello Foo\n\nFunctional Tests make our world a better place");
+        $response['content']['body']->shouldBe("Hello Foo\r\n\r\nFunctional Tests make our world a better place");
 
         $response->shouldHaveKey( 'template' );
         $response['template']->shouldBeArray();
@@ -183,7 +236,7 @@ class ClientSpec extends ObjectBehavior
 
       $response->shouldHaveKey( 'body' );
       $response['body']->shouldBeString();
-      $response['body']->shouldBe("Hello Foo\n\nFunctional Tests make our world a better place");
+      $response['body']->shouldBe("Hello Foo\r\n\r\nFunctional Tests make our world a better place");
       $response->shouldHaveKey( 'subject' );
 
       $response->shouldHaveKey( 'reference' );
@@ -308,7 +361,7 @@ class ClientSpec extends ObjectBehavior
       $response['type']->shouldBeString();
       $response['type']->shouldBe( 'email' );
       $response['version']->shouldBeInteger();
-      $response['body']->shouldBe( "Hello ((name))\n\nFunctional test help make our world a better place" );
+      $response['body']->shouldBe( "Hello ((name))\r\n\r\nFunctional test help make our world a better place" );
       $response['subject']->shouldBeString();
       $response['subject']->shouldBe( 'Functional Tests are good' );
     }
@@ -335,7 +388,7 @@ class ClientSpec extends ObjectBehavior
       $response['type']->shouldBeString();
       $response['type']->shouldBe( 'sms' );
       $response['version']->shouldBeInteger();
-      $response['body']->shouldBe( "Hello ((name))\n\nFunctional Tests make our world a better place" );
+      $response['body']->shouldBe( "Hello ((name))\r\n\r\nFunctional Tests make our world a better place" );
       $response['subject']->shouldBeNull();
     }
 
@@ -434,8 +487,160 @@ class ClientSpec extends ObjectBehavior
       $response['type']->shouldBeString();
       $response['type']->shouldBe( 'sms' );
       $response['version']->shouldBeInteger();
-      $response['body']->shouldBe("Hello Foo\n\nFunctional Tests make our world a better place");
+      $response['body']->shouldBe("Hello Foo\r\n\r\nFunctional Tests make our world a better place");
       $response['subject']->shouldBeNull();
     }
 
+    function it_receives_the_expected_response_when_sending_an_sms_notification_with_invaild_smsSenderId(){
+      $this->shouldThrow('Alphagov\Notifications\Exception\ApiException')->duringSendSms(
+        getenv('FUNCTIONAL_TEST_EMAIL'),
+        getenv('SMS_TEMPLATE_ID'),
+        [ "name" => "Foo" ],
+        '',
+        'invlaid_uuid'
+      );
+    }
+
+    function it_receives_the_expected_response_when_sending_an_sms_notification_with_valid_seender_id(){
+      $this->beConstructedWith([
+        'baseUrl'       => getenv('NOTIFY_API_URL'),
+        'apiKey'        => getenv('API_SENDING_KEY'),
+        'httpClient'    => new \Http\Adapter\Guzzle6\Client
+      ]);
+
+      $response = $this->sendSms(
+        getenv('FUNCTIONAL_TEST_NUMBER'),
+        getenv('SMS_TEMPLATE_ID'), [
+            "name" => "Foo"
+        ],
+        'ref123',
+        getenv('SMS_SENDER_ID')
+      );
+
+      $response->shouldBeArray();
+      $response->shouldHaveKey( 'id' );
+      $response['id']->shouldBeString();
+
+      $response->shouldHaveKey( 'reference' );
+
+      $response->shouldHaveKey( 'content' );
+      $response['content']->shouldBeArray();
+      $response['content']->shouldHaveKey( 'from_number' );
+      $response['content']['from_number']->shouldBeString();
+      $response['content']->shouldHaveKey( 'body' );
+      $response['content']['body']->shouldBeString();
+      $response['content']['body']->shouldBe("Hello Foo\r\n\r\nFunctional Tests make our world a better place");
+
+      $response->shouldHaveKey( 'template' );
+      $response['template']->shouldBeArray();
+      $response['template']->shouldHaveKey( 'id' );
+      $response['template']['id']->shouldBeString();
+      $response['template']->shouldHaveKey( 'version' );
+      $response['template']['version']->shouldBeInteger();
+      $response['template']->shouldHaveKey( 'uri' );
+
+      $response->shouldHaveKey( 'uri' );
+      $response['uri']->shouldBeString();
+    }
+ 
+    function it_receives_the_expected_response_when_sending_a_letter_notification(){
+
+      $payload = [
+          'template_id'=> getenv('LETTER_TEMPLATE_ID'),
+          'personalisation' => [ 
+              'name'=>'Fred',
+              'address_line_1' => 'Foo',
+              'address_line_2' => 'Bar',
+              'postcode' => 'Baz'
+          ],
+          'reference'=>'client-ref'
+      ];
+
+      //---------------------------------
+      // Perform action
+
+      $response = $this->sendLetter( $payload['template_id'], $payload['personalisation'], $payload['reference']);
+
+      $response->shouldBeArray();
+      $response->shouldHaveKey( 'id' );
+      $response['id']->shouldBeString();
+
+      $response->shouldHaveKey( 'reference' );
+      $response['reference']->shouldBe("client-ref");
+
+      $response->shouldHaveKey( 'content' );
+      $response['content']->shouldBeArray();
+      $response['content']->shouldHaveKey( 'body' );
+      $response['content']['body']->shouldBeString();
+      $response['content']['body']->shouldBe("Hello Foo");
+      $response['content']->shouldHaveKey( 'subject' );
+      $response['content']['subject']->shouldBeString();
+      $response['content']['subject']->shouldBe("Main heading");
+
+      $response->shouldHaveKey( 'template' );
+      $response['template']->shouldBeArray();
+      $response['template']->shouldHaveKey( 'id' );
+      $response['template']['id']->shouldBeString();
+      $response['template']->shouldHaveKey( 'version' );
+      $response['template']['version']->shouldBeInteger();
+      $response['template']->shouldHaveKey( 'uri' );
+
+      $response->shouldHaveKey( 'uri' );
+      $response['uri']->shouldBeString();
+
+      $response->shouldHaveKey( 'scheduled_for' );
+      $response['scheduled_for']->shouldBe(null);
+    }
+
+    function it_exposes_error_details() {
+      $caught = false;
+      try {
+        // missing personalisation
+        $response = $this->sendEmail( getenv('FUNCTIONAL_TEST_EMAIL'), getenv('EMAIL_TEMPLATE_ID'), [] );
+      } catch (ApiException $e) {
+        assert('$e->getCode() == 400;');
+        assert('$e->getErrorMessage() == \'BadRequestError: "Missing personalisation: name"\';');
+        assert('$e->getErrors()[0][\'error\'] == \'BadRequestError\'');
+        $caught = true;
+      }
+      assert('$caught == true;');
+    }
+
+    function it_receives_the_expected_response_when_looking_up_received_texts() {
+      $this->beConstructedWith([
+        'baseUrl'       => getenv('NOTIFY_API_URL'),
+        'apiKey'        => getenv('INBOUND_SMS_QUERY_KEY'),
+        'httpClient'    => new \Http\Adapter\Guzzle6\Client
+      ]);
+
+      $response = $this->listReceivedTexts();
+
+      $response->shouldHaveKey('received_text_messages');
+      $response['received_text_messages']->shouldBeArray();
+
+      $received_texts = $response['received_text_messages'];
+
+      $received_texts_count = count($received_texts->getWrappedObject());
+
+      assert('$received_texts_count > 0;');
+
+      for( $i = 0; $i < $received_texts_count; $i++ ) {
+
+          $received_text = $received_texts[$i];
+          $received_text->shouldBeArray();
+          $received_text->shouldHaveKey( 'id' );
+          $received_text->shouldHaveKey( 'service_id' );
+          $received_text->shouldHaveKey( 'created_at' );
+          $received_text->shouldHaveKey( 'user_number' );
+          $received_text->shouldHaveKey( 'notify_number' );
+          $received_text->shouldHaveKey( 'content' );
+          
+          $received_text['id']->shouldBeString();
+          $received_text['service_id']->shouldBeString();
+          $received_text['created_at']->shouldBeString();
+          $received_text['user_number']->shouldBeString();
+          $received_text['notify_number']->shouldBeString();
+          $received_text['content']->shouldBeString();
+      }
+    }
 }
