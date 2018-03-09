@@ -12,7 +12,7 @@ final class Versions
 {
     const VERSIONS = array (
   'alphagov/notifications-php-client' => '1.6.2@66f5051fe549a5c84fc16844c6577dfa709d707f',
-  'aws/aws-sdk-php' => '3.52.22@f42076f6347590dfbf4de7befc19bb660be0ea22',
+  'aws/aws-sdk-php' => '3.52.23@3ce95b96c217a699168d937c4ed700e6a27ec783',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.1.0@b9f3afc00ce997e469d7fdd6fed7b8d400763290',
   'doctrine/annotations' => 'v1.4.0@54cacc9b81758b14e3ce750f205a393d52339e97',
@@ -37,6 +37,7 @@ final class Versions
   'nikic/fast-route' => 'v1.3.0@181d480e08d9476e61381e04a71b34dc0432e812',
   'ocramius/package-versions' => '1.2.0@ad8a245decad4897cc6b432743913dad0d69753c',
   'ocramius/proxy-manager' => '2.0.4@a55d08229f4f614bf335759ed0cf63378feeb2e6',
+  'opsway/doctrine-dbal-postgresql' => 'v0.8.0@65e55c569f44dd145c319119b7a21a10e50429fc',
   'paragonie/random_compat' => 'v2.0.11@5da4d3c796c275c55f057af5a643ae297d96b4d8',
   'php-http/guzzle6-adapter' => 'v1.1.1@a56941f9dc6110409cfcddc91546ee97039277ab',
   'php-http/httplug' => 'v1.1.0@1c6381726c18579c4ca2ef1ec1498fdae8bdf018',
@@ -62,9 +63,9 @@ final class Versions
   'zendframework/zend-escaper' => '2.5.2@2dcd14b61a72d8b8e27d579c6344e12c26141d4e',
   'zendframework/zend-eventmanager' => '3.2.0@9d72db10ceb6e42fb92350c0cb54460da61bd79c',
   'zendframework/zend-expressive' => '2.1.0@05c82075d486fc7818f4c69e218fcad4d43e2cb4',
-  'zendframework/zend-expressive-fastroute' => '2.1.2@8ba998e5f5de883d2753031338029cb4e545e963',
+  'zendframework/zend-expressive-fastroute' => '2.2.0@e35c040c7b76fd03156e537053b3c05c700028dc',
   'zendframework/zend-expressive-helpers' => '4.2.0@137d863d4741210d05297b4bb1c30264f100ba8f',
-  'zendframework/zend-expressive-router' => '2.3.0@eb71000aa7970ad67f252076200bcc1593714f8d',
+  'zendframework/zend-expressive-router' => '2.4.1@e1a00596aa20a29968bdc6ecdf0256c8bfd6e0b5',
   'zendframework/zend-expressive-template' => '1.0.4@23922f96b32ab6e64fc551ec06b81fd047828765',
   'zendframework/zend-log' => '2.9.2@bf7489578d092d6ff7508117d1d920a4764fbd6a',
   'zendframework/zend-math' => '3.0.0@fda3b4e6c3bb15c35adc6db38b2eacabaa243e65',
@@ -106,7 +107,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.6@84597b5cdd212b90e659fb94ef2541b4ea9bed97',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-composer-update@e3f512d7a8ad0666f1beb82ffa81860cd631a988',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-804-stop-contact@64f2d87e303b254c3778a9da0e471539478735a4',
 );
 
     private function __construct()
