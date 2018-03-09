@@ -154,7 +154,7 @@ class PhpSpreadsheetGeneratorTest extends TestCase
                 $this->assertEquals(
                     $cell->getData(),
                     $dataSheet->getCellByColumnAndRow(
-                        $cell->getColumn(),
+                        $cell->getColumn()+1,
                         $cell->getRow()
                     )->getValue()
                 );
@@ -220,7 +220,7 @@ class PhpSpreadsheetGeneratorTest extends TestCase
                 $this->assertEquals(
                     $cell->getData(),
                     $dataSheet->getCellByColumnAndRow(
-                        $cell->getColumn(),
+                        $cell->getColumn()+1,
                         $cell->getRow()
                     )->getValue()
                 );
