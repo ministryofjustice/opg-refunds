@@ -28,7 +28,7 @@ abstract class AbstractEntity
      * @return AbstractDataModel
      * @throws Exception
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = null)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = null)
     {
         $dataModelClass = $dataModelClass ?: $this->dataModelClass;
 
@@ -127,7 +127,7 @@ abstract class AbstractEntity
      * @param string|null $dataModelClass
      * @throws Exception
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = null)
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], ?string $dataModelClass = null)
     {
         $dataModelClass = $dataModelClass ?: $this->dataModelClass;
 

@@ -121,7 +121,7 @@ class Verification extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = VerificationModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = VerificationModel::class)
     {
         return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }

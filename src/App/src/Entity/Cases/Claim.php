@@ -613,7 +613,7 @@ class Claim extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = ClaimModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = ClaimModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Application' => function () {

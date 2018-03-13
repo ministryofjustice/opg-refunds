@@ -184,7 +184,7 @@ class Payment extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = PaymentModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = PaymentModel::class)
     {
         return parent::getAsDataModel($modelToEntityMappings, $dataModelClass);
     }
