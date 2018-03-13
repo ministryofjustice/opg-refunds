@@ -30,7 +30,8 @@ class DonorDeceasedAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\DonorDeceased([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['deceased']);
@@ -40,6 +41,7 @@ class DonorDeceasedAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['deceased'] = (bool)($form->getData()['donor-deceased'] === 'yes');
+                $session['notes'] = $form->getNotes();
 
                 // If they are deceased, and it's not an AD session, return page.
                 if ($session['deceased'] && $request->getAttribute('ad') == null) {
@@ -58,6 +60,9 @@ class DonorDeceasedAction extends AbstractAction
             }
         } elseif ($isUpdate) {
             $form->setData(['donor-deceased' => ($session['deceased']) ? 'yes' : 'no' ]);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::donor-deceased', [

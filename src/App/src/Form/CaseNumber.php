@@ -61,6 +61,7 @@ class CaseNumber extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
     public function getFormattedData()

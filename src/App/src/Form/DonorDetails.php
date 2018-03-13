@@ -215,6 +215,7 @@ class DonorDetails extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
     //----------------------------------------------------------------

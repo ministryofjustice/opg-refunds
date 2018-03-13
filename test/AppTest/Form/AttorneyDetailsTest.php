@@ -48,7 +48,7 @@ class AttorneyDetailsTest extends TestCase
 
         $elements = $form->getElements();
 
-        $this->assertCount(8, $elements);
+        $this->assertCount(9, $elements);
         $this->assertArrayHasKey( 'title', $elements);
         $this->assertArrayHasKey( 'first', $elements);
         $this->assertArrayHasKey( 'last', $elements);

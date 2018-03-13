@@ -145,6 +145,7 @@ class AttorneyDetails extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
     //----------------------------------------------------------------

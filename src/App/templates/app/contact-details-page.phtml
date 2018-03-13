@@ -90,8 +90,10 @@ $this->addErrorMap([
     <div class="form-group">
         <input type="submit" class="button" value="Continue">
         <?php if (!(empty($ad))): ?>
-            <a style="margin-left: 20px;" class="button button-secondary" href="<?= $this->url('apply.contact.address') ?>">Add a postal address instead</a>
+            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Add a postal address instead" name="address" >
         <?php endif ?>
     </div>
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
 
 </form>

@@ -1,20 +1,37 @@
 # GOV.UK Notify PHP client
 
-#### PSR-7 HTTP
+This documentation is for developers interested in using this PHP client to integrate their government service with GOV.UK Notify.
 
-The Notify PHP Client is based on a PSR-7 HTTP model. You therefore need to pick your preferred HTTP Client library to use.
+## Table of Contents
 
-We will show examples here using the Guzzle v6 Adapter.
+* [Installation](#installation)
+* [Getting started](#getting-started)
+* [Send messages](#send-messages)
+* [Get the status of one message](#get-the-status-of-one-message)
+* [Get the status of all messages](#get-the-status-of-all-messages)
+* [Get a template by ID](#get-a-template-by-id)
+* [Get a template by ID and version](#get-a-template-by-id-and-version)
+* [Get all templates](#get-all-templates)
+* [Generate a preview template](#generate-a-preview-template)
+* [Get received text messages](#get-received-text-messages)
+* [Development](#development)
+* [License](#license)
 
-Setup instructions are also available for [Curl](docs/curl-client-setup.md) and [Guzzle v5](docs/guzzle5-client-setup.md).
-
-## Installing
+## Installation
 
 The Notify PHP Client can be installed with [Composer](https://getcomposer.org/). Run this command:
 
 ```sh
 composer require php-http/guzzle6-adapter alphagov/notifications-php-client
 ```
+
+### PSR-7 HTTP
+
+The Notify PHP Client is based on a PSR-7 HTTP model. You therefore need to pick your preferred HTTP Client library to use.
+
+We will show examples here using the Guzzle v6 Adapter.
+
+Setup instructions are also available for [Curl](docs/curl-client-setup.md) and [Guzzle v5](docs/guzzle5-client-setup.md).
 
 ## Getting started
 
@@ -35,9 +52,16 @@ Generate an API key by logging in to [GOV.UK Notify](https://www.notifications.s
 
 ### Text message
 
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
 The method signature is:
 ```php
-sendSms( $phoneNumber, $templateId, array $personalisation = array(), $reference = '' )
+sendSms( $phoneNumber, $templateId, array $personalisation = array(), $reference = '', $smsSenderId = NULL  )
 ```
 
 An example request would look like:
@@ -45,20 +69,29 @@ An example request would look like:
 ```php
 try {
 
-    $response = $notifyClient->sendSms( '+447777111222', 'df10a23e-2c6d-4ea5-87fb-82e520cbf93a', [
-        'name' => 'Betty Smith',
-        'dob'  => '12 July 1968'
-    ]);
+    $response = $notifyClient->sendSms(
+        '+447777111222',
+        'df10a23e-2c6d-4ea5-87fb-82e520cbf93a', [
+            'name' => 'Betty Smith',
+            'dob'  => '12 July 1968'
+        ],
+        'unique_ref123',
+        '862bfaaf-9f89-43dd-aafa-2868ce2926a9'
+    );
 
 } catch (NotifyException $e){}
 ```
 
+</details>
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
-
-If the request is successful, `response` will be an `array`:
 
 ```php
 [
@@ -76,84 +109,68 @@ If the request is successful, `response` will be an `array`:
     ]
 ]
 ```
-
 Otherwise the client will raise a ``Alphagov\Notifications\Exception\NotifyException``:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["message"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>429</pre>
-</td>
-<td>
-<pre>
-[[
-    "error"=> "RateLimitError",
-    "message"=> "Exceeded rate limit for key type TEAM of 10 requests per 10 seconds"
-]]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>429</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "TooManyRequestsError",
-    "message" => "Exceeded send limits (50) for today"
-  ]
-]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "BadRequestError",
-    "message" => "Can"t send to this recipient using a team-only API key"
-  ]
-]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "BadRequestError",
-    "message" => "Can"t send to this recipient when service is in trial mode
-                - see https://www.notifications.service.gov.uk/trial-mode"
-  ]
-]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+
+|`exc->getCode()`|`exc->getErrors()`|
+|:---|:---|
+|`429`|`[{`<br>`"error": "RateLimitError",`<br>`"message": "Exceeded rate limit for key type TEAM of 10 requests per 10 seconds"`<br>`}]`|
+|`429`|`[{`<br>`"error": "TooManyRequestsError",`<br>`"message": "Exceeded send limits (50) for today"`<br>`}]`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient using a team-only API key"`<br>`]}`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient when service is in trial mode - see https://www.notifications.service.gov.uk/trial-mode"`<br>`}]`|
+
 </details>
+
+#### Arguments
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `$phoneNumber`
+The mobile number the SMS notification is sent to.
+
+##### `$templateId`
+
+Find by clicking **API info** for the template you want to send.
+
+##### `$reference`
+An optional identifier you generate if you don’t want to use Notify’s `id`. It can be used to identify a single  notification or a batch of notifications.
+
+##### `$personalisation`
+
+If a template has placeholders, you need to provide their values, for example:
+
+```php
+personalisation = [
+    'name' => 'Betty Smith',
+    'dob'  => '12 July 1968'
+]
+```
+
+Otherwise the parameter can be omitted.
+
+##### `smsSenderId`
+
+Optional. Specifies the identifier of the sms sender to set for the notification. The identifiers are found in your service Settings, when you 'Manage' your 'Text message sender'.
+
+If you omit this argument your default sms sender will be set for the notification.
+
+</details>
+
 
 ### Email
 
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
 The method signature is:
 ```php
-sendEmail( $emailAddress, $templateId, array $personalisation = array(), $reference = '' )
+sendEmail( $emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL )
 ```
 
 An example request would look like:
@@ -161,20 +178,30 @@ An example request would look like:
 ```php
 try {
 
-    $response = $notifyClient->sendEmail( 'betty@exmple.com', 'df10a23e-2c0d-4ea5-87fb-82e520cbf93c', [
-        'name' => 'Betty Smith',
-        'dob'  => '12 July 1968'
-    ]);
+    $response = $notifyClient->sendEmail(
+        'betty@example.com',
+        'df10a23e-2c0d-4ea5-87fb-82e520cbf93c', [
+            'name' => 'Betty Smith',
+            'dob'  => '12 July 1968'
+        ],
+        'unique_ref123',
+        '862bfaaf-9f89-43dd-aafa-2868ce2926a9'
+        );
 
 } catch (NotifyException $e){}
 ```
 
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
-
-If the request is successful, `response` will be an `array`:
 
 ```php
 [
@@ -195,85 +222,33 @@ If the request is successful, `response` will be an `array`:
 ```
 
 Otherwise the client will raise a ``Alphagov\Notifications\Exception\NotifyException``:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["message"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>429</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "RateLimitError",
-    "message" => "Exceeded rate limit for key type TEAM of 10 requests per 10 seconds"
-}]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>429</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "TooManyRequestsError",
-    "message" => "Exceeded send limits (50) for today"
-}]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "BadRequestError",
-    "message" => "Can"t send to this recipient using a team-only API key"
-  ]
-]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "BadRequestError",
-    "message" => "Can"t send to this recipient when service is in trial mode
-                - see https://www.notifications.service.gov.uk/trial-mode"
-}]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+
+|`exc->getCode()`|`exc->getErrors()`|
+|:---|:---|
+|`429`|`[{`<br>`"error": "RateLimitError",`<br>`"message": "Exceeded rate limit for key type TEAM of 10 requests per 10 seconds"`<br>`}]`|
+|`429`|`[{`<br>`"error": "TooManyRequestsError",`<br>`"message": "Exceeded send limits (50) for today"`<br>`}]`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient using a team-only API key"`<br>`]}`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient when service is in trial mode - see https://www.notifications.service.gov.uk/trial-mode"`<br>`}]`|
+
+
 </details>
 
 
-### Arguments
+#### Arguments
 
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
-#### `templateId`
+##### `$emailAddress`
+The email address the email notification is sent to.
+
+##### `$templateId`
 
 Find by clicking **API info** for the template you want to send.
 
-#### `personalisation`
+##### `$personalisation`
 
 If a template has placeholders you need to provide their values. For example:
 
@@ -286,11 +261,134 @@ personalisation = [
 
 Otherwise the parameter can be omitted.
 
-#### `reference`
+##### `$reference`
 
 An optional identifier you generate if you don’t want to use Notify’s `id`. It can be used to identify a single  notification or a batch of notifications.
 
+##### `$emailReplyToId`
+
+Optional. Specifies the identifier of the email reply-to address to set for the notification. The identifiers are found in your service Settings, when you 'Manage' your 'Email reply to addresses'.
+
+If you omit this argument your default email reply-to address will be set for the notification.
+
+</details>
+
+
+### Letter
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+The method signature is:
+```php
+sendLetter( $templateId, array $personalisation = array(), $reference = '' )
+```
+
+An example request would look like:
+
+```php
+try {
+
+    $response = $notifyClient->sendEmail(
+        'df10a23e-2c0d-4ea5-87fb-82e520cbf93c',
+        [
+            'name'=>'Fred',
+            'address_line_1' => 'Foo',
+            'address_line_2' => 'Bar',
+            'postcode' => 'Baz'
+        ],
+        'unique_ref123'
+    );
+
+} catch (NotifyException $e){}
+```
+
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+```php
+[
+    "id" => "bfb50d92-100d-4b8b-b559-14fa3b091cda",
+    "reference" => "unique_ref123",
+    "content" => [
+        "subject" => "Licence renewal",
+        "body" => "Dear Bill, your licence is due for renewal on 3 January 2016.",
+    ],
+    "uri" => "https://api.notifications.service.gov.uk/v2/notifications/ceb50d92-100d-4b8b-b559-14fa3b091cd",
+    "template" => [
+        "id" => "ceb50d92-100d-4b8b-b559-14fa3b091cda",
+        "version" => 1,
+        "uri" => "https://api.notificaitons.service.gov.uk/service/your_service_id/templates/bfb50d92-100d-4b8b-b559-14fa3b091cda"
+    ],
+    "scheduled_for" => null
+]
+```
+
+Otherwise the client will raise a ``Alphagov\Notifications\Exception\NotifyException``:
+
+|`exc->getCode()`|`exc->getErrors()`|
+|:---|:---|
+|`429`|`[{`<br>`"error": "RateLimitError",`<br>`"message": "Exceeded rate limit for key type TEAM of 10 requests per 10 seconds"`<br>`}]`|
+|`429`|`[{`<br>`"error": "TooManyRequestsError",`<br>`"message": "Exceeded send limits (50) for today"`<br>`}]`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient using a team-only API key"`<br>`]}`|
+|`400`|`[{`<br>`"error": "BadRequestError",`<br>`"message": "Can"t send to this recipient when service is in trial mode - see https://www.notifications.service.gov.uk/trial-mode"`<br>`}]`|
+
+</details>
+
+
+#### Arguments
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `templateId`
+
+Find by clicking **API info** for the template you want to send.
+
+##### `personalisation`
+
+If a template has placeholders you need to provide their values. For example:
+
+```php
+personalisation = [
+    'name' => 'Betty Smith',
+    'dob'  => '12 July 1968'
+]
+```
+
+Otherwise the parameter can be omitted.
+
+##### `reference`
+
+An optional identifier you generate if you don’t want to use Notify’s `id`. It can be used to identify a single  notification or a batch of notifications.
+
+
+</details>
+
+
 ## Get the status of one message
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
 The method signature is:
 ```php
@@ -307,12 +405,17 @@ try {
 } catch (NotifyException $e){}
 ```
 
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array `.
+
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
-
-If the request is successful, `response` will be an `array `:
 
 ```php
 [
@@ -342,47 +445,36 @@ If the request is successful, `response` will be an `array `:
 ```
 
 Otherwise the client will raise a ``Alphagov\Notifications\Exception\NotifyException``:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["message"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>404</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "NoResultFound",
-    "message" => "No result found"
-}]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "ValidationError",
-    "message" => "id is not a valid UUID"
-}]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+
+|`error["status_code"]`|`error["message"]`|
+|:---|:---|
+|`404`|`[{`<br>`"error": "NoResultFound",`<br>`"message": "No result found"`<br>`}]`|
+|`400`|`[{`<br>`"error": "ValidationError",`<br>`"message": "id is not a valid UUID"`<br>`}]`|
+
+</details>
+
+#### Arguments
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `$notificationId`
+
+The ID of the notification.
+
 </details>
 
 ## Get the status of all messages
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
 The method signature is:
 ```php
 listNotifications( array $filters = array() )
@@ -399,17 +491,21 @@ An example request would look like:
     ]);
 ```
 
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
-
-If the request is successful, `response` will be an `array`:
 
 ```php
 [
-    "notifications":
-    [
+    "notifications" => [
             "id" => "notify_id",
             "reference" => "client reference",
             "email_address" => "email address",
@@ -435,59 +531,32 @@ If the request is successful, `response` will be an `array`:
   ],
   "links" => [
      "current" => "/notifications?template_type=sms&status=delivered",
-     "next" => "/notifications?other_than=last_id_in_list&template_type=sms&status=delivered"
+     "next" => "/notifications?older_than=last_id_in_list&template_type=sms&status=delivered"
   ]
 ]
 ```
 
 Otherwise the client will raise a ``Alphagov\Notifications\Exception\NotifyException``:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["message"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    'error' => 'ValidationError',
-    'message' => 'bad status is not one of [created, sending, delivered, pending, failed, technical-failure, temporary-failure, permanent-failure]'
-}]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "ValidationError",
-    "message" => "Apple is not one of [sms, email, letter]"
-}]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+
+|`error["status_code"]`|`error["message"]`|
+|:---|:---|
+|`400`|`[{`<br>`"error": "ValidationError",`<br>`"message": "bad status is not one of [created, sending, delivered, pending, failed, technical-failure, temporary-failure, permanent-failure]"`<br>`}]`|
+|`400`|`[{`<br>`"error": "Apple is not one of [sms, email, letter]"`<br>`}]`|
+
 </details>
 
-### Arguments
+#### Arguments
 
-#### `older_than`
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
-If omitted all messages are returned. Otherwise you can filter to retrieve all notifications older than the given notification `id`.
+##### `older_than`
 
-#### `template_type`
+If omitted 250 of the most recent messages are returned. Otherwise the next 250  messages older than the given notification id are returned.
+
+##### `template_type`
 
 If omitted all messages are returned. Otherwise you can filter by:
 
@@ -495,37 +564,74 @@ If omitted all messages are returned. Otherwise you can filter by:
 * `sms`
 * `letter`
 
+##### `status`
 
-#### `status`
+__email__
 
-If omitted all messages are returned. Otherwise you can filter by:
+You can filter by:
 
 * `sending` - the message is queued to be sent by the provider.
 * `delivered` - the message was successfully delivered.
 * `failed` - this will return all failure statuses `permanent-failure`, `temporary-failure` and `technical-failure`.
-* `permanent-failure` - the provider was unable to deliver message, email or phone number does not exist; remove this recipient from your list.
-* `temporary-failure` - the provider was unable to deliver message, email box was full or the phone was turned off; you can try to send the message again.
+* `permanent-failure` - the provider was unable to deliver message, email does not exist; remove this recipient from your list.
+* `temporary-failure` - the provider was unable to deliver message, email box was full; you can try to send the message again.
 * `technical-failure` - Notify had a technical failure; you can try to send the message again.
 
-#### `reference`
+You can omit this argument to ignore this filter.
 
+__text message__
+
+You can filter by:
+
+* `sending` - the message is queued to be sent by the provider.
+* `delivered` - the message was successfully delivered.
+* `failed` - this will return all failure statuses `permanent-failure`, `temporary-failure` and `technical-failure`.
+* `permanent-failure` - the provider was unable to deliver message, phone number does not exist; remove this recipient from your list.
+* `temporary-failure` - the provider was unable to deliver message, the phone was turned off; you can try to send the message again.
+* `technical-failure` - Notify had a technical failure; you can try to send the message again.
+
+You can omit this argument to ignore this filter.
+
+__letter__
+
+You can filter by:
+
+* `accepted` - Notify is in the process of printing and posting the letter
+* `technical-failure` - Notify had an unexpected error while sending to our printing provider
+
+You can omit this argument to ignore this filter.
+
+##### `reference`
 
 This is the `reference` you gave at the time of sending the notification. This can be omitted to ignore the filter.
 
-
+</details>
 
 ## Get a template by ID
 
-```php
-    $response = $notifyClient->getTemplate( 'c32e9c89-a423-42d2-85b7-a21cd4486a2a' );
-```
+#### Method
 
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
 
-If the request is successful, `response` will be an `array`:
+```php
+    $response = $notifyClient->getTemplate( 'templateId' );
+```
+
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
 
 ```php
 {
@@ -540,53 +646,50 @@ If the request is successful, `response` will be an `array`:
 }
 ```
 
-Otherwise the client will return an error `err`:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["errors"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>404</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "NoResultFound",
-    "message" => "No result found"
-  ]
-]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+|`error["status_code"]`|`error["errors"]`|
+|:---|:---|
+|`404`|`[{`<br>`"error" => "NoResultFound",`<br>`"message" => "No result found"`<br>`}]`|
+
 </details>
 
-### Arguments
 
-
-#### `templateId`
-
-Find by clicking **API info** for the template you want to send.
-
-## Get a template by ID and version
-
-```php
-    $response = $notifyClient->getTemplateVersion( 'c32e9c89-a423-42d2-85b7-a21cd4486a2a', 1 );
-```
+#### Arguments
 
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
 
-If the request is successful, `response` will be an `array`:
+##### `templateId`
+
+Find by clicking **API info** for the template you want to send.
+
+</details>
+
+## Get a template by ID and version
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+```php
+    $response = $notifyClient->getTemplateVersion( 'templateId', 1 );
+```
+
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
 ```php
 [
@@ -601,59 +704,57 @@ If the request is successful, `response` will be an `array`:
 ]
 ```
 
-Otherwise the client will return an error `err`:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["errors"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>404</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "NoResultFound",
-    "message" => "No result found"
-  ]
-]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+|`error["status_code"]`|`error["errors"]`|
+|:---|:---|
+|`404`|`[{`<br>`"error" => "NoResultFound",`<br>`"message" => "No result found"`<br>`}]`|
+
 </details>
 
-### Arguments
 
-#### `templateId`
+#### Arguments
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `templateId`
 
 Find by clicking **API info** for the template you want to send.
 
-#### `version`
+##### `version`
 
 The version number of the template
 
+</details>
+
 ## Get all templates
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
 ```php
     $this->getAllTemplates(
       $template_type  // optional
     );
 ```
-_This will return the latest version for each template_
+This will return the latest version for each template
+
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
 
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
-
-If the request is successful, `response` will be an `array`:
 
 ```php
 [
@@ -675,7 +776,7 @@ If the request is successful, `response` will be an `array`:
 ]
 ```
 
-+If no templates exist for a template type or there no templates for a service, the `response` will be a Dictionary` with an empty `templates` list element:
+If no templates exist for a template type or there no templates for a service, the `response` will be a Dictionary` with an empty `templates` list element:
 
 ```php
 [
@@ -685,9 +786,15 @@ If the request is successful, `response` will be an `array`:
 
 </details>
 
-### Arguments
 
-#### `$templateType`
+#### Arguments
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `$templateType`
 
 If omitted all messages are returned. Otherwise you can filter by:
 
@@ -695,20 +802,35 @@ If omitted all messages are returned. Otherwise you can filter by:
 * `sms`
 * `letter`
 
+</details>
+
 
 ## Generate a preview template
+
+#### Method
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
 ```php
     $personalisation = [ "foo" => "bar" ];
     $this->previewTemplate( $templateId, $personalisation );
 ```
 
+</details>
+
+
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
 <details>
 <summary>
-Response
+Click here to expand for more information.
 </summary>
 
-If the request is successful, `response` will be an `array`:
 
 ```php
 [
@@ -720,57 +842,27 @@ If the request is successful, `response` will be an `array`:
 ]
 ```
 
-Otherwise the client will return an error `err`:
-<table>
-<thead>
-<tr>
-<th>`error["status_code"]`</th>
-<th>`error["errors"]`</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<pre>400</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "BadRequestError",
-    "message" => "Missing personalisation => [name]"
-  ]
-]
-</pre>
-</td>
-</tr>
-<tr>
-<td>
-<pre>404</pre>
-</td>
-<td>
-<pre>
-[
-  [
-    "error" => "NoResultFound",
-    "message" => "No result found"
-  ]
-]
-</pre>
-</td>
-</tr>
-</tbody>
-</table>
+|`error["status_code"]`|`error["errors"]`|
+|:---|:---|
+|`400`|`[{`<br>`"error" => "BadRequestError",`<br>`"message" => "Missing personalisation => [name]"`<br>`}]`|
+|`404`|`[{`<br>`"error" => "NoResultFound",`<br>`"message" => "No result found"`<br>`}]`|
+
+
 </details>
 
-### Arguments
 
+#### Arguments
 
-#### `$templateId`
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+##### `$templateId`
 
 Find by clicking **API info** for the template you want to send.
 
-#### `$personalisation`
+##### `$personalisation`
 
 If a template has placeholders you need to provide their values. For example:
 
@@ -783,31 +875,69 @@ $personalisation = [
 
 Otherwise the parameter can be omitted or `null` can be passed in its place.
 
+</details>
 
-## Development
+## Get received text messages
 
-#### Tests
+#### Method
 
-There are unit and integration tests that can be run to test functionality of the client.
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
-To run the unit tests:
-
-```sh
-vendor/bin/phpspec run spec/unit/ --format=pretty --verbose
+```php
+    $this->listReceivedTexts(
+      $older_than  // optional
+    );
 ```
 
-To run the integration tests:
+</details>
 
-```sh
-vendor/bin/phpspec run spec/integration/ --format=pretty --verbose
+#### Response
+
+If the request is successful, `response` will be an `array`.
+
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
+
+
+```php
+[
+    "received_text_messages" => [
+        [
+            "id" => "notify_id",
+            "user_number" => "user number",
+            "notify_number" => "notify number",
+            "created_at" => "created at",
+            "service_id" => "service id",
+            "content" => "text content"
+        ],
+        [
+            ... another received text message
+        ]
+    ]
+  ],
+  "links" => [
+     "current" => "/received-text-messages",
+     "next" => "/received-text-messages?older_than=last_id_in_list"
+  ]
+]
 ```
 
-To run both sets of tests:
+</details>
 
-```sh
-vendor/bin/phpspec run --format=pretty
-```
+#### Arguments
 
-## License
+<details>
+<summary>
+Click here to expand for more information.
+</summary>
 
-The Notify PHP Client is released under the MIT license, a copy of which can be found in [LICENSE](LICENSE.txt).
+##### `$older_than`
+
+If omitted 250 of the most recently received text messages are returned. Otherwise the next 250 received text messages older than the given id are returned.
+
+</details>

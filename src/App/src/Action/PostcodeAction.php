@@ -22,7 +22,8 @@ class PostcodeAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\Postcodes([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         $isUpdate = isset($session['postcodes']);
@@ -47,6 +48,7 @@ class PostcodeAction extends AbstractAction
 
             if ($form->isValid()) {
                 $session['postcodes'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -58,6 +60,9 @@ class PostcodeAction extends AbstractAction
         } elseif ($isUpdate) {
             // We are editing previously entered details.
             $form->setData($session['postcodes']);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::postcode-page', [

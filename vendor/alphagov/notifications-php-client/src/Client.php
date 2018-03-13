@@ -25,7 +25,7 @@ class Client {
      * @const string Current version of this client.
      * This follows Semantic Versioning (http://semver.org/)
      */
-    const VERSION = '1.1.0';
+    const VERSION = '1.6.2';
 
     /**
      * @const string The API endpoint for Notify production.
@@ -39,6 +39,8 @@ class Client {
     const PATH_NOTIFICATION_LOOKUP      = '/v2/notifications/%s';
     const PATH_NOTIFICATION_SEND_SMS    = '/v2/notifications/sms';
     const PATH_NOTIFICATION_SEND_EMAIL  = '/v2/notifications/email';
+    const PATH_NOTIFICATION_SEND_LETTER = '/v2/notifications/letter';
+    const PATH_RECEIVED_TEXT_LIST       = '/v2/received-text-messages';
     const PATH_TEMPLATE_LIST            = '/v2/templates';
     const PATH_TEMPLATE_LOOKUP          = '/v2/template/%s';
     const PATH_TEMPLATE_VERSION_LOOKUP  = '/v2/template/%s/version/%s';
@@ -168,11 +170,11 @@ class Client {
      *
      * @return array
      */
-    public function sendSms( $phoneNumber, $templateId, array $personalisation = array(), $reference = '' ){
+    public function sendSms( $phoneNumber, $templateId, array $personalisation = array(), $reference = '', $smsSenderId = NULL ){
 
         return $this->httpPost(
             self::PATH_NOTIFICATION_SEND_SMS,
-            $this->buildPayload( 'sms', $phoneNumber, $templateId, $personalisation, $reference )
+            $this->buildSmsPayload( 'sms', $phoneNumber, $templateId, $personalisation, $reference, $smsSenderId)
         );
 
     }
@@ -187,13 +189,33 @@ class Client {
      *
      * @return array
      */
-    public function sendEmail( $emailAddress, $templateId, array $personalisation = array(), $reference = '' ){
+    public function sendEmail( $emailAddress, $templateId, array $personalisation = array(), $reference = '', $emailReplyToId = NULL ){
 
         return $this->httpPost(
             self::PATH_NOTIFICATION_SEND_EMAIL,
-            $this->buildPayload( 'email', $emailAddress, $templateId, $personalisation, $reference )
+            $this->buildEmailPayload( 'email', $emailAddress, $templateId, $personalisation, $reference, $emailReplyToId )
         );
 
+    }
+
+    /**
+     * Send a Letter
+     *
+     * @param string    $templateId
+     * @param array     $personalisation
+     * @param string    $reference
+     *
+     * @return array
+     */
+    public function sendLetter( $templateId, array $personalisation = array(), $reference = '' ){
+        
+        $payload = $this->buildPayload( 'letter', '', $templateId, $personalisation, $reference );
+
+        return $this->httpPost(
+            self::PATH_NOTIFICATION_SEND_LETTER,
+            $payload
+        );
+        
     }
 
     /**
@@ -235,8 +257,29 @@ class Client {
             'status',
             'template_type',
         ]));
-
+                
         return $this->httpGet( self::PATH_NOTIFICATION_LIST, $filters );
+
+    }
+
+    /**
+     * Returns a list of all received texts for the current Service ID.
+     *
+     * Filter supports:
+     *  - older_than
+     *
+     * @param array $filters
+     *
+     * @return mixed|null
+     */
+    public function listReceivedTexts( array $filters = array() ){
+
+        // Only allow the following filter keys.
+        $filters = array_intersect_key( $filters, array_flip([
+            'older_than'
+        ]));
+
+        return $this->httpGet( self::PATH_RECEIVED_TEXT_LIST, $filters );
 
     }
 
@@ -321,7 +364,7 @@ class Client {
 
         if ( $type == 'sms' ) {
             $payload['phone_number'] = $to;
-        } else if ( $type = 'email' ) {
+        } else if ( $type == 'email' ) {
             $payload['email_address'] = $to;
         }
 
@@ -331,6 +374,54 @@ class Client {
 
         if ( isset($reference) && $reference != '' ) {
             $payload['reference'] = $reference;
+        }
+
+        return $payload;
+
+    }
+
+    /**
+     * Generates the payload expected by the API for email adding the optional items.
+     *
+     * @param string    $type
+     * @param string    $to
+     * @param string    $templateId
+     * @param array     $personalisation
+     * @param string    $reference
+     * @param string    $emailReplyToId
+     *
+     * @return array
+     */
+    private function buildEmailPayload( $type, $to, $templateId, array $personalisation, $reference, $emailReplyToId = NULL ) {
+
+        $payload = $this->buildPayload( $type, $to, $templateId, $personalisation, $reference );
+
+        if ( isset($emailReplyToId) && $emailReplyToId != '' ) {
+            $payload['email_reply_to_id'] = $emailReplyToId;
+        }
+
+        return $payload;
+
+    }
+
+    /**
+     * Generates the payload expected by the API for sms adding the optional items.
+     *
+     * @param string    $type
+     * @param string    $to
+     * @param string    $templateId
+     * @param array     $personalisation
+     * @param string    $reference
+     * @param string    $smsSenderId
+     *
+     * @return array
+     */
+    private function buildSmsPayload( $type, $to, $templateId, array $personalisation, $reference, $smsSenderId = NULL ){
+
+        $payload = $this->buildPayload( $type, $to, $templateId, $personalisation, $reference );
+
+        if ( isset($smsSenderId) && $smsSenderId != '' ) {
+            $payload['sms_sender_id'] = $smsSenderId;
         }
 
         return $payload;
@@ -480,7 +571,7 @@ class Client {
 
         $message = "HTTP:{$response->getStatusCode()}";
 
-        throw new Exception\ApiException( $message, $response->getStatusCode(), $response );
+        throw new Exception\ApiException( $message, $response->getStatusCode(), $body, $response );
 
     }
 
@@ -533,5 +624,4 @@ class Client {
         $this->authenticator = $authenticator;
 
     }
-
 }

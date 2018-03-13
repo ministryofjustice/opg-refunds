@@ -2,6 +2,64 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.4.0 - 2017-11-02
+
+### Added
+
+- [#22](https://github.com/zendframework/zend-expressive-platesrenderer/pull/22)
+  adds `Zend\Expressive\PlatesRenderer\Extension\EscaperExtension`, as well as a
+  factory for the extension. This extension provides context-specific escaper
+  helpers to the Plates engine, based on zend-escaper: `escapeHtml()`,
+  `escapeHtmlAttr()`, `escapeJs()`, `escapeCss()`, and `escapeUrl()`. These are
+  registered by default with the Plates engine. If you wish to provide
+  alternates, provide a `Zend\Expressive\PlatesRenderer\Extension\EscaperExtension` 
+  service that provides the custom extension.
+
+### Changed
+
+- [#19](https://github.com/zendframework/zend-expressive-platesrenderer/pull/19)
+  changes all factories to typehint against the PSR-11
+  `Psr\Container\ContainerInterface` instead of
+  `Interop\Container\ContainerInterface`. This change is backwards compatible
+  for consumers, as container-interop interfaces extend from PSR-11 at this
+  time. However, if you were _extending_ any of the factories, you will need to
+  update your code to use the new typehints. (We expect very few extensions, as
+  typically delegator factories will be used to modify instances returned by
+  factories, or custom factories will be written.)
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 1.3.2 - 2017-11-01
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#25](https://github.com/zendframework/zend-expressive-platesrenderer/pull/25)
+  modifies the `PlatesEngineFactory` such that it now skips injection of the
+  `UrlExtension` if zend-expressive-helpers is not installed. This change allows
+  usage of the package outside the Expressive ecosystem.
+
 ## 1.3.1 - 2017-03-14
 
 ### Added

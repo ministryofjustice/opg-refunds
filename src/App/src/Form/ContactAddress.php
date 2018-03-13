@@ -64,6 +64,7 @@ class ContactAddress extends AbstractForm
         //---
 
         $this->addCsrfElement($inputFilter);
+        $this->addCaseworkerNotesElement($inputFilter);
     }
 
     //-----------------------------

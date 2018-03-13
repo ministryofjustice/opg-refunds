@@ -54,36 +54,7 @@ return [
         ],
 
     ],
-
-    'beta' => [
-
-        // Set to false when we move out of beta
-        'enabled' => (bool)getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_ENABLED') ?: false,
-
-        'cookie' => [
-            'name' => 'beta'
-        ],
-
-        'link' => [
-            'signature' => [
-                'key' => getenv('OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY') ?: null,
-            ]
-        ],
-
-        'dynamodb' => [
-            'client' => [
-                'version' => '2012-08-10',
-                'endpoint' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_ENDPOINT') ?: null,
-                'region' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION') ?: null,
-            ],
-            'settings' => [
-                'table_name' => getenv('OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE') ?: null,
-            ],
-
-        ],
-
-    ], // beta
-
+    
     'security' => [
 
         'kms' => [

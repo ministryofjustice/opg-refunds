@@ -2,6 +2,56 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.1 - 2018-01-11
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#47](https://github.com/zendframework/zend-component-installer/pull/47) fixes
+  an issue during package removal when a package defines multiple targets (e.g.,
+  both "component" and "config-provider") and a `ConfigInjectorChain` is thus
+  used by the plugin; previously, an error was raised due to an attempt to call
+  a method the `ConfigInjectorChain` does not define.
+
+## 1.1.0 - 2017-11-06
+
+### Added
+
+- [#42](https://github.com/zendframework/zend-component-installer/pull/42)
+  adds support for PHP 7.2.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#42](https://github.com/zendframework/zend-component-installer/pull/42)
+  removes support for HHVM.
+
+### Fixed
+
+- [#40](https://github.com/zendframework/zend-component-installer/pull/40) and
+  [#44](https://github.com/zendframework/zend-component-installer/pull/44) fix
+  an issue whereby packages that define an array of paths for a PSR-0 or PSR-4
+  autoloader would cause the installer to error. The installer now properly
+  handles these situations.
+
 ## 1.0.0 - 2017-04-25
 
 First stable release.

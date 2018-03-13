@@ -28,16 +28,33 @@ class ContactDetailsAction extends AbstractAction
         //---
 
         $form = new Form\ContactDetails([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         //---
 
         if ($request->getMethod() == 'POST') {
-            $form->setData($request->getParsedBody());
+            $data = $request->getParsedBody();
+            $form->setData($data);
+
+            if (isset($data['address']) && $request->getAttribute('ad') != null) {
+                $form->setValidationGroup(['notes']);
+
+                if ($form->isValid()) {
+                    $session['notes'] = $form->getNotes();
+                }
+
+                //---
+
+                return new Response\RedirectResponse(
+                    $this->getUrlHelper()->generate('apply.contact.address')
+                );
+            }
 
             if ($form->isValid()) {
                 $session['contact'] = $form->getFormattedData();
+                $session['notes'] = $form->getNotes();
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
@@ -48,6 +65,9 @@ class ContactDetailsAction extends AbstractAction
 
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::contact-details-page', [

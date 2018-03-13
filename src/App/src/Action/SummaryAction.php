@@ -8,17 +8,14 @@ use Zend\Diactoros\Response;
 use App\Form;
 use App\Service\Refund\FlowController;
 use App\Service\Refund\ProcessApplication as ProcessApplicationService;
-use App\Service\Refund\Beta\BetaLinkChecker;
 
 class SummaryAction extends AbstractAction
 {
 
-    private $betaChecker;
     private $applicationProcessService;
 
-    public function __construct(ProcessApplicationService $applicationProcessService, BetaLinkChecker $betaChecker)
+    public function __construct(ProcessApplicationService $applicationProcessService)
     {
-        $this->betaChecker = $betaChecker;
         $this->applicationProcessService = $applicationProcessService;
     }
 
@@ -37,7 +34,8 @@ class SummaryAction extends AbstractAction
         $session = $request->getAttribute('session');
 
         $form = new Form\Summary([
-            'csrf' => $session['meta']['csrf']
+            'csrf' => $session['meta']['csrf'],
+            'notes' => ($session['notes']) ?? null,
         ]);
 
         //---
@@ -50,7 +48,7 @@ class SummaryAction extends AbstractAction
                 if (($ad = $request->getAttribute('ad')) != null) {
                     $session['ad'] = [
                         'meta' => $ad,
-                        'notes' => $form->getData()['notes']
+                        'notes' => $form->getNotes()
                     ];
                 }
 
@@ -60,11 +58,6 @@ class SummaryAction extends AbstractAction
                 // Process the application
                 $session['reference'] = $this->applicationProcessService->process($session->getArrayCopy());
 
-                if ($request->getAttribute('betaId') != null) {
-                    // For use in beta; flag the beta ID as used.
-                    $this->betaChecker->flagLinkAsUsed($request->getAttribute('betaId'), $session['reference']);
-                }
-
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
                         FlowController::getNextRouteName($session),
@@ -72,6 +65,9 @@ class SummaryAction extends AbstractAction
                     )
                 );
             }
+        } else {
+            // Ensure caseworker notes are shown
+            $form->setData();
         }
 
         //---
