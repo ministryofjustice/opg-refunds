@@ -412,6 +412,31 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                //------------------------------------------
+                // Check for any finance records
+
+                $financeRecords = $this->poaLookup->lookupFinanceRecord( $poa['case_number'] );
+
+                // If and only if there is exactly 1 record.
+                if (count($financeRecords) === 1) {
+                    $record = array_pop($financeRecords);
+                    $amount = $record['amount'];
+
+                    // The data must also match.
+                    if (is_numeric($amount) && $poa['data']['date-of-receipt'] === $record['received']) {
+                        if ($amount >= 110) {
+                            // Full payment
+                            $poaModel->setOriginalPaymentAmount('orMore');
+                        } elseif ($amount >= 55){
+                            // Reduced payment
+                            $poaModel->setOriginalPaymentAmount('lessThan');
+                        } else {
+                            // No payment
+                            $poaModel->setOriginalPaymentAmount('noRefund');
+                        }
+                    }
+                }
+
                 //---
 
                 try {
@@ -419,7 +444,7 @@ class Claim implements Initializer\LogSupportInterface
                 } catch (AlreadyExistsException $ex) {
                     $duplicatePoas[] = join('-', str_split($poaModel->getCaseNumber(), 4));
                 }
-            }
+            } // for each POA
 
             //---
 
