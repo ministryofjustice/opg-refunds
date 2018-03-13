@@ -78,7 +78,7 @@ class Reporting
 
             $sql = 'SELECT status, count(*) FROM claim GROUP BY status UNION ALL
                     SELECT \'total\', count(*) FROM claim UNION ALL
-                    SELECT \'outcome_changed\', COUNT(*) FROM note WHERE type = \'claim_outcome_changed\'';
+                    SELECT \'outcome_changed\', COUNT(DISTINCT(claim_id)) FROM note WHERE type = \'claim_outcome_changed\'';
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 $sql
@@ -104,7 +104,7 @@ class Reporting
                 SELECT status, count(*) FROM claim WHERE status = :statusInProgress AND updated_datetime >= :startOfDay AND updated_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT status, count(*) FROM claim WHERE status IN (:statusDuplicate, :statusRejected, :statusAccepted, :statusWithdrawn) AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay GROUP BY status UNION ALL
                 SELECT \'total\', count(*) FROM claim WHERE received_datetime >= :startOfDay AND received_datetime <= :endOfDay UNION ALL
-                SELECT \'outcome_changed\', COUNT(*) FROM claim c JOIN note n ON c.id = n.claim_id WHERE n.created_datetime >= :startOfDay AND n.created_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
+                SELECT \'outcome_changed\', COUNT(DISTINCT(c.id)) FROM claim c LEFT JOIN note n ON c.id = n.claim_id WHERE n.created_datetime >= :startOfDay AND n.created_datetime <= :endOfDay AND n.type = \'claim_outcome_changed\'';
 
         $parameters = [
             'statusPending' => ClaimModel::STATUS_PENDING,

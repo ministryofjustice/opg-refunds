@@ -412,6 +412,31 @@ class Claim implements Initializer\LogSupportInterface
                     }
                 }
 
+                //------------------------------------------
+                // Check for any finance records
+
+                $financeRecords = $this->poaLookup->lookupFinanceRecord( $poa['case_number'] );
+
+                // If and only if there is exactly 1 record.
+                if (count($financeRecords) === 1) {
+                    $record = array_pop($financeRecords);
+                    $amount = $record['amount'];
+
+                    // The data must also match.
+                    if (is_numeric($amount) && $poa['data']['date-of-receipt'] === $record['received']) {
+                        if ($amount >= 110) {
+                            // Full payment
+                            $poaModel->setOriginalPaymentAmount('orMore');
+                        } elseif ($amount >= 55){
+                            // Reduced payment
+                            $poaModel->setOriginalPaymentAmount('lessThan');
+                        } else {
+                            // No payment
+                            $poaModel->setOriginalPaymentAmount('noRefund');
+                        }
+                    }
+                }
+
                 //---
 
                 try {
@@ -419,7 +444,7 @@ class Claim implements Initializer\LogSupportInterface
                 } catch (AlreadyExistsException $ex) {
                     $duplicatePoas[] = join('-', str_split($poaModel->getCaseNumber(), 4));
                 }
-            }
+            } // for each POA
 
             //---
 
@@ -1501,6 +1526,7 @@ class Claim implements Initializer\LogSupportInterface
         $accountHash = isset($queryParameters['accountHash']) ? $queryParameters['accountHash'] : null;
         $poaCaseNumbers = isset($queryParameters['poaCaseNumbers'])
             ? explode(',', $queryParameters['poaCaseNumbers']) : null;
+        $source = isset($queryParameters['source']) ? $queryParameters['source'] : null;
         $orderBy = isset($queryParameters['orderBy']) ? $queryParameters['orderBy'] : null;
         $sort = isset($queryParameters['sort']) ? $queryParameters['sort'] : null;
 
@@ -1556,7 +1582,11 @@ class Claim implements Initializer\LogSupportInterface
                     $finishedTo->add(new DateInterval('P1D'));
                     $finishedTo->setTime(0, 0, 0);
 
-                    $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    if (isset($statuses) && in_array('outcome_changed', $statuses)) {
+                        $queryBuilder->andWhere('n.createdDateTime > :finishedFrom AND n.createdDateTime < :finishedTo');
+                    } else {
+                        $queryBuilder->andWhere('c.finishedDateTime > :finishedFrom AND c.finishedDateTime < :finishedTo');
+                    }
                     $parameters['finishedFrom'] = $finishedFrom;
                     $parameters['finishedTo'] = $finishedTo;
                 }
@@ -1573,8 +1603,14 @@ class Claim implements Initializer\LogSupportInterface
         }
 
         if (isset($statuses)) {
-            $queryBuilder->andWhere('c.status IN (:statuses)');
-            $parameters['statuses'] = $statuses;
+            if (in_array('outcome_changed', $statuses)) {
+                $queryBuilder->leftJoin('c.notes', 'n');
+                $queryBuilder->andWhere('n.type = :noteType');
+                $parameters['noteType'] = NoteModel::TYPE_CLAIM_OUTCOME_CHANGED;
+            } else {
+                $queryBuilder->andWhere('c.status IN (:statuses)');
+                $parameters['statuses'] = $statuses;
+            }
         }
 
         if (isset($accountHash)) {
@@ -1586,6 +1622,15 @@ class Claim implements Initializer\LogSupportInterface
             $queryBuilder->leftJoin('c.poas', 'p');
             $queryBuilder->andWhere('p.caseNumber IN (:poaCaseNumbers)');
             $parameters['poaCaseNumbers'] = $poaCaseNumbers;
+        }
+
+        if (isset($source)) {
+            if ($source === 'donor' || $source === 'attorney') {
+                $queryBuilder->andWhere('GET_JSON_FIELD(c.jsonData, \'applicant\') = :applicant');
+                $parameters['applicant'] = $source;
+            } elseif ($source === 'phone') {
+                $queryBuilder->andWhere('GET_JSON_FIELD_BY_KEY(c.jsonData, \'ad\') IS NOT NULL');
+            }
         }
 
         if (isset($orderBy)) {

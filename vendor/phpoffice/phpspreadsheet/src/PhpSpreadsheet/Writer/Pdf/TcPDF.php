@@ -3,32 +3,24 @@
 namespace PhpOffice\PhpSpreadsheet\Writer\Pdf;
 
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
-use PhpOffice\PhpSpreadsheet\Writer\IWriter;
+use PhpOffice\PhpSpreadsheet\Writer\Pdf;
 
-/**
- *  Copyright (c) 2006 - 2015 PhpSpreadsheet.
- *
- *  This library is free software; you can redistribute it and/or
- *  modify it under the terms of the GNU Lesser General Public
- *  License as published by the Free Software Foundation; either
- *  version 2.1 of the License, or (at your option) any later version.
- *
- *  This library is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- *  Lesser General Public License for more details.
- *
- *  You should have received a copy of the GNU Lesser General Public
- *  License along with this library; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
- *
- *  @category    PhpSpreadsheet
- *
- *  @copyright   Copyright (c) 2006 - 2015 PhpSpreadsheet (https://github.com/PHPOffice/PhpSpreadsheet)
- *  @license     http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt    LGPL
- */
-class TcPDF extends Core implements IWriter
+class Tcpdf extends Pdf
 {
+    /**
+     * Gets the implementation of external PDF library that should be used.
+     *
+     * @param string $orientation Page orientation
+     * @param string $unit Unit measure
+     * @param string $paperSize Paper size
+     *
+     * @return \TCPDF implementation
+     */
+    protected function createExternalWriterInstance($orientation, $unit, $paperSize)
+    {
+        return new \TCPDF($orientation, $unit, $paperSize);
+    }
+
     /**
      * Save Spreadsheet to file.
      *
@@ -44,7 +36,7 @@ class TcPDF extends Core implements IWriter
         $paperSize = 'LETTER'; //    Letter    (8.5 in. by 11 in.)
 
         //  Check for paper size and page orientation
-        if (is_null($this->getSheetIndex())) {
+        if ($this->getSheetIndex() === null) {
             $orientation = ($this->spreadsheet->getSheet(0)->getPageSetup()->getOrientation()
                 == PageSetup::ORIENTATION_LANDSCAPE) ? 'L' : 'P';
             $printPaperSize = $this->spreadsheet->getSheet(0)->getPageSetup()->getPaperSize();
@@ -57,13 +49,13 @@ class TcPDF extends Core implements IWriter
         }
 
         //  Override Page Orientation
-        if (!is_null($this->getOrientation())) {
+        if ($this->getOrientation() !== null) {
             $orientation = ($this->getOrientation() == PageSetup::ORIENTATION_LANDSCAPE)
                 ? 'L'
                 : 'P';
         }
         //  Override Paper Size
-        if (!is_null($this->getPaperSize())) {
+        if ($this->getPaperSize() !== null) {
             $printPaperSize = $this->getPaperSize();
         }
 
@@ -72,7 +64,7 @@ class TcPDF extends Core implements IWriter
         }
 
         //  Create PDF
-        $pdf = new \TCPDF($orientation, 'pt', $paperSize);
+        $pdf = $this->createExternalWriterInstance($orientation, 'pt', $paperSize);
         $pdf->setFontSubsetting(false);
         //    Set margins, converting inches to points (using 72 dpi)
         $pdf->SetMargins($printMargins->getLeft() * 72, $printMargins->getTop() * 72, $printMargins->getRight() * 72);

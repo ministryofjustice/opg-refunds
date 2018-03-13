@@ -184,4 +184,23 @@ class PoaLookup {
 
         return $results;
     }
+
+    /**
+     * Looks for one or more finance record matching a caseId.
+     *
+     * @param int $caseNumber
+     * @return array Finance records
+     */
+    public function lookupFinanceRecord( int $caseNumber )
+    {
+        $sql = "SELECT * FROM finance WHERE case_number = :case LIMIT 20";
+
+        $statement = $this->adapter->prepare($sql);
+
+        $statement->bindParam(':case', $caseNumber, PDO::PARAM_INT);
+
+        $statement->execute();
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

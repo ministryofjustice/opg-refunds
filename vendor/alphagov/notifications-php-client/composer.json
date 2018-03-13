@@ -1,11 +1,14 @@
 {
   "name": "alphagov/notifications-php-client",
   "description": "PHP client for GOV.UK Notifications",
-  "version": "1.1.0",
   "minimum-stability": "stable",
   "license": "MIT",
   "type": "library",
   "authors": [
+    {
+      "name": "GOV UK Notify",
+      "email": "notify@digital-cabinet-office.gov.uk"
+    },  
     {
       "name": "Neil Smith",
       "email": "neil@nsmith.net"
@@ -25,7 +28,7 @@
     "php-http/curl-client": "*",
     "php-http/mock-client": "*",
     "php-http/socket-client": "*",
-    "php-http/guzzle6-adapter": "*"
+    "php-http/guzzle6-adapter": "^1.1"
   },
   "suggest": {
     "ext-curl": "To send requests using cURL"

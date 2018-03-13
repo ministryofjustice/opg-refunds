@@ -1,7 +1,7 @@
 FROM registry.service.opg.digital/opg-php-fpm-1604
 
 RUN apt update && apt install -y \
-    php-zip
+    php-zip php7.0-gd
 
 ADD . /app
 RUN mkdir -p /srv/opg-refunds-caseworker-api/application && \
