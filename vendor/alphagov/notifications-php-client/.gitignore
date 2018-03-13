@@ -6,3 +6,5 @@ tests/local
 .DS_Store
 environment.sh
 docker.env
+.vscode/launch.json
+environment_test.sh
