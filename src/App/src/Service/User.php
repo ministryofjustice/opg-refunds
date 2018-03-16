@@ -352,9 +352,15 @@ class User
     {
         $user = $this->getUserEntity($userId);
 
+        $isPasswordReset = $tokenExpires == -1;
+
         //  If required generate a new token value
         if ($generateNew) {
-            $user->setToken($this->tokenGenerator->generate());
+            //  Only generate a new token for password reset if
+            //  this is a new password reset request or the current one has expired
+            if (!$isPasswordReset || $user->getTokenExpires() != -1 || $user->getPasswordResetExpires() < time()) {
+                $user->setToken($this->tokenGenerator->generate());
+            }
         }
 
         $user->setTokenExpires($tokenExpires);
