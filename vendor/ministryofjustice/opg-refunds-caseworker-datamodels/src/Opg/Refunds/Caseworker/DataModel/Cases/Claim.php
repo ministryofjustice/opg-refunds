@@ -937,7 +937,7 @@ class Claim extends AbstractDataModel
         }
 
         foreach ($this->getPoas() as $poa) {
-            if (!$poa->isComplete()) {
+            if (!$poa->isComplete($this)) {
                 return false;
             }
         }
