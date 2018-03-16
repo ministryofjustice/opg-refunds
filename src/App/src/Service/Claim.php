@@ -426,13 +426,13 @@ class Claim implements Initializer\LogSupportInterface
                     if (is_numeric($amount) && $poa['data']['date-of-receipt'] === $record['received']) {
                         if ($amount >= 110) {
                             // Full payment
-                            $poaModel->setOriginalPaymentAmount('orMore');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE);
                         } elseif ($amount >= 55){
                             // Reduced payment
-                            $poaModel->setOriginalPaymentAmount('lessThan');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN);
                         } else {
                             // No payment
-                            $poaModel->setOriginalPaymentAmount('noRefund');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND);
                         }
                     }
                 }
@@ -841,7 +841,7 @@ class Claim implements Initializer\LogSupportInterface
                 $claimId,
                 $userId,
                 NoteModel::TYPE_POA_ADDED,
-                "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully added to this claim"
+                "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $this->translateToDataModel($claim))} was successfully added to this claim"
             );
         }
 
@@ -937,7 +937,7 @@ class Claim implements Initializer\LogSupportInterface
                 $claimId,
                 $userId,
                 NoteModel::TYPE_POA_EDITED,
-                "Power of attorney with case number {$this->getCaseNumberNote($poaModel)} was successfully edited"
+                "Power of attorney with case number {$this->getCaseNumberNote($poaModel, $this->translateToDataModel($claim))} was successfully edited"
             );
 
             $claim = $this->getClaimEntity($claimId);
@@ -1412,11 +1412,12 @@ class Claim implements Initializer\LogSupportInterface
 
     /**
      * @param PoaModel $poaModel
+     * @param ClaimModel $claimModel
      * @return string
      */
-    public function getCaseNumberNote(PoaModel $poaModel): string
+    public function getCaseNumberNote(PoaModel $poaModel, ClaimModel $claimModel): string
     {
-        return $poaModel->getCaseNumber() . ($poaModel->isComplete() ? '' : ' (incomplete)');
+        return $poaModel->getCaseNumber() . ($poaModel->isComplete($claimModel) ? '' : ' (incomplete)');
     }
 
     /**
