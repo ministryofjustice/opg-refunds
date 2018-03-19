@@ -19,4 +19,4 @@ Mandatory: claim
     'postcodes'  => $claim->getApplication()->getPostcodes()
 ]) ?>
 
-<?php $this->insert('snippet::contact-details', ['application' => $claim->getApplication()]) ?>
+<?php $this->insert('snippet::contact-details', ['claim'=> $claim, 'application' => $claim->getApplication()]) ?>

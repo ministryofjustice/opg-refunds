@@ -45,6 +45,7 @@ return [
             'claim.search',
             'claim.search.download',
             'claim.confirm.notified',
+            'claim.contact.details',
             'phone-claim',
         ],
         User::ROLE_REPORTING => [

@@ -5,12 +5,13 @@ Mandatory: application
 */
 
 /**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
  * @var \Opg\Refunds\Caseworker\DataModel\Applications\Application $application
  */
 ?>
 
 <h2 id="contact-details" class="heading-medium heading-refunds edit">
-    <span>Contact details</span><span class="edit-link font-small"><a href="">Edit</a></span>
+    <span>Contact details</span><span class="edit-link font-small"><a href="<?= $this->generateUrl('claim.contact.details', ['claimId' => $claim->getId()]) ?>">Edit</a></span>
 </h2>
 <dl class="details">
     <div class="">
