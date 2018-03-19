@@ -16,6 +16,10 @@ class Poa extends AbstractDataModel
     const SYSTEM_SIRIUS = 'sirius';
     const SYSTEM_MERIS = 'meris';
 
+    const ORIGINAL_PAYMENT_AMOUNT_OR_MORE = 'orMore';
+    const ORIGINAL_PAYMENT_AMOUNT_LESS_THAN = 'lessThan';
+    const ORIGINAL_PAYMENT_AMOUNT_NO_REFUND = 'noRefund';
+
     /**
      * @var int
      */
@@ -367,15 +371,48 @@ class Poa extends AbstractDataModel
     }
 
     /**
+     * @param Claim $parentClaim
      * @return bool
      */
-    public function isComplete(): bool
+    public function isComplete(Claim $parentClaim): bool
     {
-        $isAttorneyComplete = (!$this->hasAttorneyNameVerification() && !$this->hasAttorneyDobVerification())
-            || ($this->hasAttorneyNameVerification() && $this->hasAttorneyDobVerification());
+        //  Perform the simple checks on missing data
+        if (empty($this->caseNumber) || empty($this->receivedDate) || empty($this->originalPaymentAmount)) {
+            return false;
+        }
 
-        return !empty($this->caseNumber) && !empty($this->receivedDate) && !empty($this->originalPaymentAmount)
-            && $isAttorneyComplete;
+        //  Check for missing verifications
+
+        //  Attorney. Only needed if not already verified and for backwards compatibility with older claims
+        if (!$parentClaim->isAttorneyVerified() && !$this->hasAttorneyVerification()) {
+            return false;
+        }
+
+        //  Attorney name and dob. Only needed if neither already verified
+        if ((!$parentClaim->isAttorneyNameVerified() || !$parentClaim->isAttorneyDobVerified())
+            && (!$this->hasAttorneyNameVerification() || !$this->hasAttorneyDobVerification())) {
+            return false;
+        }
+
+        //  Additionally check that both attorney name and dob are present or neither are
+        if (($this->hasAttorneyNameVerification() && !$this->hasAttorneyDobVerification())
+            || (!$this->hasAttorneyNameVerification() && $this->hasAttorneyDobVerification())) {
+            return false;
+        }
+
+        //  Donor postcode. Only needed if supplied by claimant and not already verified
+        if ($parentClaim->getApplication()->hasDonorPostcode() &&
+            !$parentClaim->isDonorPostcodeVerified() && !$this->hasDonorPostcodeVerification()) {
+            return false;
+        }
+
+        //  Attorney postcode. Only needed if supplied by claimant and not already verified
+        if ($parentClaim->getApplication()->hasAttorneyPostcode() &&
+            !$parentClaim->isAttorneyPostcodeVerified() && !$this->hasAttorneyPostcodeVerification()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

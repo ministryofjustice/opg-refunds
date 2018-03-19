@@ -91,9 +91,9 @@ class Poa extends AbstractForm
         $input->setRequired(false);
 
         $field->setValueOptions([
-            'orMore'   => 'orMore',
-            'lessThan' => 'lessThan',
-            'noRefund' => 'noRefund',
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE   => PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE,
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN => PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN,
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND => PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND,
         ]);
 
         $this->add($field);

@@ -52,7 +52,7 @@ $this->addErrorMap([
                     <?php } else { ?>
                         <td>
                             <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'sirius', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
-                            <?php if (!$poa->isComplete()) { ?>
+                            <?php if (!$poa->isComplete($claim)) { ?>
                                 <span>(incomplete)</span>
                             <?php } ?>
                         </td>
@@ -105,7 +105,7 @@ $this->addErrorMap([
                     <?php } else { ?>
                         <td>
                             <a href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => 'meris', 'id' => $poa->getId()]) ?>"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></a>
-                            <?php if (!$poa->isComplete()) { ?>
+                            <?php if (!$poa->isComplete($claim)) { ?>
                                 <span>(incomplete)</span>
                             <?php } ?>
                         </td>
