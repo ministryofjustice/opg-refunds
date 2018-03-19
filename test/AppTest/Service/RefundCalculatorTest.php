@@ -4,6 +4,7 @@ namespace AppTest\Service\Refund;
 
 use App\Service\RefundCalculator as RefundCalculatorService;
 use DateTime;
+use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use PHPUnit\Framework\TestCase;
 
 class RefundTest extends TestCase
@@ -24,7 +25,7 @@ class RefundTest extends TestCase
         //They would be entitled to: Refund amount x daily interest rate x number of days
         //£45        x             0.00137%    x      61  = £0.04
 
-        $originalPaymentAmount = 'orMore';
+        $originalPaymentAmount = PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE;
         $receivedDate = new DateTime('2017-03-01');
 
         $refundAmount = RefundCalculatorService::getRefundAmount($originalPaymentAmount, $receivedDate);
