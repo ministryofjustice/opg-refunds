@@ -1,4 +1,6 @@
-<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
+
+$this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
 
 /**
  * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
@@ -136,13 +138,13 @@ $postcodes = $claim->getApplication()->getPostcodes();
         'formElement' => $form->get('original-payment-amount'),
         'question' => 'Original payment amount',
         'options' => [
-            'orMore' => [
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE => [
                 'optionLabel' => '£110 or more'
             ],
-            'lessThan' => [
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN => [
                 'optionLabel' => 'Less than £110'
             ],
-            'noRefund' => [
+            PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND => [
                 'optionLabel' => 'No fee paid'
             ],
         ],

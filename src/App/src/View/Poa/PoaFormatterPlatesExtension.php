@@ -32,11 +32,11 @@ class PoaFormatterPlatesExtension implements ExtensionInterface
     public function getOriginalPaymentAmountString(PoaModel $poa)
     {
         switch ($poa->getOriginalPaymentAmount()) {
-            case 'orMore':
+            case PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE:
                 return '£110 or more';
-            case 'lessThan':
+            case PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN:
                 return 'Less than £110';
-            case 'noRefund':
+            case PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND:
                 return 'No fee paid';
             default:
                 return '';

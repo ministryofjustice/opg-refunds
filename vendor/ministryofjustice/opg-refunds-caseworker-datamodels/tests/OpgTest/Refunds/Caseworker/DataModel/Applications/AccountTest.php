@@ -23,9 +23,10 @@ class AccountTest extends AbstractDataModelTestCase
     public function testPopulateAndGetArrayCopy()
     {
         $data = [
-            'name'           => 'Phoebe Buffay',
-            'account-number' => '12345678',
-            'sort-code'      => '123456',
+            'name'             => 'Phoebe Buffay',
+            'account-number'   => '12345678',
+            'sort-code'        => '123456',
+            'building-society' => false,
         ];
 
         $model = new Account($data);

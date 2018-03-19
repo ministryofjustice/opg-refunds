@@ -23,6 +23,7 @@ class ContactTest extends AbstractDataModelTestCase
         $data = [
             'email'  => 'monica@friends.com',
             'phone' => '07712 123456',
+            'receive-notifications' => true
         ];
 
         $model = new Contact($data);
