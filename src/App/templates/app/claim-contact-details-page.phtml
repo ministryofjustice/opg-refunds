@@ -26,11 +26,6 @@
 
     <p>We won't send you marketing messages or share your contact details with anyone else.</p>
 
-    <div class="form-group">
-        <input type='submit' class="button" name='submit' value='Approve claim'>
-        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
-    </div>
-
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('email'),
         'formLabel' => 'Email address',
@@ -47,18 +42,26 @@
         'additionFormControlClass' => 'form-control-3-4'
     ]) ?>
 
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('address'),
+        'formLabel' => 'Postal address',
+        'formHint' => 'Only if email or mobile number cannot be supplied',
+        'formType' => 'textarea',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
     <p>We'll only contact you to update you about your claim. We'll confirm that we've received your claim and let you know when it's been approved or rejected.</p>
 
     <div class="form-group">
         <div class="multiple-choice">
             <?php $element = $form->get('receive-notifications'); ?>
-            <input type="hidden" value="yes" name="<?= $element->getName(); ?>">
+            <input type="hidden" value="true" name="<?= $element->getName(); ?>">
             <input
                     id="receive-notifications-checkbox"
                     name="<?= $element->getName(); ?>"
                     type="checkbox"
-                    value="no"
-                <?= ($element->getValue()=='no') ? ' checked="checked"' : '' ?>
+                <?= ($element->getValue()==false) ? ' checked="checked"' : '' ?>
             >
             <label for="receive-notifications-checkbox">I don’t want these updates</label>
         </div>
@@ -66,9 +69,6 @@
 
     <div class="form-group">
         <input type="submit" class="button" value="Update contact details">
-        <?php if (!(empty($ad))): ?>
-            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Add a postal address instead" name="address" >
-        <?php endif ?>
         <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
     </div>
 

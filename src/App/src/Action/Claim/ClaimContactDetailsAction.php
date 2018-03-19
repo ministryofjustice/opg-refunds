@@ -14,6 +14,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
+use Zend\Stdlib\ArrayObject;
 
 /**
  * Class ClaimContactDetailsAction
@@ -37,6 +38,8 @@ class ClaimContactDetailsAction extends AbstractClaimAction
 
         /** @var ClaimContactDetails $form */
         $form = $this->getForm($request, $claim);
+        $form->bind(new ArrayObject($claim->getApplication()->getContact()->getArrayCopy()));
+        //$form->setFormattedData($session['contact']);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-contact-details-page', [
             'form'  => $form,

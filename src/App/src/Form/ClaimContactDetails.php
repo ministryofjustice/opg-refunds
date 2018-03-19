@@ -94,12 +94,24 @@ class ClaimContactDetails extends AbstractForm
         $inputFilter->add($input);
 
         //------------------------
+
+        $field = new Element\Textarea('address');
+        $input = new Input($field->getName());
+
+        $input->getFilterChain()
+            ->attach(new Filter\StripTags);
+
+        $input->getValidatorChain()
+            ->attach(new Validator\NotEmpty, true)
+            ->attach((new Validator\StringLength(['max' => 300])));
+
+        $this->add($field);
+        $inputFilter->add($input);
+
+        //------------------------
         // Notification opt-out
 
-        $field = new Element\Checkbox('receive-notifications', [
-            'checked_value' => 'no',
-            'unchecked_value' => 'yes'
-        ]);
+        $field = new Element\Checkbox('receive-notifications');
         $input = new Input($field->getName());
 
         $input->setRequired(false);
@@ -116,7 +128,7 @@ class ClaimContactDetails extends AbstractForm
     public function setData($data = array())
     {
         // If at least one field is passed, enter a value into the 'one-field-required' check.
-        $allFieldsEmpty = empty($data['email']) && empty($data['phone']);
+        $allFieldsEmpty = empty($data['email']) && empty($data['phone']) && empty($data['address']);
         $data['one-field-required'] = (!$allFieldsEmpty) ? 'valid' : '';
 
         return parent::setData($data);
