@@ -103,7 +103,7 @@ class PoaLookup {
                 $query .= " AND ";
             }
 
-            $query .= "data->>'donor-forename' LIKE :fname";
+            $query .= "(data->>'donor-forename' = :fname OR data->>'donor-forename' LIKE :losefname)";
         }
 
         if (isset($params['last-name'])) {
@@ -146,8 +146,10 @@ class PoaLookup {
         if (isset($params['first-name'])) {
             $fname = preg_replace('/\s+/', ' ', trim($params['first-name']));
             $fname = mb_strtolower($fname, 'UTF-8');
-            $fname = $fname.'%';
             $statement->bindParam(':fname', $fname, PDO::PARAM_STR);
+
+            $losefname = $fname.' %';
+            $statement->bindParam(':losefname', $losefname, PDO::PARAM_STR);
         }
 
         if (isset($params['last-name'])) {
