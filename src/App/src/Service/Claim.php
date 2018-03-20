@@ -10,6 +10,7 @@ use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
@@ -1316,6 +1317,34 @@ class Claim implements Initializer\LogSupportInterface
                 $message
             );
         }
+    }
+
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param ContactDetailsModel $contactDetails
+     * @return ClaimModel
+     */
+    public function editContactDetails(int $claimId, int $userId, ContactDetailsModel $contactDetails)
+    {
+        $claim = $this->getClaimEntity($claimId);
+
+        $claimData = $claim->getJsonData();
+        $claimData['contact'] = array_filter($contactDetails->getArrayCopy());
+
+        $claim->setJsonData($claimData);
+        $claim->setUpdatedDateTime(new DateTime());
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_CONTACT_DETAILS_UPDATED,
+            "Contact details for the claim were updated on behalf of the claimant"
+        );
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
     }
 
     /**
