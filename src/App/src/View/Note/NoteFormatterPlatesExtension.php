@@ -94,6 +94,8 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
                 return 'Claim assigned';
             case NoteModel::TYPE_CLAIM_REASSIGNED:
                 return 'Claim reassigned';
+            case NoteModel::TYPE_CLAIM_CONTACT_DETAILS_UPDATED:
+                return 'Contact details updated';
         }
 
         return $type;
