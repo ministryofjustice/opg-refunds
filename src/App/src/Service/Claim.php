@@ -380,13 +380,13 @@ class Claim implements Initializer\LogSupportInterface
                     {
                         if ($amount >= 110) {
                             // Full payment
-                            $poaModel->setOriginalPaymentAmount('orMore');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE);
                         } elseif ($amount >= 55){
                             // Reduced payment
-                            $poaModel->setOriginalPaymentAmount('lessThan');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN);
                         } else {
                             // No payment
-                            $poaModel->setOriginalPaymentAmount('noRefund');
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND);
                         }
 
                         // Flag this case, with sequence, as used.
