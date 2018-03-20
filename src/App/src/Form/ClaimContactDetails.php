@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Zend\Form\Element;
 use Zend\Filter;
 use Zend\InputFilter\Input;
@@ -105,13 +106,18 @@ class ClaimContactDetails extends AbstractForm
             ->attach(new Validator\NotEmpty, true)
             ->attach((new Validator\StringLength(['max' => 300])));
 
+        $input->setRequired(false);
+
         $this->add($field);
         $inputFilter->add($input);
 
         //------------------------
         // Notification opt-out
 
-        $field = new Element\Checkbox('receive-notifications');
+        $field = new Element\Checkbox('receive-notifications', [
+            'checked_value' => 'no',
+            'unchecked_value' => 'yes'
+        ]);
         $input = new Input($field->getName());
 
         $input->setRequired(false);
@@ -142,7 +148,7 @@ class ClaimContactDetails extends AbstractForm
     {
         return (new Callback(function ($value) {
 
-            if (!preg_match('/^[+]?[0-9]+$/', $value)){
+            if (!preg_match('/^[+]?[0-9]+$/', $value)) {
                 return false;
             }
 
@@ -160,22 +166,24 @@ class ClaimContactDetails extends AbstractForm
 
     //-----------------------------
 
-    public function getFormattedData()
+    public function getContactDetails(): ContactDetailsModel
     {
-        $result = parent::getData();
+        $data = parent::getData();
 
         // Filter out empty values
-        $result = array_filter($result);
+        $data = array_filter($data);
 
-        $result["receive-notifications"] = (bool)($result["receive-notifications"] == "yes");
+        $data["receive-notifications"] = (bool)($data["receive-notifications"] == "yes");
 
-        unset($result["one-field-required"]);
+        unset($data["one-field-required"]);
 
-        return $result;
+        return new ContactDetailsModel($data);
     }
 
-    public function setFormattedData(array $data)
+    public function setContactDetails(ContactDetailsModel $contactDetails)
     {
+        $data = $contactDetails->getArrayCopy();
+
         $data["receive-notifications"] = ($data["receive-notifications"]) ? "yes" : "no";
 
         return $this->setData($data);

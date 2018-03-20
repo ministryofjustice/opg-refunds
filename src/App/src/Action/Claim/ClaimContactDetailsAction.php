@@ -2,19 +2,14 @@
 
 namespace App\Action\Claim;
 
-use Alphagov\Notifications\Client as NotifyClient;
 use App\Form\AbstractForm;
 use App\Form\ClaimContactDetails;
-use App\Service\Claim\Claim as ClaimService;
-use App\View\Details\DetailsFormatterPlatesExtension;
-use App\View\Poa\PoaFormatterPlatesExtension;
 use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Zend\Diactoros\Response\HtmlResponse;
 use Exception;
-use Zend\Stdlib\ArrayObject;
 
 /**
  * Class ClaimContactDetailsAction
@@ -38,8 +33,7 @@ class ClaimContactDetailsAction extends AbstractClaimAction
 
         /** @var ClaimContactDetails $form */
         $form = $this->getForm($request, $claim);
-        $form->bind(new ArrayObject($claim->getApplication()->getContact()->getArrayCopy()));
-        //$form->setFormattedData($session['contact']);
+        $form->setContactDetails($claim->getApplication()->getContact());
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-contact-details-page', [
             'form'  => $form,
@@ -62,15 +56,17 @@ class ClaimContactDetailsAction extends AbstractClaimAction
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $claim = $this->claimService->setStatusAccepted($claim->getId());
+            $contactDetails = $form->getContactDetails();
+
+            $claim = $this->claimService->editContactDetails($claim->getId(), $contactDetails);
 
             if ($claim === null) {
-                throw new RuntimeException('Failed to accept claim with id: ' . $this->modelId);
+                throw new RuntimeException('Failed to update contact details for claim with id: ' . $this->modelId);
             }
 
-            $this->setFlashInfoMessage($request, "Claim with reference {$claim->getReferenceNumber()} approved successfully");
+            $this->setFlashInfoMessage($request, "Contact details updated successfully");
 
-            return $this->redirectToRoute('home');
+            return $this->redirectToRoute('claim', ['id' => $claim->getId()]);
         }
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::claim-contact-details-page', [
