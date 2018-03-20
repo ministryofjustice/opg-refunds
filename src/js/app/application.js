@@ -16,5 +16,5 @@ $(document).ready(function () {
 
   new GOVUK.Print('.print')
 
-  new GOVUK.SingleUse('form')
+  new GOVUK.SingleUse('.js-single-use')
 })
