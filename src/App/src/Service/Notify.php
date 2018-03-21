@@ -354,10 +354,19 @@ class Notify implements Initializer\LogSupportInterface
             : $claimModel->getDonorName();
         $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
+        $isBuildingSociety = $claimModel->getApplication()->getAccount() !== null
+            && $claimModel->getApplication()->getAccount()->isBuildingSociety();
+
         if ($claimModel->shouldSendEmail()) {
             try {
                 $templateId = $claimModel->getApplication()->isRefundByCheque() ?
-                    self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED;
+                    ($isBuildingSociety ? self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_BUILDING_SOCIETY
+                        : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE)
+                    : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED;
+
+                if ($claimModel->getApplication()->getAccount() !== null && $claimModel->getApplication()->getAccount()->isBuildingSociety()) {
+                    $templateId = self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_BUILDING_SOCIETY;
+                }
 
                 $this->notifyClient->sendEmail($contact->getEmail(), $templateId, [
                     'person-completing' => $contactName,
@@ -388,7 +397,9 @@ class Notify implements Initializer\LogSupportInterface
         if ($claimModel->shouldSendText()) {
             try {
                 $templateId = $claimModel->getApplication()->isRefundByCheque() ?
-                    self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED;
+                    ($isBuildingSociety ? self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_BUILDING_SOCIETY
+                        : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE)
+                    : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED;
 
                 $this->notifyClient->sendSms($contact->getPhone(), $templateId, [
                     'amount-including-interest' => $claimModel->getRefundTotalAmountString(),
