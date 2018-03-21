@@ -44,6 +44,7 @@ class Note extends AbstractDataModel
     const TYPE_CLAIM_OUTCOME_CHANGED = 'claim_outcome_changed';
     const TYPE_CLAIM_ASSIGNED = 'claim_assigned';
     const TYPE_CLAIM_REASSIGNED = 'claim_reassigned';
+    const TYPE_CLAIM_CONTACT_DETAILS_UPDATED = 'claim_contact_details_updated';
 
     /**
      * @var int

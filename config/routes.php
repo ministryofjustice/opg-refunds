@@ -36,6 +36,7 @@ $app->get('/ping', App\Action\PingAction::class, 'ping');
 $app->route('/v1/claim/{id:\d+}', App\Action\ClaimAction::class, ['GET', 'PATCH'], 'claim');
 $app->route('/v1/claim/{claimId:\d+}/note[/{id:\d+}]', App\Action\ClaimNoteAction::class, ['GET', 'POST'], 'claim.log');
 $app->route('/v1/claim/{claimId:\d+}/poa[/{id:\d+}]', App\Action\ClaimPoaAction::class, ['GET', 'POST', 'PUT', 'DELETE'], 'claim.poa');
+$app->put('/v1/claim/{claimId:\d+}/application/contact', App\Action\ClaimContactDetailsAction::class, 'claim.contact.details');
 $app->get('/v1/claim/search', App\Action\ClaimSearchAction::class, 'claim.search');
 $app->get('/v1/claim/search/download', App\Action\ClaimSearchDownloadAction::class, 'claim.search.download');
 $app->route('/v1/user[/{id:\d+}]', App\Action\UserAction::class, ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'user');

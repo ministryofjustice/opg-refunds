@@ -18,6 +18,7 @@ return [
             'claim',
             'claim.log',
             'claim.poa',
+            'claim.contact.details',
             'claim.search',
             'claim.search.download',
             'user',
