@@ -56,5 +56,6 @@ $app->get('/claim/search/download', App\Action\Claim\ClaimSearchDownloadAction::
 $app->route('/claim/{claimId:\d+}/change-outcome', App\Action\Claim\ClaimChangeOutcomeAction::class, ['GET', 'POST'], 'claim.change.outcome');
 $app->route('/claim/{claimId:\d+}/reassign', App\Action\Claim\ClaimReassignAction::class, ['GET', 'POST'], 'claim.reassign');
 $app->route('/claim/{claimId:\d+}/notified', App\Action\Claim\ConfirmNotifiedAction::class, ['GET', 'POST'], 'claim.confirm.notified');
+$app->route('/claim/{claimId:\d+}/contact-details', App\Action\Claim\ClaimContactDetailsAction::class, ['GET', 'POST'], 'claim.contact.details');
 $app->route('/phone-claim', App\Action\PhoneClaimAction::class, ['GET', 'POST'], 'phone-claim');
 $app->route('/notify', App\Action\NotifyAction::class, ['GET', 'POST'], 'notify');

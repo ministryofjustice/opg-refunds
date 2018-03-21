@@ -53,6 +53,7 @@ class ConfigProvider
                 Action\Claim\ClaimAction::class => Action\Claim\ClaimActionFactory::class,
                 Action\Claim\ClaimApproveAction::class => Action\Claim\ClaimApproveActionFactory::class,
                 Action\Claim\ClaimChangeOutcomeAction::class => Action\Claim\ClaimChangeOutcomeActionFactory::class,
+                Action\Claim\ClaimContactDetailsAction::class => Action\Claim\ClaimContactDetailsActionFactory::class,
                 Action\Claim\ClaimDuplicateAction::class => Action\Claim\ClaimDuplicateActionFactory::class,
                 Action\Claim\ClaimWithdrawAction::class => Action\Claim\ClaimWithdrawActionFactory::class,
                 Action\Claim\ClaimReassignAction::class => Action\Claim\ClaimReassignActionFactory::class,

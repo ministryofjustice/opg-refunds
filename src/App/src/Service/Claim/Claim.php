@@ -5,6 +5,7 @@ namespace App\Service\Claim;
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use Exception;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
@@ -253,6 +254,13 @@ class Claim implements ApiClientInterface
         $claimArray = $this->getApiClient()->httpPatch("/v1/claim/$claimId", [
             'outcomePhoneCalled' => true
         ]);
+
+        return $this->createDataModel($claimArray);
+    }
+
+    public function editContactDetails(int $claimId, ContactDetailsModel $contactDetails)
+    {
+        $claimArray = $this->getApiClient()->httpPut("/v1/claim/{$claimId}/application/contact", $contactDetails->getArrayCopy());
 
         return $this->createDataModel($claimArray);
     }
