@@ -10,6 +10,7 @@ use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage;
@@ -1316,6 +1317,52 @@ class Claim implements Initializer\LogSupportInterface
                 $message
             );
         }
+    }
+
+    /**
+     * @param int $claimId
+     * @param int $userId
+     * @param ContactDetailsModel $contactDetails
+     * @return ClaimModel
+     */
+    public function editContactDetails(int $claimId, int $userId, ContactDetailsModel $contactDetails)
+    {
+        $claim = $this->getClaimEntity($claimId);
+        $claimModel = $this->getClaimModel($userId, $claim);
+
+        $claimData = $claim->getJsonData();
+        $claimData['contact'] = array_filter($contactDetails->getArrayCopy(), function ($value) {
+            return $value !== null;
+        });
+
+        $claim->setJsonData($claimData);
+
+        $originalContactDetails = $claimModel->getApplication()->getContact();
+        if ($originalContactDetails->getEmail() !== $contactDetails->getEmail()) {
+            // Email changed. Outcome email should be sent again
+            $claim->setOutcomeEmailSent(false);
+        }
+        if ($originalContactDetails->getPhone() !== $contactDetails->getPhone()) {
+            // Mobile number changed. Outcome text should be sent again
+            $claim->setOutcomeTextSent(false);
+        }
+        if ($originalContactDetails->getAddress() !== $contactDetails->getAddress()) {
+            // Address changed. Outcome letter should be sent again
+            $claim->setOutcomeLetterSent(false);
+        }
+
+        $claim->setUpdatedDateTime(new DateTime());
+
+        $this->addNote(
+            $claimId,
+            $userId,
+            NoteModel::TYPE_CLAIM_CONTACT_DETAILS_UPDATED,
+            "Contact details for the claim were updated on behalf of the claimant"
+        );
+
+        /** @var ClaimModel $claimModel */
+        $claimModel = $this->translateToDataModel($claim);
+        return $claimModel;
     }
 
     /**

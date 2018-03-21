@@ -52,6 +52,7 @@ class ConfigProvider
 
                 //  Actions
                 Action\ClaimAction::class => Action\ClaimActionFactory::class,
+                Action\ClaimContactDetailsAction::class => Action\ClaimContactDetailsActionFactory::class,
                 Action\ClaimNoteAction::class => Action\ClaimNoteActionFactory::class,
                 Action\ClaimPoaAction::class => Action\ClaimPoaActionFactory::class,
                 Action\ClaimSearchAction::class => Action\ClaimSearchActionFactory::class,
