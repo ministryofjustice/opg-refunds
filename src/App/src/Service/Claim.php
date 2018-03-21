@@ -253,6 +253,8 @@ class Claim implements Initializer\LogSupportInterface
 
             $duplicatePoas = [];
 
+            $merisPoaFinanceRecordsUsed = [];
+
             //---
 
             // Add the Meris POAs
@@ -362,6 +364,38 @@ class Claim implements Initializer\LogSupportInterface
                         break;
                     } // if name matches
                 } // foreach attorney
+
+                //------------------------------------------
+                // Check for any finance records
+
+                $financeRecords = $this->poaLookup->lookupFinanceRecord( $poa['case_number'] );
+
+                foreach ($financeRecords as $record) {
+                    $amount = $record['amount'];
+                    $case = $record['case_number'] . '/' . $record['sequence_number'];
+
+                    if (is_numeric($amount)
+                        && $poa['data']['date-of-receipt'] === $record['received']
+                        // Ensure we don't use the same finance record for multiple POAs.
+                        && !in_array($case, $merisPoaFinanceRecordsUsed))
+                    {
+                        if ($amount >= 110) {
+                            // Full payment
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE);
+                        } elseif ($amount >= 55){
+                            // Reduced payment
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN);
+                        } else {
+                            // No payment
+                            $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_NO_REFUND);
+                        }
+
+                        // Flag this case, with sequence, as used.
+                        $merisPoaFinanceRecordsUsed[] = $case;
+                        break;
+                    }
+
+                }
 
                 //--------------------
 
