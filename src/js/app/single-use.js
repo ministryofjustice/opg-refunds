@@ -5,14 +5,14 @@
     var GOVUK = global.GOVUK || {}
 
     var SingleUse = function (selector) {
-        $(selector).on('submit', this.handleClick)
+        $(selector).closest('form').on('submit', this.handleSubmit)
     }
 
-    SingleUse.prototype.handleClick = function(e) {
+    SingleUse.prototype.handleSubmit = function(e) {
         var $form = $(e.target);
 
         // Disable submit button
-        $form.find('input[type="submit"].js-single-use').attr('disabled', 'disabled');
+        $form.find('.js-single-use').attr('disabled', 'disabled').attr('aria-disabled', 'true');
     }
 
     GOVUK.SingleUse = SingleUse
