@@ -49,7 +49,7 @@ class Report extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json_array", options={"jsonb"=true})
      */
     protected $data;
 

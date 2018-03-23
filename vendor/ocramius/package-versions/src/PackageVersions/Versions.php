@@ -10,6 +10,7 @@ namespace PackageVersions;
  */
 final class Versions
 {
+    const ROOT_PACKAGE_NAME = 'ministryofjustice/opg-refunds-caseworker-api';
     const VERSIONS = array (
   'alphagov/notifications-php-client' => '1.6.2@66f5051fe549a5c84fc16844c6577dfa709d707f',
   'aws/aws-sdk-php' => '3.52.31@8a886aeb1475825b324ebeefce2fb0730be649a5',
@@ -106,7 +107,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.7@ed7a89e5e839b7f71c9cf61a6fba4654031cafa4',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-811-php-71-doctrine-26@a76af9e209d5d6d13f735f676f3483222f167737',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-811-php-71-doctrine-26@94c34b4c6ddbc4ba7a5203c460f1325a011a47e6',
 );
 
     private function __construct()
@@ -118,12 +119,12 @@ final class Versions
      */
     public static function getVersion(string $packageName) : string
     {
-        if (! isset(self::VERSIONS[$packageName])) {
-            throw new \OutOfBoundsException(
-                'Required package "' . $packageName . '" is not installed: cannot detect its version'
-            );
+        if (isset(self::VERSIONS[$packageName])) {
+            return self::VERSIONS[$packageName];
         }
 
-        return self::VERSIONS[$packageName];
+        throw new \OutOfBoundsException(
+            'Required package "' . $packageName . '" is not installed: cannot detect its version'
+        );
     }
 }
