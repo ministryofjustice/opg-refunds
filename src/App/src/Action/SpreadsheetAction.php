@@ -70,6 +70,10 @@ class SpreadsheetAction extends AbstractRestfulAction
 
             $spreadsheetWorksheet = $this->spreadsheetWorksheetGenerator->generate(clone $date, $claims, $identity);
 
+            //Claims are no longer needed so null and clean up
+            $claims = null;
+            gc_collect_cycles();
+
             $spreadsheetHashes = $this->spreadsheetWorksheetGenerator->getHashes($spreadsheetWorksheet);
 
             $this->spreadsheetService->storeSpreadsheetHashes($spreadsheetHashes);
