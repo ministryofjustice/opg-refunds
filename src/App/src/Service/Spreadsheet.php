@@ -124,14 +124,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $refundableClaims[] = $this->getRefundable($claim, $user);
 
             $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
-
-            if (count($refundableClaims) % 100 === 0) {
-                $start = microtime(true);
-
-                $this->entityManager->flush();
-
-                $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
-            }
         }
 
         $this->getLogger()->debug('All refundable claims ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
@@ -263,7 +255,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $queryBuilder->leftJoin('c.payment', 'p')
                 ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
-                ->setMaxResults(3000)
+                ->setMaxResults(2000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
             $startDateTime = clone $date;
@@ -314,8 +306,9 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $entity->setPayment($payment);
 
             $message = "A refund amount of $refundAmountString was added to the claim";
-            $note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
-            $this->entityManager->persist($note);
+            //$note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
+            //$this->entityManager->persist($note);
+            $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
         } else {
             $refundAmount = $entity->getPayment()->getAmount();
             $refundAmountString = money_format('£%i', $refundAmount);
@@ -325,8 +318,9 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $start = microtime(true);
 
         $message = "A refundable claim for $refundAmountString was downloaded";
-        $note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
-        $this->entityManager->persist($note);
+        //$note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
+        //$this->entityManager->persist($note);
+        $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
 
         $this->getLogger()->debug('Downloaded note for refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
         $start = microtime(true);
