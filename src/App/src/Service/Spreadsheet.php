@@ -255,7 +255,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $queryBuilder->leftJoin('c.payment', 'p')
                 ->where('c.status = :status AND (p.addedDateTime IS NULL OR p.addedDateTime >= :today) AND c.finishedDateTime < :today')
                 ->orderBy('c.finishedDateTime', 'ASC')
-                ->setMaxResults(2000)
+                ->setMaxResults(3000)
                 ->setParameters(['status' => ClaimModel::STATUS_ACCEPTED, 'today' => $date]);
         } else {
             $startDateTime = clone $date;
