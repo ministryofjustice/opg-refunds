@@ -370,7 +370,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
-                'UPDATE claim SET json_data = (json_data #- \'{account,details}\')::json WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
+                'UPDATE claim SET json_data = json_data #- \'{account,details}\' WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
                 ['date' => $deleteAfterHistoricalRefundDate->format('Y-m-d')]
             );
 
