@@ -134,7 +134,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
-        $this->clearBankDetails();
+        //$this->clearBankDetails();
 
         return $refundableClaims;
     }
