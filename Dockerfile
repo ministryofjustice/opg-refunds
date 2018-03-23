@@ -1,4 +1,4 @@
-FROM registry.service.opg.digital/opg-php-fpm-1604
+FROM registry.service.opg.digital/opg-php-fpm-71-ppa-1604
 
 ADD . /app
 RUN mkdir -p /srv/opg-refunds-caseworker-front/application && \
