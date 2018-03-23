@@ -188,7 +188,7 @@ class Notify implements Initializer\LogSupportInterface
         $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
             $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
             : $claimModel->getDonorName();
-        $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
+        $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         if ($claimModel->shouldSendEmail()) {
             try {
@@ -286,7 +286,7 @@ class Notify implements Initializer\LogSupportInterface
             $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
                 $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
                 : $claimModel->getDonorName();
-            $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
+            $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
             if ($claimModel->shouldSendEmail()) {
                 try {
@@ -352,7 +352,7 @@ class Notify implements Initializer\LogSupportInterface
         $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
             $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
             : $claimModel->getDonorName();
-        $donorDob = date('d/m/y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
+        $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         $isBuildingSociety = $claimModel->getApplication()->getAccount() !== null
             && $claimModel->getApplication()->getAccount()->isBuildingSociety();
