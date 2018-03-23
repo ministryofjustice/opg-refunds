@@ -1,5 +1,8 @@
 FROM registry.service.opg.digital/opg-php-fpm-71-ppa-1604
 
+RUN apt update && apt install -y \
+    php7.1-bcmath
+
 ADD . /app
 RUN mkdir -p /srv/opg-refunds-caseworker-front/application && \
     mkdir /srv/opg-refunds-caseworker-front/application/releases && \

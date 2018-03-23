@@ -69,7 +69,7 @@ class EncryptedDynamoDB extends DynamoDbSessionHandler implements SaveHandlerInt
 
     /**
      * @param string $id
-     * @return null|string
+     * @return string
      */
     public function read($id)
     {
@@ -78,7 +78,7 @@ class EncryptedDynamoDB extends DynamoDbSessionHandler implements SaveHandlerInt
 
         // If there's no data, just return
         if (empty($data)) {
-            return null;
+            return '';
         }
 
         // Split the data into encryption key ident, and actual session data.
@@ -98,7 +98,7 @@ class EncryptedDynamoDB extends DynamoDbSessionHandler implements SaveHandlerInt
         } else {
             // If the key ident doesn't match a known key...
             if(!isset($this->keys[$data[0]])) {
-                return null;
+                return '';
             }
 
             $sessionKey = $this->keys[$data[0]];
