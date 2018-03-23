@@ -124,6 +124,14 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $refundableClaims[] = $this->getRefundable($claim, $user);
 
             $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
+
+            if (count($refundableClaims) % 100 === 0) {
+                $start = microtime(true);
+
+                $this->entityManager->flush();
+
+                $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            }
         }
 
         $this->getLogger()->debug('All refundable claims ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
