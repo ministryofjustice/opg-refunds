@@ -109,7 +109,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
                         'claim-code' => IdentFormatter::format($reference),
                         'processed-by-date' => date('j F Y', strtotime($data['expected'])),
                         'donor-name' => $name,
-                        'donor-dob' => date('d/m/y', strtotime($data['donor']['current']['dob']))
+                        'donor-dob' => date('j F Y', strtotime($data['donor']['current']['dob']))
                     ]);
                 }
             } catch (ApiException $e) {
@@ -137,7 +137,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
                             'claim-code' => IdentFormatter::format($reference),
                             'processed-by-date' => date('j F Y', strtotime($data['expected'])),
                             'donor-name' => $this->getDonorNameForSms($name),
-                            'donor-dob' => date('d/m/y', strtotime($data['donor']['current']['dob']))
+                            'donor-dob' => date('j F Y', strtotime($data['donor']['current']['dob']))
                         ]);
                     }
                 }
