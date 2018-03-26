@@ -60,6 +60,7 @@ class Reporting
         ];
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $end = microtime(true);
 

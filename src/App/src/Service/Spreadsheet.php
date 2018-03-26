@@ -124,17 +124,31 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $refundableClaims[] = $this->getRefundable($claim, $user);
 
             $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
+
+            if ((count($refundableClaims) % 100) === 0) {
+                $start = microtime(true);
+
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+
+                $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            }
+
+            unset($claim);
         }
 
-        $this->getLogger()->debug('All refundable claims ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
+        unset($claims);
+
+        $this->getLogger()->debug('All refundable claims added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
 
         $start = microtime(true);
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
-        //$this->clearBankDetails();
+        $this->clearBankDetails();
 
         return $refundableClaims;
     }
@@ -161,6 +175,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
     public function storeSpreadsheetHashes(array $spreadsheetHashes)
     {
+        $processed = 0;
+
         foreach ($spreadsheetHashes as $spreadsheetHash) {
             $claimCode = $spreadsheetHash['claimCode'];
             $claimId = IdentFormatter::parseId($claimCode);
@@ -168,9 +184,17 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $claimEntity = $this->claimService->getClaimEntity($claimId);
 
             $claimEntity->getPayment()->setSpreadsheetHash($spreadsheetHash['hash']);
+
+            if (($processed % 100) === 0) {
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            }
+
+            $processed++;
         }
 
         $this->entityManager->flush();
+        $this->entityManager->clear();
     }
 
     public function validateSpreadsheetHashes(array $spreadsheetHashes, DateTime $date)
@@ -306,8 +330,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $entity->setPayment($payment);
 
             $message = "A refund amount of $refundAmountString was added to the claim";
-            //$note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
-            //$this->entityManager->persist($note);
+            $note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
+            $this->entityManager->persist($note);
             $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
         } else {
             $refundAmount = $entity->getPayment()->getAmount();
@@ -318,8 +342,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $start = microtime(true);
 
         $message = "A refundable claim for $refundAmountString was downloaded";
-        //$note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
-        //$this->entityManager->persist($note);
+        $note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
+        $this->entityManager->persist($note);
         $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
 
         $this->getLogger()->debug('Downloaded note for refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
@@ -380,6 +404,9 @@ class Spreadsheet implements Initializer\LogSupportInterface
             if ($updateCount > 0) {
                 $this->getLogger()->notice("Bank details for $updateCount claim(s) were deleted");
             }
+
+            $this->entityManager->flush();
+            $this->entityManager->clear();
         }
     }
 
@@ -393,14 +420,14 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private function decryptBankDetails($ciphertext)
     {
         try {
-
             $clearText = $this->kmsClient->decrypt([
                 'CiphertextBlob' => base64_decode($ciphertext)
             ]);
 
             return $clearText->get('Plaintext');
 
-        } catch ( \Exception $e ){
+        } catch (\Exception $e) {
+            // swallow exception so old style decryption will be used
         }
 
         // else fall back to old style encryption

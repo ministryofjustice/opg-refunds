@@ -150,7 +150,10 @@ class Notify implements Initializer\LogSupportInterface
                 $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
 
-            $this->entityManager->flush();
+            if (($processedCount % 100) === 0) {
+                $this->entityManager->flush();
+                $this->entityManager->clear();
+            }
 
             if ($successful) {
                 $processedCount++;
@@ -163,6 +166,9 @@ class Notify implements Initializer\LogSupportInterface
                 break;
             }
         }
+
+        $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $notified['processed'] = $processedCount;
         $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
