@@ -13,7 +13,7 @@ final class Versions
     const ROOT_PACKAGE_NAME = 'ministryofjustice/opg-refunds-caseworker-api';
     const VERSIONS = array (
   'alphagov/notifications-php-client' => '1.6.2@66f5051fe549a5c84fc16844c6577dfa709d707f',
-  'aws/aws-sdk-php' => '3.52.31@8a886aeb1475825b324ebeefce2fb0730be649a5',
+  'aws/aws-sdk-php' => '3.52.32@c10b8f60a5da9ad4d7fa9f890186632a4c025d1b',
   'container-interop/container-interop' => '1.2.0@79cbf1341c22ec75643d841642dd5d6acd83bdb8',
   'dasprid/container-interop-doctrine' => '1.1.0@b9f3afc00ce997e469d7fdd6fed7b8d400763290',
   'doctrine/annotations' => 'v1.6.0@c7f2050c68a9ab0bdb0f98567ec08d80ea7d24d5',
@@ -32,7 +32,7 @@ final class Versions
   'guzzlehttp/promises' => 'v1.3.1@a59da6cf61d80060647ff4d3eb2c03a2bc694646',
   'guzzlehttp/psr7' => '1.4.2@f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => '1.21@f05927d4bc26c8adf2f9fdd3e08fd1f024c03783',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-REF-811-php-71-doctrine-26@244168f32d076a2c9f0e9ec9ea6f6d4d52dc3528',
   'ministryofjustice/opg-refunds-logger' => '2.0.0@a4a078325213712392f948fee254c3e05dcc4760',
   'mtdowling/jmespath.php' => '2.4.0@adcc9531682cf87dfda21e1fd5d0e7a41d292fac',
   'nikic/fast-route' => 'v1.3.0@181d480e08d9476e61381e04a71b34dc0432e812',
@@ -107,7 +107,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.7@ed7a89e5e839b7f71c9cf61a6fba4654031cafa4',
   'zfcampus/zf-composer-autoloading' => '2.0.0@3643d9dc4d3f0b6011ff643672e1cf187e21a7f4',
   'zfcampus/zf-development-mode' => '3.1.0@ffef6ab8cf84ee1d1a77a2b51ba2240d2707c05d',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-811-php-71-doctrine-26@94c34b4c6ddbc4ba7a5203c460f1325a011a47e6',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-REF-811-php-71-doctrine-26@669e022f93ee0e5f0dd7f074655e8637a8df8473',
 );
 
     private function __construct()
