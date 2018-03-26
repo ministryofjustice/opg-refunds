@@ -15,7 +15,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
 {
     use Initializer\LogSupportTrait;
 
-    const MAX_SMS_DONOR_NAME_LENGTH = 103;
+    const MAX_SMS_DONOR_NAME_LENGTH = 94;
 
     private $notifyClient;
     private $dataHandler;
