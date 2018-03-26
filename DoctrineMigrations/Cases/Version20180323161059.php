@@ -24,6 +24,10 @@ class Version20180323161059 extends AbstractMigration
         $this->addSql('CREATE INDEX idx_claim_json_data_ad ON claim((json_data->\'ad\'))');
         $this->addSql('CREATE INDEX idx_claim_json_data_deceased ON claim((json_data->\'deceased\'))');
         $this->addSql('CREATE INDEX idx_claim_json_data_ad_meta_type ON claim((json_data->\'ad\'->\'meta\'->\'type\'))');
+        $this->addSql('CREATE INDEX idx_claim_json_data_applicant_received_datetime ON claim((json_data->\'applicant\'), received_datetime)');
+        $this->addSql('CREATE INDEX idx_claim_json_data_ad_received_datetime ON claim((json_data->\'ad\'), received_datetime)');
+        $this->addSql('CREATE INDEX idx_claim_json_data_deceased_received_datetime ON claim((json_data->\'deceased\'), received_datetime)');
+        $this->addSql('CREATE INDEX idx_claim_json_data_ad_meta_type_received_datetime ON claim((json_data->\'ad\'->\'meta\'->\'type\'), received_datetime)');
     }
 
     public function down(Schema $schema)
@@ -41,5 +45,9 @@ class Version20180323161059 extends AbstractMigration
         $this->addSql('DROP INDEX idx_claim_json_data_ad');
         $this->addSql('DROP INDEX idx_claim_json_data_deceased');
         $this->addSql('DROP INDEX idx_claim_json_data_ad_meta_type');
+        $this->addSql('DROP INDEX idx_claim_json_data_applicant_received_datetime');
+        $this->addSql('DROP INDEX idx_claim_json_data_ad_received_datetime');
+        $this->addSql('DROP INDEX idx_claim_json_data_deceased_received_datetime');
+        $this->addSql('DROP INDEX idx_claim_json_data_ad_meta_type_received_datetime');
     }
 }

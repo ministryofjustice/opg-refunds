@@ -59,6 +59,8 @@ class Reporting
             'poasPerClaim' => $this->getPoasPerClaim($dateOfFirstClaim),
         ];
 
+        $this->entityManager->flush();
+
         $end = microtime(true);
 
         $reports['generated'] = date('d/m/Y H:i:s', (new DateTime())->getTimestamp());
@@ -1309,8 +1311,6 @@ class Reporting
             $report->setGeneratedDateTime($generated);
             $report->setGenerationTimeInMs($generationTimeInMs);
         }
-
-        $this->entityManager->flush();
 
         return $report;
     }

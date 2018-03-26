@@ -26,7 +26,11 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
  * @ORM\Index(name="idx_claim_status_updated_datetime", columns={"status", "updated_datetime"}),
  * @ORM\Index(name="idx_claim_status_received_datetime", columns={"status", "received_datetime"}),
  * @ORM\Index(name="idx_claim_status_finished_datetime", columns={"status", "finished_datetime"}),
- * @ORM\Index(name="idx_claim_status_rejection_reason", columns={"status", "rejection_reason"})
+ * @ORM\Index(name="idx_claim_status_rejection_reason", columns={"status", "rejection_reason"}),
+ * @ORM\Index(name="idx_claim_json_data_applicant_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_ad_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_deceased_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_ad_meta_type_received_datetime", columns={"received_datetime"})
  * })
  **/
 class Claim extends AbstractEntity
