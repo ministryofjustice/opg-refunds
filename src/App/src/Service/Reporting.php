@@ -152,8 +152,8 @@ class Reporting
 
             $byDay[$claimByDay->getTitle()] = $claimByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -190,8 +190,8 @@ class Reporting
 
             $byWeek[$claimByWeek->getTitle()] = $claimByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -228,8 +228,8 @@ class Reporting
 
             $byMonth[$claimByMonth->getTitle()] = $claimByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -348,8 +348,8 @@ class Reporting
 
             $byDay[$claimSourceByDay->getTitle()] = $claimSourceByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -389,8 +389,8 @@ class Reporting
 
             $byMonth[$claimSourceByMonth->getTitle()] = $claimSourceByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -472,8 +472,8 @@ class Reporting
 
             $byDay[$phoneClaimTypeByDay->getTitle()] = $phoneClaimTypeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -513,8 +513,8 @@ class Reporting
 
             $byMonth[$phoneClaimTypeByMonth->getTitle()] = $phoneClaimTypeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -720,8 +720,8 @@ class Reporting
                 throw new \Exception("There should never be more than one spreadsheet per day. Found {$day['number_of_spreadsheets']}");
             }
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
 
             $i++;
         }
@@ -763,8 +763,8 @@ class Reporting
 
             $byWeek[$refundByWeek->getTitle()] = $refundByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -804,8 +804,8 @@ class Reporting
 
             $byMonth[$refundByMonth->getTitle()] = $refundByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -883,8 +883,8 @@ class Reporting
 
             $byDay[$processingTimeByDay->getTitle()] = $processingTimeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -921,8 +921,8 @@ class Reporting
 
             $byWeek[$processingTimeByWeek->getTitle()] = $processingTimeByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -959,8 +959,8 @@ class Reporting
 
             $byMonth[$processingTimeByMonth->getTitle()] = $processingTimeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -1025,8 +1025,8 @@ class Reporting
 
             $byDay[$completionTimeByDay->getTitle()] = $completionTimeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -1063,8 +1063,8 @@ class Reporting
 
             $byWeek[$completionTimeByWeek->getTitle()] = $completionTimeByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -1101,8 +1101,8 @@ class Reporting
 
             $byMonth[$completionTimeByMonth->getTitle()] = $completionTimeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -1191,8 +1191,8 @@ class Reporting
 
             $byDay[$notifyByDay->getTitle()] = $notifyByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -1232,8 +1232,8 @@ class Reporting
 
             $byMonth[$notifyByMonth->getTitle()] = $notifyByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
