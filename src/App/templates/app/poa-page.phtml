@@ -20,6 +20,16 @@ $this->addErrorMap([
             'summary'   => 'Attorney date of birth can only match if the attorney\'s name is also a match',
             'field'     => 'Invalid selection'
         ]
+    ],
+    'received-date' => [
+        'empty-string' => [
+            'summary'   => 'You didn\'t enter the date the claim was received',
+            'field'     => 'Enter the date the claim was received'
+        ],
+        'future-date' => [
+            'summary'   => 'The date the claim was received is in the future',
+            'field'     => 'Enter a valid date the claim was received'
+        ],
     ]
 ]);
 ?>
