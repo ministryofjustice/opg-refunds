@@ -80,7 +80,7 @@ $this->layout('layout::default', ['title' => 'Notify'])
 
             <p>Clicking 'Notify' will send an outcome notification email and a text to all claimants who have not yet been notified.</p>
             <p>It will notify any claimant whose claim was either rejected yesterday or was added to today's SOP1 spreadsheet.</p>
-            <p>It will only notify claimants who have supplied a valid email address or mobile number.</p>
+            <p>It will only notify claimants who have supplied a valid email address or mobile number and didn't opt out of receiving notifications.</p>
             <p>Do you wish to proceed?</p>
 
             <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
