@@ -380,7 +380,8 @@ class Notify implements Initializer\LogSupportInterface
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
-                    'claim-code' => $claimModel->getReferenceNumber()
+                    'claim-code' => $claimModel->getReferenceNumber(),
+                    'number-found' => count($claimModel->getPoas())
                 ]);
 
                 $this->getLogger()->info("Successfully sent acceptance email for claim {$claimModel->getReferenceNumber()}");
@@ -412,7 +413,8 @@ class Notify implements Initializer\LogSupportInterface
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
-                    'claim-code' => $claimModel->getReferenceNumber()
+                    'claim-code' => $claimModel->getReferenceNumber(),
+                    'number-found' => count($claimModel->getPoas())
                 ]);
 
                 $this->getLogger()->info("Successfully sent acceptance text for claim {$claimModel->getReferenceNumber()}");
