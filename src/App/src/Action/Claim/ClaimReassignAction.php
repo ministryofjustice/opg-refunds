@@ -76,11 +76,13 @@ class ClaimReassignAction extends AbstractClaimAction
             $assignedClaimId = $assignedClaim['assignedClaimId'];
             $assignedToName = $assignedClaim['assignedToName'];
 
+            $verb = $claim->getStatus() === ClaimModel::STATUS_PENDING ? 'assign' : 'reassign';
+
             if ($assignedClaimId === 0) {
-                throw new RuntimeException('Failed to reassign claim with id: ' . $this->modelId);
+                throw new RuntimeException('Failed to ' . $verb .' claim with id: ' . $this->modelId);
             }
 
-            $this->setFlashInfoMessage($request, 'Claim reassigned to ' . $assignedToName);
+            $this->setFlashInfoMessage($request, 'Claim ' . $verb . 'ed to ' . $assignedToName);
 
             return $this->redirectToRoute('claim', ['id' => $assignedClaimId]);
         }
