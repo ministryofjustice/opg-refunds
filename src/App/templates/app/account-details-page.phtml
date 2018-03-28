@@ -60,6 +60,12 @@ $this->addErrorMap([
     <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
 <?php $this->stop() ?>
 
+<?php if ($isUpdate): ?>
+    <p>We have stored the bank details you've given but for security reasons we can't show them.</p>
+    <p>You can keep the stored bank details or enter new details below.</p>
+    <p><a class="button" href="<?= $this->url('apply.summary') ?>">Keep stored bank details</a></p>
+<?php endif ?>
+
 <p>
     If a refund is approved it will be paid to this account. We can only pay refunds to UK bank accounts.
 </p>
