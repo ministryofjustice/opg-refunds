@@ -625,11 +625,17 @@ class Claim implements Initializer\LogSupportInterface
                 // Explicit assignment
                 $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
 
+                $message = "Caseworker was assigned this claim";
+
+                if (!empty($reason)) {
+                    $message .= " due to '{$reason}'";
+                }
+
                 $this->addNote(
                     $claim->getId(),
                     $userId,
                     NoteModel::TYPE_CLAIM_IN_PROGRESS,
-                    "Caseworker has begun to process this claim"
+                    $message
                 );
             } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
                 // Reassignment
