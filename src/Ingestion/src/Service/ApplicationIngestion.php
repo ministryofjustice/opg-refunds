@@ -175,6 +175,7 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
                     }
 
                     $this->casesEntityManager->flush();
+                    $this->casesEntityManager->clear();
 
                     $this->setProcessed($application);
 
@@ -193,12 +194,14 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
                         $this->claimRepository = $this->casesEntityManager->getRepository(Claim::class);
                         $this->userRepository = $this->casesEntityManager->getRepository(User::class);
 
+                        $this->casesEntityManager->clear();
+
                         $this->getLogger()->info(' Successfully recreated cases entity manager');
                     }
 
-                    $this->setProcessed($application);
-
                     $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker");
+
+                    return false;
                 }
             } else {
                 $this->setProcessed($application);
