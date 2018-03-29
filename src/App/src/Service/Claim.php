@@ -625,6 +625,9 @@ class Claim implements Initializer\LogSupportInterface
                 // Explicit assignment
                 $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
 
+                // Attempt to pre-populate POA data
+                $this->addMerisAndSiriusPoaData($claimId, $userId);
+
                 $message = "Caseworker was assigned this claim";
 
                 if (!empty($reason)) {
