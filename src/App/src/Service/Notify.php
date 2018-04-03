@@ -150,11 +150,6 @@ class Notify implements Initializer\LogSupportInterface
                 $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
 
-            if (($processedCount % 100) === 0) {
-                $this->entityManager->flush();
-                $this->entityManager->clear();
-            }
-
             if ($successful) {
                 $processedCount++;
             }
