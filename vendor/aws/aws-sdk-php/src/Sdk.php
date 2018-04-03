@@ -72,6 +72,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionComprehend(array $args = [])
  * @method \Aws\ConfigService\ConfigServiceClient createConfigService(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionConfigService(array $args = [])
+ * @method \Aws\Connect\ConnectClient createConnect(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionConnect(array $args = [])
  * @method \Aws\CostExplorer\CostExplorerClient createCostExplorer(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCostExplorer(array $args = [])
  * @method \Aws\CostandUsageReportService\CostandUsageReportServiceClient createCostandUsageReportService(array $args = [])
@@ -267,7 +269,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.52.32';
+    const VERSION = '3.53.1';
 
     /** @var array Arguments for creating clients */
     private $args;

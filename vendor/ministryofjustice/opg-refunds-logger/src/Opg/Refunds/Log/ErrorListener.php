@@ -27,6 +27,11 @@ class ErrorListener
 
     public function __invoke(Throwable $error, ServerRequestInterface $request, ResponseInterface $response)
     {
+        // Don't send notifications on 404 errors
+        if ($response->getStatusCode() == 404) {
+            return;
+        }
+
         try {
             $this->logger->log($this->priority, (string)$error, [
                 'status' => $response->getStatusCode(),
