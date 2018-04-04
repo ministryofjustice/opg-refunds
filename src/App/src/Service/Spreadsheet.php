@@ -16,6 +16,7 @@ use App\Service\Account as AccountService;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
+use PDO;
 use Zend\Crypt\PublicKey\Rsa;
 use Aws\Kms\KmsClient;
 
@@ -39,6 +40,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * @var EntityRepository
      */
     private $userRepository;
+
+    /**
+     * @var EntityRepository
+     */
+    private $paymentRepository;
 
     /**
      * @var EntityManager
@@ -71,6 +77,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     private $spreadsheetConfig;
 
     /**
+     * @var PDO
+     */
+    private $database;
+
+    /**
      * Spreadsheet constructor
      *
      * @param EntityManager $entityManager
@@ -79,17 +90,27 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * @param Claim $claimService
      * @param AccountService $accountService
      * @param array $spreadsheetConfig
+     * @param PDO $database
      */
-    public function __construct(EntityManager $entityManager, KmsClient $kmsClient, Rsa $bankCipher, ClaimService $claimService, AccountService $accountService, array $spreadsheetConfig)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        KmsClient $kmsClient,
+        Rsa $bankCipher,
+        ClaimService $claimService,
+        AccountService $accountService,
+        array $spreadsheetConfig,
+        PDO $database
+    ) {
         $this->repository = $entityManager->getRepository(ClaimEntity::class);
         $this->userRepository = $entityManager->getRepository(UserEntity::class);
+        $this->paymentRepository = $entityManager->getRepository(PaymentEntity::class);
         $this->entityManager = $entityManager;
         $this->kmsClient = $kmsClient;
         $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
         $this->accountService = $accountService;
         $this->spreadsheetConfig = $spreadsheetConfig;
+        $this->database = $database;
     }
 
     /**
@@ -110,8 +131,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         $this->getLogger()->debug(count($claimIds) . ' refundable claims retrieved in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
-        $refundableClaims = [];
-
         /** @var UserEntity $user */
         $user = $this->userRepository->findOneBy([
             'id' => $userId,
@@ -119,12 +138,16 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         $addStart = microtime(true);
 
+        $refundableClaims = [];
+        $inserts = [];
+        $insertParameters = [];
+
         foreach ($claimIds as $claimId) {
             $start = microtime(true);
 
             $claim = $this->claimService->getClaimEntity($claimId['id']);
 
-            $refundableClaims[] = $this->getRefundable($claim, $user);
+            $refundableClaims[] = $this->getRefundable($claim, $user, $inserts, $insertParameters);
 
             $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms. ' . count($refundableClaims) . ' in total');
 
@@ -160,7 +183,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
         // Check for the presence of account details rather than the account hash because the account details are deleted after X days but the account hash remains.
         // Limiting to just those payments associated with claims that have account details prevents listing of historic refund dates that will result in empty spreadsheets
         $statement = $this->entityManager->getConnection()->executeQuery(
-            'SELECT DISTINCT date_trunc(\'day\', p.added_datetime) AS historic_refund_date FROM claim c JOIN payment p ON c.payment_id = p.id WHERE p.added_datetime < CURRENT_DATE AND (c.json_data->\'account\'->\'details\') IS NOT NULL ORDER BY historic_refund_date DESC'
+            'SELECT DISTINCT date_trunc(\'day\', p.added_datetime) AS historic_refund_date FROM payment p JOIN claim c ON p.claim_id = c.id WHERE p.added_datetime < CURRENT_DATE AND (c.json_data->\'account\'->\'details\') IS NOT NULL ORDER BY historic_refund_date DESC'
         );
 
         $results = $statement->fetchAll();
@@ -185,20 +208,12 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $claimCode = $spreadsheetHash['claimCode'];
             $claimId = IdentFormatter::parseId($claimCode);
 
-            $statement = $this->entityManager->getConnection()->executeQuery(
-                'UPDATE payment SET spreadsheet_hash = :spreadsheetHash WHERE id = (SELECT payment_id FROM claim WHERE id = :claimId)',
-                [
-                    'claimId' => $claimId,
-                    'spreadsheetHash' => $spreadsheetHash['hash']
-                ]
-            );
+            /** @var PaymentEntity $payment */
+            $payment = $this->paymentRepository->findOneBy([
+                'claim' => $claimId,
+            ]);
 
-            $result = $statement->fetchAll();
-            $updateCount = count($result);
-
-            if ($updateCount !== 1) {
-                $this->getLogger()->warn('Spreadsheet hash for claim with id ' . $claimId . ' was not updated successfully! ' . $updateCount);
-            }
+            $payment->setSpreadsheetHash($spreadsheetHash['hash']);
 
             $processed++;
         }
@@ -318,9 +333,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     /**
      * @param ClaimEntity $entity
      * @param UserEntity $user
+     * @param array $inserts
+     * @param array $insertParameters
      * @return ClaimModel
      */
-    private function getRefundable(ClaimEntity $entity, UserEntity $user)
+    private function getRefundable(ClaimEntity $entity, UserEntity $user, array & $inserts, array & $insertParameters)
     {
         $claimId = $entity->getId();
         $userId = $user->getId();
@@ -355,9 +372,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $refundAmountString = money_format('£%i', $refundAmount);
 
             //Create and persist payment
-            $payment = new PaymentEntity($refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer');
+            //$inserts[] = 'INSERT INTO payment (amount, method, added_datetime) VALUES (?, ?, ?)';
+            //$insertParameters[] = [$refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer', date('c')];
+
+            $payment = new PaymentEntity($refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer', $entity);
             $this->entityManager->persist($payment);
-            $entity->setPayment($payment);
             $claim->setPayment($payment->getAsDataModel());
 
             $message = "A refund amount of $refundAmountString was added to the claim";
@@ -410,7 +429,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
-                'UPDATE claim SET json_data = json_data #- \'{account,details}\' WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.payment_id = p.id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
+                'UPDATE claim SET json_data = json_data #- \'{account,details}\' WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
                 ['date' => $deleteAfterHistoricalRefundDate->format('Y-m-d')]
             );
 
