@@ -9,7 +9,6 @@ use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use App\Entity\Cases\Claim as ClaimEntity;
-use App\Entity\Cases\Note as NoteEntity;
 use App\Entity\Cases\Payment as PaymentEntity;
 use App\Entity\Cases\User as UserEntity;
 use App\Service\Account as AccountService;
@@ -139,15 +138,15 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $addStart = microtime(true);
 
         $refundableClaims = [];
-        $inserts = [];
-        $insertParameters = [];
+        $paymentParameters = [];
+        $noteParameters = [];
 
         foreach ($claimIds as $claimId) {
             $start = microtime(true);
 
             $claim = $this->claimService->getClaimEntity($claimId['id']);
 
-            $refundableClaims[] = $this->getRefundable($claim, $user, $inserts, $insertParameters);
+            $refundableClaims[] = $this->getRefundable($claim, $user, $paymentParameters, $noteParameters);
 
             $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms. ' . count($refundableClaims) . ' in total');
 
@@ -158,18 +157,47 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         $this->getLogger()->debug(count($refundableClaims) . ' refundable claims added in ' . $this->getElapsedTimeInMs($addStart) . 'ms');
 
-        $start = microtime(true);
+        //Insert payments
+        $paymentInsertCount = count($paymentParameters) / 4;
+        if ($paymentInsertCount > 0) {
+            $start = microtime(true);
 
-        $this->entityManager->flush();
-        $this->entityManager->clear();
+            $paymentInsertSql = 'INSERT INTO payment (amount, method, added_datetime, claim_id) VALUES ';
 
-        $this->getLogger()->debug('Changes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            for ($i = 0; $i < $paymentInsertCount; $i++) {
+                $paymentInsertSql .= ($i != 0) ? ', ' : '';
+                $paymentInsertSql .= '(?, ?, ?, ?)';
+            }
 
-        $start = microtime(true);
+            $this->database->beginTransaction();
+            $statement = $this->database->prepare($paymentInsertSql);
+            $statement->execute($paymentParameters);
+            $this->database->commit();
+
+            $this->getLogger()->info($paymentInsertCount . ' payments inserted into the database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        }
+
+        //Insert notes
+        $noteInsertCount = count($noteParameters) / 5;
+        if ($noteInsertCount > 0) {
+            $start = microtime(true);
+
+            $noteInsertSql = 'INSERT INTO note (claim_id, user_id, created_datetime, type, message) VALUES ';
+
+            for ($i = 0; $i < $noteInsertCount; $i++) {
+                $noteInsertSql .= ($i != 0) ? ', ' : '';
+                $noteInsertSql .= '(?, ?, ?, ?, ?)';
+            }
+
+            $this->database->beginTransaction();
+            $statement = $this->database->prepare($noteInsertSql);
+            $statement->execute($noteParameters);
+            $this->database->commit();
+
+            $this->getLogger()->info(($noteInsertCount) . ' notes inserted into the database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        }
 
         $this->clearBankDetails();
-
-        $this->getLogger()->debug('Bank details deleted in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
         return $refundableClaims;
     }
@@ -204,24 +232,21 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
         $processed = 0;
 
+        $this->database->beginTransaction();
+
         foreach ($spreadsheetHashes as $spreadsheetHash) {
             $claimCode = $spreadsheetHash['claimCode'];
             $claimId = IdentFormatter::parseId($claimCode);
 
-            /** @var PaymentEntity $payment */
-            $payment = $this->paymentRepository->findOneBy([
-                'claim' => $claimId,
-            ]);
-
-            $payment->setSpreadsheetHash($spreadsheetHash['hash']);
+            $statement = $this->database->prepare('UPDATE payment SET spreadsheet_hash = ? WHERE claim_id = ? AND spreadsheet_hash != ?');
+            $statement->execute([$spreadsheetHash['hash'], $claimId, $spreadsheetHash['hash']]);
 
             $processed++;
         }
 
-        $this->entityManager->flush();
-        $this->entityManager->clear();
+        $this->database->commit();
 
-        $this->getLogger()->debug($processed . ' spreadsheet hashes flushed to database in ' . $this->getElapsedTimeInMs($start) . 'ms');
+        $this->getLogger()->debug($processed . ' spreadsheet hashes updated in ' . $this->getElapsedTimeInMs($start) . 'ms');
     }
 
     public function validateSpreadsheetHashes(array $spreadsheetHashes, DateTime $date)
@@ -333,11 +358,11 @@ class Spreadsheet implements Initializer\LogSupportInterface
     /**
      * @param ClaimEntity $entity
      * @param UserEntity $user
-     * @param array $inserts
-     * @param array $insertParameters
+     * @param array $paymentParameters
+     * @param array $noteParameters
      * @return ClaimModel
      */
-    private function getRefundable(ClaimEntity $entity, UserEntity $user, array & $inserts, array & $insertParameters)
+    private function getRefundable(ClaimEntity $entity, UserEntity $user, array & $paymentParameters, array & $noteParameters)
     {
         $claimId = $entity->getId();
         $userId = $user->getId();
@@ -371,18 +396,28 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $refundAmount = RefundCalculator::getRefundTotalAmount($entity, time());
             $refundAmountString = money_format('£%i', $refundAmount);
 
-            //Create and persist payment
-            //$inserts[] = 'INSERT INTO payment (amount, method, added_datetime) VALUES (?, ?, ?)';
-            //$insertParameters[] = [$refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer', date('c')];
-
+            //Create payment entity
             $payment = new PaymentEntity($refundAmount, $claim->getApplication()->isRefundByCheque() ? 'Cheque' : 'Bank transfer', $entity);
-            $this->entityManager->persist($payment);
             $claim->setPayment($payment->getAsDataModel());
 
+            //Set payment parameters
+            $paymentParameters[] = $payment->getAmount();
+            $paymentParameters[] = $payment->getMethod();
+            $paymentParameters[] = date('c', $payment->getAddedDateTime()->getTimestamp());
+            $paymentParameters[] = $payment->getClaim()->getId();
+
             $message = "A refund amount of $refundAmountString was added to the claim";
-            $note = new NoteEntity(NoteModel::TYPE_REFUND_ADDED, $message, $entity, $user);
-            $this->entityManager->persist($note);
             $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
+
+            //Set note parameters
+            $noteParameters[] = $claimId;
+            $noteParameters[] = $userId;
+            $noteParameters[] = date('c');
+            $noteParameters[] = NoteModel::TYPE_REFUND_ADDED;
+            $noteParameters[] = $message;
+
+            $this->getLogger()->debug('Payment for refundable claim with id ' . $claim->getId() . ' calculated in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            $start = microtime(true);
         } else {
             $payment = $entity->getPayment();
             $refundAmount = $payment->getAmount();
@@ -390,19 +425,15 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $claim->setPayment($payment->getAsDataModel());
         }
 
-        $this->getLogger()->debug('Payment for refundable claim with id ' . $claim->getId() . ' calculated in ' . $this->getElapsedTimeInMs($start) . 'ms');
-        $start = microtime(true);
-
         $message = "A refundable claim for $refundAmountString was downloaded";
-        $note = new NoteEntity(NoteModel::TYPE_REFUND_DOWNLOADED, $message, $entity, $user);
-        $this->entityManager->persist($note);
         $this->getLogger()->info($message . ' by ' . $user->getId() . ' ' . $user->getName());
 
-        $this->getLogger()->debug('Downloaded note for refundable claim with id ' . $claim->getId() . ' added in ' . $this->getElapsedTimeInMs($start) . 'ms');
-        $start = microtime(true);
-
-        $this->getLogger()->debug('Refundable claim with id ' . $claim->getId() . ' retrieved and translated to datamodel in ' . $this->getElapsedTimeInMs($start) . 'ms');
-        $start = microtime(true);
+        //Set note parameters
+        $noteParameters[] = $claimId;
+        $noteParameters[] = $userId;
+        $noteParameters[] = date('c');
+        $noteParameters[] = NoteModel::TYPE_REFUND_DOWNLOADED;
+        $noteParameters[] = $message;
 
         if (!$claim->getApplication()->isRefundByCheque()) {
             //  Deserialize the application from the JSON data
