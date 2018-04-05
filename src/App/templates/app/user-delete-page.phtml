@@ -6,11 +6,7 @@
 
     <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
 
-    <?php if ($deletingSelf) { ?>
-        <p>You are about to delete your own account. Are you sure you want to continue?</p>
-    <?php }else { ?>
-        <p>Are you sure you want to delete <?= $this->e($user->getName()) ?>?</p>
-    <?php } ?>
+    <p>Are you sure you want to delete <?= $this->e($user->getName()) ?>?</p>
 
     <div class="form-group">
         <input type="submit" class="button" style="background-color: red;" name="submit" value="Delete">

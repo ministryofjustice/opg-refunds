@@ -18,7 +18,7 @@ class UserDeleteAction extends AbstractUserAction
     /**
      * @param ServerRequestInterface $request
      * @param DelegateInterface $delegate
-     * @return HtmlResponse
+     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
@@ -32,14 +32,16 @@ class UserDeleteAction extends AbstractUserAction
         /** @var User $identity */
         $identity = $request->getAttribute('identity');
 
-        $deletingSelf = ($identity->getId() == $user->getId());
+        //  The user should not be able to access the delete screen for themself
+        if ($identity->getId() == $this->modelId) {
+            return $this->redirectToRoute('user', ['id' => $this->modelId]);
+        }
 
         $form = $this->getForm($request);
 
         return new HtmlResponse($this->getTemplateRenderer()->render('app::user-delete-page', [
-            'user'          => $user,
-            'form'          => $form,
-            'deletingSelf'  => $deletingSelf,
+            'user' => $user,
+            'form' => $form,
         ]));
     }
 
@@ -56,13 +58,17 @@ class UserDeleteAction extends AbstractUserAction
         $form->setData($request->getParsedBody());
 
         if ($form->isValid()) {
-            $user = $this->userService->deleteUser($this->modelId);
+            //  Don't allow the user to delete themselves
 
             /** @var User $identity */
             $identity = $request->getAttribute('identity');
 
-            //  If the user just deleted their own account sign then out automatically - otherwise return to the users screen
-            return $this->redirectToRoute($identity->getId() == $user->getId() ? 'sign.out' : 'user');
+            //  Only execute the delete if it is NOT the logged in user
+            if ($identity->getId() != $this->modelId) {
+                $user = $this->userService->deleteUser($this->modelId);
+            }
+
+            return $this->redirectToRoute('user');
         }
 
         // The only reason the form can be invalid is a CSRF check fail so no need to recover gracefully

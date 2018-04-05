@@ -42,8 +42,11 @@
                 <input type="submit" class="button button-secondary" value="Resend Set Up Email" />
 
             </form>
+        <?php }
+
+        if ($identity->getId() != $user->getId()) { ?>
+            <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
         <?php } ?>
-        <a class="button button-secondary" href="<?= $this->generateUrl('user.delete', ['id' => $user->getId()]) ?>">Delete</a>
         <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => null]) ?>">Back to users</a>
     </div>
 </div>
