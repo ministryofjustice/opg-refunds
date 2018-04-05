@@ -8,6 +8,7 @@ use App\Exception\NotFoundException;
 use DateInterval;
 use DateTime;
 use Doctrine\DBAL\Exception\DriverException;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
@@ -59,7 +60,6 @@ class Claim implements Initializer\LogSupportInterface
     private $entityManager;
 
     /**
-
      * @var PoaLookup
      */
     private $poaLookup;
@@ -1588,7 +1588,7 @@ class Claim implements Initializer\LogSupportInterface
                 $sql
             );
 
-            $maxCaseNumbersRejectionCounts = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $maxCaseNumbersRejectionCounts = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
             foreach ($claim->getPoas() as $poa) {
                 if (isset($maxCaseNumbersRejectionCounts[$poa->getCaseNumber()])) {

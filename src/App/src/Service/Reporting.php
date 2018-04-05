@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Cases\Report as ReportEntity;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -87,7 +88,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $claimAllTime = $this->upsertReport(
@@ -137,7 +138,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByDay = $this->upsertReport(
                     $claimByDay,
@@ -175,7 +176,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $week = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByWeek = $this->upsertReport(
                     $claimByWeek,
@@ -213,7 +214,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByMonth = $this->upsertReport(
                     $claimByMonth,
@@ -289,7 +290,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $claimSourceAllTime = $this->upsertReport(
@@ -333,7 +334,7 @@ class Reporting
                     ]
                 );
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $claimSourceByDay = $this->upsertReport(
                     $claimSourceByDay,
@@ -374,7 +375,7 @@ class Reporting
                     ]
                 );
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $claimSourceByMonth = $this->upsertReport(
                     $claimSourceByMonth,
@@ -416,7 +417,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $phoneClaimTypeAllTime = $this->upsertReport(
@@ -457,7 +458,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $phoneClaimTypeByDay = $this->upsertReport(
                     $phoneClaimTypeByDay,
@@ -498,7 +499,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $phoneClaimTypeByMonth = $this->upsertReport(
                     $phoneClaimTypeByMonth,
@@ -563,7 +564,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addRejectionReasonColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addRejectionReasonColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $rejectionReasonAllTime = $this->upsertReport(
@@ -617,7 +618,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $duplicateBankDetailAllTime = $this->upsertReport(
@@ -656,7 +657,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $refundAllTime = $this->upsertReport(
@@ -700,7 +701,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByDay = $this->upsertReport(
                     $refundByDay,
@@ -748,7 +749,7 @@ class Reporting
                     ]
                 );
 
-                $week = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $week = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByWeek = $this->upsertReport(
                     $refundByWeek,
@@ -789,7 +790,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByMonth = $this->upsertReport(
                     $refundByMonth,
@@ -840,7 +841,7 @@ class Reporting
             $sql
         );
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $allTime = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
         $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
                 UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
@@ -868,7 +869,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByDay = $this->upsertReport(
                     $processingTimeByDay,
@@ -906,7 +907,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $week = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByWeek = $this->upsertReport(
                     $processingTimeByWeek,
@@ -944,7 +945,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByMonth = $this->upsertReport(
                     $processingTimeByMonth,
@@ -982,7 +983,7 @@ class Reporting
             $sql
         );
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $allTime = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
         $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (finished_datetime - received_datetime)))) AS value FROM claim WHERE finished_datetime IS NOT NULL AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
                 UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (finished_datetime - received_datetime)))) AS value FROM claim WHERE finished_datetime IS NOT NULL AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
@@ -1010,7 +1011,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByDay = $this->upsertReport(
                     $completionTimeByDay,
@@ -1048,7 +1049,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $week = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByWeek = $this->upsertReport(
                     $completionTimeByWeek,
@@ -1086,7 +1087,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByMonth = $this->upsertReport(
                     $completionTimeByMonth,
@@ -1132,7 +1133,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $notifyAllTime = $this->upsertReport(
@@ -1176,7 +1177,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $notifyByDay = $this->upsertReport(
                     $notifyByDay,
@@ -1217,7 +1218,7 @@ class Reporting
                     ]
                 );
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $notifyByMonth = $this->upsertReport(
                     $notifyByMonth,
@@ -1258,7 +1259,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $poasPerClaimAllTime = $this->upsertReport(
