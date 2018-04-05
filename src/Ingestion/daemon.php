@@ -40,6 +40,21 @@ use Zend\Log\Logger;
 /** @var Logger $logger */
 $logger = $container->get(Logger::class);
 
+// Check daemon is enabled
+
+$config = $container->get('config');
+
+if (!isset($config['ingestion']['enabled'])) {
+    $logger->emerg("Ingestion daemon missing 'enabled' configuration");
+    exit(1);
+}
+
+if ($config['ingestion']['enabled'] === false) {
+    cli\line('Ingestion daemon is not enabled; stopping');
+    $logger->alert("Warning - ingestion daemon not enabled");
+    exit(0);
+}
+
 // Create the Worker
 
 /** @var IngestionWorker $worker */
