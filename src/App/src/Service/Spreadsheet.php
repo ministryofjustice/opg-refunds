@@ -238,8 +238,8 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $claimCode = $spreadsheetHash['claimCode'];
             $claimId = IdentFormatter::parseId($claimCode);
 
-            $statement = $this->database->prepare('UPDATE payment SET spreadsheet_hash = ? WHERE claim_id = ? AND spreadsheet_hash != ?');
-            $statement->execute([$spreadsheetHash['hash'], $claimId, $spreadsheetHash['hash']]);
+            $statement = $this->database->prepare('UPDATE payment SET spreadsheet_hash = ? WHERE claim_id = ?');
+            $statement->execute([$spreadsheetHash['hash'], $claimId]);
 
             $processed++;
         }
