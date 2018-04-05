@@ -133,8 +133,8 @@ class UserAction extends AbstractRestfulAction
         } else {
             //  Define the request field to update functions mappings
             $updateMappings = [
-                'name'     => 'setName',
                 'email'    => 'setEmail',
+                'name'     => 'setName',
                 'roles'    => 'setRoles',
                 'status'   => 'setStatus',
                 'password' => 'setPassword',
