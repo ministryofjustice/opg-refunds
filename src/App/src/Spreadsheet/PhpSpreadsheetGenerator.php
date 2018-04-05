@@ -128,6 +128,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
 
         $handle = fopen($outputFilePath, 'r');
 
+        unlink($outputFilePath);
+
         return $handle;
     }
 
@@ -270,6 +272,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
         }
 
         $handle = fopen($outputFilePath, 'r');
+
+        unlink($outputFilePath);
 
         return $handle;
     }

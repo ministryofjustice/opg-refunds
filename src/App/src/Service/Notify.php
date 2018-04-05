@@ -73,25 +73,25 @@ class Notify implements Initializer\LogSupportInterface
         //Select all claim ids that aren't associated with a notification note type
         //Restrict those to duplicated or rejected claims from yesterday or older
         //Plus any accepted claims with a payment. They will have been added to the SOP1 spreadsheet
-        $sql = 'SELECT id, finished_datetime FROM claim
+        $sql = 'SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_email_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
-                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
+                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NOT NULL UNION
-                SELECT id, finished_datetime FROM claim
+                SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_text_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
-                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
+                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\' UNION
-                SELECT id, finished_datetime FROM claim
+                SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
-                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
+                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'address\' IS NOT NULL UNION
-                SELECT id, finished_datetime FROM claim
+                SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_phone_called IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
-                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND payment_id IS NOT NULL))
+                AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'address\' IS NULL
                 AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' NOT LIKE \'07%\'
                 ORDER BY finished_datetime';
@@ -150,8 +150,6 @@ class Notify implements Initializer\LogSupportInterface
                 $successful = $this->sendAcceptanceNotification($claimModel, $claimEntity, $userId);
             }
 
-            $this->entityManager->flush();
-
             if ($successful) {
                 $processedCount++;
             }
@@ -163,6 +161,9 @@ class Notify implements Initializer\LogSupportInterface
                 break;
             }
         }
+
+        $this->entityManager->flush();
+        $this->entityManager->clear();
 
         $notified['processed'] = $processedCount;
         $notified['notifyTime'] = round(microtime(true) - $startNotify, 4);
@@ -374,7 +375,8 @@ class Notify implements Initializer\LogSupportInterface
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
-                    'claim-code' => $claimModel->getReferenceNumber()
+                    'claim-code' => $claimModel->getReferenceNumber(),
+                    'number-found' => count($claimModel->getPoas())
                 ]);
 
                 $this->getLogger()->info("Successfully sent acceptance email for claim {$claimModel->getReferenceNumber()}");
@@ -406,7 +408,8 @@ class Notify implements Initializer\LogSupportInterface
                     'interest-amount' => $claimModel->getRefundInterestAmountString(),
                     'donor-name' => $this->getDonorNameForTemplate($templateId, $claimModel->getDonorName()),
                     'donor-dob' => $donorDob,
-                    'claim-code' => $claimModel->getReferenceNumber()
+                    'claim-code' => $claimModel->getReferenceNumber(),
+                    'number-found' => count($claimModel->getPoas())
                 ]);
 
                 $this->getLogger()->info("Successfully sent acceptance text for claim {$claimModel->getReferenceNumber()}");

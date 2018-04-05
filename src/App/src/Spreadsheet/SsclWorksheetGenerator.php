@@ -113,6 +113,8 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             $cells[] = new SpreadsheetCell(33, $rowIndex, $approverId);
 
             $rows[] = new SpreadsheetRow($cells);
+
+            unset($claim);
         }
 
         return new SpreadsheetWorksheet(self::WORKSHEET_NAME, $rows);

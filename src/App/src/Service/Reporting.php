@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Cases\Report as ReportEntity;
+use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
@@ -59,6 +60,9 @@ class Reporting
             'poasPerClaim' => $this->getPoasPerClaim($dateOfFirstClaim),
         ];
 
+        $this->entityManager->flush();
+        $this->entityManager->clear();
+
         $end = microtime(true);
 
         $reports['generated'] = date('d/m/Y H:i:s', (new DateTime())->getTimestamp());
@@ -84,7 +88,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $claimAllTime = $this->upsertReport(
@@ -134,7 +138,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByDay = $this->upsertReport(
                     $claimByDay,
@@ -149,8 +153,8 @@ class Reporting
 
             $byDay[$claimByDay->getTitle()] = $claimByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -172,7 +176,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $week = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByWeek = $this->upsertReport(
                     $claimByWeek,
@@ -187,8 +191,8 @@ class Reporting
 
             $byWeek[$claimByWeek->getTitle()] = $claimByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -210,7 +214,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $claimByMonth = $this->upsertReport(
                     $claimByMonth,
@@ -225,8 +229,8 @@ class Reporting
 
             $byMonth[$claimByMonth->getTitle()] = $claimByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -286,7 +290,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $claimSourceAllTime = $this->upsertReport(
@@ -330,7 +334,7 @@ class Reporting
                     ]
                 );
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $claimSourceByDay = $this->upsertReport(
                     $claimSourceByDay,
@@ -345,8 +349,8 @@ class Reporting
 
             $byDay[$claimSourceByDay->getTitle()] = $claimSourceByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -371,7 +375,7 @@ class Reporting
                     ]
                 );
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $claimSourceByMonth = $this->upsertReport(
                     $claimSourceByMonth,
@@ -386,8 +390,8 @@ class Reporting
 
             $byMonth[$claimSourceByMonth->getTitle()] = $claimSourceByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -413,7 +417,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $phoneClaimTypeAllTime = $this->upsertReport(
@@ -454,7 +458,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $phoneClaimTypeByDay = $this->upsertReport(
                     $phoneClaimTypeByDay,
@@ -469,8 +473,8 @@ class Reporting
 
             $byDay[$phoneClaimTypeByDay->getTitle()] = $phoneClaimTypeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -495,7 +499,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $phoneClaimTypeByMonth = $this->upsertReport(
                     $phoneClaimTypeByMonth,
@@ -510,8 +514,8 @@ class Reporting
 
             $byMonth[$phoneClaimTypeByMonth->getTitle()] = $phoneClaimTypeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -560,7 +564,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addRejectionReasonColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addRejectionReasonColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $rejectionReasonAllTime = $this->upsertReport(
@@ -614,7 +618,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $duplicateBankDetailAllTime = $this->upsertReport(
@@ -653,7 +657,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $refundAllTime = $this->upsertReport(
@@ -697,7 +701,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByDay = $this->upsertReport(
                     $refundByDay,
@@ -717,8 +721,8 @@ class Reporting
                 throw new \Exception("There should never be more than one spreadsheet per day. Found {$day['number_of_spreadsheets']}");
             }
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
 
             $i++;
         }
@@ -745,7 +749,7 @@ class Reporting
                     ]
                 );
 
-                $week = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $week = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByWeek = $this->upsertReport(
                     $refundByWeek,
@@ -760,8 +764,8 @@ class Reporting
 
             $byWeek[$refundByWeek->getTitle()] = $refundByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -786,7 +790,7 @@ class Reporting
                     ]
                 );
 
-                $month = $this->formatRefundReport($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $month = $this->formatRefundReport(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $refundByMonth = $this->upsertReport(
                     $refundByMonth,
@@ -801,8 +805,8 @@ class Reporting
 
             $byMonth[$refundByMonth->getTitle()] = $refundByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -837,7 +841,7 @@ class Reporting
             $sql
         );
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $allTime = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
         $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
                 UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (c.finished_datetime - n.created_datetime)))) AS value FROM claim c JOIN note n ON n.claim_id = c.id WHERE c.finished_datetime IS NOT NULL AND n.type = \'claim_in_progress\' AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
@@ -865,7 +869,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByDay = $this->upsertReport(
                     $processingTimeByDay,
@@ -880,8 +884,8 @@ class Reporting
 
             $byDay[$processingTimeByDay->getTitle()] = $processingTimeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -903,7 +907,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $week = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByWeek = $this->upsertReport(
                     $processingTimeByWeek,
@@ -918,8 +922,8 @@ class Reporting
 
             $byWeek[$processingTimeByWeek->getTitle()] = $processingTimeByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -941,7 +945,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $processingTimeByMonth = $this->upsertReport(
                     $processingTimeByMonth,
@@ -956,8 +960,8 @@ class Reporting
 
             $byMonth[$processingTimeByMonth->getTitle()] = $processingTimeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -979,7 +983,7 @@ class Reporting
             $sql
         );
 
-        $allTime = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+        $allTime = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
         $sql = 'SELECT \'mean\' AS aggregate, round(avg(EXTRACT(EPOCH FROM (finished_datetime - received_datetime)))) AS value FROM claim WHERE finished_datetime IS NOT NULL AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
                 UNION ALL SELECT \'median\' AS aggregate, round(PERCENTILE_CONT(0.50) WITHIN GROUP (ORDER BY EXTRACT(EPOCH FROM (finished_datetime - received_datetime)))) AS value FROM claim WHERE finished_datetime IS NOT NULL AND finished_datetime >= :startOfDay AND finished_datetime <= :endOfDay
@@ -1007,7 +1011,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $day = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $day = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByDay = $this->upsertReport(
                     $completionTimeByDay,
@@ -1022,8 +1026,8 @@ class Reporting
 
             $byDay[$completionTimeByDay->getTitle()] = $completionTimeByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byWeek = [];
@@ -1045,7 +1049,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $week = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $week = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByWeek = $this->upsertReport(
                     $completionTimeByWeek,
@@ -1060,8 +1064,8 @@ class Reporting
 
             $byWeek[$completionTimeByWeek->getTitle()] = $completionTimeByWeek->getData();
 
-            $startOfWeek = $startOfWeek->sub(new DateInterval('P1W'));
-            $endOfWeek = $endOfWeek->sub(new DateInterval('P1W'));
+            $startOfWeek = (clone $startOfWeek)->sub(new DateInterval('P1W'));
+            $endOfWeek = (clone $endOfWeek)->sub(new DateInterval('P1W'));
         }
 
         $byMonth = [];
@@ -1083,7 +1087,7 @@ class Reporting
 
                 $statement = $this->entityManager->getConnection()->executeQuery($sql, $parameters);
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $completionTimeByMonth = $this->upsertReport(
                     $completionTimeByMonth,
@@ -1098,8 +1102,8 @@ class Reporting
 
             $byMonth[$completionTimeByMonth->getTitle()] = $completionTimeByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -1129,7 +1133,7 @@ class Reporting
                 $sql
             );
 
-            $data = $this->addStatusColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+            $data = $this->addStatusColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
             $endDateTime = new DateTime();
 
             $notifyAllTime = $this->upsertReport(
@@ -1173,7 +1177,7 @@ class Reporting
                     ]
                 );
 
-                $day = $this->addPhoneClaimTypeColumns($statement->fetchAll(\PDO::FETCH_KEY_PAIR));
+                $day = $this->addPhoneClaimTypeColumns(array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0));
 
                 $notifyByDay = $this->upsertReport(
                     $notifyByDay,
@@ -1188,8 +1192,8 @@ class Reporting
 
             $byDay[$notifyByDay->getTitle()] = $notifyByDay->getData();
 
-            $startOfDay = $startOfDay->sub(new DateInterval('P1D'));
-            $endOfDay = $endOfDay->sub(new DateInterval('P1D'));
+            $startOfDay = (clone $startOfDay)->sub(new DateInterval('P1D'));
+            $endOfDay = (clone $endOfDay)->sub(new DateInterval('P1D'));
         }
 
         $byMonth = [];
@@ -1214,7 +1218,7 @@ class Reporting
                     ]
                 );
 
-                $month = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+                $month = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
 
                 $notifyByMonth = $this->upsertReport(
                     $notifyByMonth,
@@ -1229,8 +1233,8 @@ class Reporting
 
             $byMonth[$notifyByMonth->getTitle()] = $notifyByMonth->getData();
 
-            $startOfMonth = $startOfMonth->sub(new DateInterval('P1M'));
-            $endOfMonth = $endOfMonth->sub(new DateInterval('P1M'));
+            $startOfMonth = (clone $startOfMonth)->sub(new DateInterval('P1M'));
+            $endOfMonth = (clone $endOfMonth)->sub(new DateInterval('P1M'));
         }
 
         return [
@@ -1255,7 +1259,7 @@ class Reporting
                 $sql
             );
 
-            $data = $statement->fetchAll(\PDO::FETCH_KEY_PAIR);
+            $data = array_column($statement->fetchAll(FetchMode::NUMERIC), 1, 0);
             $endDateTime = new DateTime();
 
             $poasPerClaimAllTime = $this->upsertReport(
@@ -1309,8 +1313,6 @@ class Reporting
             $report->setGeneratedDateTime($generated);
             $report->setGenerationTimeInMs($generationTimeInMs);
         }
-
-        $this->entityManager->flush();
 
         return $report;
     }

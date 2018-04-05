@@ -33,7 +33,7 @@ class ClassGenerator extends ZendClassGenerator
     /**
      * {@inheritDoc}
      */
-    public function setExtendedClass($extendedClass) : self
+    public function setExtendedClass($extendedClass) : parent
     {
         if ($extendedClass) {
             $extendedClass = '\\' . trim($extendedClass, '\\');
@@ -45,7 +45,7 @@ class ClassGenerator extends ZendClassGenerator
     /**
      * {@inheritDoc}
      */
-    public function setImplementedInterfaces(array $interfaces) : self
+    public function setImplementedInterfaces(array $interfaces) : parent
     {
         foreach ($interfaces as & $interface) {
             $interface = '\\' . trim($interface, '\\');

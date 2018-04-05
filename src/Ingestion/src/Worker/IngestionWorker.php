@@ -79,7 +79,7 @@ class IngestionWorker implements Initializer\LogSupportInterface
                 if ($this->exceptionCount < 3) {
                     // Initially warn about the exception
                     $this->getLogger()->warn(
-                        'Exception when ingesting application. ' . $ex->getMessage(),
+                        'Exception when ingesting application. ' . $ex->getMessage() . ' ' . $ex->getTraceAsString(),
                         ['exception' => $ex]
                     );
 
@@ -92,7 +92,7 @@ class IngestionWorker implements Initializer\LogSupportInterface
                 } else {
                     // Issue is now critical so log as such and shut down
                     $this->getLogger()->crit(
-                        'Exception when ingesting application. ' . $ex->getMessage(),
+                        'Exception when ingesting application. ' . $ex->getMessage() . ' ' . $ex->getTraceAsString(),
                         ['exception' => $ex]
                     );
 

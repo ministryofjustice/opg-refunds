@@ -3,7 +3,7 @@
 namespace App\Service;
 
 use DateTime;
-use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use App\Entity\Cases\Claim as ClaimEntity;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 
 /**
@@ -64,11 +64,11 @@ class RefundCalculator
     }
 
     /**
-     * @param ClaimModel $claim
+     * @param ClaimEntity $claim
      * @param int $refundTime
      * @return float
      */
-    public static function getRefundTotalAmount(ClaimModel $claim, int $refundTime): float
+    public static function getRefundTotalAmount(ClaimEntity $claim, int $refundTime): float
     {
         if ($claim->getPoas() === null) {
             return 0.0;
