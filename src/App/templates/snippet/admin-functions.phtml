@@ -41,12 +41,12 @@ Mandatory: claim
 
         <?php } ?>
 
-        <?php if($claim->canReassignClaim()) { ?>
+        <?php if($claim->getStatus() === ClaimModel::STATUS_PENDING || $claim->canReassignClaim()) { ?>
 
             <div class="">
                 <dt class="details-term">Assignment</dt>
                 <dd class="details-definition">
-                    <a class="button button-secondary" href="<?= $this->generateUrl('claim.reassign', ['claimId' => $claim->getId()]) ?>">Reassign claim</a>
+                    <a class="button button-secondary" href="<?= $this->generateUrl('claim.reassign', ['claimId' => $claim->getId()]) ?>"><?= $claim->getStatus() === ClaimModel::STATUS_PENDING ? 'Assign' : 'Reassign' ?> claim</a>
                 </dd>
             </div>
 

@@ -6,6 +6,7 @@ use Api\Exception\ApiException;
 use Api\Service\Client as ApiClient;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Zend\Authentication\Adapter\AdapterInterface;
+use Zend\Session\SessionManager;
 
 /**
  * Class AuthenticationAdapter
@@ -17,6 +18,11 @@ class AuthenticationAdapter implements AdapterInterface
      * @var ApiClient
      */
     private $client;
+
+    /**
+     * @var SessionManager
+     */
+    private $sessionManager;
 
     /**
      * @var string
@@ -32,10 +38,12 @@ class AuthenticationAdapter implements AdapterInterface
      * AuthenticationAdapter constructor
      *
      * @param ApiClient $client
+     * @param SessionManager $sessionManager
      */
-    public function __construct(ApiClient $client)
+    public function __construct(ApiClient $client, SessionManager $sessionManager)
     {
         $this->client = $client;
+        $this->sessionManager = $sessionManager;
     }
 
     /**
@@ -75,6 +83,9 @@ class AuthenticationAdapter implements AdapterInterface
 
             //  If no exception has been thrown then this is OK - transfer the details to the success result
             $user = new User($userData);
+
+            //  Regenerate the session ID post authentication
+            $this->sessionManager->regenerateId(true);
 
             return new Result(Result::SUCCESS, $user);
         } catch (ApiException $apiEx) {
