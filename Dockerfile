@@ -1,7 +1,7 @@
-FROM registry.service.opg.digital/opg-php-fpm-1604
+FROM registry.service.opg.digital/opg-php-fpm-71-ppa-1604
 
 RUN apt update && apt install -y \
-    php-zip php7.0-gd
+    php7.1-zip php7.1-gd php7.1-bcmath
 
 ADD . /app
 RUN mkdir -p /srv/opg-refunds-caseworker-api/application && \

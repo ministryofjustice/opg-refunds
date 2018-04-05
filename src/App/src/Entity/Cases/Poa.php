@@ -208,7 +208,7 @@ class Poa extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = PoaModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = PoaModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'RefundAmount' => function () {

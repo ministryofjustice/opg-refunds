@@ -26,7 +26,11 @@ use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
  * @ORM\Index(name="idx_claim_status_updated_datetime", columns={"status", "updated_datetime"}),
  * @ORM\Index(name="idx_claim_status_received_datetime", columns={"status", "received_datetime"}),
  * @ORM\Index(name="idx_claim_status_finished_datetime", columns={"status", "finished_datetime"}),
- * @ORM\Index(name="idx_claim_status_rejection_reason", columns={"status", "rejection_reason"})
+ * @ORM\Index(name="idx_claim_status_rejection_reason", columns={"status", "rejection_reason"}),
+ * @ORM\Index(name="idx_claim_json_data_applicant_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_ad_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_deceased_received_datetime", columns={"received_datetime"}),
+ * @ORM\Index(name="idx_claim_json_data_ad_meta_type_received_datetime", columns={"received_datetime"})
  * })
  **/
 class Claim extends AbstractEntity
@@ -58,7 +62,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\Column(name="json_data", type="json_array")
+     * @ORM\Column(name="json_data", type="json_array", options={"jsonb"=true})
      */
     protected $jsonData;
 
@@ -83,7 +87,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var User
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="User", fetch="EAGER")
      * @ORM\JoinColumn(name="finished_by_id", referencedColumnName="id", nullable=true)
      */
     protected $finishedBy;
@@ -108,7 +112,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var Collection|Poa[]
-     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Poa", mappedBy="claim", cascade={"persist", "remove"}, fetch="EAGER")
      * @ORM\OrderBy({"id" = "ASC"})
      */
     protected $poas;
@@ -163,8 +167,7 @@ class Claim extends AbstractEntity
 
     /**
      * @var Payment
-     * @ORM\OneToOne(targetEntity="Payment", inversedBy="claim", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="payment_id", referencedColumnName="id")
+     * @ORM\OneToOne(targetEntity="Payment", mappedBy="claim", cascade={"persist", "remove"})
      */
     protected $payment;
 
@@ -613,7 +616,7 @@ class Claim extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = ClaimModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = ClaimModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Application' => function () {

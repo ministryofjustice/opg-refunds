@@ -266,7 +266,7 @@ class User extends AbstractEntity
      * @param string|null $dataModelClass
      * @return AbstractDataModel
      */
-    public function getAsDataModel(array $modelToEntityMappings = [], string $dataModelClass = UserModel::class)
+    public function getAsDataModel(array $modelToEntityMappings = [], ?string $dataModelClass = UserModel::class)
     {
         $modelToEntityMappings = array_merge($modelToEntityMappings, [
             'Claims' => 'AssignedClaims',
@@ -283,7 +283,7 @@ class User extends AbstractEntity
      * @param array $entityToModelMappings
      * @param string $dataModelClass
      */
-    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], string $dataModelClass = UserModel::class)
+    public function setFromDataModel(AbstractDataModel $model, array $entityToModelMappings = [], ?string $dataModelClass = UserModel::class)
     {
         $entityToModelMappings = array_merge($entityToModelMappings, [
             'Roles' => function () use ($model) {
