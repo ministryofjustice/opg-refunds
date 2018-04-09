@@ -35,6 +35,8 @@ class AccountDetailsAction extends AbstractAction
             'notes' => ($session['notes']) ?? null,
         ]);
 
+        $isUpdate = isset($session['account']);
+
         if ($request->getMethod() == 'POST') {
             $data = $request->getParsedBody();
             $form->setData($data);
@@ -86,6 +88,7 @@ class AccountDetailsAction extends AbstractAction
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::account-details-page', [
             'form' => $form,
+            'isUpdate' => $isUpdate,
             'applicant' => $session['applicant']
         ]));
     }
