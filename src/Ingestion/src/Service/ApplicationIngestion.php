@@ -107,6 +107,9 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
 
         $donorCurrentName = $applicationData['donor']['current']['name'];
         $donorName = "{$donorCurrentName['title']} {$donorCurrentName['first']} {$donorCurrentName['last']}";
+        if (strlen($donorName) > 255) {
+            $donorName = substr($donorName, 0, 255);
+        }
 
         $accountHash = isset($applicationData['account']) ? $applicationData['account']['hash'] : null;
 
@@ -142,10 +145,13 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
         $application = $this->getNextApplication();
         if ($application !== null) {
             $claim = $this->getClaim($application);
-            $this->casesEntityManager->persist($claim);
 
             if ($this->claimRepository->findOneBy(['id' => $claim->getId()]) === null) {
                 try {
+                    $this->getLogger()->info("Attempting to ingest application with id {$claim->getId()}");
+
+                    $this->casesEntityManager->persist($claim);
+
                     $applicationData = $this->getApplicationData($application);
 
                     $isAssistedDigital = isset($applicationData['ad']);
@@ -199,7 +205,7 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
                         $this->getLogger()->info(' Successfully recreated cases entity manager');
                     }
 
-                    $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker");
+                    $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker", ['message' => $ex->getMessage(), 'exception' => $ex]);
 
                     return false;
                 }
