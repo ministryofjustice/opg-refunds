@@ -107,6 +107,9 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
 
         $donorCurrentName = $applicationData['donor']['current']['name'];
         $donorName = "{$donorCurrentName['title']} {$donorCurrentName['first']} {$donorCurrentName['last']}";
+        if (strlen($donorName) > 255) {
+            $donorName = substr($donorName, 0, 255);
+        }
 
         $accountHash = isset($applicationData['account']) ? $applicationData['account']['hash'] : null;
 
