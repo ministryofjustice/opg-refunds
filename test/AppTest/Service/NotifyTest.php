@@ -12,6 +12,9 @@ use Mockery\MockInterface;
 
 class NotifyTest extends MockeryTestCase
 {
+
+    const LONG_NAME = 'Miss xIyucniUes50SK1YsUxfvPfoU52XZ40xX5dN9ivlIlNrAneN6cu0t8cTUNJrvvRDcAUJ6yi2YYNyEre3cElJjV1OnzWyX4PlaXO9Nt9NScSwYFGh3w6kAOepl3qDUTve94uxVoycXXP6oAzSki1fB95iuYa5go4Efhhu9EXefYVrCTbolxlP3zP4A8dmegCKidhYYGgkKKsS0NNNjey29jaPcEpYEXoFixXePmZyqe3hweWXmsRqhYEhkxfIET7ZcPseYSzkKZ4aubCa3j25bdXEYyUXGTALk1proqDeWGVOMPbsBEzvYJU6Il6e2dWMlwfC02Ywms2UicyMugJTn7ng9zf7gMrXjBINWi2VZBJFdu1J49pbGsuo7rL8NJVFdNcdFwN81Xonno79gGie9KdLHbzQtwVBn8CWuNAA4mF35nVN1AB8wp1ovLxX4aE274LtqDAjzsQeNVMUiyYWrkrhvtoH0aUk27VgKuDmFb9bWTxD6mqM';
+
     /**
      * @var NotifyService
      */
@@ -57,19 +60,18 @@ class NotifyTest extends MockeryTestCase
     public function donorNameForTemplateProvider()
     {
         return [
-            [NotifyService::NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150'],
-            [NotifyService::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150'],
-            [NotifyService::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150'],
-            [NotifyService::NOTIFY_TEMPLATE_EMAIL_REJECTION, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150'],
+            [NotifyService::NOTIFY_TEMPLATE_EMAIL_DUPLICATE_CLAIM, self::LONG_NAME, self::LONG_NAME],
+            [NotifyService::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED, self::LONG_NAME, self::LONG_NAME ],
+            [NotifyService::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE, self::LONG_NAME, self::LONG_NAME ],
+            [NotifyService::NOTIFY_TEMPLATE_EMAIL_REJECTION, self::LONG_NAME, self::LONG_NAME ],
 
-            [NotifyService::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 1'],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters'],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 C'],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Cha'],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Cha'],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 '],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED, 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters Mr Test 150', 'Mr Test 150 Characters Mr Test 150 Characters Mr Test 150 Characters M'],
-
+            [NotifyService::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM, self::LONG_NAME, substr(self::LONG_NAME, 0, 126-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND, self::LONG_NAME, substr(self::LONG_NAME, 0, 85-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED, self::LONG_NAME, substr(self::LONG_NAME, 0, 201-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED, self::LONG_NAME, substr(self::LONG_NAME, 0, 124-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED, 'Mr Test Donor', 'Mr Test Donor'],
         ];
     }
