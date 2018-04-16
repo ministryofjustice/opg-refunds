@@ -62,7 +62,7 @@ class IngestionWorker implements Initializer\LogSupportInterface
                 } else {
                     // Sleep for a random amount of time to prevent multiple workers synchronising
                     $sleepSeconds = rand(1, 30);
-                    $this->getLogger()->debug("No applications available to ingest. Sleeping for {$sleepSeconds} seconds");
+                    $this->getLogger()->info("No applications available to ingest. Sleeping for {$sleepSeconds} seconds");
 
                     //Calls signal handlers for pending signals. Ensures run property is up to date
                     pcntl_signal_dispatch();
