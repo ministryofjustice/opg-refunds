@@ -53,7 +53,7 @@ class Notify implements Initializer\LogSupportInterface
         self::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM                  => 126,  //SMS - caseworker - duplicate claim
         self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED                   => 175, //SMS - refund approved
         self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE            => 175, //SMS - refund approved - cheque
-        self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND => 85,  //SMS - rejection - no poas found
+        self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND => 71,  //SMS - rejection - no poas found
         self::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED    => 201, //SMS - rejection - POAs already refunded
         self::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID           => 175, //SMS - rejection - no fees paid
         self::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED     => 124,  //SMS - rejection - details not verified

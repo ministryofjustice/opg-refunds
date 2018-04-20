@@ -68,7 +68,7 @@ class NotifyTest extends MockeryTestCase
             [NotifyService::NOTIFY_TEMPLATE_SMS_DUPLICATE_CLAIM, self::LONG_NAME, substr(self::LONG_NAME, 0, 126-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
-            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND, self::LONG_NAME, substr(self::LONG_NAME, 0, 85-1) ],
+            [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_ELIGIBLE_POAS_FOUND, self::LONG_NAME, substr(self::LONG_NAME, 0, 71-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_PREVIOUSLY_REFUNDED, self::LONG_NAME, substr(self::LONG_NAME, 0, 201-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_NO_FEES_PAID, self::LONG_NAME, substr(self::LONG_NAME, 0, 175-1) ],
             [NotifyService::NOTIFY_TEMPLATE_SMS_REJECTION_CLAIM_NOT_VERIFIED, self::LONG_NAME, substr(self::LONG_NAME, 0, 124-1) ],
