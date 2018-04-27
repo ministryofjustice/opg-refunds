@@ -69,7 +69,6 @@ class Claim implements Initializer\LogSupportInterface
      */
     private $accountService;
 
-
     /**
      * Claim constructor
      *
@@ -923,6 +922,8 @@ class Claim implements Initializer\LogSupportInterface
         $poa->setReceivedDate($poaModel->getReceivedDate());
         $poa->setOriginalPaymentAmount($poaModel->getOriginalPaymentAmount());
 
+        $verificationsEdited = false;
+
         //Remove any that are no longer present on supplied document
         if ($poa->getVerifications() !== null) {
             foreach ($poa->getVerifications() as $verificationEntity) {
@@ -939,6 +940,7 @@ class Claim implements Initializer\LogSupportInterface
 
                 if ($remove) {
                     $this->entityManager->remove($verificationEntity);
+                    $verificationsEdited = true;
                 }
             }
         }
@@ -952,7 +954,10 @@ class Claim implements Initializer\LogSupportInterface
                 if ($poa->getVerifications() !== null) {
                     foreach ($poa->getVerifications() as $verificationEntity) {
                         if ($verificationModel->getType() === $verificationEntity->getType()) {
-                            $verificationEntity->setPasses($verificationModel->isPasses());
+                            if ($verificationModel->isPasses() !== $verificationEntity->isPasses()) {
+                                $verificationEntity->setPasses($verificationModel->isPasses());
+                                $verificationsEdited = true;
+                            }
                             $verificationModel->setId($verificationEntity->getId());
                         }
                     }
@@ -962,6 +967,7 @@ class Claim implements Initializer\LogSupportInterface
                     //New verification so add
                     $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
                     $this->entityManager->persist($verification);
+                    $verificationsEdited = true;
                 }
             }
         }
@@ -975,7 +981,7 @@ class Claim implements Initializer\LogSupportInterface
 
         //Want simple comparison not identity comparison
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        if ($originalPoaModel != $updatedPoa->getAsDataModel()) {
+        if ($verificationsEdited || $originalPoaModel != $updatedPoa->getAsDataModel()) {
             //Changed
             $this->addNote(
                 $claimId,
