@@ -38,7 +38,7 @@ class Account implements Initializer\LogSupportInterface
         if (self::$buildingSocietyHashes === null) {
             $buildingSocietyCsvFilename = $this->sourceFolder . 'building_society.csv';
 
-            $this->getLogger()->info("Loading Building Society details from {$buildingSocietyCsvFilename}");
+            $this->getLogger()->debug("Loading Building Society details from {$buildingSocietyCsvFilename}");
 
             $buildingSocietyHashes = [];
 
@@ -64,7 +64,7 @@ class Account implements Initializer\LogSupportInterface
 
             self::$buildingSocietyHashes = $buildingSocietyHashes;
 
-            $this->getLogger()->info('Successfully loaded ' . count($buildingSocietyHashes) . ' Building Society details from');
+            $this->getLogger()->debug('Successfully loaded ' . count($buildingSocietyHashes) . ' Building Society details from');
         }
 
         return self::$buildingSocietyHashes;
