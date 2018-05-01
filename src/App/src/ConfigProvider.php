@@ -92,6 +92,7 @@ class ConfigProvider
                 Service\AssistedDigital\LinkToken::class => Service\AssistedDigital\LinkTokenFactory::class,
 
                 // View Helper
+                View\Note\NoteFormatterPlatesExtension::class => View\Note\NoteFormatterPlatesExtensionFactory::class,
                 View\Url\UrlHelperPlatesExtension::class => View\Url\UrlHelperPlatesExtensionFactory::class,
             ],
             'initializers' => [

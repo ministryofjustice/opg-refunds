@@ -5,6 +5,8 @@ namespace App\View\Note;
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
+use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
+use Zend\Expressive\Helper\UrlHelper;
 
 /**
  * Class NoteFormatterPlatesExtension
@@ -12,9 +14,24 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
  */
 class NoteFormatterPlatesExtension implements ExtensionInterface
 {
+    /**
+     * @var UrlHelper
+     */
+    private $urlHelper;
+
+    /**
+     * NoteFormatterPlatesExtension constructor
+     * @param UrlHelper $urlHelper
+     */
+    public function __construct(UrlHelper $urlHelper)
+    {
+        $this->urlHelper = $urlHelper;
+    }
+
     public function register(Engine $engine)
     {
         $engine->registerFunction('getTypeTitleText', [$this, 'getTypeTitleText']);
+        $engine->registerFunction('getDuplicateLinkMessage', [$this, 'getDuplicateLinkMessage']);
     }
 
     public function getTypeTitleText(string $type)
@@ -99,5 +116,35 @@ class NoteFormatterPlatesExtension implements ExtensionInterface
         }
 
         return $type;
+    }
+
+    public function getDuplicateLinkMessage(string $message)
+    {
+        //Replace case references with link to search page
+        $message = preg_replace_callback(
+            '/(\d{4}-\d{4}-\d{4}|\d{7}\/\d{1,2})/',
+            function ($matches) {
+                return '<a href=' . $this->urlHelper->generate(
+                    'claim.search',
+                    [],
+                    ['orderBy' => 'received', 'sort' => 'desc', 'poaCaseNumbers' => str_replace('-', '', $matches[0])]
+                ) . ' target="_blank">' . $matches[0] . '</a>';
+            },
+            $message
+        );
+
+        //Replace claim codes with link to claim
+        $message = preg_replace_callback(
+            '/(R\d{0,3} \d{0,4} \d{0,4})/',
+            function ($matches) {
+                return '<a href=' . $this->urlHelper->generate(
+                    'claim',
+                    ['id' => IdentFormatter::parseId($matches[0])]
+                ) . ' target="_blank">' . $matches[0] . '</a>';
+            },
+            $message
+        );
+
+        return $message;
     }
 }
