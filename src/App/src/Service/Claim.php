@@ -69,7 +69,6 @@ class Claim implements Initializer\LogSupportInterface
      */
     private $accountService;
 
-
     /**
      * Claim constructor
      *
@@ -92,6 +91,7 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param array $queryParameters
      * @return ClaimSummaryPage
+     * @throws Exception
      */
     public function search(array $queryParameters)
     {
@@ -145,6 +145,7 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param array $queryParameters
      * @return ClaimSummaryModel[]
+     * @throws Exception
      */
     public function searchAll(array $queryParameters)
     {
@@ -166,6 +167,7 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @return ClaimModel
      * @throws NotFoundException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function get(int $claimId, int $userId)
     {
@@ -261,9 +263,9 @@ class Claim implements Initializer\LogSupportInterface
             foreach ($meris as $poa) {
                 $poaModel = new PoaModel;
 
-                $poaModel->setSystem( PoaModel::SYSTEM_MERIS );
+                $poaModel->setSystem(PoaModel::SYSTEM_MERIS);
                 $poaModel->setCaseNumber($poa['case_number'] . '/' . $poa['sequence_number']);
-                $poaModel->setReceivedDate( new DateTime($poa['data']['date-of-receipt']) );
+                $poaModel->setReceivedDate(new DateTime($poa['data']['date-of-receipt']));
 
                 //------------------------------------------
                 // Check if we can verify the case number
@@ -331,7 +333,7 @@ class Claim implements Initializer\LogSupportInterface
                     $name = trim($attorney['attorney-name']);
 
                     // Strip off the title and ensure we only have single spaces.
-                    $name = trim(substr($name, strpos($name, ' ') ));
+                    $name = trim(substr($name, strpos($name, ' ')));
                     $name = preg_replace('/\s+/', ' ', $name);
 
                     if (mb_strtolower($name) === mb_strtolower($attorneyNameStr)) {
@@ -350,7 +352,7 @@ class Claim implements Initializer\LogSupportInterface
 
                         $dob = $claim->getApplication()->getAttorney()->getCurrent()->getDob();
 
-                        if ( $dob->format('Y-m-d') === $attorney['attorney-dob'] ) {
+                        if ($dob->format('Y-m-d') === $attorney['attorney-dob']) {
                             $verifications = $poaModel->getVerifications();
                             $verifications[] = new VerificationModel([
                                 'type' => VerificationModel::TYPE_ATTORNEY_DOB,
@@ -368,7 +370,7 @@ class Claim implements Initializer\LogSupportInterface
                 //------------------------------------------
                 // Check for any finance records
 
-                $financeRecords = $this->poaLookup->lookupFinanceRecord( $poa['case_number'] );
+                $financeRecords = $this->poaLookup->lookupFinanceRecord($poa['case_number']);
 
                 foreach ($financeRecords as $record) {
                     $amount = $record['amount'];
@@ -377,12 +379,11 @@ class Claim implements Initializer\LogSupportInterface
                     if (is_numeric($amount)
                         && $poa['data']['date-of-receipt'] === $record['received']
                         // Ensure we don't use the same finance record for multiple POAs.
-                        && !in_array($case, $merisPoaFinanceRecordsUsed))
-                    {
+                        && !in_array($case, $merisPoaFinanceRecordsUsed)) {
                         if ($amount >= 110) {
                             // Full payment
                             $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE);
-                        } elseif ($amount >= 55){
+                        } elseif ($amount >= 55) {
                             // Reduced payment
                             $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN);
                         } else {
@@ -394,13 +395,12 @@ class Claim implements Initializer\LogSupportInterface
                         $merisPoaFinanceRecordsUsed[] = $case;
                         break;
                     }
-
                 }
 
                 //--------------------
 
                 try {
-                    $this->addPoa($claimId, $userId, $poaModel);
+                    $this->addPoa($claimId, null, $poaModel);
                 } catch (AlreadyExistsException $ex) {
                     $duplicatePoas[] = $poaModel->getCaseNumber();
                 }
@@ -410,9 +410,9 @@ class Claim implements Initializer\LogSupportInterface
             foreach ($sirius as $poa) {
                 $poaModel = new PoaModel;
 
-                $poaModel->setSystem( PoaModel::SYSTEM_SIRIUS );
+                $poaModel->setSystem(PoaModel::SYSTEM_SIRIUS);
                 $poaModel->setCaseNumber($poa['case_number']);
-                $poaModel->setReceivedDate( new DateTime($poa['data']['date-of-receipt']) );
+                $poaModel->setReceivedDate(new DateTime($poa['data']['date-of-receipt']));
 
                 //---
 
@@ -450,7 +450,7 @@ class Claim implements Initializer\LogSupportInterface
                 //------------------------------------------
                 // Check for any finance records
 
-                $financeRecords = $this->poaLookup->lookupFinanceRecord( $poa['case_number'] );
+                $financeRecords = $this->poaLookup->lookupFinanceRecord($poa['case_number']);
 
                 // If and only if there is exactly 1 record.
                 if (count($financeRecords) === 1) {
@@ -462,7 +462,7 @@ class Claim implements Initializer\LogSupportInterface
                         if ($amount >= 110) {
                             // Full payment
                             $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_OR_MORE);
-                        } elseif ($amount >= 55){
+                        } elseif ($amount >= 55) {
                             // Reduced payment
                             $poaModel->setOriginalPaymentAmount(PoaModel::ORIGINAL_PAYMENT_AMOUNT_LESS_THAN);
                         } else {
@@ -475,7 +475,7 @@ class Claim implements Initializer\LogSupportInterface
                 //---
 
                 try {
-                    $this->addPoa($claimId, $userId, $poaModel);
+                    $this->addPoa($claimId, null, $poaModel);
                 } catch (AlreadyExistsException $ex) {
                     $duplicatePoas[] = join('-', str_split($poaModel->getCaseNumber(), 4));
                 }
@@ -488,21 +488,21 @@ class Claim implements Initializer\LogSupportInterface
             if ($total === 0) {
                 $this->addNote(
                     $claimId,
-                    $userId,
+                    null,
                     NoteModel::TYPE_POA_AUTOMATION_RAN,
                     "No POAs were automatically added"
                 );
             } elseif ($total === 1) {
                 $this->addNote(
                     $claimId,
-                    $userId,
+                    null,
                     NoteModel::TYPE_POA_AUTOMATION_RAN,
                     "{$total} POA has been automatically added"
                 );
             } else {
                 $this->addNote(
                     $claimId,
-                    $userId,
+                    null,
                     NoteModel::TYPE_POA_AUTOMATION_RAN,
                     "{$total} POAs have been automatically added"
                 );
@@ -520,11 +520,10 @@ class Claim implements Initializer\LogSupportInterface
                 // If a POA was found...
                 // (2 based items; so > 2 means one was found)
                 if (count($poaByCase, COUNT_RECURSIVE) > 2) {
-
                     $found = false;
 
                     // Check it against each we've already seen
-                    foreach(array_merge($meris, $sirius) as $poa) {
+                    foreach (array_merge($meris, $sirius) as $poa) {
                         if ($poa['case_number'] == $caseNumber) {
                             $found = true;
                             break;
@@ -537,7 +536,7 @@ class Claim implements Initializer\LogSupportInterface
                     if (!$found) {
                         $this->addNote(
                             $claimId,
-                            $userId,
+                            null,
                             NoteModel::TYPE_POA_AUTOMATION_DONOR_MISMATCH,
                             "The supplied case reference - {$caseNumber} - matched a POA, but that POA did not match the donor's name and/or date or birth"
                         );
@@ -575,7 +574,7 @@ class Claim implements Initializer\LogSupportInterface
 
                 $this->addNote(
                     $claimId,
-                    $userId,
+                    null,
                     NoteModel::TYPE_POA_AUTOMATION_DUPLICATE,
                     $message
                 );
@@ -595,7 +594,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $assignToUserId
      * @param string $reason
      * @return array
-     * @throws InvalidInputException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function assignClaim(int $claimId, int $userId, int $assignToUserId, string $reason)
     {
@@ -668,6 +668,8 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param int $claimId
      * @param int $userId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function unAssignClaim(int $claimId, int $userId)
     {
@@ -702,6 +704,8 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param int $claimId
      * @param int $userId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function removeClaim(int $claimId, int $userId)
     {
@@ -735,6 +739,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $claimId
      * @param int $userId
      * @param bool $noSiriusPoas
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setNoSiriusPoas(int $claimId, int $userId, bool $noSiriusPoas)
     {
@@ -775,6 +781,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $claimId
      * @param int $userId
      * @param bool $noMerisPoas
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setNoMerisPoas(int $claimId, int $userId, bool $noMerisPoas)
     {
@@ -817,8 +825,10 @@ class Claim implements Initializer\LogSupportInterface
      * @param string $type
      * @param string $message
      * @return NoteModel
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addNote(int $claimId, int $userId, string $type, string $message)
+    public function addNote(int $claimId, ?int $userId, string $type, string $message)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -829,14 +839,14 @@ class Claim implements Initializer\LogSupportInterface
 
             /** @var NoteModel $firstNote */
             $firstNote = reset($notes);
-            if ($firstNote instanceof NoteModel && $firstNote->getType() === $type && $firstNote->getMessage() === $message
-                && $firstNote->getUserId() === $userId) {
+            if ($firstNote instanceof NoteModel && $firstNote->getType() === $type
+                && $firstNote->getMessage() === $message && $firstNote->getUserId() === $userId) {
                 //Note has already been added
                 return $firstNote;
             }
         }
 
-        $user = $this->getUser($userId);
+        $user = $userId === null ? null : $this->getUser($userId);
 
         $note = new NoteEntity($type, $message, $claim, $user);
 
@@ -853,8 +863,11 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @param PoaModel $poaModel
      * @return ClaimModel
+     * @throws DriverException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function addPoa(int $claimId, int $userId, PoaModel $poaModel)
+    public function addPoa(int $claimId, ?int $userId, PoaModel $poaModel)
     {
         $claim = $this->getClaimEntity($claimId);
 
@@ -865,7 +878,9 @@ class Claim implements Initializer\LogSupportInterface
         ]);
 
         if ($poa === null) {
-            $this->checkCanEdit($claim, $userId);
+            if ($userId !== null) {
+                $this->checkCanEdit($claim, $userId);
+            }
 
             $claim->setUpdatedDateTime(new DateTime());
 
@@ -902,6 +917,9 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @param PoaModel $poaModel
      * @return ClaimModel
+     * @throws DriverException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function editPoa(int $claimId, int $poaId, int $userId, PoaModel $poaModel)
     {
@@ -923,6 +941,8 @@ class Claim implements Initializer\LogSupportInterface
         $poa->setReceivedDate($poaModel->getReceivedDate());
         $poa->setOriginalPaymentAmount($poaModel->getOriginalPaymentAmount());
 
+        $verificationsEdited = false;
+
         //Remove any that are no longer present on supplied document
         if ($poa->getVerifications() !== null) {
             foreach ($poa->getVerifications() as $verificationEntity) {
@@ -939,6 +959,7 @@ class Claim implements Initializer\LogSupportInterface
 
                 if ($remove) {
                     $this->entityManager->remove($verificationEntity);
+                    $verificationsEdited = true;
                 }
             }
         }
@@ -952,7 +973,10 @@ class Claim implements Initializer\LogSupportInterface
                 if ($poa->getVerifications() !== null) {
                     foreach ($poa->getVerifications() as $verificationEntity) {
                         if ($verificationModel->getType() === $verificationEntity->getType()) {
-                            $verificationEntity->setPasses($verificationModel->isPasses());
+                            if ($verificationModel->isPasses() !== $verificationEntity->isPasses()) {
+                                $verificationEntity->setPasses($verificationModel->isPasses());
+                                $verificationsEdited = true;
+                            }
                             $verificationModel->setId($verificationEntity->getId());
                         }
                     }
@@ -962,6 +986,7 @@ class Claim implements Initializer\LogSupportInterface
                     //New verification so add
                     $verification = new VerificationEntity($verificationModel->getType(), $verificationModel->isPasses(), $poa);
                     $this->entityManager->persist($verification);
+                    $verificationsEdited = true;
                 }
             }
         }
@@ -975,7 +1000,7 @@ class Claim implements Initializer\LogSupportInterface
 
         //Want simple comparison not identity comparison
         /** @noinspection PhpNonStrictObjectEqualityInspection */
-        if ($originalPoaModel != $updatedPoa->getAsDataModel()) {
+        if ($verificationsEdited || $originalPoaModel != $updatedPoa->getAsDataModel()) {
             //Changed
             $this->addNote(
                 $claimId,
@@ -997,6 +1022,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param $poaId
      * @param $userId
      * @return ClaimModel
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function deletePoa($claimId, $poaId, $userId)
     {
@@ -1033,6 +1060,8 @@ class Claim implements Initializer\LogSupportInterface
     /**
      * @param $claimId
      * @param $userId
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setStatusAccepted($claimId, $userId)
     {
@@ -1075,6 +1104,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param $userId
      * @param $rejectionReason
      * @param $rejectionReasonDescription
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
@@ -1125,7 +1156,9 @@ class Claim implements Initializer\LogSupportInterface
      * @param $claimId
      * @param $userId
      * @param $reason
-     * @throws InvalidInputException|AlreadyExistsException|DriverException
+     * @throws DriverException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setStatusInProgress($claimId, $userId, $reason)
     {
@@ -1182,7 +1215,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param $claimId
      * @param $userId
      * @param int $duplicateOfClaimId
-     * @throws InvalidInputException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setStatusDuplicate($claimId, $userId, int $duplicateOfClaimId)
     {
@@ -1234,7 +1268,8 @@ class Claim implements Initializer\LogSupportInterface
     /**
      * @param $claimId
      * @param $userId
-     * @throws InvalidInputException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setStatusWithdrawn($claimId, $userId)
     {
@@ -1278,6 +1313,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $claimId
      * @param int $userId
      * @param bool $outcomeLetterSent
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setOutcomeLetterSent(int $claimId, int $userId, bool $outcomeLetterSent)
     {
@@ -1321,6 +1358,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $claimId
      * @param int $userId
      * @param bool $outcomePhoneCalled
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function setOutcomePhoneCalled(int $claimId, int $userId, bool $outcomePhoneCalled)
     {
@@ -1367,6 +1406,8 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @param ContactDetailsModel $contactDetails
      * @return ClaimModel
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function editContactDetails(int $claimId, int $userId, ContactDetailsModel $contactDetails)
     {
@@ -1423,7 +1464,9 @@ class Claim implements Initializer\LogSupportInterface
 
     /**
      * @param PoaModel $poaModel
-     * @throws AlreadyExistsException|DriverException
+     * @throws DriverException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function flushPoaChanges(PoaModel $poaModel)
     {
@@ -1489,11 +1532,11 @@ class Claim implements Initializer\LogSupportInterface
     /**
      * Check if a user can edit a specific claim
      *
-     * @param $claim
-     * @param $userId
+     * @param ClaimEntity $claim
+     * @param int $userId
      * @throws InvalidInputException
      */
-    private function checkCanEdit($claim, $userId)
+    private function checkCanEdit(ClaimEntity $claim, int $userId)
     {
         if ($this->isReadOnly($claim, $userId)) {
             throw new InvalidInputException('You cannot edit this claim');
@@ -1527,6 +1570,7 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @param ClaimEntity $claim
      * @return ClaimModel
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     private function getClaimModel(int $userId, ClaimEntity $claim): ClaimModel
     {
@@ -1572,6 +1616,7 @@ class Claim implements Initializer\LogSupportInterface
     /**
      * @param ClaimEntity $claim
      * @param ClaimModel $claimModel
+     * @throws \Doctrine\DBAL\DBALException
      */
     private function incrementPoaCaseNumbersRejectionCount(ClaimEntity $claim, ClaimModel $claimModel)
     {
@@ -1605,6 +1650,7 @@ class Claim implements Initializer\LogSupportInterface
     /**
      * @param array $queryParameters
      * @return \Doctrine\ORM\QueryBuilder
+     * @throws Exception
      */
     private function getSearchQueryBuilder(array $queryParameters): \Doctrine\ORM\QueryBuilder
     {
