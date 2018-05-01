@@ -164,7 +164,11 @@ $this->addErrorMap([
             <li>
                 <p class="timeline-reference"><?= $this->e($this->getNoteDateString($note->getCreatedDateTime())) ?> <span class="time"><?= $this->e($this->getNoteTimeString($note->getCreatedDateTime())) ?></span></p>
                 <h2><?= $this->e($this->getTypeTitleText($note->getType())) ?></h2>
-                <p><?= nl2br($this->e($note->getMessage())) ?></p>
+                <?php if ($note->getType() === \Opg\Refunds\Caseworker\DataModel\Cases\Note::TYPE_POA_AUTOMATION_DUPLICATE) { ?>
+                    <p><?= $this->getDuplicateLinkMessage(nl2br($this->e($note->getMessage()))) ?></p>
+                <?php } else { ?>
+                    <p><?= nl2br($this->e($note->getMessage())) ?></p>
+                <?php } ?>
                 <?php if ($note->getUserName() !== null) { ?>
                     <p>by <?= $this->e($note->getUserName()) ?></p>
                 <?php } ?>
