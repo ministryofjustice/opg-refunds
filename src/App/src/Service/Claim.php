@@ -91,6 +91,7 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param array $queryParameters
      * @return ClaimSummaryPage
+     * @throws Exception
      */
     public function search(array $queryParameters)
     {
@@ -144,6 +145,7 @@ class Claim implements Initializer\LogSupportInterface
      *
      * @param array $queryParameters
      * @return ClaimSummaryModel[]
+     * @throws Exception
      */
     public function searchAll(array $queryParameters)
     {
@@ -165,6 +167,7 @@ class Claim implements Initializer\LogSupportInterface
      * @param int $userId
      * @return ClaimModel
      * @throws NotFoundException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function get(int $claimId, int $userId)
     {
