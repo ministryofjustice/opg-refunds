@@ -2,9 +2,7 @@
 
 namespace App\Validator;
 
-use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
-
-class ClaimId  extends Regex
+class ClaimId extends Regex
 {
     /**
      * Email constructor
