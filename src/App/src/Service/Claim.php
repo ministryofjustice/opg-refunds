@@ -1106,6 +1106,7 @@ class Claim implements Initializer\LogSupportInterface
      * @param $rejectionReasonDescription
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\DBAL\DBALException
      */
     public function setStatusRejected($claimId, $userId, $rejectionReason, $rejectionReasonDescription)
     {
@@ -1176,6 +1177,10 @@ class Claim implements Initializer\LogSupportInterface
         $claim->setFinishedDateTime(null);
         $claim->setAssignedTo($finishedBy);
         $claim->getDuplicateOf()->clear();
+        $claim->setOutcomeEmailSent(false);
+        $claim->setOutcomeTextSent(false);
+        $claim->setOutcomeLetterSent(false);
+        $claim->setOutcomePhoneCalled(false);
 
         //Want simple comparison not identity comparison
         /** @noinspection PhpNonStrictObjectEqualityInspection */
