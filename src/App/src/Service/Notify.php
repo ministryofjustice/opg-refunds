@@ -355,12 +355,14 @@ class Notify implements Initializer\LogSupportInterface
             : $claimModel->getDonorName();
         $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
+        $isRefundByCheque = $claimModel->getApplication()->isRefundByCheque()
+            || !array_key_exists('details', $claimEntity->getJsonData()['account']);
         $isBuildingSociety = $claimModel->getApplication()->getAccount() !== null
             && $claimModel->getApplication()->getAccount()->isBuildingSociety();
 
         if ($claimModel->shouldSendEmail()) {
             try {
-                $templateId = $claimModel->getApplication()->isRefundByCheque() ?
+                $templateId = $isRefundByCheque ?
                     ($isBuildingSociety ? self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_BUILDING_SOCIETY
                         : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED_CHEQUE)
                     : self::NOTIFY_TEMPLATE_EMAIL_CLAIM_APPROVED;
@@ -398,7 +400,7 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($claimModel->shouldSendText()) {
             try {
-                $templateId = $claimModel->getApplication()->isRefundByCheque() ?
+                $templateId = $isRefundByCheque ?
                     ($isBuildingSociety ? self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_BUILDING_SOCIETY
                         : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED_CHEQUE)
                     : self::NOTIFY_TEMPLATE_SMS_CLAIM_APPROVED;

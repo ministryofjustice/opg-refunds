@@ -436,12 +436,17 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $noteParameters[] = $message;
 
         if (!$claim->getApplication()->isRefundByCheque()) {
-            //  Deserialize the application from the JSON data
-            $accountDetails = json_decode($this->decryptBankDetails($applicationArray['account']['details']), true);
+            if (array_key_exists('details', $applicationArray['account'])
+                && is_string($applicationArray['account']['details'])) {
+                //  Deserialize the application from the JSON data
+                $accountDetails = json_decode($this->decryptBankDetails($applicationArray['account']['details']), true);
 
-            //  Set the sort code and account number in the account
-            $account = $claim->getApplication()->getAccount();
-            $account->setAccountNumber($accountDetails['account-number'])->setSortCode($accountDetails['sort-code']);
+                //  Set the sort code and account number in the account
+                $account = $claim->getApplication()->getAccount();
+                $account->setAccountNumber($accountDetails['account-number'])->setSortCode($accountDetails['sort-code']);
+            } else {
+                $claim->getApplication()->setRefundByCheque(true);
+            }
         }
 
         $this->getLogger()->debug('Bank details decrypted for refundable claim with id ' . $claim->getId() . ' in ' . $this->getElapsedTimeInMs($start) . 'ms');
