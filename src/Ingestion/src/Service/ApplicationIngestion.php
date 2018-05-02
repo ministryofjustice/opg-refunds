@@ -205,7 +205,7 @@ class ApplicationIngestion implements Initializer\LogSupportInterface
                         $this->getLogger()->info(' Successfully recreated cases entity manager');
                     }
 
-                    $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker", ['message' => $ex->getMessage(), 'exception' => $ex]);
+                    $this->getLogger()->warn("Application with id {$claim->getId()} was attempted to be ingested at least twice violating a unique constraint in the database. It will have been ingested successfully by another worker");
 
                     return false;
                 }
