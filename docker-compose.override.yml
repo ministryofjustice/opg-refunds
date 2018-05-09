@@ -1,0 +1,43 @@
+version: '2'
+
+services:
+  router:
+    ports:
+      - 80:80
+      - 443:443
+
+  maintenance:
+    ports:
+      - 8050:80
+      - 4410:443
+
+  front:
+    ports:
+      - 8060:80
+      - 4420:443
+
+  caseworker:
+    ports:
+      - 8070:80
+      - 4430:443
+
+  api:
+    ports:
+      - 8080:80
+      - 4440:443
+
+  postgres:
+    ports:
+      - 5432:5432
+
+  dynamodb:
+    ports:
+      - 8000:8000
+
+  kms:
+    ports:
+      - 8001:8080
+
+  sns:
+    ports:
+      - 8181:8181
