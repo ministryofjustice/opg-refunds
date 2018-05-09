@@ -1,0 +1,24 @@
+<?php $this->layout('layout::default', ['title' => 'Refunds']) ?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds">Refunds</h2>
+
+        <p><a class="button" href="<?= $this->generateUrl('download') ?>">Download Latest SOP1 spreadsheet</a></p>
+        <p><a class="button button-secondary" href="<?= $this->generateUrl('notify') ?>">Notify claimants of the outcome</a></p>
+
+        <h2 class="heading-medium heading-refunds">Historic Refunds</h2>
+
+        <ul>
+            <?php foreach ($historicRefundDates as $historicRefundDate) { ?>
+                <li><a href="<?= $this->generateUrl('download', ['date' => $historicRefundDate]) ?>"><?= $this->e($this->getHistoricRefundDateString($historicRefundDate)) ?></a></li>
+            <?php } ?>
+        </ul>
+
+        <h2 class="heading-medium heading-refunds">Verification</h2>
+
+        <p><a class="button button-secondary" href="<?= $this->generateUrl('verify') ?>">Verify SOP1 spreadsheet</a></p>
+
+    </div>
+</div>

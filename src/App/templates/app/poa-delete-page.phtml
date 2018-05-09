@@ -1,0 +1,30 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Poa $poa
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::case-numbers', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<h2 class="heading-medium">Delete POA</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>Are you sure you want to delete the POA with case number: <?= $this->e($poa->getCaseNumber()) ?>?</p>
+
+    <div class="form-group">
+        <input type="submit" class="button" name="submit" value="Delete POA">
+        <a class="button button-link" href="<?= $this->generateUrl('claim.poa', ['claimId' => $claim->getId(), 'system' => $system, 'id' => $poa->getId()]) ?>">Cancel and return back to POA</a>
+    </div>
+
+</form>

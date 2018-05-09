@@ -1,0 +1,200 @@
+<?php use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
+
+$this->layout('layout::default', ['title' => 'Search claims']) ?>
+<?php
+/**
+ * @var \App\Form\ClaimSearch $form
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummaryPage $claimSummaryPage
+ * @var array $searchParameters
+ */
+?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds">Search claims</h2>
+
+        <?php if (!isset($searchParameters['poaCaseNumbers'])) { ?>
+            <form method="post" class="form">
+
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('search'),
+                    'formLabel' => 'Claim code or donor name',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+                <?php $this->insert('snippet::input-select', [
+                    'formElement' => $form->get('statuses'),
+                    'formLabel' => 'Status'
+                ]) ?>
+
+                <?php $this->insert('snippet::input-select', [
+                    'formElement' => $form->get('assignedToFinishedById'),
+                    'formLabel' => 'Assigned to/Finished by'
+                ]) ?>
+
+                <div class="form-group">
+                    <input type='submit' class="button button-search" name='submit' value='Search'>
+                    <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
+                        <a class="button button-link" href="<?= $this->generateUrl('claim.search', [], $this->getDefaultSearchParameters()) ?>">Clear all</a>
+                    <?php } ?>
+                </div>
+
+            </form>
+        <?php } ?>
+
+        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
+
+            <p>
+                <?php if ($this->isSearchParametersSet($searchParameters)) { ?>
+                    <span><?= $claimSummaryPage->getTotal() ?> result<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?><?= $this->getPoaCaseNumbersText($searchParameters) ?></span>
+                    <span> <a href="<?= $this->generateUrl('claim.search.download', [], $searchParameters) ?>">download</a></span>
+                <?php } else { ?>
+                    <span><?= $claimSummaryPage->getTotal() ?> total claim<?= $claimSummaryPage->getTotal() > 1 ? 's' : '' ?></span>
+                <?php } ?>
+            </p>
+
+            <table>
+                <thead>
+                <tr>
+                    <th>Claim code</th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'donor'))) ?>">
+                            Donor name
+                            <?php
+                                $currentSort = $this->getCurrentSort($searchParameters, 'donor');
+                                if ($currentSort !== false) {
+                                    if ($currentSort === 'asc') { ?>
+                                        <i class="icon icon-sort-asc">
+                                            <span class="visually-hidden">Sort ascending</span>
+                                        </i>
+                                    <?php } elseif ($currentSort === 'desc') { ?>
+                                        <i class="icon icon-sort-desc">
+                                            <span class="visually-hidden">Sort descending</span>
+                                        </i>
+                                    <?php }
+                                }
+                            ?>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'received'))) ?>">
+                            Received
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'received');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'finished'))) ?>">
+                            Finished
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'finished');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
+                    <th>Assigned to/Finished by</th>
+                    <th>
+                        <a class="link-sort" href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, $this->getOrderByParameters($searchParameters, 'status'))) ?>">
+                            Status
+                            <?php
+                            $currentSort = $this->getCurrentSort($searchParameters, 'status');
+                            if ($currentSort !== false) {
+                                if ($currentSort === 'asc') { ?>
+                                    <i class="icon icon-sort-asc">
+                                        <span class="visually-hidden">Sort ascending</span>
+                                    </i>
+                                <?php } elseif ($currentSort === 'desc') { ?>
+                                    <i class="icon icon-sort-desc">
+                                        <span class="visually-hidden">Sort descending</span>
+                                    </i>
+                                <?php }
+                            }
+                            ?>
+                        </a>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <?php foreach ($claimSummaryPage->getClaimSummaries() as $claimSummary) { ?>
+                    <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary $claimSummary */ ?>
+                    <tr>
+                        <td>
+                            <div>
+                                <a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getReferenceNumber()) ?></a>
+                            </div>
+                            <?php if ($claimSummary->isAssistedDigital()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Phone claim</strong>
+                                </div>
+                            <?php } ?>
+                        </td>
+                        <td><a href="<?= $this->generateUrl('claim', ['id' => $claimSummary->getId()]) ?>"><?= $this->e($claimSummary->getDonorName()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['received' => $this->getSearchDateString($claimSummary->getReceivedDateTime())])) ?>"><?= $this->e($this->getDayAndFullTextMonth($claimSummary->getReceivedDateTime())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['finished' => $this->getSearchDateString($claimSummary->getFinishedDateTime())])) ?>"><?= $this->e($this->getFinishedDateString($claimSummary->getFinishedDateTime())) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['assignedToFinishedById' => $claimSummary->getAssignedToId() ?: $claimSummary->getFinishedById()])) ?>"><?= $this->e($claimSummary->getAssignedToName() ?: $claimSummary->getFinishedByName()) ?></a></td>
+                        <td><a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['statuses' => $claimSummary->getStatus()])) ?>"><?= $this->e(StatusFormatter::getStatusText($claimSummary->getStatus())) ?></a></td>
+                    </tr>
+                <?php } ?>
+
+                </tbody>
+            </table>
+
+        <?php } else { ?>
+            <table>
+                <tr>
+                    <td colspan="6">No claims found</td>
+                </tr>
+            </table>
+        <?php } ?>
+
+        <?php if ($claimSummaryPage->getPageCount() > 1) { ?>
+            <div class="grid-row">
+                <div class="column-one-fifth">
+                    <p>
+                        <?php if ($claimSummaryPage->getPage() > 1) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['page' => $claimSummaryPage->getPage()-1])) ?>">Previous page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+                <div class="column-three-fifths">
+                    <p style="text-align: center">Page <?= $this->e($claimSummaryPage->getPage()) ?> of <?= $this->e($claimSummaryPage->getPageCount()) ?></p>
+                </div>
+                <div class="column-one-fifth">
+                    <p style="text-align: right">
+                        <?php if ($claimSummaryPage->getPage() < $claimSummaryPage->getPageCount()) { ?>
+                            <a href="<?= $this->generateUrl('claim.search', [], array_merge($searchParameters, ['page' => $claimSummaryPage->getPage()+1])) ?>">Next page</a>
+                        <?php } ?>
+                    </p>
+                </div>
+            </div>
+        <?php } ?>
+
+    </div>
+</div>

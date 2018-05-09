@@ -1,0 +1,37 @@
+<?php use Opg\Refunds\Caseworker\DataModel\PhoneClaimTypeFormatter;
+
+$this->layout('layout::default',[
+    'title' => ($title) ?? null
+])
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<h2 class="heading-large">
+    <span><?= $this->e($claim->getReferenceNumber()) ?> <?= $this->e($claim->getDonorName()) ?></span>
+    <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
+        <span class="heading-secondary">
+            <strong class="phase-tag">Phone claim</strong>
+            <?php if (isset($claim->getApplication()->getAssistedDigital()->getMeta()['type'])) { ?>
+                <span> (<?= PhoneClaimTypeFormatter::getPhoneClaimTypeText($claim->getApplication()->getAssistedDigital()->getMeta()['type']) ?>)</span>
+            <?php } ?>
+        </span>
+    <?php } ?>
+    <?php if ($claim->isReadOnly()) { ?>
+        <span class="heading-secondary"><?= $this->e($claim->getStatusText()) ?> (Read Only)</span>
+    <?php } ?>
+</h2>
+
+<div class="grid-row">
+    <div class="column-one-fifth">
+        <?=$this->section('left-sidebar')?>
+    </div>
+    <div class="column-three-fifths">
+        <?=$this->section('content')?>
+    </div>
+    <div class="column-one-fifth">
+        <?=$this->section('right-sidebar')?>
+    </div>
+</div>

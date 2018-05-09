@@ -1,0 +1,107 @@
+<?php $this->layout('layout::default', ['title' => 'Notify'])
+
+/**
+ * @var \App\Form\Notify $form
+ * @var array $result
+ */
+
+?>
+
+<h1 class="heading-medium heading-refunds">Verify rows in a SOP1 spreadsheet</h1>
+
+<div class="grid-row">
+    <div class="column-three-fifths">
+
+        <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+        <?php if(isset($result) && $result !== null && $result['valid'] === false) { ?>
+
+            <h2 class="heading-small heading-refunds">Alterations</h2>
+
+            <?php if(count($result['added']) > 0) { ?>
+                <h3 class="heading-small">Added rows</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 50%">Row number</th>
+                        <th style="width: 50%">Claim code</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($result['added'] as $spreadsheetHash){ ?>
+                        <tr>
+                            <td><?= $spreadsheetHash['row'] ?></td>
+                            <td><?= $spreadsheetHash['claimCode'] ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+
+            <?php if(count($result['changed']) > 0) { ?>
+                <h3 class="heading-small">Changed rows</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 50%">Row number</th>
+                        <th style="width: 50%">Claim code</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($result['changed'] as $spreadsheetHash){ ?>
+                        <tr>
+                            <td><?= $spreadsheetHash['row'] ?></td>
+                            <td><?= $spreadsheetHash['claimCode'] ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+
+            <?php if(count($result['deleted']) > 0) { ?>
+                <h3 class="heading-small">Deleted rows</h3>
+                <table>
+                    <thead>
+                    <tr>
+                        <th style="width: 50%">Original row number</th>
+                        <th style="width: 50%">Claim code</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($result['deleted'] as $spreadsheetHash){ ?>
+                        <tr>
+                            <td><?= $spreadsheetHash['row'] ?></td>
+                            <td><?= $spreadsheetHash['claimCode'] ?></td>
+                        </tr>
+                    <?php } ?>
+                    </tbody>
+                </table>
+            <?php } ?>
+
+        <?php } else { ?>
+
+            <form method="post" class="form" enctype="multipart/form-data">
+
+                <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+                <p>This page enables a previously generated SOP1 spreadsheet to be uploaded and the rows checked for any manual changes made after download.</p>
+                <p>It will notify you of any new, altered or deleted rows based on the data stored in the database.</p>
+
+                <?php $this->insert('snippet::input-file', [
+                    'formElement' => $form->get('spreadsheet'),
+                    'formLabel' => 'SOP1 spreadsheet'
+                ]) ?>
+
+                <div class="form-group">
+                    <input type='submit' class="button" name='submit' value='Verify'>
+                    <a class="button button-link" href="<?= $this->generateUrl('refund') ?>">Cancel</a>
+                </div>
+
+            </form>
+
+        <?php } ?>
+
+    </div>
+</div>

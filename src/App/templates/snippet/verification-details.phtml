@@ -1,0 +1,98 @@
+<?php
+/*
+Without error
+Mandatory: claim
+Mandatory: caseNumber
+Mandatory: postcodes
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\CaseNumber $caseNumber
+ * @var \Opg\Refunds\Caseworker\DataModel\Applications\Postcodes $postcodes
+ */
+
+$attorney = $claim->getApplication()->getAttorney();
+?>
+
+<h2 id="verification-details" class="heading-medium heading-refunds">Verification details</h2>
+<dl class="details">
+
+    <?php if ($claim->getApplication()->hasCaseNumber()) { ?>
+        <div class="">
+            <dt class="details-term">Case reference</dt>
+            <dd class="details-definition"><?= $this->e($caseNumber->getPoaCaseNumber()) ?></dd>
+            <?php if ($claim->isCaseNumberVerified()) { ?>
+                <dd class="details-verified">
+                    <i class="icon icon-tick" title="Verified">
+                        <span class="visually-hidden">Verified</span>
+                    </i>
+                </dd>
+            <?php } ?>
+        </div>
+    <?php } ?>
+
+    <div class="">
+        <dt class="details-term">Attorney name</dt>
+        <dd class="details-definition"><?= $this->e($attorney->getCurrent()->getName()->getFormattedName()) ?></dd>
+        <?php if (!$attorney->hasPoaName() && $claim->isAttorneyNameVerified()) { ?>
+            <dd class="details-verified">
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
+                </i>
+            </dd>
+        <?php } ?>
+    </div>
+    <div class="">
+        <dt class="details-term">Attorney date of birth</dt>
+        <dd class="details-definition"><?= $this->e($this->getDateOfBirthString($attorney->getCurrent()->getDob())) ?></dd>
+        <?php if ($claim->isAttorneyDobVerified()) { ?>
+            <dd class="details-verified">
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
+                </i>
+            </dd>
+        <?php } ?>
+    </div>
+    <?php if ($attorney->hasPoaName()) { ?>
+        <div class="">
+            <dt class="details-term">Attorney name on POA</dt>
+            <dd class="details-definition"><?= $this->e($attorney->getPoa()->getName()->getFormattedName()) ?></dd>
+            <?php if ($claim->isAttorneyNameVerified()) { ?>
+                <dd class="details-verified">
+                    <i class="icon icon-tick" title="Verified">
+                        <span class="visually-hidden">Verified</span>
+                    </i>
+                </dd>
+            <?php } ?>
+        </div>
+    <?php } ?>
+
+    <?php if ($claim->getApplication()->hasAttorneyPostcode()) { ?>
+    <div class="">
+        <dt class="heading-small">Attorney postcode</dt>
+        <dd class="details-definition"><?= $this->e($postcodes->getAttorneyPostcode()) ?></dd>
+        <?php if ($claim->isAttorneyPostcodeVerified()) { ?>
+            <dd class="details-verified">
+                <i class="icon icon-tick" title="Verified">
+                    <span class="visually-hidden">Verified</span>
+                </i>
+            </dd>
+        <?php } ?>
+    </div>
+    <?php } ?>
+
+    <?php if ($claim->getApplication()->hasDonorPostcode()) { ?>
+        <div class="">
+            <dt class="heading-small">Donor postcode</dt>
+            <dd class="details-definition"><?= $this->e($postcodes->getDonorPostcode()) ?></dd>
+            <?php if ($claim->isDonorPostcodeVerified()) { ?>
+                <dd class="details-verified">
+                    <i class="icon icon-tick" title="Verified">
+                        <span class="visually-hidden">Verified</span>
+                    </i>
+                </dd>
+            <?php } ?>
+        </div>
+    <?php } ?>
+</dl>

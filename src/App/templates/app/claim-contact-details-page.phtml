@@ -1,0 +1,121 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimApprove $form
+ */
+
+$this->addErrorMap([
+    'one-field-required' => [
+        'required' => [
+            'summary'   => 'For security reasons, you must provide your email address or mobile number in order for us to process your claim',
+            'field'     => 'Choose how we contact you'
+        ]
+    ],
+    'email' => [
+        'required' => [
+            'summary'   => 'You haven\'t given your email address',
+            'field'     => 'Enter your email address'
+        ],
+        'email-invalid' => [
+            'summary'   => 'Check your email address',
+            'field'     => 'Enter a valid email address'
+        ],
+        // If the hostname was invalid, so was the email address.
+        // Thus there's no need to output the hostname validation
+        'hostname-invalid' => [
+            'summary'   => '',
+            'field'     => ''
+        ],
+    ],
+    'phone' => [
+        'required' => [
+            'summary'   => 'You haven\'t given your mobile number',
+            'field'     => 'Enter your mobile number'
+        ],
+        'phone-invalid' => [
+            'summary'   => 'Check your mobile number',
+            'field'     => 'Enter a valid mobile number'
+        ]
+    ],
+    'address' => [
+        'required' => [
+            'summary'   => 'You haven\'t entered a postal address',
+            'field'     => 'Enter the postal address'
+        ],
+        'too-long' => [
+            'summary'   => 'Postal address is too long',
+            'field'     => 'Enter a valid postal address'
+        ],
+    ],
+]);
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium">Update contact details</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>We need your email address or mobile phone number in order to process your claim.</p>
+
+    <p>We won't send you marketing messages or share your contact details with anyone else.</p>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('email'),
+        'formLabel' => 'Email address',
+        'formType' => 'email',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('phone'),
+        'formLabel' => 'Mobile number',
+        'formType' => 'tel',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('address'),
+        'formLabel' => 'Postal address',
+        'formHint' => 'Only if email or mobile number cannot be supplied',
+        'formType' => 'textarea',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-3-4'
+    ]) ?>
+
+    <p>We'll only contact you to update you about your claim. We'll confirm that we've received your claim and let you know when it's been approved or rejected.</p>
+
+    <div class="form-group">
+        <div class="multiple-choice">
+            <?php $element = $form->get('receive-notifications'); ?>
+            <input type="hidden" value="yes" name="<?= $element->getName(); ?>">
+            <input
+                    id="receive-notifications-checkbox"
+                    name="<?= $element->getName(); ?>"
+                    type="checkbox"
+                    value="no"
+                <?= ($element->getValue()=='no') ? ' checked="checked"' : '' ?>
+            >
+            <label for="receive-notifications-checkbox">I don’t want these updates</label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="button" value="Update contact details">
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

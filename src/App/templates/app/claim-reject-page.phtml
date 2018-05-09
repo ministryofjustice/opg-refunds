@@ -1,0 +1,59 @@
+<?php use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+$this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimReject $form
+ */
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium">Rejection reasons</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <?php $this->insert('snippet::input-multi', [
+        'formElement' => $form->get('rejection-reason'),
+        'question' => '',
+        'options' => [
+            ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND)
+            ],
+            ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED)
+            ],
+            ClaimModel::REJECTION_REASON_NO_FEES_PAID => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_NO_FEES_PAID)
+            ],
+            ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED => [
+                'optionLabel' => $this->getRejectionReasonsText(ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED)
+            ],
+        ],
+    ])
+    ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('rejection-reason-description'),
+        'formLabel' => 'Description',
+        'formType' => 'textarea',
+        'formLabelBold' => false
+    ]) ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='Reject claim'>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>

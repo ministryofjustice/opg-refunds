@@ -1,0 +1,52 @@
+<?php $this->layout('layout::default', ['title' => 'Users'])
+
+/* @var \Opg\Refunds\Caseworker\DataModel\Cases\UserSummaryPage $userSummaryPage */
+
+?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <?php // $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
+        <h2 class="heading-medium heading-refunds">Users (<?= $userSummaryPage->getTotal() ?>)</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Roles</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if ($userSummaryPage->getTotal() > 0) { ?>
+                <?php foreach ($userSummaryPage->getUserSummaries() as $user) { ?>
+                    <tr>
+                        <td>
+                            <a href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>"><?= $this->e($user->getName()) ?></a>
+                            <?php if ($user->getStatus() != \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE) { ?>
+                                - <span style="color: red;"><?= $this->e(strtoupper($user->getStatus())) ?></span>
+                            <?php } ?>
+                        </td>
+                        <td><?= $this->e($user->getEmail()) ?></td>
+                        <td><?= $this->e($user->getStatus()) ?></td>
+                        <td><?= $this->e(implode(', ', $user->getRoles())) ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="4">No users</td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid-row">
+    <div class="column-full">
+        <p><a class="button" href="<?= $this->generateUrl('user.add') ?>">Add user</a></p>
+    </div>
+</div>

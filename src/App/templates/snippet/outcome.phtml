@@ -1,0 +1,139 @@
+<?php
+
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+
+?>
+
+<h2 id="outcome" class="heading-medium heading-refunds">Outcome</h2>
+
+<?php if($claim->hasPoas() || $claim->isNoMerisPoas() || $claim->isNoSiriusPoas() || $claim->isClaimComplete()) { ?>
+    <h2 class="notice notice-heading">
+        <?php if ($claim->isClaimVerified()) { ?>
+            <strong class="bold-small">Claim verified</strong>
+            <i class="icon icon-tick" title="Verified">
+                <span class="visually-hidden">Verified</span>
+            </i>
+        <?php } else { ?>
+            <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">Claim unverified</strong>
+        <?php } ?>
+    </h2>
+<?php } ?>
+
+<dl class="details">
+
+    <?php if ($claim->getStatus() === ClaimModel::STATUS_PENDING || $claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS || $claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
+        <div class="">
+            <dt class="details-term">Expected refund date</dt>
+            <dd class="details-definition"><?= $this->e($this->getDayAndFullTextMonth($claim->getApplication()->getExpected())) ?></dd>
+            <dd class="details-definition">
+                <?php if ($claim->isClaimComplete() && !$claim->isReadOnly()) { ?>
+                    <p>
+                        <?php if ($claim->isClaimVerified() && $claim->isClaimRefundNonZero()) { ?>
+                            <a class="button" href="<?= $this->generateUrl('claim.approve', ['claimId' => $claim->getId()]) ?>">Approve claim</a>
+                        <?php } ?>
+                        <a class="button" href="<?= $this->generateUrl('claim.reject', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Reject claim</a>
+                    </p>
+                <?php } ?>
+                <?php if ($claim->canResolveAsDuplicate() && !$claim->isReadOnly()) { ?>
+                    <p>
+                        <a class="button" href="<?= $this->generateUrl('claim.duplicate', ['claimId' => $claim->getId()]) ?>" style="background-color: red">Resolve as duplicate</a>
+                    </p>
+                <?php } ?>
+            </dd>
+        </div>
+    <?php } ?>
+
+    <?php if($claim->isClaimResolved()) { ?>
+        
+        <?php if ($claim->getStatus() === ClaimModel::STATUS_ACCEPTED) { ?>
+            <div class="">
+                <dt class="details-term">Claim approved</dt>
+                <dd class="details-definition">
+                    <span>Claim was approved on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                    <?php if ($claim->getPayment() !== null) { ?>
+                        <br/><span>A payment of <?= $this->e($claim->getPayment()->getAmountString()) ?> was added to the spreadsheet on <?= $this->e($this->getFinishedDateString($claim->getPayment()->getAddedDateTime())) ?></span>
+                    <?php } ?>
+                </dd>
+            </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_REJECTED) { ?>
+            <div class="">
+                <dt class="details-term">Claim rejected</dt>
+                <dd class="details-definition">
+                    <span>Claim was rejected on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?> due to '<?= $this->e($this->getRejectionReasonsText($claim->getRejectionReason())) ?>'<?= empty($claim->getRejectionReasonDescription()) ? '' : " with description '{$this->e($claim->getRejectionReasonDescription())}'" ?></span>
+                </dd>
+            </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_DUPLICATE) { ?>
+            <div class="">
+                <dt class="details-term">Duplicate claim</dt>
+                <dd class="details-definition">
+                    <span>Claim was resolved as a duplicate of<?php foreach ($claim->getDuplicateOfIds() as $duplicateOfId => $claimCode) { ?> <a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a><?php } ?> on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                </dd>
+            </div>
+        <?php } elseif ($claim->getStatus() === ClaimModel::STATUS_WITHDRAWN) { ?>
+            <div class="">
+                <dt class="details-term">Claim withdrawn</dt>
+                <dd class="details-definition">
+                    <span>Claim was withdrawn on <?= $this->e($this->getFinishedDateString($claim->getFinishedDateTime())) ?></span>
+                </dd>
+            </div>
+        <?php } ?>
+
+        <?php if ($claim->getDuplicateClaimIds() !== null && count($claim->getDuplicateClaimIds()) > 0) { ?>
+            <div class="">
+                <dt class="details-term">Duplicate claims</dt>
+                <dd class="details-definition">
+                    <span>This is duplicated by</span>
+                    <ul>
+                        <?php foreach ($claim->getDuplicateClaimIds() as $duplicateOfId => $claimCode) { ?>
+                            <li><a href="<?= $this->generateUrl('claim', ['id' => $duplicateOfId]) ?>"><?= $claimCode ?></a></li>
+                        <?php } ?>
+                    </ul>
+                </dd>
+            </div>
+        <?php } ?>
+
+        <div class="">
+            <dt class="details-term">Notifications</dt>
+            <dd class="details-definition">
+                <?php if ($claim->getApplication()->getContact()->isReceiveNotifications()) { ?>
+                    <?php if (!$claim->isOutcomeEmailSent() && !$claim->isOutcomeTextSent() && !$claim->isOutcomeLetterSent() && !$claim->isOutcomePhoneCalled()) { ?>
+                        <span>None sent</span>
+                        <?php if ($claim->shouldSendLetter()) { ?>
+                            <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm letter sent</a></p>
+                        <?php } elseif ($claim->shouldPhone()) { ?>
+                            <p><a class="button button-secondary" href="<?= $this->generateUrl('claim.confirm.notified', ['claimId' => $claim->getId()]) ?>">Confirm phone called</a></p>
+                        <?php } ?>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeEmailSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeEmailDescription($claim)) ?><br/></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeTextSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeTextDescription($claim)) ?></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomeLetterSent()) { ?>
+                        <span><?= $this->e($this->getOutcomeLetterDescription($claim)) ?></span>
+                    <?php } ?>
+                    <?php if ($claim->isOutcomePhoneCalled()) { ?>
+                        <span><?= $this->e($this->getOutcomePhoneDescription($claim)) ?></span>
+                    <?php } ?>
+                <?php } else { ?>
+                    <span>Claimant has opted out of notifications</span>
+                <?php } ?>
+            </dd>
+        </div>
+
+    <?php } ?>
+
+</dl>

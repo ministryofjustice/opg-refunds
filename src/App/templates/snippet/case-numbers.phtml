@@ -1,0 +1,24 @@
+<?php
+/*
+Without error
+Mandatory: claim
+*/
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ */
+?>
+
+<h2 id="case-numbers" class="heading-medium heading-refunds">Case numbers added</h2>
+<dl class="details">
+
+    <?php if ($claim->getPoas() !== null) {
+        foreach ($claim->getPoas() as $poa) { ?>
+            <div class="">
+                <dt class="details-term">Case number</dt>
+                <dd class="details-definition"><?= $this->e($this->getFormattedCaseNumber($poa)) ?></dd>
+            </div>
+        <?php }
+    } ?>
+
+</dl>

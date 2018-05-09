@@ -1,0 +1,16 @@
+<?php $this->layout('layout::default', ['title' => 'Users']) ?>
+
+<h2 class="heading-medium">Delete user</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>Are you sure you want to delete <?= $this->e($user->getName()) ?>?</p>
+
+    <div class="form-group">
+        <input type="submit" class="button" style="background-color: red;" name="submit" value="Delete">
+        <a class="button button-link" href="<?= $this->generateUrl('user', ['id' => $user->getId()]) ?>">Cancel</a>
+    </div>
+
+</form>

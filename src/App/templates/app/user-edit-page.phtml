@@ -1,0 +1,99 @@
+<?php $this->layout('layout::default', ['title' => 'Users']);
+
+$this->addErrorMap([
+    'email' => [
+        'required' => [
+            'summary'   => 'Please enter a valid gov.uk email address',
+            'field'     => 'Please enter a valid gov.uk email address',
+        ],
+        'invalid-email' => [
+            'summary'   => 'Please enter a valid gov.uk email address',
+            'field'     => 'Please enter a valid gov.uk email address',
+        ],
+    ],
+]);
+?>
+
+<?php $this->insert('snippet::error-summary', ['form' => $form]) ?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h2 class="heading-medium heading-refunds"><?= (isset($user) ? 'Edit user' : 'Add user') ?></h2>
+
+        <form method="post" class="form">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+            <fieldset>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('name'),
+                    'formLabel' => 'Name',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+                <?php $this->insert('snippet::input-text', [
+                    'formElement' => $form->get('email'),
+                    'formLabel' => 'Email',
+                    'formType' => 'text',
+                    'formLabelBold' => false
+                ]) ?>
+
+                <?php $this->insert('snippet::input-multi', [
+                    'formElement' => $form->get('roles'),
+                    'question' => 'Roles',
+                    'options' => [
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER => [
+                            'optionLabel' => 'Caseworker'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REFUND => [
+                            'optionLabel' => 'Refund Manager'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_REPORTING => [
+                            'optionLabel' => 'Reporting Manager'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_ADMIN => [
+                            'optionLabel' => 'Service Management Team'
+                        ],
+                        \Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_QUALITY_CHECKING => [
+                            'optionLabel' => 'Quality Checking'
+                        ],
+                    ],
+                ])
+                ?>
+
+                <?php
+                    $statusInput = $form->get('status');
+
+                    if ($statusInput instanceof \Zend\Form\Element\Hidden) {
+                        $this->insert('snippet::input-hidden', [
+                            'formElement' => $statusInput,
+                        ]);
+                    } else {
+                        $this->insert('snippet::input-multi', [
+                            'formElement' => $statusInput,
+                            'question' => 'Status',
+                            'options' => [
+                                \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_ACTIVE => [
+                                    'optionLabel' => 'Active'
+                                ],
+                                \Opg\Refunds\Caseworker\DataModel\Cases\User::STATUS_INACTIVE => [
+                                    'optionLabel' => 'Inactive'
+                                ],
+                            ],
+                        ]);
+                    }
+                ?>
+
+            </fieldset>
+
+            <p>
+                <input type="submit" class="button" value="Save" />
+                <a class="button button-secondary" href="<?= $this->generateUrl('user', ['id' => (isset($user) ? $user->getId() : null) ]) ?>">Cancel</a>
+            </p>
+
+        </form>
+    </div>
+</div>

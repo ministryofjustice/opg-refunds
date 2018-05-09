@@ -1,0 +1,31 @@
+// GOV.UK elements
+
+@import "govuk-elements-sass/public/sass/elements/helpers";                       // Helper functions and classes
+
+// Generic (normalize/reset.css)
+@import "govuk-elements-sass/public/sass/elements/reset";
+
+// Base (unclassed HTML elements)
+// These are predefined by govuk_template
+// If you're not using govuk_template, uncomment the line below.
+// @import "elements/govuk-template-base";        // Base styles set by GOV.UK template
+
+// Objects (unstyled design patterns)
+@import "govuk-elements-sass/public/sass/elements/layout";                        // Main content container. Grid layout - rows and column widths
+
+// Components (chunks of UI)
+@import "govuk-elements-sass/public/sass/elements/elements-typography";           // Typography
+@import "govuk-elements-sass/public/sass/elements/buttons";                       // Buttons
+@import "govuk-elements-sass/public/sass/elements/icons";                         // Icons - numbered steps, calendar, search
+@import "govuk-elements-sass/public/sass/elements/lists";                         // Lists - numbered, bulleted
+@import "govuk-elements-sass/public/sass/elements/tables";                        // Tables - regular, numeric
+@import "govuk-elements-sass/public/sass/elements/details";                       // Details summary
+@import "govuk-elements-sass/public/sass/elements/panels";                        // Panels with a left grey border
+@import "govuk-elements-sass/public/sass/elements/forms";                         // Form - wrappers, inputs, labels
+@import "govuk-elements-sass/public/sass/elements/forms/form-multiple-choice";    // Custom radio buttons and checkboxes
+@import "govuk-elements-sass/public/sass/elements/forms/form-date";               // Date of birth pattern
+@import "govuk-elements-sass/public/sass/elements/forms/form-validation";         // Errors and validation
+@import "govuk-elements-sass/public/sass/elements/breadcrumbs";                   // Breadcrumbs
+@import "govuk-elements-sass/public/sass/elements/phase-banner";                  // Alpha and beta banners and tags
+@import "govuk-elements-sass/public/sass/elements/components";                    // GOV.UK prefixed styles - blue highlighted box
+@import "govuk-elements-sass/public/sass/elements/shame";                         // Hacks and workarounds that will go away eventually

@@ -1,0 +1,834 @@
+<?php use Opg\Refunds\Caseworker\DataModel\Applications\AssistedDigital as AssistedDigitalModel;
+use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
+use Opg\Refunds\Caseworker\DataModel\PhoneClaimTypeFormatter;
+
+$this->layout('layout::default', ['title' => 'Reporting']);
+
+/**
+ * @var array $reports
+ */
+
+$claim = $reports['claim'];
+$claimSource = $reports['claimSource'];
+$phoneClaimType = $reports['phoneClaimType'];
+$rejectionReason = $reports['rejectionReason'];
+$duplicateBankDetail = $reports['duplicateBankDetail'];
+$refund = $reports['refund'];
+$processingTime = $reports['processingTime'];
+$completionTime = $reports['completionTime'];
+$notifications = $reports['notifications'];
+$poasPerClaim = $reports['poasPerClaim'];
+
+$generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::ROLE_CASEWORKER, $identity->getRoles());
+?>
+
+<div class="grid-row">
+    <div class="column-full">
+
+        <h1 class="heading-medium heading-refunds" id="reporting">Reporting</h1>
+
+        <p>Generated <?= $reports['generated'] ?> in <?= $reports['generationTimeInMs'] ?>ms</p>
+
+        <ul>
+            <li><a href="#claims">Claims</a></li>
+            <li><a href="#claim-source">Claim source</a></li>
+            <li><a href="#phone-claim-type">Phone claim type</a></li>
+            <li><a href="#rejection-reasons">Rejection reasons</a></li>
+            <li><a href="#duplicate-bank-details">Duplicate bank details</a></li>
+            <li><a href="#refunds">Refunds</a></li>
+            <li><a href="#processing-time">Processing time</a></li>
+            <li><a href="#completion-time">Completion time</a></li>
+            <li><a href="#notifications">Notifications</a></li>
+            <li><a href="#poas-per-claim">POAs per claim</a></li>
+        </ul>
+
+        <h2 class="heading-small heading-refunds" id="claims">Claims</h2>
+
+        <?php $claimAllTime = $claim['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Pending</th>
+                    <th class="numeric">In progress</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
+                    <th class="numeric">Duplicate</th>
+                    <th class="numeric">Withdrawn</th>
+                    <th class="numeric">Outcome changed</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="numeric">All time</td>
+                    <td class="numeric"><?= $claimAllTime['total'] ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_PENDING])) ?>"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_IN_PROGRESS])) ?>"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_PENDING] ?></td>
+                        <td class="numeric"><?= $claimAllTime[ClaimModel::STATUS_IN_PROGRESS] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($claimAllTime['total'], $claimAllTime['outcome_changed']) ?></td>
+                    <?php } ?>
+                </tr>
+            </tbody>
+        </table>
+
+        <?php $claimByDay = $claim['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($claimByDay) ?> days</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
+                    <th class="numeric">Duplicate</th>
+                    <th class="numeric">Withdrawn</th>
+                    <th class="numeric">Outcome changed</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByDay as $day => $counts) {
+                $dateFilter = $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $day)); ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $counts[ClaimModel::STATUS_REJECTED] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $counts[ClaimModel::STATUS_WITHDRAWN] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $counts['outcome_changed'] ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_ACCEPTED] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_REJECTED] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_DUPLICATE] ?></td>
+                        <td class="numeric"><?= $counts[ClaimModel::STATUS_WITHDRAWN] ?></td>
+                        <td class="numeric"><?= $counts['outcome_changed'] ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $claimByWeek = $claim['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($claimByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
+                    <th class="numeric">Duplicate</th>
+                    <th class="numeric">Withdrawn</th>
+                    <th class="numeric">Outcome changed</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByWeek as $week => $counts) {
+                $dateRange = explode(' - ', $week);
+                $dateFilter = $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $dateRange[0])) . '-' . $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $dateRange[1])); ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $claimByMonth = $claim['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($claimByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th class="numeric">Date</th>
+                    <th class="numeric">Received</th>
+                    <th class="numeric">Accepted</th>
+                    <th class="numeric">Rejected</th>
+                    <th class="numeric">Duplicate</th>
+                    <th class="numeric">Withdrawn</th>
+                    <th class="numeric">Outcome changed</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimByMonth as $month => $counts) {
+                $dateTime = DateTime::createFromFormat('F Y', $month);
+                $dateTime->setDate($dateTime->format('Y'), $dateTime->format('m'), 1);
+                $dateFilter = $this->getSearchDateString($dateTime) . '-' . $this->getSearchDateString((clone $dateTime)->add(new DateInterval('P1M'))->sub(new DateInterval('P1D'))); ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter])) ?>"><?= $counts['total'] ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_ACCEPTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_REJECTED])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_DUPLICATE])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => ClaimModel::STATUS_WITHDRAWN])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['finished' => $dateFilter, 'statuses' => 'outcome_changed'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></a></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $counts['total'] ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_ACCEPTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_REJECTED]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_DUPLICATE]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[ClaimModel::STATUS_WITHDRAWN]) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['outcome_changed']) ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="claim-source">Claim source</h2>
+
+        <?php $claimSourceAllTime = $claimSource['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Phone claim</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <?php if ($generateSearchLinks) { ?>
+                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor']) ?></a></td>
+                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['attorney']) ?></a></td>
+                    <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['assisted_digital']) ?></a></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor_deceased']) ?></td>
+                <?php } else { ?>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['attorney']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['assisted_digital']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor_deceased']) ?></td>
+                <?php } ?>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $claimSourceByDay = $claimSource['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($claimSourceByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Phone claim</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimSourceByDay as $day => $counts) {
+                $dateFilter = $this->getSearchDateString(DateTime::createFromFormat('D d/m/Y', $day)); ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></a></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $claimSourceByMonth = $claimSource['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($claimSourceByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Donor</th>
+                <th class="numeric" style="width: 20%">Attorney</th>
+                <th class="numeric" style="width: 20%">Phone claim</th>
+                <th class="numeric" style="width: 20%">Donor deceased</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($claimSourceByMonth as $month => $counts) {
+                $dateTime = DateTime::createFromFormat('F Y', $month);
+                $dateTime->setDate($dateTime->format('Y'), $dateTime->format('m'), 1);
+                $dateFilter = $this->getSearchDateString($dateTime) . '-' . $this->getSearchDateString((clone $dateTime)->add(new DateInterval('P1M'))->sub(new DateInterval('P1D'))); ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <?php if ($generateSearchLinks) { ?>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></a></td>
+                        <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></a></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                    <?php } else { ?>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
+                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
+                    <?php } ?>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="phone-claim-type">Phone claim type</h2>
+
+        <?php $phoneClaimTypeAllTime = $phoneClaimType['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($phoneClaimTypeAllTime['total'], $phoneClaimTypeAllTime[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $phoneClaimTypeByDay = $phoneClaimType['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($phoneClaimTypeByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($phoneClaimTypeByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $phoneClaimTypeByMonth = $phoneClaimType['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($phoneClaimTypeByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 17%">Date</th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DONOR_DECEASED) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_ASSISTED_DIGITAL) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE) ?></th>
+                <th class="numeric" style="width: 16%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_DEPUTY) ?></th>
+                <th class="numeric" style="width: 17%"><?= PhoneClaimTypeFormatter::getPhoneClaimTypeText(AssistedDigitalModel::TYPE_CHEQUE) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($phoneClaimTypeByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DONOR_DECEASED]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_ASSISTED_DIGITAL]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_REFUSE_CLAIM_ONLINE]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_DEPUTY]) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts[AssistedDigitalModel::TYPE_CHEQUE]) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="rejection-reasons">Rejection reasons</h2>
+
+        <?php $rejectionReasonAllTime = $rejectionReason['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">No eligible POAs found</th>
+                <th class="numeric" style="width: 25%">POA already refunded</th>
+                <th class="numeric" style="width: 25%">No fees paid</th>
+                <th class="numeric" style="width: 25%">Details not verified</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_ELIGIBLE_POAS_FOUND]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_PREVIOUSLY_REFUNDED]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_NO_FEES_PAID]) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($rejectionReasonAllTime['total'], $rejectionReasonAllTime[ClaimModel::REJECTION_REASON_CLAIM_NOT_VERIFIED]) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="duplicate-bank-details">Duplicate bank details</h2>
+
+        <?php $duplicateBankDetailAllTime = $duplicateBankDetail['allTime']; ?>
+
+        <h3 class="heading-small">Total</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 50%">Number of times bank details used</th>
+                <th class="numeric" style="width: 50%">Frequency</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($duplicateBankDetailAllTime as $timesUsed => $frequency){ ?>
+                <tr>
+                    <td class="numeric"><?= $timesUsed ?></td>
+                    <td class="numeric"><?= $frequency ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="refunds">Refunds</h2>
+
+        <?php $refundAllTime = $refund['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $refundAllTime['number_of_spreadsheets'] ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($refundAllTime['total'], $refundAllTime['bank_transfer']) ?></td>
+                <td class="numeric"><?= $this->getValueWithPercentage($refundAllTime['total'], $refundAllTime['cheque']) ?></td>
+                <td class="numeric"><?= $refundAllTime['total_refund_amount'] ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $refundByDay = $refund['byDay']; ?>
+
+        <h3 class="heading-small">By Day - last <?= count($refundByDay) ?> SOP1 forms</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 25%">Date</th>
+                <th class="numeric" style="width: 25%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 25%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 25%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $refundByWeek = $refund['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($refundByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $refundByMonth = $refund['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($refundByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Number of spreadsheets</th>
+                <th class="numeric" style="width: 20%">Number of refunds by bank transfer</th>
+                <th class="numeric" style="width: 20%">Number of refunds by cheque</th>
+                <th class="numeric" style="width: 20%">Total refund value</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($refundByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['number_of_spreadsheets'] ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['bank_transfer']) ?></td>
+                    <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['cheque']) ?></td>
+                    <td class="numeric"><?= $counts['total_refund_amount'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="processing-time">Processing time</h2>
+
+        <p>Time taken for a caseworker to process a claim from start to an outcome decision</p>
+
+        <?php $processingTimeAllTime = $processingTime['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['mean']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['median']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['min']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($processingTimeAllTime['max']) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $processingTimeByWeek = $processingTime['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($processingTimeByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($processingTimeByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $processingTimeByMonth = $processingTime['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($processingTimeByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($processingTimeByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="completion-time">Completion time</h2>
+
+        <p>Time taken for a claim to be completed from submission to an outcome decision</p>
+
+        <?php $completionTimeAllTime = $completionTime['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $this->getProcessingTimeText($completionTimeAllTime['mean']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($completionTimeAllTime['median']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($completionTimeAllTime['min']) ?></td>
+                <td class="numeric"><?= $this->getProcessingTimeText($completionTimeAllTime['max']) ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $completionTimeByWeek = $completionTime['byWeek']; ?>
+
+        <h3 class="heading-small">By week - last <?= count($completionTimeByWeek) ?> weeks</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($completionTimeByWeek as $week => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $week ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $completionTimeByMonth = $completionTime['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($completionTimeByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Mean</th>
+                <th class="numeric" style="width: 20%">Median</th>
+                <th class="numeric" style="width: 20%">Minimum</th>
+                <th class="numeric" style="width: 20%">Maximum</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($completionTimeByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['mean']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['median']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['min']) ?></td>
+                    <td class="numeric"><?= $this->getProcessingTimeText($counts['max']) ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="notifications">Notifications</h2>
+
+        <?php $notificationsAllTime = $notifications['allTime']; ?>
+
+        <h3 class="heading-small">Totals</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td class="numeric">All time</td>
+                <td class="numeric"><?= $notificationsAllTime['notifications_opt_out'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_email_sent'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_text_sent'] ?></td>
+                <td class="numeric"><?= $notificationsAllTime['outcome_letter_sent'] ?></td>
+            </tr>
+            </tbody>
+        </table>
+
+        <?php $notificationsByDay = $notifications['byDay']; ?>
+
+        <h3 class="heading-small">By day - last <?= count($notificationsByDay) ?> days</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($notificationsByDay as $day => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $day ?></td>
+                    <td class="numeric"><?= $counts['notifications_opt_out'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_email_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_text_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_letter_sent'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <?php $notificationsByMonth = $notifications['byMonth']; ?>
+
+        <h3 class="heading-small">By month - last <?= count($notificationsByMonth) ?> months</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 20%">Date</th>
+                <th class="numeric" style="width: 20%">Opted out of notifications</th>
+                <th class="numeric" style="width: 20%">Confirmation emails sent</th>
+                <th class="numeric" style="width: 20%">Confirmation texts sent</th>
+                <th class="numeric" style="width: 20%">Confirmation letter sent</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($notificationsByMonth as $month => $counts){ ?>
+                <tr>
+                    <td class="numeric"><?= $month ?></td>
+                    <td class="numeric"><?= $counts['notifications_opt_out'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_email_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_text_sent'] ?></td>
+                    <td class="numeric"><?= $counts['outcome_letter_sent'] ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+        <h2 class="heading-small heading-refunds" id="poas-per-claim">POAs per claim</h2>
+
+        <?php $poasPerClaimAllTime = $poasPerClaim['allTime']; ?>
+
+        <h3 class="heading-small">Total</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th class="numeric" style="width: 50%">Number of POAs associated with a claim</th>
+                <th class="numeric" style="width: 50%">Frequency</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($poasPerClaimAllTime as $poasPerClaim => $frequency){ ?>
+                <tr>
+                    <td class="numeric"><?= $poasPerClaim ?></td>
+                    <td class="numeric"><?= $frequency ?></td>
+                </tr>
+            <?php } ?>
+            </tbody>
+        </table>
+
+    </div>
+</div>

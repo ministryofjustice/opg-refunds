@@ -1,0 +1,89 @@
+<?php $this->layout('layout::default', ['title' => 'Your claims']) ?>
+<?php
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\User $user
+ * @var \App\Form\ProcessNewClaim $processNewClaimForm
+ */
+?>
+
+<div class="grid-row">
+    <div class="column-one-fifth">
+        <h2 class="heading-medium heading-refunds">Process a claim</h2>
+        <p>Add a new power of attorney refund</p>
+
+        <?php $this->insert('snippet::error-summary', [ 'form'=>$processNewClaimForm ]) ?>
+
+        <form method="post" class="form" action="<?= $this->generateUrl('claim') ?>">
+
+            <?php $this->insert('snippet::input-hidden', ['formElement' => $processNewClaimForm->get('secret')]) ?>
+
+            <input type='submit' class="button" name='submit' value='Process new claim'>
+
+        </form>
+
+        <h2 class="heading-medium heading-refunds">Phone claim</h2>
+        <p>Help a user with their claim</p>
+
+        <a class="button button-secondary" href="<?= $this->generateUrl('phone-claim') ?>">Start phone claim</a>
+    </div>
+    <div class="column-four-fifths">
+
+        <?php $this->insert('snippet::flash-messages', ['messages' => $messages]) ?>
+
+        <h2 class="heading-medium heading-refunds">My claims</h2>
+
+        <?php if (count($user->getClaims()) > 0) { ?>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Claim code</th>
+                <th>Donor name</th>
+                <th>Received</th>
+                <th>Modified</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            <?php foreach ($user->getClaims() as $claim) { ?>
+                <?php /** @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim */ ?>
+                <tr>
+                    <td>
+                        <div>
+                            <a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getReferenceNumber()) ?></a>
+                            <?php if ($claim->isOutcomeChanged()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Failed QC</strong>
+                                </div>
+                            <?php } ?>
+                            <?php if ($claim->isReassigned()) { ?>
+                                <div>
+                                    <strong class="phase-tag">Reallocated</strong>
+                                </div>
+                            <?php } ?>
+                        </div>
+                        <?php if ($claim->getApplication()->isAssistedDigital()) { ?>
+                            <div>
+                                <strong class="phase-tag">Phone claim</strong>
+                            </div>
+                        <?php } ?>
+                    </td>
+                    <td><a href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>"><?= $this->e($claim->getDonorName()) ?></a></td>
+                    <td><?= $this->e($this->getDayAndFullTextMonth($claim->getReceivedDateTime())) ?></td>
+                    <td><?= $this->e($this->getTimeIntervalBetween($claim->getUpdatedDateTime())) ?></td>
+                </tr>
+            <?php } ?>
+
+            </tbody>
+        </table>
+
+        <?php } else { ?>
+            <table>
+                <tr>
+                    <td colspan="4">You have no claims in progress</td>
+                </tr>
+            </table>
+        <?php } ?>
+
+    </div>
+</div>

@@ -1,0 +1,47 @@
+<?php $this->layout('layout::three-column', ['title' => 'Claim', 'claim' => $claim]);
+
+/**
+ * @var \Opg\Refunds\Caseworker\DataModel\Cases\Claim $claim
+ * @var \App\Form\ClaimReassign $form
+ */
+
+$verb = $claim->getStatus() === \Opg\Refunds\Caseworker\DataModel\Cases\Claim::STATUS_PENDING ? 'Assign' : 'Reassign';
+?>
+
+<?php $this->start('left-sidebar') ?>
+<?php $this->insert('snippet::all-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->start('right-sidebar') ?>
+<?php $this->insert('snippet::payment-details', ['claim' => $claim]) ?>
+<?php $this->stop() ?>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<h2 class="heading-medium"><?= $verb ?> claim</h2>
+
+<form method="post" class="form">
+
+    <?php $this->insert('snippet::input-hidden', ['formElement' => $form->get('secret')]) ?>
+
+    <p>Are you sure you want to <?= strtolower($verb) ?> the claim with claim code: <?= $this->e($claim->getReferenceNumber()) ?>?</p>
+
+    <?php $this->insert('snippet::input-select', [
+        'formElement' => $form->get('user-id'),
+        'formLabel' => $verb . ' to'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('reason'),
+        'formLabel' => 'Reason',
+        'formHint' => 'Explain why you are ' . strtolower($verb) . 'ing this claim. This will appear as a note on the claim',
+        'formType' => 'textarea',
+        'formLabelBold' => false
+    ]) ?>
+
+    <div class="form-group">
+        <input type='submit' class="button" name='submit' value='<?= $verb ?> claim'>
+        <a class="button button-link" href="<?= $this->generateUrl('claim', ['id' => $claim->getId()]) ?>">Cancel and return back to claim</a>
+    </div>
+
+</form>
