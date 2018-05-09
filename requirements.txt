@@ -1,0 +1,2 @@
+-e git+https://github.com/ministryofjustice/semvertag.git@1.1.0#egg=semvertag
+awscli

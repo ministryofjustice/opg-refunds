@@ -1,0 +1,63 @@
+version: '2'
+
+services:
+  router:
+    image: registry.service.opg.digital/opg-nginx-router-1604
+    links:
+      - front
+      - caseworker
+      - api
+      - maintenance
+
+  maintenance:
+    build: ../opg-refunds-maintenance
+    # Currently the registry has no images so we have to build locally
+    # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
+    volumes:
+      - ../opg-refunds-maintenance:/app
+
+  front:
+    build: ./public-front
+    # Currently the registry has no images so we have to build locally
+    # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
+    volumes:
+      - ./public-front:/app
+    links:
+      - postgres
+      - dynamodb
+      - kms
+
+  caseworker:
+    build: ./caseworker-front
+    # Currently the registry has no images so we have to build locally
+    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
+    volumes:
+      - ./caseworker-front:/app
+    links:
+      - dynamodb
+      - kms
+
+  api:
+    build: ./caseworker-api
+    # Currently the registry has no images so we have to build locally
+    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
+    volumes:
+      - ./caseworker-api:/app
+    links:
+      - postgres
+      - dynamodb
+
+  postgres:
+    image: postgres:9.6.2
+    volumes:
+      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+
+  dynamodb:
+    image: forty8bit/dynamodb-local
+    command: ["-sharedDb"]
+
+  kms:
+    build: ./local-kms
+
+  sns:
+    build: ./local-sns
