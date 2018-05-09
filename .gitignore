@@ -1,0 +1,5 @@
+/.idea
+node_modules/
+public/assets/govuk_elements/stylesheets/elements*
+/local
+/coverage

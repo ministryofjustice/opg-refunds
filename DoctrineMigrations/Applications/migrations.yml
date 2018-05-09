@@ -1,0 +1,4 @@
+name: Applications DB Doctrine Migrations
+migrations_namespace: DoctrineMigrations\Applications
+table_name: doctrine_migration_versions
+migrations_directory: DoctrineMigrations/Applications
