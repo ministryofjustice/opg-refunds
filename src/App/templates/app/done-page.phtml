@@ -1,0 +1,70 @@
+<?php
+$title = 'Claim submitted';
+$this->layout('layout::default', [
+    'pageTitle' => $title,
+    'backButton' => false
+]);
+?>
+
+<script>
+    var GOVUK = GOVUK || {}
+    GOVUK.pageviewOptions = { sessionControl: 'end' }
+</script>
+
+<div class="grid-row">		 
+    <div class="column-two-thirds">
+
+        <div class="govuk-box-highlight">
+            <h1 class="heading-xlarge"><?=$this->e($title) ?></h1>
+            <p class="font-large">
+                Your claim code is<br>
+                <strong class="bold"><?= $this->e($reference) ?></strong>
+            </p>
+        </div>
+
+        <h2 class="heading-medium">Thank you</h2>
+
+        <p>We now have your refund claim for <?= $this->e($name) ?>.</p>
+
+        <?php if ($contact['receive-notifications']): ?>
+
+            <?php if (!empty($contact['email'])): ?>
+                <p>Email confirmation sent to: <span class="bold"><?= $this->e($contact['email']) ?></span></p>
+            <?php endif ?>
+
+            <?php if (!empty($contact['phone'])): ?>
+
+                <?php $phone = new App\Service\Refund\Data\PhoneNumber($contact['phone']); ?>
+
+                <?php if ($phone->isMobile()): ?>
+                    <p>Text message confirmation sent to: <span class="bold"><?= $this->e($contact['phone']) ?></span></p>
+                <?php endif ?>
+
+            <?php endif ?>
+
+        <?php else: ?>
+
+            <p>As you asked us not to contact you, we won't send you any updates about your claim.</p>
+
+        <?php endif ?>
+
+        <h2 class="heading-medium">One claim per donor</h2>
+
+        <p>We know lots of people have more than one power of attorney, but you only need to make one claim per donor.
+            We will search our records for all fees relating to <?= $this->e($name) ?>.</p>
+
+        <a class="button button-primary" href="/">Start a claim for a different donor</a>
+
+        <h2 class="heading-medium">What happens next</h2>
+
+        <p>The refund will be paid by <?= $this->e(date('j F Y', strtotime('+'.$processingTime))) ?>, if your claim is approved.</p> 
+        <p>We will contact you if we need more information.</p>
+
+        <p><a href="https://www.surveymonkey.co.uk/r/Refundsfeedback">Tell us what you think about this service (short survey)</a></p>
+
+        <a class="button button-primary" href="https://www.gov.uk/done/power-of-attorney-refund">Done</a>
+
+        <?php $this->insert('snippet::refunds-helpline');?>
+        
+    </div>
+</div>

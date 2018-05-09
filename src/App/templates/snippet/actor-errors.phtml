@@ -1,0 +1,130 @@
+<?php
+
+$this->addErrorMap([
+    'title' => [
+        'required' => [
+            'summary'   => 'You must give a title',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'a').' title - for example, Mr, Mrs, Ms'
+        ],
+        'too-long' => [
+            'summary'   => 'Title is too long',
+            'field'     => 'Enter a valid title'
+        ],
+    ],
+    'first' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'a').' first name',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' first and any middle names'
+        ],
+        'too-long' => [
+            'summary'   => 'First and middle names are too long',
+            'field'     => 'Enter a valid first name'
+        ],
+    ],
+    'last' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'a').' last name',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' last name'
+        ],
+        'too-long' => [
+            'summary'   => 'Last name is too long',
+            'field'     => 'Enter a valid last name'
+        ],
+    ],
+    'poa-title' => [
+        'required' => [
+            'summary'   => 'You must give a title',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'a').' title - for example, Mr, Mrs, Ms'
+        ],
+        'too-long' => [
+            'summary'   => 'Title is too long',
+            'field'     => 'Enter a valid title'
+        ],
+    ],
+    'poa-first' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'a').' first name',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' first and any middle names'
+        ],
+        'too-long' => [
+            'summary'   => 'First and middle names are too long',
+            'field'     => 'Enter a valid first name'
+        ],
+    ],
+    'poa-last' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'a').' last name',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' last name'
+        ],
+        'too-long' => [
+            'summary'   => 'Last name is too long',
+            'field'     => 'Enter a valid last name'
+        ],
+    ],
+    'dob' => [
+        'required' => [
+            'summary'   => 'You must give a full date of birth',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' full date of birth'
+        ],
+        'empty-string' => [
+            'summary'   => 'You must give a full date of birth',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'their').' full date of birth'
+        ],
+        'invalid-date' => [
+            'summary'   => 'Check '.($firstPerson ? 'your' : 'the').' date of birth',
+            'field'     => 'Enter a valid date of birth'
+        ],
+        'future-date' => [
+            'summary'   => 'Check '.($firstPerson ? 'your' : 'the').' date of birth',
+            'field'     => 'This date is in the future - enter a valid date of birth'
+        ],
+        'too-young' => [
+            'summary'   => 'Check '.($firstPerson ? 'your' : 'the').' date of birth',
+            'field'     => 'This doesn\'t look right - enter a valid date of birth'
+        ],
+        'too-old' => [
+            'summary'   => 'Check '.($firstPerson ? 'your' : 'the').' date of birth',
+            'field'     => 'This doesn\'t look right - enter a valid date of birth'
+        ],
+        'digits-required' => [
+            'summary'   => 'Check '.($firstPerson ? 'your' : 'the').' date of birth',
+            'field'     => 'This doesn\'t look right - enter a valid date of birth'
+        ],
+    ],
+    'address-1' => [
+        'required' => [
+            'summary'   => 'You must give the first line of '.($firstPerson ? 'your' : 'the').' address',
+            'field'     => 'Enter the first line of '.($firstPerson ? 'your' : 'the').' address'
+        ],
+        'too-long' => [
+            'summary'   => 'The first line of '.($firstPerson ? 'your' : 'the').' address is too long',
+            'field'     => 'Enter a valid address'
+        ],
+    ],
+    'address-2' => [
+        'too-long' => [
+            'summary'   => 'The second line of '.($firstPerson ? 'your' : 'the').' address is too long',
+            'field'     => 'Enter a valid address - this line is optional'
+        ],
+    ],
+    'address-3' => [
+        'required' => [
+            'summary'   => 'You must give a town or city',
+            'field'     => 'Enter a town or city'
+        ],
+        'too-long' => [
+            'summary'   => 'Town or city is too long',
+            'field'     => 'Enter a valid town or city'
+        ],
+    ],
+    'address-postcode' => [
+        'required' => [
+            'summary'   => 'You must give '.($firstPerson ? 'your' : 'the').' postcode',
+            'field'     => 'Enter '.($firstPerson ? 'your' : 'the').' postcode'
+        ],
+        'too-long' => [
+            'summary'   => 'Postcode is too long',
+            'field'     => 'Enter a valid postcode'
+        ],
+    ],
+]);

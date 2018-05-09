@@ -1,0 +1,129 @@
+<?php
+$title = ($applicant == 'donor') ? 'Donor\'s bank details' : 'Donor\'s bank details';
+$this->layout('layout::standard',
+    [
+        'title' => $title,
+        'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
+    ]);
+
+$this->addErrorMap([
+    'name' => [
+        'required' => [
+            'summary'   => 'You must give the account holder name',
+            'field'     => 'Enter the name'
+        ],
+        'too-long' => [
+            'summary'   => 'Account holder name is too long',
+            'field'     => 'Enter a valid name'
+        ]
+    ],
+    'account-number' => [
+        'required' => [
+            'summary'   => 'You must give the account number',
+            'field'     => 'Enter the account number'
+        ],
+        'too-long' => [
+            'summary'   => 'Account number is too long',
+            'field'     => 'Enter 8 numbers'
+        ],
+        'too-short' => [
+            'summary'   => 'Account number is too short',
+            'field'     => 'Enter 8 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Account number must be numbers only',
+            'field'     => 'Enter 8 numbers'
+        ],
+    ],
+    'sort-code' => [
+        'required' => [
+            'summary'   => 'You must give the sort code',
+            'field'     => 'Enter the sort code'
+        ],
+        'too-long' => [
+            'summary'   => 'Sort code is too long',
+            'field'     => 'Enter 6 numbers'
+        ],
+        'too-short' => [
+            'summary'   => 'Sort code is too short',
+            'field'     => 'Enter 6 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Sort code can\'t contain letters',
+            'field'     => 'Enter 6 numbers'
+        ],
+    ],
+]);
+?>
+
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
+
+<?php if ($isUpdate): ?>
+    <p>We've saved the bank details you gave us, but for security reasons we can't show them.</p>
+    <p>You can keep the saved bank details or enter new details below.</p>
+    <p><a class="button" href="<?= $this->url('apply.summary') ?>">Keep the saved bank details</a></p>
+<?php endif ?>
+
+<p>
+    If a refund is approved it will be paid to this account. We can only pay refunds to UK bank accounts.
+</p>
+
+<div class="panel panel-border-narrow">
+    <p>We can't pay refunds into building society accounts that have a roll number</p>
+</div>
+
+<?php $this->insert('snippet::help-text', [
+        'title' => 'How we keep bank details safe',
+        'markup' => '
+        <p>We encrypt this bank account information to keep it safe. Only specially 
+        authorised people can see bank details, which are only ever used to process a refund.</p>
+        <p>Find out more about <a href="/terms#bank-details">how we keep your information safe</a>.</p>
+        '
+]);
+?>
+<br>
+<form action="" method="post" class="form" autocomplete="off">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('name'),
+        'formLabel' => 'Donor\'s account holder name',
+        'formType' => 'text',
+        'formLabelBold' => true
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('account-number'),
+        'formLabel' => 'Account number',
+        'formHint' => '8-digit number',
+        'formType' => 'tel',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-1-4'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('sort-code'),
+        'formLabel' => 'Sort code',
+        'formHint' => '6-digit number',
+        'formType' => 'tel',
+        'formLabelBold' => true,
+        'additionFormControlClass' => 'form-control-1-4'
+    ]) ?>
+
+    <div class="panel panel-border-wide">
+        <p>You won't see these bank details again once you continue - we hide them for your security.</p>
+    </div>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+        <?php if (!(empty($ad))): ?>
+            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Send cheque to donor" name="cheque" >
+        <?php endif ?>
+    </div>
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
+</form>

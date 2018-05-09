@@ -1,0 +1,100 @@
+<?php
+$title = 'Reference number';
+$this->layout('layout::standard', [
+    'title' => $title,
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
+]);
+
+$this->addErrorMap([
+    'have-poa-case-number' => [
+        'required' => [
+            'summary'   => 'You need to tell us if you can give a reference number',
+            'field'     => 'Tell us if you can give a reference number'
+        ]
+    ],
+    'poa-case-number' => [
+        'required' => [
+            'summary'   => 'You haven\'t given a reference number',
+            'field'     => 'Enter a power of attorney reference number or change your answer'
+        ],
+        'too-long' => [
+            'summary'   => 'The reference must be 7 or 12 numbers long',
+            'field'     => 'Enter a reference - 7 or 12 numbers'
+        ],
+        'digits-required' => [
+            'summary'   => 'Check the reference number',
+            'field'     => 'Enter a reference - 7 or 12 numbers, no letters'
+        ],
+        'invalid-case-number' => [
+            'summary'   => 'The reference must be 7 or 12 numbers long',
+            'field'     => 'Enter a reference - 7 or 12 numbers'
+        ],
+        'lpa-tool-ref' => [
+            'summary'   => 'The number you\'ve given isn\'t the one we need',
+            'field'     => "Your reference number should be 7 or 12 numbers long. Please don't enter your online LPA reference number, which starts with an 'A'"
+        ],
+    ]
+]);
+?>
+
+<?php $this->start('error-summary') ?>
+    <?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
+
+<div class="panel panel-border-wide">
+    <p>For the donor: <?= "{$donor['current']['name']['title']} {$donor['current']['name']['first']} {$donor['current']['name']['last']}" ?></p>
+</div>
+
+<p>Power of attorney reference numbers are:</p>
+
+<ul class="list list-bullet">
+    <li>on power of attorney documents or related letters</li>
+    <li>7 or 12 numbers long (with or without dashes)</li>
+    <li>often marked 'OPG reference number' or 'Our ref' or 'Case number'</li>
+</ul>
+
+<p>
+    <?php $this->insert('snippet::help-text', [
+        'title' => 'I have more than one reference number',
+        'markup' => '
+            <p>We only need one reference number. We can use this to look up all of the 
+            powers of attorney an individual donor has made.</p>
+        '
+    ]);
+    ?>
+</p>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
+    <?php $this->insert('snippet::input-radio', [
+        'formElement' => $form->get('have-poa-case-number'),
+        'question' => "Can you give a reference number?",
+        'questionHidden' => true,
+        'options' => [
+            'yes' => [
+                'optionLabel' => "Yes, I can give a reference number",
+                'dataTarget' => 'attorney-info',
+                'dataTargetMarkup' => $this->fetch('snippet::input-text', [
+                    'formElement' => $form->get('poa-case-number'),
+                    'formLabel' => 'Reference number',
+                    'formType' => 'text',
+                    'formHint' => 'You don\'t need to include any dashes',
+                    'formLabelBold' => false
+                ])
+            ],
+            'no' => [
+                'optionLabel' => "No, I can't give a reference number"
+            ]
+        ],
+    ])
+    ?>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
+</form>

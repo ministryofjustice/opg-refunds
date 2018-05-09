@@ -1,0 +1,160 @@
+<?php
+$title = 'Check your refund claim';
+$this->layout('layout::default', [
+    'pageTitle' => $title,
+]);
+
+$this->addErrorMap([
+    'notes' => [
+        'too-long' => [
+            'summary'   => 'Your caseworker notes are too long',
+            'field'     => 'Enter a valid set of caseworker notes'
+        ],
+    ],
+]);
+?>
+
+<h1 class="heading-xlarge">
+    <?= $this->e($title) ?>
+</h1>
+
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+
+<p class="print no-print">
+    <a href="#">
+        <i class="icon icon-print">
+            <span class="visually-hidden">Print</span>
+        </i>
+        <strong>print this page</strong>
+    </a>
+</p>
+
+<dl class="govuk-check-your-answers cya-questions-short">
+    
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Donor details',
+        'fields' => [
+            [ 'value' => "{$details['donor']['current']['name']['title']} {$details['donor']['current']['name']['first']} {$details['donor']['current']['name']['last']}" ],
+            [
+                'label' => (isset($details['donor']['poa']['name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['donor']['poa']['name']['first'])) ? "{$details['donor']['poa']['name']['title']} {$details['donor']['poa']['name']['first']} {$details['donor']['poa']['name']['last']}" : null
+            ],
+            [ 'value' => date('j F Y', strtotime($details['donor']['current']['dob'])) ],
+            [ 'value' => ($details['donor']['current']['address']['address-1']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-2']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-3']) ?? null ],
+            [ 'value' => ($details['donor']['current']['address']['address-postcode']) ?? null ],
+        ],
+        'changeURL' => $this->url('apply.donor', ['who'=>$applicant])
+    ]) ?>
+
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Attorney details',
+        'fields' => [
+            [ 'value' => "{$details['attorney']['current']['name']['title']} {$details['attorney']['current']['name']['first']} {$details['attorney']['current']['name']['last']}" ],
+            [ 'value' => date('j F Y', strtotime($details['attorney']['current']['dob'])) ],
+            [
+                'label' => (isset($details['attorney']['poa']['name']['first'])) ? 'Name on power of attorney' : null,
+                'value' => (isset($details['attorney']['poa']['name']['first'])) ? "{$details['attorney']['poa']['name']['title']} {$details['attorney']['poa']['name']['first']} {$details['attorney']['poa']['name']['last']}" : null
+            ],
+        ],
+        'changeURL' => $this->url('apply.attorney', ['who'=>$applicant])
+    ]) ?>
+
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Reference number',
+        'fields' => [
+            [ 'value' => isset($details['case-number']['poa-case-number']) ?
+                (strlen($details['case-number']['poa-case-number']) == 12)
+                    ? rtrim(chunk_split($details['case-number']['poa-case-number'], 4, '-'), '-')
+                    : $details['case-number']['poa-case-number']
+                : 'Not entered (optional)' ]
+        ],
+        'changeURL' => $this->url('apply.case', ['who'=>$applicant])
+    ]) ?>
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Power of attorney postcodes',
+        'fields' => [
+            [
+                'label' => 'Donor postcode',
+                'value' => ($details['postcodes']['donor-postcode']) ?? 'not entered (optional)'
+            ],
+            [
+                'label' => 'Attorney postcode',
+                'value' => ($details['postcodes']['attorney-postcode']) ?? 'not entered (optional)'
+            ]
+        ],
+        'changeURL' => $this->url('apply.postcode', ['who'=>$applicant])
+    ]) ?>
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Your contact details',
+        'fields' => [
+            [
+                'label' => 'Email address',
+                'value' => ($details['contact']['email']) ?? 'not entered (optional)'
+            ],
+            [
+                'label' => 'Mobile number',
+                'value' => ($details['contact']['phone']) ?? 'not entered (optional)'
+            ],
+            [
+                'value' => ($details['contact']['receive-notifications'])
+                    ? 'We\'ll send you updates about your claim'
+                    : 'We won\'t send you updates about your claim'
+            ],
+            [
+                'value' => isset($details['contact']['address']) ? $details['contact']['address'] : null,
+            ]
+        ],
+        'changeURL' => $this->url('apply.contact', ['who'=>$applicant])
+    ]) ?>
+
+    <?php $this->insert('snippet::check-your-details-section', [
+        'title' => 'Donor bank details',
+        'fields' => [
+            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the donor details' : 'Bank details hidden for your security' ]
+        ],
+        'changeURL' => $this->url('apply.account', ['who'=>$applicant])
+    ]) ?>
+
+</dl>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
+    <h2 class="heading-medium">Statement of truth</h2>
+
+    <p>By submitting this claim you confirm that to the best of your knowledge:</p>
+
+    <ul class="list list-bullet">
+        <li>you're entitled to claim a refund</li>
+        <li>the details you've given are correct</li>
+        <li>the bank details are the donor's</li>
+    </ul>
+
+    <p class="text">
+        You agree to the <a href="/terms">terms and conditions</a> and that details
+        you've given will be securely stored and used to process a refund.
+    </p>
+
+    <div class="notice">
+        <p>
+            <i class="icon icon-important">
+                <span class="visually-hidden">Warning</span>
+            </i>
+            <strong class="bold-small">
+            You could be breaking the law if you deliberately give untrue or misleading information.
+            </strong>
+        </p>
+    </div>
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
+    <input type="submit" class="button js-single-use" value="Confirm and submit claim">
+    
+</form>

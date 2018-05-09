@@ -1,0 +1,24 @@
+<?php
+$title = 'We have your refund claim';
+$this->layout('layout::standard', [
+    'title' => $title,
+    'backButton' => false
+]);
+?>
+
+<p>We sent you an email or text when you submitted your claim. This message contains your claim code, which you can quote if you need to call the Refunds Helpline. </p>
+
+<p>If you asked us not to send you updates, you won't have received a message.</p>
+
+<p>For security reasons we can’t show any specific information about your claim on this page. </p>
+
+<h2 class="heading-medium">What happens next</h2>
+
+<p>If a refund is approved it will be paid to the donor’s account within 12 weeks from the date you submitted your claim.</p>
+
+<p>We will contact you if we need more information.</p>
+
+<a class="button button-primary" href="https://www.gov.uk/done/power-of-attorney-refund">Done</a>
+
+<?php $this->insert('snippet::refunds-helpline');?>
+

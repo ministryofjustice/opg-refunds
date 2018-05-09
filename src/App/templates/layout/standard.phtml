@@ -1,0 +1,26 @@
+<?php
+$this->layout('layout::default',[
+  'pageTitle' => ($pageTitle) ?? ($title) ?? null
+]);
+
+$backButtonVisibility = $this->e( ($backButton) ?? true);
+
+?>
+
+<div class="grid-row">
+  <div class="column-two-thirds <?= ($backButtonVisibility)?' no-back-link':'' ?>">
+    
+    <?=$this->section('error-summary')?>
+
+    <h1 class="heading-xlarge">
+        <?=$this->e( ($h1Title) ?? ($title) )?>
+    </h1>
+
+    <?=$this->section('content')?>
+    
+  </div>
+
+  <div class="column-third">
+    <?=$this->section('sidebar')?>
+  </div>
+</div>

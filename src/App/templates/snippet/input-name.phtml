@@ -1,0 +1,27 @@
+
+<fieldset>
+    <legend class="form-label-bold"><?= $title ?></legend>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('title'),
+        'formLabel' => 'Title',
+        'formType' => 'text',
+        'formLabelBold' => false,
+        'additionFormControlClass' => 'form-control-1-8'
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('first'),
+        'formLabel' => 'First names',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
+
+    <?php $this->insert('snippet::input-text', [
+        'formElement' => $form->get('last'),
+        'formLabel' => 'Last name',
+        'formType' => 'text',
+        'formLabelBold' => false
+    ]) ?>
+
+</fieldset>

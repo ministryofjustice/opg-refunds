@@ -1,0 +1,21 @@
+<?php
+    $title = "Your session has expired";
+    $this->layout('layout::standard', [
+        'title' => $title,
+        'backButton' => false
+    ]);
+?>
+
+<h2 class="heading-medium">If you haven't submitted your claim yet</h2>
+
+<p>Sorry, you'll have to <a href="<?= $this->url('home') ?>">start again</a>. Your session automatically ends if you don’t use this service for 1 hour or if you use the back button when making your claim.</p>
+
+<p>We do this for your security. We haven't saved any information you entered.</p>
+
+<h2 class="heading-medium">If you've submitted your claim</h2>
+
+<p>We sent you an email or text when you submitted your claim. This message contains your claim code, which you can quote if you need to call the Refunds Helpline.</p>
+
+<p>If you asked us not to send you updates about your claim, you won't have received a message.</p>
+
+<?php $this->insert('snippet::refunds-helpline');?>

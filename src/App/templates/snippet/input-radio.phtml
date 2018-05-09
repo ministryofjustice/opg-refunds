@@ -1,0 +1,61 @@
+<?php
+
+$elementId = "id-{$formElement->getName()}";
+
+$hasErrors = !empty($formElement->getMessages());
+
+$value = $formElement->getValue();
+
+?>
+
+<div class="form-group<?= ($hasErrors)?' form-group-error':'' ?>">
+
+    <fieldset>
+
+        <legend id="<?= "{$elementId}" ?>">
+            <span class="<?php if (!isset($questionHidden)): ?>visually-hidden<?php endif ?> question-text">
+                <span class="form-label-bold"><?= $this->e($question) ?></span>
+            </span>
+            <?php foreach($formElement->getMessages() as $message): ?>
+            <span class="error-message"><?=$this->e($this->fieldError($formElement->getName(), $message))?></span>
+            <?php endforeach ?>
+        </legend>
+
+        <?php foreach($options as $name => $option): ?>
+
+            <div class="multiple-choice" <?php if (isset($option['dataTargetMarkup'])): ?>data-target="<?= "{$elementId}-{$name}-info" ?>"<?php endif ?>>
+
+                <input
+                    id="<?= "{$elementId}-{$name}" ?>"
+                    type="radio"
+                    name="<?= $this->e($formElement->getName()) ?>"
+                    value="<?= $this->e($formElement->getValueOptions()[$name]) ?>"
+                    <?= ($value == $formElement->getValueOptions()[$name])?' checked':'' ?>
+                >
+
+                <label class="form-label" for="<?= "{$elementId}-{$name}" ?>">
+
+                    <?php if (isset($option['optionLabelSuffix']) && $option['optionLabelSuffix']): ?><span class="bold-small"><?php endif ?>
+                        <?= $option['optionLabel'] ?>
+                    <?php if (isset($option['optionLabelSuffix']) && $option['optionLabelSuffix']): ?></span><?php endif ?>
+
+                    <?php if (isset($option['optionLabelSuffix'])): ?>
+                        <br>
+                        <?= $option['optionLabelSuffix'] ?>
+                    <?php endif ?>
+
+                </label>
+
+            </div>
+
+            <?php if (isset($option['dataTargetMarkup']) && $option['dataTargetMarkup']): ?>
+                <div class="panel panel-border-narrow js-hidden" id="<?= "{$elementId}-{$name}-info" ?>">
+                    <?= $option['dataTargetMarkup'] ?>
+                </div>
+            <?php endif ?>
+
+        <?php endforeach ?>
+
+    </fieldset>
+
+</div>
