@@ -14,6 +14,7 @@ services:
     env_file:
       - ../lpa-refund-local-dev/develop/env/router.env
       - ../lpa-refund-local-dev/develop/env/base.env
+    restart: always
 
   maintenance:
     build: ../opg-refunds-maintenance
@@ -28,7 +29,7 @@ services:
       - ../opg-refunds-maintenance:/app
 
   front:
-    build: ../opg-refunds-public-front
+    build: ./public-front
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
     ports:
@@ -39,14 +40,14 @@ services:
       - ../lpa-refund-local-dev/develop/env/psql.env
       - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
-      - ../opg-refunds-public-front:/app
+      - ./public-front:/app
     links:
       - postgres
       - dynamodb
       - kms
 
   caseworker:
-    build: ../opg-refunds-caseworker-front
+    build: ./caseworker-front
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
     ports:
@@ -57,13 +58,13 @@ services:
       - ../lpa-refund-local-dev/develop/env/psql.env
       - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
-      - ../opg-refunds-caseworker-front:/app
+      - ./caseworker-front:/app
     links:
       - dynamodb
       - kms
 
   api:
-    build: ../opg-refunds-caseworker-api
+    build: ./caseworker-api
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
     ports:
@@ -74,7 +75,7 @@ services:
       - ../lpa-refund-local-dev/develop/env/psql.env
       - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
-      - ../opg-refunds-caseworker-api:/app
+      - ./caseworker-api:/app
     links:
       - postgres
       - dynamodb
@@ -95,11 +96,11 @@ services:
     command: ["-sharedDb"]
 
   kms:
-    build: ./opg-refunds-local-kms
+    build: ./local-kms
     ports:
       - 8001:8080
 
   sns:
-    build: ./opg-refunds-local-sns
+    build: ./local-sns
     ports:
       - 8181:8181

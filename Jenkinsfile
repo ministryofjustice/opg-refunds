@@ -9,7 +9,7 @@ def failureMessage = ''
 def hasFailed = false
 def slackContent = ''
 def colorCode = ''
-def repoName = 'opg-sirius'
+def repoName = 'opg-refunds'
 def slackColorMap = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', 'ABORTED': 'danger']
 
 // @todo - load this pipeline file, make sure it can populate gloval vars from this Jenkinsfile
@@ -80,14 +80,14 @@ def getGitHubBranchUrl() {
       return env.CHANGE_URL;
     }
 
-    def githubRepo = 'https://github.com/ministryofjustice/opg-sirius/'
-    def githubBranchUrl = githubRepo + 'tree/' + getSiriusBranchName()
+    def githubRepo = 'https://github.com/ministryofjustice/opg-refunds/'
+    def githubBranchUrl = githubRepo + 'tree/' + getRefundsBranchName()
     return githubBranchUrl;
 }
 
 // Because we can build both branches and pull requests, we don't want the release tag to container PR-95
 // as it's not descriptive, instead we want the originating branch name i.e: SW-50. env.CHANGE_BRANCH contains this value if it's a PR being built.
-def getSiriusBranchName() {
+def getRefundsBranchName() {
     if(env.CHANGE_BRANCH != null) {
         return env.CHANGE_BRANCH
     }
@@ -98,7 +98,7 @@ def getBaseSlackContent(currentResult) {
     // Slave: ${getSlaveHostname()}
     def blueOceanUrl = env.RUN_DISPLAY_URL
     def slackContent = """BUILD ${currentResult}
-Branch: <${getGitHubBranchUrl()}|${getSiriusBranchName()}>
+Branch: <${getGitHubBranchUrl()}|${getRefundsBranchName()}>
 Build Number: <${env.BUILD_URL}|${env.BUILD_NUMBER}>
 Urls: <${env.BUILD_URL}|Jenkins Classic> || <${blueOceanUrl}|Blue Ocean>
 Commit Author: ${getCommitOwner()}
@@ -122,30 +122,27 @@ pipeline {
     IS_CI = "true"
 
     CI_WORKSPACE_DIR = "${env.WORKSPACE}/ci"
-    FRONTEND_WORKSPACE_DIR = "${env.WORKSPACE}/front-end"
-    BACKEND_WORKSPACE_DIR = "${env.WORKSPACE}/back-end"
-    MEMBRANE_WORKSPACE_DIR = "${env.WORKSPACE}/auth-membrane"
-    SMOKE_TEST_DIR = "${env.WORKSPACE}/front-end/supervision-ui-tests"
+    PUBLIC_FRONT_WORKSPACE_DIR = "${env.WORKSPACE}/public-front"
+    CASEWORKER_FRONT_WORKSPACE_DIR = "${env.WORKSPACE}/caseworker-front"
+    CASEWORKER_API_WORKSPACE_DIR = "${env.WORKSPACE}/caseworker-api"
 
-    BACKEND_IMAGE = 'opguk/core-api'
-    FRONTEND_IMAGE = 'opguk/core-frontend'
-    MEMBRANE_IMAGE = 'opguk/core-membrane'
-    SMOKE_TEST_IMAGE = 'opguk/core-smoke-test'
+    PUBLIC_FRONT_IMAGE = 'opg-refunds-public-front'
+    CASEWORKER_FRONT_IMAGE = 'opg-refunds-caseworker-front'
+    CASEWORKER_API_IMAGE = 'opg-refunds-caseworker-api'
     PHPCS_IMAGE = "${DOCKER_REGISTRY}/opguk/phpcs"
     NODE_RUNNER_IMAGE = 'opguk/node-runner'
     NODE_RUNNER_TAG = "latest"
 
-    SIRIUS_NEW_TAG = "${getSiriusBranchName()}__${dateString}__${env.BUILD_NUMBER}"
+    REFUNDS_NEW_TAG = "${getRefundsBranchName()}__${dateString}__${env.BUILD_NUMBER}"
 
-    BACKEND_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.BACKEND_IMAGE}:${env.SIRIUS_NEW_TAG}"
-    FRONTEND_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.FRONTEND_IMAGE}:${env.SIRIUS_NEW_TAG}"
-    MEMBRANE_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.MEMBRANE_IMAGE}:${env.SIRIUS_NEW_TAG}"
+    PUBLIC_FRONT_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.PUBLIC_FRONT_IMAGE}:${env.REFUNDS_NEW_TAG}"
+    CASEWORKER_FRONT_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.CASEWORKER_FRONT_IMAGE}:${env.REFUNDS_NEW_TAG}"
+    CASEWORKER_API_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.CASEWORKER_API_IMAGE}:${env.REFUNDS_NEW_TAG}"
     NODE_RUNNER_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.NODE_RUNNER_IMAGE}:${env.NODE_RUNNER_TAG}"
-    SMOKE_TEST_IMAGE_FULL = "${env.DOCKER_REGISTRY}/${env.SMOKE_TEST_IMAGE}:${env.SIRIUS_NEW_TAG}"
 
-    FRONTEND_IMAGE_VERSION = "${env.SIRIUS_NEW_TAG}"
-    BACKEND_IMAGE_VERSION = "${env.SIRIUS_NEW_TAG}"
-    MEMBRANE_IMAGE_VERSION = "${env.SIRIUS_NEW_TAG}"
+    PUBLIC_FRONT_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
+    CASEWORKER_FRONT_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
+    CASEWORKER_API_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
 
   }
 
@@ -159,8 +156,8 @@ pipeline {
             script {
               slackContent = getBaseSlackContent('STARTED')
               echo slackContent
-              slackSend(message: slackContent, color: '#FFCC00', channel: '#opg-sirius-builds')
-              currentBuild.description = "Tag: ${SIRIUS_NEW_TAG}"
+              slackSend(message: slackContent, color: '#FFCC00', channel: '#opg-lpa-builds')
+              currentBuild.description = "Tag: ${REFUNDS_NEW_TAG}"
             }
           }
         }
@@ -180,10 +177,31 @@ pipeline {
 
     stage('Lint Tests') {
         parallel {
-          stage('Backend Lint') {
+          stage('Public Front Lint') {
+            steps {
+                echo 'PHP_CodeSniffer PSR-2'
+                dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
+                    sh '''
+                        docker run \
+                        --rm \
+                        --user `id -u` \
+                        --volume $(pwd):/app \
+                        ${PHPCS_IMAGE} \
+                            --standard=PSR2 \
+                            --report=checkstyle \
+                            --report-file=frontend-pcs-checkstyle.xml \
+                            --runtime-set ignore_warnings_on_exit true \
+                            --runtime-set ignore_errors_on_exit true \
+                            module/Application/src/
+                    '''
+                    checkstyle pattern: 'frontend-pcs-checkstyle.xml'
+                }
+            }
+          }
+          stage('Caseworker Front Lint') {
                 steps {
                     echo 'PHP_CodeSniffer PSR-2'
-                      dir(env.BACKEND_WORKSPACE_DIR) {
+                      dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
                         sh '''
                             docker run -i \
                             --rm \
@@ -201,32 +219,10 @@ pipeline {
                       checkstyle pattern: 'backend-checkstyle.xml'
                   }
           }
-          stage('Frontend Lint') {
-            steps {
-                echo 'PHP_CodeSniffer PSR-2'
-                dir(env.FRONTEND_WORKSPACE_DIR) {
-                    sh '''
-                        docker run \
-                        --rm \
-                        --user `id -u` \
-                        --volume $(pwd):/app \
-                        ${PHPCS_IMAGE} \
-                            --standard=PSR2 \
-                            --report=checkstyle \
-                            --report-file=frontend-pcs-checkstyle.xml \
-                            --runtime-set ignore_warnings_on_exit true \
-                            --runtime-set ignore_errors_on_exit true \
-                            module/Application/src/
-                    '''
-                    checkstyle pattern: 'frontend-pcs-checkstyle.xml'
-                }
-
-            }
-          }
-          stage('Membrane Lint') {
+          stage('Caseworker API Lint') {
               steps {
                   echo 'PHP_CodeSniffer PSR-2'
-                  dir(env.MEMBRANE_WORKSPACE_DIR) {
+                  dir(env.CASEWORKER_API_WORKSPACE_DIR) {
                     sh '''
                         docker run \
                         --rm \
@@ -244,104 +240,34 @@ pipeline {
                    checkstyle pattern: 'membrane-checkstyle.xml'
             }
           }
-          stage('Compile Assets Prep') {
-            steps {
-              dir(env.FRONTEND_WORKSPACE_DIR) {
-                sh "docker build -t ${NODE_RUNNER_IMAGE_FULL} -f Dockerfile.node_runner ."
-              }
-            }
-          }
         }
-    }
-
-    stage('Compile Assets (Node)') {
-      parallel {
-        stage('LPA Node Deps') {
-          steps {
-            dir(env.FRONTEND_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh "./docker/node/node_runner.sh lpa"
-              }
-            }
-          }
-        }
-
-        stage('LPA Tests Node Deps') {
-          steps {
-            dir(env.FRONTEND_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh "./docker/node/node_runner.sh lpa_tests"
-              }
-            }
-          }
-        }
-
-        stage('Supervision Node Deps') {
-          steps {
-            dir(env.FRONTEND_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh "./docker/node/node_runner.sh supervision_setup_prod"
-              }
-            }
-          }
-        }
-
-        stage('Protractor Node Test Deps') {
-          steps {
-            dir(env.FRONTEND_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh "./docker/node/node_runner.sh supervision_tests"
-              }
-            }
-          }
-        }
-
-        stage('Supervision UI Test Deps') {
-          steps {
-            dir(env.FRONTEND_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh "./docker/node/node_runner.sh supervision_e2e_tests_setup"
-              }
-            }
-          }
-        }
-      }
     }
 
     stage('Docker Build') {
       parallel {
-          stage('Build Backend') {
+          stage('Build Public Front') {
             steps {
-              dir(env.BACKEND_WORKSPACE_DIR) {
+              dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
                 ansiColor('xterm') {
-                  sh "docker build --pull -t ${BACKEND_IMAGE_FULL} ."
+                  sh "docker build --pull -t ${PUBLIC_FRONT_IMAGE_FULL} ."
                 }
               }
             }
           }
-          stage('Build Frontend') {
+          stage('Build Caseworker Front') {
             steps {
-              dir(env.FRONTEND_WORKSPACE_DIR) {
+              dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
                 ansiColor('xterm') {
-                  sh "docker build --pull -t ${FRONTEND_IMAGE_FULL} ."
+                  sh "docker build --pull -t ${CASEWORKER_FRONT_IMAGE_FULL} ."
                 }
               }
             }
           }
-          stage('Build Membrane') {
+          stage('Build Caseworker API') {
             steps {
-              dir(env.MEMBRANE_WORKSPACE_DIR) {
+              dir(env.CASEWORKER_API_WORKSPACE_DIR) {
                 ansiColor('xterm') {
-                  sh "docker build --pull -t ${MEMBRANE_IMAGE_FULL} ."
-                }
-              }
-            }
-          }
-          stage('Build Smoke Test') {
-            steps {
-              dir(env.FRONTEND_WORKSPACE_DIR) {
-                ansiColor('xterm') {
-                  sh "docker build --pull -t ${SMOKE_TEST_IMAGE_FULL} -f Dockerfile.smoke_tests ./supervision-ui-tests" 
+                  sh "docker build --pull -t ${CASEWORKER_API_IMAGE_FULL} ."
                 }
               }
             }
@@ -352,7 +278,48 @@ pipeline {
 
     stage('Unit Tests') {
       parallel {
-        stage('Backend Unit Tests') {
+        stage('Public Front Unit Tests') {
+            steps {
+              ansiColor('xterm') {
+                sh '''
+                    mkdir -p build/output/phpunit
+                    docker run \
+                        --rm \
+                        --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
+                        --workdir=/app \
+                        --env OPG_PHP_XDEBUG_ENABLE=1 \
+                        ${PUBLIC_FRONT_IMAGE_FULL} \
+                        /sbin/my_init --quiet -- \
+                            sh -c 'umask 000 && \
+                                php /app/vendor/bin/phpunit \
+                                    --verbose \
+                                    --configuration tests/phpunit.xml \
+                                    --coverage-clover build/output/phpunit/coverage/public-front-phpunit/clover.xml \
+                                    --coverage-html build/output/phpunit/coverage/public-front-phpunit \
+                                    --exclude-group functional \
+                                    --log-junit build/output/phpunit/junit/public-front-phpunit-output.xml \
+                                    --testsuite unit && \
+                                umask 022'
+                    sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/public-front-phpunit/clover.xml
+                '''
+              }
+
+                // step([
+                //     $class: 'CloverPublisher',
+                //     cloverReportDir: 'build/output/phpunit/coverage/public-front-phpunit',
+                //     cloverReportFileName: 'clover.xml'
+                // ])
+                //
+                // fileOperations([fileZipOperation('build/output/phpunit/coverage/public-front-phpunit')])
+                // archiveArtifacts artifacts: 'public-front-phpunit.zip'
+            }
+            post {
+                always {
+                    junit 'build/output/phpunit/junit/public-front-phpunit-output.xml'
+                }
+            }
+        }
+        stage('Caseworker Front Unit Tests') {
             steps {
                 ansiColor('xterm') {
                   sh '''
@@ -362,37 +329,37 @@ pipeline {
                           --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
                           --workdir=/app \
                           --env OPG_PHP_XDEBUG_ENABLE=1 \
-                          ${BACKEND_IMAGE_FULL} \
+                          ${CASEWORKER_FRONT_IMAGE_FULL} \
                           /sbin/my_init --quiet -- \
                               sh -c 'umask 000 && \
                                   php /app/vendor/bin/phpunit \
                                       --verbose \
                                       --configuration tests/phpunit.xml \
-                                      --coverage-clover build/output/phpunit/coverage/back-end-phpunit/clover.xml \
-                                      --coverage-html build/output/phpunit/coverage/back-end-phpunit \
+                                      --coverage-clover build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml \
+                                      --coverage-html build/output/phpunit/coverage/caseworker-front-phpunit \
                                       --exclude-group functional \
-                                      --log-junit build/output/phpunit/junit/back-end-phpunit-output.xml \
+                                      --log-junit build/output/phpunit/junit/caseworker-front-phpunit-output.xml \
                                       --testsuite unit && \
                               umask 022'
-                      sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/back-end-phpunit/clover.xml
+                      sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml
                   '''
                 }
                 // step([
                 //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/back-end-phpunit',
+                //     cloverReportDir: 'build/output/phpunit/coverage/caseworker-front-phpunit',
                 //     cloverReportFileName: 'clover.xml'
                 // ])
                 //
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/back-end-phpunit')])
-                // archiveArtifacts artifacts: 'back-end-phpunit.zip'
+                // fileOperations([fileZipOperation('build/output/phpunit/coverage/caseworker-front-phpunit')])
+                // archiveArtifacts artifacts: 'caseworker-front-phpunit.zip'
             }
             post {
                 always {
-                    junit 'build/output/phpunit/junit/back-end-phpunit-output.xml'
+                    junit 'build/output/phpunit/junit/caseworker-front-phpunit-output.xml'
                 }
             }
         }
-        stage('Membrane Unit Tests') {
+        stage('Caseworker API Unit Tests') {
             steps {
                   ansiColor('xterm') {
                     sh '''
@@ -402,7 +369,7 @@ pipeline {
                             --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
                             --workdir=/app \
                             --env OPG_PHP_XDEBUG_ENABLE=1 \
-                            ${MEMBRANE_IMAGE_FULL} \
+                            ${CASEWORKER_API_IMAGE_FULL} \
                             /sbin/my_init --quiet -- \
                                 sh -c 'umask 000 && \
                                     php /app/vendor/bin/phpunit \
@@ -432,271 +399,8 @@ pipeline {
             //     }
             // }
         }
-        stage('Frontend Unit Tests') {
-            steps {
-              ansiColor('xterm') {
-                sh '''
-                    mkdir -p build/output/phpunit
-                    docker run \
-                        --rm \
-                        --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
-                        --workdir=/app \
-                        --env OPG_PHP_XDEBUG_ENABLE=1 \
-                        ${FRONTEND_IMAGE_FULL} \
-                        /sbin/my_init --quiet -- \
-                            sh -c 'umask 000 && \
-                                php /app/vendor/bin/phpunit \
-                                    --verbose \
-                                    --configuration tests/phpunit.xml \
-                                    --coverage-clover build/output/phpunit/coverage/front-end-phpunit/clover.xml \
-                                    --coverage-html build/output/phpunit/coverage/front-end-phpunit \
-                                    --exclude-group functional \
-                                    --log-junit build/output/phpunit/junit/front-end-phpunit-output.xml \
-                                    --testsuite unit && \
-                                umask 022'
-                    sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/front-end-phpunit/clover.xml
-                '''
-              }
-
-                // step([
-                //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/front-end-phpunit',
-                //     cloverReportFileName: 'clover.xml'
-                // ])
-                //
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/front-end-phpunit')])
-                // archiveArtifacts artifacts: 'front-end-phpunit.zip'
-            }
-            post {
-                always {
-                    junit 'build/output/phpunit/junit/front-end-phpunit-output.xml'
-                }
-            }
-        }
-        stage('Frontend LPA Karma unit tests') {
-            steps {
-              script {
-                dir(env.FRONTEND_WORKSPACE_DIR) {
-                  ansiColor('xterm') {
-                      sh '''
-                          mkdir -p build/output/lpa-karma
-                          docker run \
-                              --rm \
-                              -v $PWD:/app \
-                              -v $(pwd)/build/output/lpa-karma:/app/public/test \
-                              -w /app/public \
-                              ${NODE_RUNNER_IMAGE_FULL} \
-                              sh -c 'umask 000 && \
-                                  node ./node_modules/karma/bin/karma start karma.conf.js --colors --singleRun=true && \
-                                  umask 022'
-                      '''
-                  }
-                }
-              }
-            }
-            post {
-              always {
-                dir(env.FRONTEND_WORKSPACE_DIR) {
-                  junit 'build/output/lpa-karma/*.xml'
-                }
-              }
-            }
-        }
-        stage('Frontend Supervision Karma unit tests') {
-            steps {
-              script {
-                dir(env.FRONTEND_WORKSPACE_DIR) {
-                  ansiColor('xterm') {
-                      sh '''
-                          mkdir -p build/output/supervision-karma
-                          docker run \
-                              --rm \
-                              -v $PWD:/app \
-                              -v $(pwd)/build/output/supervision-karma:/app/supervision/config/test \
-                              -w /app/supervision \
-                              ${NODE_RUNNER_IMAGE_FULL} \
-                              sh -c 'umask 000 && \
-                                  node ./node_modules/karma/bin/karma start config/karma.config.js --colors --singleRun=true && \
-                                  umask 022'
-                      '''
-                  }
-                }
-              }
-            }
-            post {
-              always {
-                dir(env.FRONTEND_WORKSPACE_DIR) {
-                  junit 'build/output/supervision-karma/*.xml'
-                }
-              }
-            }
-        } // /stage
-        stage('Integration Prep (Ingest)') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              script {
-                ansiColor('xterm') {
-                  sh '''
-                  make j2_ingest
-                  '''
-                }
-              }
-            }
-          }
-        }
       }
     }
-
-    //
-    stage('Run integration tests') {
-      parallel {
-        stage('Membrane Functional') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh '''
-                  mkdir -p build/output/functional-membrane
-                  make j2_testsuite_phpunit_functional_membrane args="--stop-on-error --stop-on-failure --log-junit /app/build/output/functional-membrane/junit.xml"
-                '''
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'build/output/functional-membrane/*.xml'
-              }
-            }
-          }
-        }
-        stage('Frontend Functional') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh '''
-                  mkdir -p build/output/functional-frontend
-                  make j2_testsuite_phpunit_functional_frontend args="--stop-on-error --stop-on-failure --log-junit /app/build/output/functional-frontend/junit.xml"
-                '''
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'build/output/functional-frontend/*.xml'
-              }
-            }
-          }
-        }
-        stage('API Behat V0') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                  sh '''
-                    mkdir -p build/output/behatv0
-                    make j2_testsuite_behat_v0 args="--tags=@ci --stop-on-failure -f junit -o /app/build/output/behatv0 -f progress -o std"
-                  '''
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'build/output/behatv0/*.xml'
-              }
-            }
-          }
-        }
-        stage('API Behat V1') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh '''
-                    mkdir -p build/output/behatv1
-                    make j2_testsuite_behat_v1 args="--tags=@ci --stop-on-failure -f junit -o /app/build/output/behatv1 -f progress -o std"
-                  '''
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'build/output/behatv1/*.xml'
-              }
-            }
-          }
-        }
-        stage('API Functional') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                sh '''
-                  mkdir -p build/output/functional-api
-                  make j2_testsuite_phpunit_functional_api args="--stop-on-error --stop-on-failure --log-junit build/output/functional-api/junit.xml"
-                  '''
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'build/output/functional-api/*.xml'
-              }
-            }
-          }
-        }
-
-        stage('Smoke Tests') {
-          steps {
-            dir(env.CI_WORKSPACE_DIR) {
-              ansiColor('xterm') {
-                // @todo - specify docker-e2e-tag @smoke here when there are Smoke tests
-                sh './run_supervision_e2e_tests.sh docker-e2e || true'
-              }
-            }
-          }
-        }
-
-        stage('Supervision Protractor') {
-          steps {
-            script {
-              ansiColor('xterm') {
-                dir(env.CI_WORKSPACE_DIR) {
-                try {
-                    sh './run_protractor_supervision_suite.sh'
-                  } catch (exception) {
-                     sh './run_serenity_report.sh'
-
-                     publishHTML([
-                       allowMissing: false,
-                       alwaysLinkToLastBuild: false,
-                       keepAll: false,
-                       reportDir: 'protractor-serenity-report',
-                       reportFiles: 'index.html',
-                       reportName: 'Supervision Serenity Report',
-                       reportTitles: "Tag: ${SIRIUS_NEW_TAG}"
-                     ])
-
-                     fileOperations([fileZipOperation('protractor-serenity-report')])
-                     archiveArtifacts artifacts: 'protractor-serenity-report.zip'
-
-                     throw exception
-                  }
-                }
-              }
-            }
-          }
-          post {
-            always {
-              dir(env.CI_WORKSPACE_DIR) {
-                junit 'protractor-report-target/*.xml'
-              }
-            }
-          }
-        }
-      }
-    }
-
   }
 
   // stage ('Deployment') {
@@ -717,27 +421,26 @@ pipeline {
             // Slave: ${getSlaveHostname()}
             slackContent = getBaseSlackContent(currentBuild.currentResult)
 
-            // If it's an aborted build, we don't wnat to push anything.
+            // If it's an aborted build, we don't want to push anything.
             if(currentBuild.currentResult != 'ABORTED') {
 
               slackContent = """${slackContent}
-  Deploy Tag: ${SIRIUS_NEW_TAG}"""
+  Deploy Tag: ${REFUNDS_NEW_TAG}"""
 
               withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: githubUserPassCredentialsId, usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD']]) {
                   sh '''
 
-                  if ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${BACKEND_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${FRONTEND_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${MEMBRANE_IMAGE_FULL}; then
+                  if ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${PUBLIC_FRONT_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${CASEWORKER_FRONT_IMAGE_FULL} && ${CI_WORKSPACE_DIR}/docker-image-exists.sh ${CASEWORKER_API_IMAGE_FULL}; then
 
                       echo "FOUND DOCKER IMAGES - TAGGING"
                       # git config tweak is due to a limitation on the jenkins branch sources (github) plugin
                       git config url."https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/".insteadOf "https://github.com/"
-                      git tag ${SIRIUS_NEW_TAG}
-                      git push origin ${SIRIUS_NEW_TAG}
+                      git tag ${REFUNDS_NEW_TAG}
+                      git push origin ${REFUNDS_NEW_TAG}
 
-                      docker push ${BACKEND_IMAGE_FULL}
-                      docker push ${FRONTEND_IMAGE_FULL}
-                      docker push ${MEMBRANE_IMAGE_FULL}
-                      docker push ${SMOKE_TEST_IMAGE_FULL}
+                      docker push ${PUBLIC_FRONT_IMAGE_FULL}
+                      docker push ${CASEWORKER_FRONT_IMAGE_FULL}
+                      docker push ${CASEWORKER_API_IMAGE_FULL}
                   else
                       echo "DOCKER IMAGES NOT FOUND - NO IMAGES TO PUSH"
                   fi
@@ -750,10 +453,9 @@ pipeline {
             dir(env.CI_WORKSPACE_DIR) {
                 // Clean up docker images
                 sh '''
-                docker rmi -f ${BACKEND_IMAGE_FULL}
-                docker rmi -f ${FRONTEND_IMAGE_FULL}
-                docker rmi -f ${MEMBRANE_IMAGE_FULL}
-                docker rmi -f ${SMOKE_TEST_IMAGE_FULL}
+                docker rmi -f ${PUBLIC_FRONT_IMAGE_FULL}
+                docker rmi -f ${CASEWORKER_FRONT_IMAGE_FULL}
+                docker rmi -f ${CASEWORKER_API_IMAGE_FULL}
                 make j2_cleanup_pipeline_run || echo "Cleanup failed - this is acceptable as cleanups are a nice to have"
                 '''
                 // Clean up docker networks
@@ -761,7 +463,7 @@ pipeline {
             }
 
             // SLACK STUFF
-            slackChannel = '#opg-sirius-builds'
+            slackChannel = '#opg-lpa-builds'
 
             colorCode = 'danger'
             if(currentBuild.currentResult == 'SUCCESS') {

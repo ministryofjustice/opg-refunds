@@ -3,28 +3,17 @@ version: '2'
 services:
   router:
     image: registry.service.opg.digital/opg-nginx-router-1604
-    ports:
-      - 80:80
-      - 443:443
     links:
       - front
       - caseworker
       - api
       - maintenance
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/router.env
-      - ../lpa-refund-local-dev/develop/env/base.env
     restart: always
 
   maintenance:
     build: ../opg-refunds-maintenance
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
-    ports:
-      - 8050:80
-      - 4410:443
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
       - ../opg-refunds-maintenance:/app
 
@@ -32,13 +21,6 @@ services:
     build: ./public-front
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
-    ports:
-      - 8060:80
-      - 4420:443
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/front.env
-      - ../lpa-refund-local-dev/develop/env/psql.env
-      - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
       - ./public-front:/app
     links:
@@ -50,13 +32,6 @@ services:
     build: ./caseworker-front
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-    ports:
-      - 8070:80
-      - 4430:443
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/caseworker.env
-      - ../lpa-refund-local-dev/develop/env/psql.env
-      - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
       - ./caseworker-front:/app
     links:
@@ -67,13 +42,6 @@ services:
     build: ./caseworker-api
     # Currently the registry has no images so we have to build locally
     # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-    ports:
-      - 8080:80
-      - 4440:443
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/api.env
-      - ../lpa-refund-local-dev/develop/env/psql.env
-      - ../lpa-refund-local-dev/develop/env/base.env
     volumes:
       - ./caseworker-api:/app
     links:
@@ -82,25 +50,15 @@ services:
 
   postgres:
     image: postgres:9.6.2
-    ports:
-      - 5432:5432
     volumes:
       - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    env_file:
-      - ../lpa-refund-local-dev/develop/env/psql.env
 
   dynamodb:
     image: forty8bit/dynamodb-local
-    ports:
-      - 8000:8000
     command: ["-sharedDb"]
 
   kms:
     build: ./local-kms
-    ports:
-      - 8001:8080
 
   sns:
     build: ./local-sns
-    ports:
-      - 8181:8181
