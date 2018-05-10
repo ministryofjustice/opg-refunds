@@ -189,12 +189,12 @@ pipeline {
                         ${PHPCS_IMAGE} \
                             --standard=PSR2 \
                             --report=checkstyle \
-                            --report-file=frontend-pcs-checkstyle.xml \
+                            --report-file=public-front-checkstyle.xml \
                             --runtime-set ignore_warnings_on_exit true \
                             --runtime-set ignore_errors_on_exit true \
                             src/
                     '''
-                    checkstyle pattern: 'frontend-pcs-checkstyle.xml'
+                    checkstyle pattern: 'public-front-checkstyle.xml'
                 }
             }
           }
@@ -210,13 +210,13 @@ pipeline {
                             ${PHPCS_IMAGE} \
                                 --standard=PSR2 \
                                 --report=checkstyle \
-                                --report-file=backend-checkstyle.xml \
+                                --report-file=caseworker-front-checkstyle.xml \
                                 --runtime-set ignore_warnings_on_exit true \
                                 --runtime-set ignore_errors_on_exit true \
                                 src/
                         '''
                       }
-                      checkstyle pattern: 'backend-checkstyle.xml'
+                      checkstyle pattern: 'caseworker-front-checkstyle.xml'
                   }
           }
           stage('Caseworker API Lint') {
@@ -231,13 +231,13 @@ pipeline {
                         ${PHPCS_IMAGE} \
                             --standard=PSR2 \
                             --report=checkstyle \
-                            --report-file=membrane-checkstyle.xml \
+                            --report-file=caseworker-api-checkstyle.xml \
                             --runtime-set ignore_warnings_on_exit true \
                             --runtime-set ignore_errors_on_exit true \
                             src/
                     '''
                    }
-                   checkstyle pattern: 'membrane-checkstyle.xml'
+                   checkstyle pattern: 'caseworker-api-checkstyle.xml'
             }
           }
         }
@@ -375,27 +375,27 @@ pipeline {
                                     php /app/vendor/bin/phpunit \
                                         --verbose \
                                         --configuration phpunit.xml.dist \
-                                        --coverage-clover build/output/phpunit/coverage/membrane-phpunit/clover.xml \
-                                        --coverage-html build/output/phpunit/coverage/membrane-phpunit \
+                                        --coverage-clover build/output/phpunit/coverage/caseworker-api-phpunit/clover.xml \
+                                        --coverage-html build/output/phpunit/coverage/caseworker-api-phpunit \
                                         --exclude-group functional \
-                                        --log-junit build/output/phpunit/junit/membrane-phpunit-output.xml \
+                                        --log-junit build/output/phpunit/junit/caseworker-api-phpunit-output.xml \
                                         --testsuite unit  && \
                                     umask 022'
-                        sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/membrane-phpunit/clover.xml
+                        sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-api-phpunit/clover.xml
                     '''
                 }
                 // step([
                 //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/membrane-phpunit',
+                //     cloverReportDir: 'build/output/phpunit/coverage/caseworker-api-phpunit',
                 //     cloverReportFileName: 'clover.xml'
                 // ])
 
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/membrane-phpunit')])
-                // archiveArtifacts artifacts: 'membrane-phpunit.zip'
+                // fileOperations([fileZipOperation('build/output/phpunit/coverage/caseworker-api-phpunit')])
+                // archiveArtifacts artifacts: 'caseworker-api-phpunit.zip'
             }
             // post {
             //     always {
-            //         junit 'build/output/phpunit/junit/membrane-phpunit-output.xml'
+            //         junit 'build/output/phpunit/junit/caseworker-api-phpunit-output.xml'
             //     }
             // }
         }
