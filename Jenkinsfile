@@ -298,7 +298,7 @@ pipeline {
                                     --coverage-html build/output/phpunit/coverage/public-front-phpunit \
                                     --exclude-group functional \
                                     --log-junit build/output/phpunit/junit/public-front-phpunit-output.xml \
-                                    --testsuite unit && \
+                                    --testsuite 'App\\Tests' && \
                                 umask 022'
                     sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/public-front-phpunit/clover.xml
                 '''
@@ -339,7 +339,7 @@ pipeline {
                                       --coverage-html build/output/phpunit/coverage/caseworker-front-phpunit \
                                       --exclude-group functional \
                                       --log-junit build/output/phpunit/junit/caseworker-front-phpunit-output.xml \
-                                      --testsuite unit && \
+                                      --testsuite 'App\\Tests' && \
                               umask 022'
                       sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml
                   '''
@@ -379,7 +379,7 @@ pipeline {
                                         --coverage-html build/output/phpunit/coverage/membrane-phpunit \
                                         --exclude-group functional \
                                         --log-junit build/output/phpunit/junit/membrane-phpunit-output.xml \
-                                        --testsuite unit  && \
+                                        --testsuite 'App\\Tests'  && \
                                     umask 022'
                         sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/membrane-phpunit/clover.xml
                     '''
