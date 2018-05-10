@@ -8,7 +8,6 @@ services:
       - caseworker
       - api
       - maintenance
-    restart: always
 
   maintenance:
     build: ../opg-refunds-maintenance

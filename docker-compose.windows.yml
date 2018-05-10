@@ -14,7 +14,6 @@ services:
     env_file:
       - ../lpa-refund-local-dev/develop/env/router.env
       - ../lpa-refund-local-dev/develop/env/base.env
-    restart: always
 
   maintenance:
     build: ../opg-refunds-maintenance
