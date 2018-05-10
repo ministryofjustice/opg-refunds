@@ -192,7 +192,7 @@ pipeline {
                             --report-file=frontend-pcs-checkstyle.xml \
                             --runtime-set ignore_warnings_on_exit true \
                             --runtime-set ignore_errors_on_exit true \
-                            module/Application/src/
+                            src/
                     '''
                     checkstyle pattern: 'frontend-pcs-checkstyle.xml'
                 }
@@ -213,7 +213,7 @@ pipeline {
                                 --report-file=backend-checkstyle.xml \
                                 --runtime-set ignore_warnings_on_exit true \
                                 --runtime-set ignore_errors_on_exit true \
-                                module/Application/src/
+                                src/
                         '''
                       }
                       checkstyle pattern: 'backend-checkstyle.xml'
@@ -234,7 +234,7 @@ pipeline {
                             --report-file=membrane-checkstyle.xml \
                             --runtime-set ignore_warnings_on_exit true \
                             --runtime-set ignore_errors_on_exit true \
-                            module/Application/src/
+                            src/
                     '''
                    }
                    checkstyle pattern: 'membrane-checkstyle.xml'
@@ -293,7 +293,7 @@ pipeline {
                             sh -c 'umask 000 && \
                                 php /app/vendor/bin/phpunit \
                                     --verbose \
-                                    --configuration tests/phpunit.xml \
+                                    --configuration phpunit.xml.dist \
                                     --coverage-clover build/output/phpunit/coverage/public-front-phpunit/clover.xml \
                                     --coverage-html build/output/phpunit/coverage/public-front-phpunit \
                                     --exclude-group functional \
@@ -334,7 +334,7 @@ pipeline {
                               sh -c 'umask 000 && \
                                   php /app/vendor/bin/phpunit \
                                       --verbose \
-                                      --configuration tests/phpunit.xml \
+                                      --configuration phpunit.xml.dist \
                                       --coverage-clover build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml \
                                       --coverage-html build/output/phpunit/coverage/caseworker-front-phpunit \
                                       --exclude-group functional \
@@ -374,7 +374,7 @@ pipeline {
                                 sh -c 'umask 000 && \
                                     php /app/vendor/bin/phpunit \
                                         --verbose \
-                                        --configuration tests/phpunit.xml \
+                                        --configuration phpunit.xml.dist \
                                         --coverage-clover build/output/phpunit/coverage/membrane-phpunit/clover.xml \
                                         --coverage-html build/output/phpunit/coverage/membrane-phpunit \
                                         --exclude-group functional \
