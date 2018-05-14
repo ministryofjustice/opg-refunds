@@ -203,7 +203,7 @@ pipeline {
                     echo 'PHP_CodeSniffer PSR-2'
                       dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
                         sh '''
-                            docker run -i \
+                            docker run \
                             --rm \
                             --user `id -u` \
                             --volume $(pwd):/app \
@@ -215,8 +215,8 @@ pipeline {
                                 --runtime-set ignore_errors_on_exit true \
                                 src/
                         '''
+                        checkstyle pattern: 'caseworker-front-checkstyle.xml'
                       }
-                      checkstyle pattern: 'caseworker-front-checkstyle.xml'
                   }
           }
           stage('Caseworker API Lint') {
@@ -236,8 +236,8 @@ pipeline {
                             --runtime-set ignore_errors_on_exit true \
                             src/
                     '''
+                    checkstyle pattern: 'caseworker-api-checkstyle.xml'
                    }
-                   checkstyle pattern: 'caseworker-api-checkstyle.xml'
             }
           }
         }
