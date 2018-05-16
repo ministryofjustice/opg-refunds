@@ -114,8 +114,7 @@ Commit Message: ${getLastCommitMessage()}
 
 pipeline {
 
-  agent { label 'opg_sirius_slave' } // run on slaves only
-  // agent { label 'paul_slave' } // run on slaves only
+  agent { label '!J2_slave' } // run on slaves only
 
   environment {
     DOCKER_REGISTRY = 'registry.service.opg.digital'
@@ -272,7 +271,6 @@ pipeline {
               }
             }
           }
-
       }
     }
 
