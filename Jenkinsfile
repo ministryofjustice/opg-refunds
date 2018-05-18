@@ -300,7 +300,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Caseworker API Unit Tests') {
             steps {
                   ansiColor('xterm') {
@@ -381,7 +381,6 @@ pipeline {
                 docker rmi -f ${PUBLIC_FRONT_IMAGE_FULL}
                 docker rmi -f ${CASEWORKER_FRONT_IMAGE_FULL}
                 docker rmi -f ${CASEWORKER_API_IMAGE_FULL}
-                make j2_cleanup_pipeline_run || echo "Cleanup failed - this is acceptable as cleanups are a nice to have"
                 docker network prune -f
                 '''
             }
