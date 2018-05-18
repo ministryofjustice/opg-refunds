@@ -41,11 +41,6 @@ def isPublishingBranch = { ->
     return env.GIT_BRANCH == 'origin/master'
 }
 
-// @NonCPS
-// def getSlaveHostname = {
-//   return InetAddress.localHost.canonicalHostName
-// }
-
 @NonCPS
 def getGitAuthor = {
     def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
