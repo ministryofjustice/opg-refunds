@@ -12,45 +12,10 @@ def colorCode = ''
 def repoName = 'opg-refunds'
 def slackColorMap = ['SUCCESS': 'good', 'FAILURE': 'danger', 'UNSTABLE': 'danger', 'ABORTED': 'danger']
 
-// @todo - load this pipeline file, make sure it can populate gloval vars from this Jenkinsfile
-// pipelineLib = load "ci/groovy"
-
-// @todo - call this and see its output
-// Fetching change set from Git
-
-// @todo - re call timeDiff now that `time` evaluates in the script block
-@NonCPS
-def getChangeSet() {
-  return currentBuild.changeSets.collect { cs ->
-    cs.collect { entry ->
-        "* ${entry.author.fullName}: ${entry.msg}"
-    }.join("\n")
-  }.join("\n")
-}
-
-def timeDiff(st) {
-    def delta = (new Date()).getTime() - st.getTime()
-    def seconds = delta.intdiv(1000) % 60
-    def minutes = delta.intdiv(60 * 1000) % 60
-
-    return "${minutes} min ${seconds} sec"
-}
 
 @NonCPS
 def isPublishingBranch = { ->
     return env.GIT_BRANCH == 'origin/master'
-}
-
-// @NonCPS
-// def getSlaveHostname = {
-//   return InetAddress.localHost.canonicalHostName
-// }
-
-@NonCPS
-def getGitAuthor = {
-    def commit = sh(returnStdout: true, script: 'git rev-parse HEAD')
-    author = sh(returnStdout: true, script: "git --no-pager show -s --format='%an' ${commit}").trim()
-    return author
 }
 
 @NonCPS
@@ -64,14 +29,6 @@ def getCommitOwner() {
     return env.CHANGE_AUTHOR_DISPLAY_NAME
   }
   return (sh(returnStdout: true, script: 'git show --no-patch --format="%an" HEAD')).trim()
-}
-
-def getCommitHash() {
-  return sh(returnStdout: true, script: 'git rev-parse HEAD').trim()
-}
-
-def getCommitText() {
-  return sh(returnStdout: true, script: 'git show -s --format=format:"*%s*  _by %an_" HEAD').trim()
 }
 
 def getGitHubBranchUrl() {
@@ -107,15 +64,9 @@ Commit Message: ${getLastCommitMessage()}
     return slackContent
 }
 
-// @todo - consider php parallel list for 3 PHP components
-// sh './vendor/bin/parallel-lint -s --exclude vendor/ .'
-
-// END OF changeLogs()
-
 pipeline {
 
-  agent { label 'opg_sirius_slave' } // run on slaves only
-  // agent { label 'paul_slave' } // run on slaves only
+  agent { label '!J2_slave' }
 
   environment {
     DOCKER_REGISTRY = 'registry.service.opg.digital'
@@ -143,7 +94,6 @@ pipeline {
     PUBLIC_FRONT_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
     CASEWORKER_FRONT_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
     CASEWORKER_API_IMAGE_VERSION = "${env.REFUNDS_NEW_TAG}"
-
   }
 
   stages {
@@ -161,6 +111,7 @@ pipeline {
             }
           }
         }
+
         stage('Clean Env') {
           steps {
             sh 'git reset --hard HEAD && git clean -fdx'
@@ -198,6 +149,7 @@ pipeline {
                 }
             }
           }
+
           stage('Caseworker Front Lint') {
                 steps {
                     echo 'PHP_CodeSniffer PSR-2'
@@ -219,6 +171,7 @@ pipeline {
                       }
                   }
           }
+
           stage('Caseworker API Lint') {
               steps {
                   echo 'PHP_CodeSniffer PSR-2'
@@ -245,6 +198,7 @@ pipeline {
 
     stage('Docker Build') {
       parallel {
+
           stage('Build Public Front') {
             steps {
               dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
@@ -254,6 +208,7 @@ pipeline {
               }
             }
           }
+
           stage('Build Caseworker Front') {
             steps {
               dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
@@ -263,6 +218,7 @@ pipeline {
               }
             }
           }
+
           stage('Build Caseworker API') {
             steps {
               dir(env.CASEWORKER_API_WORKSPACE_DIR) {
@@ -272,12 +228,12 @@ pipeline {
               }
             }
           }
-
       }
     }
 
     stage('Unit Tests') {
       parallel {
+
         stage('Public Front Unit Tests') {
             steps {
               ansiColor('xterm') {
@@ -304,14 +260,6 @@ pipeline {
                 '''
               }
 
-                // step([
-                //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/public-front-phpunit',
-                //     cloverReportFileName: 'clover.xml'
-                // ])
-                //
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/public-front-phpunit')])
-                // archiveArtifacts artifacts: 'public-front-phpunit.zip'
             }
             post {
                 always {
@@ -319,6 +267,7 @@ pipeline {
                 }
             }
         }
+
         stage('Caseworker Front Unit Tests') {
             steps {
                 ansiColor('xterm') {
@@ -344,14 +293,6 @@ pipeline {
                       sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml
                   '''
                 }
-                // step([
-                //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/caseworker-front-phpunit',
-                //     cloverReportFileName: 'clover.xml'
-                // ])
-                //
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/caseworker-front-phpunit')])
-                // archiveArtifacts artifacts: 'caseworker-front-phpunit.zip'
             }
             post {
                 always {
@@ -359,6 +300,7 @@ pipeline {
                 }
             }
         }
+
         stage('Caseworker API Unit Tests') {
             steps {
                   ansiColor('xterm') {
@@ -384,20 +326,7 @@ pipeline {
                         sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-api-phpunit/clover.xml
                     '''
                 }
-                // step([
-                //     $class: 'CloverPublisher',
-                //     cloverReportDir: 'build/output/phpunit/coverage/caseworker-api-phpunit',
-                //     cloverReportFileName: 'clover.xml'
-                // ])
-
-                // fileOperations([fileZipOperation('build/output/phpunit/coverage/caseworker-api-phpunit')])
-                // archiveArtifacts artifacts: 'caseworker-api-phpunit.zip'
             }
-            // post {
-            //     always {
-            //         junit 'build/output/phpunit/junit/caseworker-api-phpunit-output.xml'
-            //     }
-            // }
         }
       }
     }
@@ -410,15 +339,11 @@ pipeline {
   // }
 
   post {
-      // Always cleanup docker containers, especially for aborted jobs.
-      // always {
-      // @todo - determine what we should do on abort, fail, success, always steps.
       always {
           echo "BUILD RESULT: ${currentBuild.currentResult}"
 
           script {
 
-            // Slave: ${getSlaveHostname()}
             slackContent = getBaseSlackContent(currentBuild.currentResult)
 
             // If it's an aborted build, we don't want to push anything.
@@ -456,13 +381,10 @@ pipeline {
                 docker rmi -f ${PUBLIC_FRONT_IMAGE_FULL}
                 docker rmi -f ${CASEWORKER_FRONT_IMAGE_FULL}
                 docker rmi -f ${CASEWORKER_API_IMAGE_FULL}
-                make j2_cleanup_pipeline_run || echo "Cleanup failed - this is acceptable as cleanups are a nice to have"
+                docker network prune -f
                 '''
-                // Clean up docker networks
-                sh 'docker network prune -f'
             }
 
-            // SLACK STUFF
             slackChannel = '#opg-lpa-builds'
 
             colorCode = 'danger'
@@ -476,9 +398,6 @@ pipeline {
             slackSend(message: slackContent, color: colorCode, channel: slackChannel)
 
           }
-
-          // @todo - slack
-
       } // end of always{}
   } // end of post{}
 } // end of pipeline{}
