@@ -55,6 +55,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
 
         $this->request->withAttribute( 'ad', Argument::any() )->shouldNotBeCalled();
 
+        $this->request->withAttribute( 'isDonorDeceased', false )->willReturn($this->request)->shouldBeCalled();
+
         // And an empty 'ad' array should be set in plates.
         $this->platesEngine->addData([
             'ad' => []
@@ -85,6 +87,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
             ->shouldBeCalled();
 
         $this->request->withAttribute( 'ad', Argument::any() )->shouldNotBeCalled();
+
+        $this->request->withAttribute( 'isDonorDeceased', false )->willReturn($this->request)->shouldBeCalled();
 
 
         // And an empty 'ad' array should be set in plates.
@@ -117,6 +121,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
         $this->linkChecker->verify( $cookieValue )->willReturn($payload)->shouldBeCalled();
 
         $this->request->withAttribute( 'ad', $payload )->willReturn($this->request->reveal())->shouldBeCalled();
+
+        $this->request->withAttribute( 'isDonorDeceased', false )->willReturn($this->request)->shouldBeCalled();
 
         $this->platesEngine->addData([
             'ad' => $payload
