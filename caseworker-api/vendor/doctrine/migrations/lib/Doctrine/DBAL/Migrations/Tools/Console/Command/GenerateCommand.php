@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\InputOption;
 class GenerateCommand extends AbstractCommand
 {
     private static $_template =
-            '<?php declare(strict_types = 1);
+            '<?php declare(strict_types=1);
 
 namespace <namespace>;
 
@@ -30,15 +30,15 @@ use Doctrine\DBAL\Schema\Schema;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-class Version<version> extends AbstractMigration
+final class Version<version> extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
 <up>
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema) : void
     {
         // this down() migration is auto-generated, please modify it to your needs
 <down>
