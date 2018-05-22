@@ -3,6 +3,7 @@
 namespace AppTest\Spreadsheet;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
@@ -88,6 +89,7 @@ class SsclWorksheetGeneratorTest extends TestCase
             ->setSortCode('112233');
 
         $application = $this->applicationBuilder
+            ->withApplicant(Application::APPLICANT_DONOR)
             ->withDonor($donor)
             ->withContact($contact)
             ->withAccount($account)

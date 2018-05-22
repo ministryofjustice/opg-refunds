@@ -6,6 +6,7 @@ use DateTime;
 use Mockery;
 use Mockery\MockInterface;
 use Opg\Refunds\Caseworker\DataModel\Applications\Account;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Applications\CurrentWithAddress;
 use Opg\Refunds\Caseworker\DataModel\Applications\Donor;
@@ -99,7 +100,8 @@ class PhpSpreadsheetGeneratorTest extends TestCase
             ->setAccountNumber('12345678')
             ->setSortCode('112233');
 
-        $application = $applicationBuilder->withDonor($donor)->withContact($contact)->withAccount($account)->build();
+        $application = $applicationBuilder->withApplicant(Application::APPLICANT_DONOR)->withDonor($donor)
+            ->withContact($contact)->withAccount($account)->build();
 
         $payment = new Payment();
         $payment->setAmount(45);
