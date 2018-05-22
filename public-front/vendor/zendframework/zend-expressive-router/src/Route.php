@@ -82,6 +82,10 @@ class Route
             throw new Exception\InvalidArgumentException('Invalid path; must be a string');
         }
 
+        if (! $middleware instanceof MiddlewareInterface) {
+            $this->triggerDeprecationForNonMiddlewareImplementation($path, $middleware, $methods);
+        }
+
         if (! is_callable($middleware)
             && ! $middleware instanceof MiddlewareInterface
             && ! is_string($middleware)
@@ -199,6 +203,9 @@ class Route
     /**
      * Whether or not HEAD support is implicit (i.e., not explicitly specified)
      *
+     * @deprecated Since 2.4.0; to be removed in 3.0.0. Router implementations
+     *     will be expected to return route failures for HEAD requests that
+     *     contain a full list of allowed methods.
      * @return bool
      */
     public function implicitHead()
@@ -209,6 +216,9 @@ class Route
     /**
      * Whether or not OPTIONS support is implicit (i.e., not explicitly specified)
      *
+     * @deprecated Since 2.4.0; to be removed in 3.0.0. Router implementations
+     *     will be expected to return route failures for OPTIONS requests that
+     *     contain a full list of allowed methods.
      * @return bool
      */
     public function implicitOptions()
@@ -246,5 +256,43 @@ class Route
         }
 
         return array_map('strtoupper', $methods);
+    }
+
+    /**
+     * @param string $path
+     * @param mixed $middleware
+     * @param null|array $methods
+     */
+    private function triggerDeprecationForNonMiddlewareImplementation($path, $middleware, $methods)
+    {
+        $type = $middleware;
+        if (is_string($middleware) && class_exists($middleware)) {
+            $type = $middleware;
+        } elseif (is_string($middleware) && is_callable($middleware)) {
+            $type = 'callable:' . $middleware;
+        } elseif (is_string($middleware) && ! is_callable($middleware)) {
+            $type = 'string:' . $middleware;
+        } elseif (is_object($middleware)) {
+            $type = get_class($middleware);
+        } elseif (is_callable($middleware)) {
+            $type = 'callable';
+        } else {
+            $type = gettype($middleware);
+        }
+
+        $methods = is_array($methods)
+            ? implode(', ', $methods)
+            : '(any)';
+
+        trigger_error(sprintf(
+            '%1$s will not accept anything other than objects implementing the MiddlewareInterface'
+            . ' starting in version 3.0.0; we detected usage of "%2$s" for path "%3$s" using methods %4$s.'
+            . ' Please update your code to create middleware instances implementing MiddlewareInterface;'
+            . ' use decorators for callable middleware if needed.',
+            __CLASS__,
+            $type,
+            $path,
+            $methods
+        ), E_USER_DEPRECATED);
     }
 }

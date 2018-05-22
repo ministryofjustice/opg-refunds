@@ -12,7 +12,7 @@ class SnsTest extends TestCase
     public function testCanInstantiate()
     {
         $sns = new Sns(
-            $this->prophesize(SnsClient::class)->reveal()
+            $this->prophesize(SnsClient::class)->reveal(), array()
         );
         $this->assertInstanceOf(Sns::class, $sns);
     }

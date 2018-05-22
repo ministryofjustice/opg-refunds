@@ -144,6 +144,13 @@ class Configuration
     private $customTemplate;
 
     /**
+     * Prevent write queries.
+     *
+     * @var bool
+     */
+    private $isDryRun = false;
+
+    /**
      * Construct a migration configuration object.
      *
      * @param Connection               $connection   A Connection instance
@@ -250,7 +257,7 @@ class Configuration
     /**
      * Returns the datetime of a migration
      *
-     * @param $version
+     * @param string $version
      * @return string
      */
     public function getDateTime($version)
@@ -313,6 +320,16 @@ class Configuration
     public function getMigrationsColumnName()
     {
         return $this->migrationsColumnName;
+    }
+
+    /**
+     * Returns the quoted migration column name
+     *
+     * @return string The quouted migration column name
+     */
+    public function getQuotedMigrationsColumnName()
+    {
+        return $this->getMigrationsColumn()->getQuotedName($this->connection->getDatabasePlatform());
     }
 
     /**
@@ -517,7 +534,7 @@ class Configuration
         $this->createMigrationTable();
 
         $version = $this->connection->fetchColumn(
-            "SELECT " . $this->migrationsColumnName . " FROM " . $this->migrationsTableName . " WHERE " . $this->migrationsColumnName . " = ?",
+            "SELECT " . $this->getQuotedMigrationsColumnName() . " FROM " . $this->migrationsTableName . " WHERE " . $this->getQuotedMigrationsColumnName() . " = ?",
             [$version->getVersion()]
         );
 
@@ -531,10 +548,15 @@ class Configuration
      */
     public function getMigratedVersions()
     {
-        $this->connect();
         $this->createMigrationTable();
 
-        $ret = $this->connection->fetchAll("SELECT " . $this->migrationsColumnName . " FROM " . $this->migrationsTableName);
+        if ( ! $this->migrationTableCreated && $this->isDryRun) {
+            return [];
+        }
+
+        $this->connect();
+
+        $ret = $this->connection->fetchAll("SELECT " . $this->getQuotedMigrationsColumnName() . " FROM " . $this->migrationsTableName);
 
         return array_map('current', $ret);
     }
@@ -566,8 +588,13 @@ class Configuration
      */
     public function getCurrentVersion()
     {
-        $this->connect();
         $this->createMigrationTable();
+
+        if ( ! $this->migrationTableCreated && $this->isDryRun) {
+            return '0';
+        }
+
+        $this->connect();
 
         if (empty($this->migrations)) {
             $this->registerMigrationsFromDirectory($this->getMigrationsDirectory());
@@ -579,15 +606,15 @@ class Configuration
             foreach ($this->migrations as $migration) {
                 $migratedVersions[] = sprintf("'%s'", $migration->getVersion());
             }
-            $where = " WHERE " . $this->migrationsColumnName . " IN (" . implode(', ', $migratedVersions) . ")";
+            $where = " WHERE " . $this->getQuotedMigrationsColumnName() . " IN (" . implode(', ', $migratedVersions) . ")";
         }
 
         $sql = sprintf(
             "SELECT %s FROM %s%s ORDER BY %s DESC",
-            $this->migrationsColumnName,
+            $this->getQuotedMigrationsColumnName(),
             $this->migrationsTableName,
             $where,
-            $this->migrationsColumnName
+            $this->getQuotedMigrationsColumnName()
         );
 
         $sql    = $this->connection->getDatabasePlatform()->modifyLimitQuery($sql, 1);
@@ -635,7 +662,7 @@ class Configuration
 
         $versions = array_map('strval', array_keys($this->migrations));
         array_unshift($versions, '0');
-        $offset = array_search((string) $version, $versions);
+        $offset = array_search((string) $version, $versions, true);
         if ($offset === false || ! isset($versions[$offset + $delta])) {
             // Unknown version or delta out of bounds.
             return null;
@@ -719,7 +746,7 @@ class Configuration
         $this->connect();
         $this->createMigrationTable();
 
-        $result = $this->connection->fetchColumn("SELECT COUNT(" . $this->migrationsColumnName . ") FROM " . $this->migrationsTableName);
+        $result = $this->connection->fetchColumn("SELECT COUNT(" . $this->getQuotedMigrationsColumnName() . ") FROM " . $this->migrationsTableName);
 
         return $result !== false ? $result : 0;
     }
@@ -775,8 +802,12 @@ class Configuration
             return false;
         }
 
+        if ($this->isDryRun) {
+            return false;
+        }
+
         $columns = [
-            $this->migrationsColumnName => new Column($this->migrationsColumnName, Type::getType('string'), ['length' => 255]),
+            $this->migrationsColumnName => $this->getMigrationsColumn(),
         ];
         $table   = new Table($this->migrationsTableName, $columns);
         $table->setPrimaryKey([$this->migrationsColumnName]);
@@ -927,7 +958,7 @@ class Configuration
     private function shouldExecuteMigration($direction, Version $version, $to, $migrated)
     {
         if ($direction === Version::DIRECTION_DOWN) {
-            if ( ! in_array($version->getVersion(), $migrated)) {
+            if ( ! in_array($version->getVersion(), $migrated, true)) {
                 return false;
             }
 
@@ -935,7 +966,7 @@ class Configuration
         }
 
         if ($direction === Version::DIRECTION_UP) {
-            if (in_array($version->getVersion(), $migrated)) {
+            if (in_array($version->getVersion(), $migrated, true)) {
                 return false;
             }
 
@@ -958,12 +989,25 @@ class Configuration
     {
         if ($this->queryWriter === null) {
             $this->queryWriter = new FileQueryWriter(
-                $this->migrationsColumnName,
+                $this->getQuotedMigrationsColumnName(),
                 $this->migrationsTableName,
                 $this->outputWriter
             );
         }
 
         return $this->queryWriter;
+    }
+
+    /**
+     * @param bool $isDryRun
+     */
+    public function setIsDryRun($isDryRun)
+    {
+        $this->isDryRun = $isDryRun;
+    }
+
+    private function getMigrationsColumn() : Column
+    {
+        return new Column($this->migrationsColumnName, Type::getType('string'), ['length' => 255]);
     }
 }
