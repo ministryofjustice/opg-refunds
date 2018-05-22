@@ -39,6 +39,7 @@ class ConfigProvider
                 // Actions
                 Action\WhoAction::class => Action\WhoAction::class,
                 Action\ContactDetailsAction::class => Action\ContactDetailsAction::class,
+                Action\ExecutorDetailsAction::class => Action\ExecutorDetailsAction::class,
                 Action\DonorDetailsAction::class => Action\DonorDetailsAction::class,
                 Action\AttorneyDetailsAction::class => Action\AttorneyDetailsAction::class,
                 Action\WhenFeesPaidAction::class => Action\WhenFeesPaidAction::class,

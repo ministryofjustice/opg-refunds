@@ -14,6 +14,7 @@ class FlowControllerTest extends TestCase
         return new Session([
             'applicant' => 'attorney',
             'deceased' => array(),
+            'executor' => array(),
             'donor' => [
                 'current' => array()
             ],
@@ -158,6 +159,16 @@ class FlowControllerTest extends TestCase
         unset($data['donor']);
 
         $this->assertEquals('apply.donor', FlowController::getNextRouteName($data));
+    }
+
+    public function testExecutor()
+    {
+        $data = $this->getTestSession();
+
+        $data['applicant'] = 'executor';
+        unset($data['executor']);
+
+        $this->assertEquals('apply.executor', FlowController::getNextRouteName($data));
     }
 
     public function testDeceased()

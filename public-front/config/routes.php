@@ -57,6 +57,7 @@ $prefix = '/application';
 $app->route($prefix.'/who-is-applying', App\Action\WhoAction::class, ['GET', 'POST'], 'apply.who');
 $app->route($prefix.'/donor-status', App\Action\DonorDeceasedAction::class, ['GET', 'POST'], 'apply.deceased');
 $app->route($prefix.'/donor-deceased', App\Action\DonorDeceasedAction::class, ['GET'], 'eligibility.donor.deceased');
+$app->route($prefix.'/executor-details', App\Action\ExecutorDetailsAction::class, ['GET', 'POST'], 'apply.executor');
 $app->route($prefix.'/donor-details', App\Action\DonorDetailsAction::class, ['GET', 'POST'], 'apply.donor');
 $app->route($prefix.'/attorney-details', App\Action\AttorneyDetailsAction::class, ['GET', 'POST'], 'apply.attorney');
 $app->route($prefix.'/case-number', App\Action\CaseNumberAction::class, ['GET', 'POST'], 'apply.case');
