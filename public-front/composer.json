@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php": "^7.0",
+        "php": "^7.1",
         "alphagov/notifications-php-client": "^1.1",
         "aws/aws-sdk-php": "^3.36",
         "dflydev/fig-cookies": "^1.0",
@@ -40,7 +40,7 @@
         "zendframework/zend-stdlib": "^3.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+        "phpunit/phpunit": "^7.0",
         "squizlabs/php_codesniffer": "^2.8.1",
         "zfcampus/zf-development-mode": "^3.1",
         "zendframework/zend-expressive-tooling": "^0.4.1",

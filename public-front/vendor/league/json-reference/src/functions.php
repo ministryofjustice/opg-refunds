@@ -22,8 +22,7 @@ function pointer(&$json)
  */
 function escape_pointer($pointer)
 {
-    $pointer = str_replace('~', '~0', $pointer);
-    return str_replace('/', '~1', $pointer);
+    return str_replace(['~', '/'], ['~0', '~1'], $pointer);
 }
 
 
@@ -38,7 +37,7 @@ function escape_pointer($pointer)
  */
 function pointer_push($pointer, ...$segments)
 {
-    $segments =  array_map('League\JsonReference\escape_pointer', $segments);
+    $segments = str_replace(['~', '/'], ['~0', '~1'], $segments);
     return ($pointer !== '/' ? $pointer : '') . '/' . implode('/', $segments);
 }
 
@@ -52,7 +51,7 @@ function strip_fragment($ref)
 {
     $fragment = Uri\parse($ref)['fragment'];
 
-    return $fragment ? str_replace($fragment, '', $ref) : $ref;
+    return $fragment ? str_replace('#'.$fragment, '#', $ref) : $ref;
 }
 
 /**
@@ -168,7 +167,7 @@ function schema_extract($schema, callable $callback, $pointer = '')
 {
     $matches = [];
 
-    if ((!is_array($schema) && !is_object($schema)) || $schema instanceof Reference) {
+    if ($schema instanceof Reference || (!is_array($schema) && !is_object($schema))) {
         return $matches;
     }
 

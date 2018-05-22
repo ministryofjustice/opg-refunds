@@ -45,7 +45,7 @@ class Version
     /**
      * The version in timestamp format (YYYYMMDDHHMMSS)
      *
-     * @param int
+     * @var string
      */
     private $version;
 
@@ -149,7 +149,7 @@ class Version
         $this->configuration->createMigrationTable();
         $this->connection->$action(
             $this->configuration->getMigrationsTableName(),
-            [$this->configuration->getMigrationsColumnName() => $this->version]
+            [$this->configuration->getQuotedMigrationsColumnName() => $this->version]
         );
     }
 
@@ -171,7 +171,7 @@ class Version
             foreach ($sql as $key => $query) {
                 $this->sql[] = $query;
                 if ( ! empty($params[$key])) {
-                    $queryTypes = isset($types[$key]) ? $types[$key] : [];
+                    $queryTypes = $types[$key] ?? [];
                     $this->addQueryParams($params[$key], $queryTypes);
                 }
             }
@@ -397,11 +397,10 @@ class Version
                 foreach ($this->sql as $key => $query) {
                     $queryStart = microtime(true);
 
+                    $this->outputSqlQuery($key, $query);
                     if ( ! isset($this->params[$key])) {
-                        $this->outputWriter->write('     <comment>-></comment> ' . $query);
                         $this->connection->executeQuery($query);
                     } else {
-                        $this->outputWriter->write(sprintf('    <comment>-</comment> %s (with parameters)', $query));
                         $this->connection->executeQuery($query, $this->params[$key], $this->types[$key]);
                     }
 
@@ -430,8 +429,8 @@ class Version
     private function outputSqlQuery($idx, $query)
     {
         $params = $this->formatParamsForOutput(
-            isset($this->params[$idx]) ? $this->params[$idx] : [],
-            isset($this->types[$idx]) ? $this->types[$idx] : []
+            $this->params[$idx] ?? [],
+            $this->types[$idx] ?? []
         );
 
         $this->outputWriter->write(rtrim(sprintf(
@@ -444,8 +443,8 @@ class Version
     /**
      * Formats a set of sql parameters for output with dry run.
      *
-     * @param $params The query parameters
-     * @param $types The types of the query params. Default type is a string
+     * @param array $params The query parameters
+     * @param array $types The types of the query params. Default type is a string
      * @return string|null a string of the parameters present.
      */
     private function formatParamsForOutput(array $params, array $types)
@@ -454,16 +453,11 @@ class Version
             return '';
         }
 
-        $platform = $this->connection->getDatabasePlatform();
-        $out      = [];
+        $out = [];
         foreach ($params as $key => $value) {
-            $type = isset($types[$key]) ? $types[$key] : 'string';
-            if (Type::hasType($type)) {
-                $outval = Type::getType($type)->convertToDatabaseValue($value, $platform);
-            } else {
-                $outval = '?';
-            }
-            $out[] = is_string($key) ? sprintf(':%s => %s', $key, $outval) : $outval;
+            $type   = $types[$key] ?? 'string';
+            $outval = '[' . $this->formatParameter($value, $type) . ']';
+            $out[]  = is_string($key) ? sprintf(':%s => %s', $key, $outval) : $outval;
         }
 
         return sprintf('with parameters (%s)', implode(', ', $out));
@@ -477,5 +471,34 @@ class Version
             $direction,
             $dryRun
         ));
+    }
+
+    private function formatParameter($value, string $type) : ?string
+    {
+        if (Type::hasType($type)) {
+            return Type::getType($type)->convertToDatabaseValue(
+                $value,
+                $this->connection->getDatabasePlatform()
+            );
+        }
+
+        return $this->parameterToString($value);
+    }
+
+    private function parameterToString($value) : string
+    {
+        if (is_array($value)) {
+            return implode(', ', array_map([$this, 'parameterToString'], $value));
+        }
+
+        if (is_int($value) || is_string($value)) {
+            return (string) $value;
+        }
+
+        if (is_bool($value)) {
+            return $value === true ? 'true' : 'false';
+        }
+
+        return '?';
     }
 }
