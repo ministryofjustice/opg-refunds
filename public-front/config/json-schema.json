@@ -30,6 +30,25 @@
       "dob": {
         "type": "string",
         "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      },
+      "address": {
+        "required": ["address-1", "address-3", "address-postcode"],
+        "additionalProperties": false,
+        "properties": {
+          "address-1": {
+            "$ref": "#/definitions/validation/stdTextField"
+          },
+          "address-2": {
+            "$ref": "#/definitions/validation/stdTextField"
+          },
+          "address-3": {
+            "$ref": "#/definitions/validation/stdTextField"
+          },
+          "address-postcode": {
+            "$ref": "#/definitions/validation/stdTextField"
+          }
+        },
+        "type": "object"
       }
     }
 
@@ -60,9 +79,23 @@
     },
 
     "applicant": {
-      "description": "Who is applying for the refund; either donor or attorney.",
+      "description": "Who is applying for the refund; either donor, attorney or executor.",
       "type": "string",
-      "enum": ["donor", "attorney"]
+      "enum": ["donor", "attorney", "executor"]
+    },
+
+    "executor": {
+      "required": ["name", "address"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "$ref": "#/definitions/fieldset/name"
+        },
+        "address": {
+          "$ref": "#/definitions/fieldset/address"
+        }
+      },
+      "type": "object"
     },
 
     "donor": {
@@ -81,6 +114,7 @@
           ]
         },
         "current": {
+          "required": ["dob", "name"],
           "additionalProperties": false,
           "properties": {
             "dob": {
@@ -90,23 +124,7 @@
               "$ref": "#/definitions/fieldset/name"
             },
             "address": {
-              "required": ["address-1", "address-3", "address-postcode"],
-              "additionalProperties": false,
-              "properties": {
-                "address-1": {
-                  "$ref": "#/definitions/validation/stdTextField"
-                },
-                "address-2": {
-                  "$ref": "#/definitions/validation/stdTextField"
-                },
-                "address-3": {
-                  "$ref": "#/definitions/validation/stdTextField"
-                },
-                "address-postcode": {
-                  "$ref": "#/definitions/validation/stdTextField"
-                }
-              },
-              "type": "object"
+              "$ref": "#/definitions/fieldset/address"
             }
           },
           "type": "object"
