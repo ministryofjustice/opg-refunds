@@ -11,6 +11,7 @@ use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use Exception;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\ClaimSummary as ClaimSummaryModel;
@@ -1768,7 +1769,8 @@ class Claim implements Initializer\LogSupportInterface
         }
 
         if (isset($source)) {
-            if ($source === 'donor' || $source === 'attorney') {
+            if ($source === ApplicationModel::APPLICANT_DONOR || $source === ApplicationModel::APPLICANT_ATTORNEY
+                || $source === ApplicationModel::APPLICANT_EXECUTOR) {
                 $queryBuilder->andWhere('GET_JSON_FIELD(c.jsonData, \'applicant\') = :applicant');
                 $parameters['applicant'] = $source;
             } elseif ($source === 'phone') {
