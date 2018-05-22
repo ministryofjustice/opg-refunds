@@ -1225,7 +1225,7 @@
         },
         "time": "2017-03-05T17:38:23+00:00",
         "type": "library",
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "classmap": [
                 "src/"

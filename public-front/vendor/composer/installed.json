@@ -3926,7 +3926,7 @@
                 "config-provider": "Zend\\Expressive\\ConfigProvider"
             }
         },
-        "installation-source": "dist",
+        "installation-source": "source",
         "autoload": {
             "psr-4": {
                 "Zend\\Expressive\\": "src/"
