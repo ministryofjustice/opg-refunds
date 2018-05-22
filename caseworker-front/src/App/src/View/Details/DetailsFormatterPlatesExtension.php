@@ -34,10 +34,12 @@ class DetailsFormatterPlatesExtension implements ExtensionInterface
 
     public function getApplicantName(ApplicationModel $application)
     {
-        if ($application->getApplicant() === 'donor') {
+        if ($application->getApplicant() === ApplicationModel::APPLICANT_DONOR) {
             return "{$application->getDonor()->getCurrent()->getName()->getFormattedName()} (Donor)";
-        } elseif ($application->getApplicant() === 'attorney') {
+        } elseif ($application->getApplicant() === ApplicationModel::APPLICANT_ATTORNEY) {
             return "{$application->getAttorney()->getCurrent()->getName()->getFormattedName()} (Attorney)";
+        } elseif ($application->getApplicant() === ApplicationModel::APPLICANT_EXECUTOR) {
+            return "{$application->getExecutor()->getName()->getFormattedName()} (Executor)";
         }
 
         return '';
