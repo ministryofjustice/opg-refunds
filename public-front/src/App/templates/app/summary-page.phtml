@@ -31,6 +31,20 @@ $this->addErrorMap([
 
 <dl class="govuk-check-your-answers cya-questions-short">
     
+    <?php if (!empty($details['executor'])) {
+        $this->insert('snippet::check-your-details-section', [
+            'title' => 'Executor details',
+            'fields' => [
+                ['value' => "{$details['executor']['name']['title']} {$details['executor']['name']['first']} {$details['executor']['name']['last']}"],
+                ['value' => ($details['executor']['address']['address-1']) ?? null],
+                ['value' => ($details['executor']['address']['address-2']) ?? null],
+                ['value' => ($details['executor']['address']['address-3']) ?? null],
+                ['value' => ($details['executor']['address']['address-postcode']) ?? null],
+            ],
+            'changeURL' => $this->url('apply.executor', ['who' => $applicant])
+        ]);
+    }?>
+
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
