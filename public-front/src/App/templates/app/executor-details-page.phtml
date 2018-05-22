@@ -1,0 +1,92 @@
+<?php
+$this->layout('layout::standard', [
+    'title' => 'Executor details',
+    'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
+]);
+
+
+// Error messages are in a snippet as shared between donor and attorney page
+$this->fetch('snippet::actor-errors', [
+    'firstPerson' => false
+]);
+
+?>
+
+<?php $this->start('error-summary') ?>
+<?php $this->insert('snippet::error-summary', [ 'form'=>$form ]) ?>
+<?php $this->stop() ?>
+
+<form class="form" action="<?= $form->getAttribute('action') ?? $this->url() ?>" method="<?= $this->e(strtolower($form->getAttribute('method'))) ?>">
+
+    <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
+
+    <fieldset>
+        <legend class="form-label-bold">Executor details</legend>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('title'),
+            'formLabel' => 'Title',
+            'formType' => 'text',
+            'formLabelBold' => false,
+            'additionFormControlClass' => 'form-control-1-8'
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('first'),
+            'formLabel' => 'First names',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('last'),
+            'formLabel' => 'Last name',
+            'formType' => 'text',
+            'formLabelBold' => false
+        ]) ?>
+
+    </fieldset>
+
+    <fieldset>
+        <legend class="form-label-bold">Executor address</legend>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('address-1'),
+            'formLabel' => 'Address line 1',
+            'formType' => 'text',
+            'formLabelBold' => false,
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('address-2'),
+            'formLabel' => 'Address line 2 (optional)',
+            'formType' => 'text',
+            'formLabelBold' => false,
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('address-3'),
+            'formLabel' => 'Town or city',
+            'formType' => 'text',
+            'formLabelBold' => false,
+        ]) ?>
+
+        <?php $this->insert('snippet::input-text', [
+            'formElement' => $form->get('address-postcode'),
+            'formLabel' => 'Postcode',
+            'formType' => 'text',
+            'formLabelBold' => false,
+        ]) ?>
+
+
+    </fieldset>
+
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+
+    <?php $this->insert('snippet::caseworker-notes', [ 'form'=>$form, 'ad'=>$ad ]) ?>
+
+</form>
+
+

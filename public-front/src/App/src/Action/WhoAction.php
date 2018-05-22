@@ -15,6 +15,19 @@ class WhoAction extends AbstractAction
     {
         $session = $request->getAttribute('session');
 
+        if ($request->getAttribute('isDonorDeceased') == true) {
+            //This is a donor deceased phone claim. The claimant must be the executor so set them to that and redirect
+            //They should not be allowed to change this option so none of the further checks are required
+            $session['applicant'] = 'executor';
+
+            return new Response\RedirectResponse(
+                $this->getUrlHelper()->generate(
+                    FlowController::getNextRouteName($session),
+                    ['who'=>$session['applicant']]
+                )
+            );
+        }
+
         $form = new Form\AboutYou([
             'csrf' => $session['meta']['csrf'],
             'notes' => ($session['notes']) ?? null,
