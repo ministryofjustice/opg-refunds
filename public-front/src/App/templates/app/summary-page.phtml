@@ -30,7 +30,7 @@ $this->addErrorMap([
 </p>
 
 <dl class="govuk-check-your-answers cya-questions-short">
-    
+
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
         'fields' => [
@@ -138,7 +138,7 @@ $this->addErrorMap([
     </ul>
 
     <p class="text">
-        You agree to the <a href="/terms">terms and conditions</a> and that details
+        You agree to the <a href="/terms">terms of use</a> and that details
         you've given will be securely stored and used to process a refund.
     </p>
 
@@ -156,5 +156,5 @@ $this->addErrorMap([
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <input type="submit" class="button js-single-use" value="Confirm and submit claim">
-    
+
 </form>
