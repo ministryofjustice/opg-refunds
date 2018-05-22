@@ -150,6 +150,11 @@ use PHPUnit\TextUI\ResultPrinter;
 final class Configuration
 {
     /**
+     * @var self[]
+     */
+    private static $instances = [];
+
+    /**
      * @var \DOMDocument
      */
     private $document;
@@ -165,39 +170,9 @@ final class Configuration
     private $filename;
 
     /**
-     * @var self[]
-     */
-    private static $instances = [];
-
-    /**
-     * Loads a PHPUnit configuration file.
-     *
-     * @param string $filename
-     *
-     * @throws Exception
-     */
-    private function __construct(string $filename)
-    {
-        $this->filename = $filename;
-        $this->document = Xml::loadFile($filename, false, true, true);
-        $this->xpath    = new DOMXPath($this->document);
-    }
-
-    /**
-     * @codeCoverageIgnore
-     */
-    private function __clone()
-    {
-    }
-
-    /**
      * Returns a PHPUnit configuration object.
      *
-     * @param string $filename
-     *
      * @throws Exception
-     *
-     * @return Configuration
      */
     public static function getInstance(string $filename): self
     {
@@ -221,19 +196,59 @@ final class Configuration
     }
 
     /**
-     * Returns the real path to the configuration file.
+     * Loads a PHPUnit configuration file.
      *
-     * @return string
+     * @throws Exception
+     */
+    private function __construct(string $filename)
+    {
+        $this->filename = $filename;
+        $this->document = Xml::loadFile($filename, false, true, true);
+        $this->xpath    = new DOMXPath($this->document);
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    private function __clone()
+    {
+    }
+
+    /**
+     * Returns the real path to the configuration file.
      */
     public function getFilename(): string
     {
         return $this->filename;
     }
 
+    public function getExtensionConfiguration(): array
+    {
+        $result = [];
+
+        foreach ($this->xpath->query('extensions/extension') as $extension) {
+            /** @var DOMElement $extension */
+            $class = (string) $extension->getAttribute('class');
+            $file  = '';
+
+            if ($extension->getAttribute('file')) {
+                $file = $this->toAbsolutePath(
+                    (string) $extension->getAttribute('file'),
+                    true
+                );
+            }
+
+            $result[] = [
+                'class' => $class,
+                'file'  => $file
+            ];
+        }
+
+        return $result;
+    }
+
     /**
      * Returns the configuration for SUT filtering.
-     *
-     * @return array
      */
     public function getFilterConfiguration(): array
     {
@@ -300,8 +315,6 @@ final class Configuration
 
     /**
      * Returns the configuration for groups.
-     *
-     * @return array
      */
     public function getGroupConfiguration(): array
     {
@@ -310,8 +323,6 @@ final class Configuration
 
     /**
      * Returns the configuration for testdox groups.
-     *
-     * @return array
      */
     public function getTestdoxGroupConfiguration(): array
     {
@@ -320,8 +331,6 @@ final class Configuration
 
     /**
      * Returns the configuration for listeners.
-     *
-     * @return array
      */
     public function getListenerConfiguration(): array
     {
@@ -374,8 +383,6 @@ final class Configuration
 
     /**
      * Returns the logging configuration.
-     *
-     * @return array
      */
     public function getLoggingConfiguration(): array
     {
@@ -420,6 +427,7 @@ final class Configuration
                         false
                     );
                 }
+
                 if ($log->hasAttribute('showOnlySummary')) {
                     $result['coverageTextShowOnlySummary'] = $this->getBoolean(
                         (string) $log->getAttribute('showOnlySummary'),
@@ -436,8 +444,6 @@ final class Configuration
 
     /**
      * Returns the PHP configuration.
-     *
-     * @return array
      */
     public function getPHPConfiguration(): array
     {
@@ -587,8 +593,6 @@ final class Configuration
 
     /**
      * Returns the PHPUnit configuration.
-     *
-     * @return array
      */
     public function getPHPUnitConfiguration(): array
     {
@@ -899,11 +903,7 @@ final class Configuration
     /**
      * Returns the test suite configuration.
      *
-     * @param string $testSuiteFilter
-     *
      * @throws Exception
-     *
-     * @return TestSuite
      */
     public function getTestSuiteConfiguration(string $testSuiteFilter = ''): TestSuite
     {
@@ -930,8 +930,6 @@ final class Configuration
 
     /**
      * Returns the test suite names from the configuration.
-     *
-     * @return array
      */
     public function getTestSuiteNames(): array
     {
@@ -946,12 +944,7 @@ final class Configuration
     }
 
     /**
-     * @param DOMElement $testSuiteNode
-     * @param string     $testSuiteFilter
-     *
      * @throws \PHPUnit\Framework\Exception
-     *
-     * @return TestSuite
      */
     private function getTestSuite(DOMElement $testSuiteNode, string $testSuiteFilter = ''): TestSuite
     {
@@ -967,6 +960,7 @@ final class Configuration
 
         foreach ($testSuiteNode->getElementsByTagName('exclude') as $excludeNode) {
             $excludeFile = (string) $excludeNode->textContent;
+
             if ($excludeFile) {
                 $exclude[] = $this->toAbsolutePath($excludeFile);
             }
@@ -1087,13 +1081,7 @@ final class Configuration
         return $default;
     }
 
-    /**
-     * @param string $value
-     * @param int    $default
-     *
-     * @return int
-     */
-    private function getInteger(string $value, $default): int
+    private function getInteger(string $value, int $default): int
     {
         if (\is_numeric($value)) {
             return (int) $value;
@@ -1102,11 +1090,6 @@ final class Configuration
         return $default;
     }
 
-    /**
-     * @param string $query
-     *
-     * @return array
-     */
     private function readFilterDirectories(string $query): array
     {
         $directories = [];
@@ -1147,8 +1130,6 @@ final class Configuration
     }
 
     /**
-     * @param string $query
-     *
      * @return string[]
      */
     private function readFilterFiles(string $query): array

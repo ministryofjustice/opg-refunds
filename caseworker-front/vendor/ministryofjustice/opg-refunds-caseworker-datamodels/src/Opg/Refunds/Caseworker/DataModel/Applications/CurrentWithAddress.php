@@ -14,7 +14,7 @@ class CurrentWithAddress extends Current
     /**
      * @return Address
      */
-    public function getAddress(): Address
+    public function getAddress(): ?Address
     {
         return $this->address;
     }
@@ -23,7 +23,7 @@ class CurrentWithAddress extends Current
      * @param Address $address
      * @return $this
      */
-    public function setAddress(Address $address): CurrentWithAddress
+    public function setAddress(?Address $address): CurrentWithAddress
     {
         $this->address = $address;
 

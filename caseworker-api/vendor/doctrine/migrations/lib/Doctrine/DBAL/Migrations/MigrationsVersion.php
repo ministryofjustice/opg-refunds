@@ -4,7 +4,7 @@ namespace Doctrine\DBAL\Migrations;
 
 class MigrationsVersion
 {
-    private static $version = 'v1.6.2';
+    private static $version = 'v1.7.2';
 
     public static function VERSION()
     {
@@ -17,7 +17,7 @@ class MigrationsVersion
     }
 
     /**
-     * @param $gitversion
+     * @param string $gitversion
      * @return bool
      *
      * Check if doctrine migration is installed by composer or

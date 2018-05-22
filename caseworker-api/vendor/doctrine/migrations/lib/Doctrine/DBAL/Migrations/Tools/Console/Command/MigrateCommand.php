@@ -78,6 +78,9 @@ EOT
 
         $timeAllqueries = $input->getOption('query-time');
 
+        $dryRun = (boolean) $input->getOption('dry-run');
+        $configuration->setIsDryRun($dryRun);
+
         $executedMigrations  = $configuration->getMigratedVersions();
         $availableMigrations = $configuration->getAvailableVersions();
 
@@ -116,13 +119,11 @@ EOT
             return 0;
         }
 
-        $dryRun = (boolean) $input->getOption('dry-run');
-
         $cancelled = false;
         $migration->setNoMigrationException($input->getOption('allow-no-migration'));
         $result = $migration->migrate($version, $dryRun, $timeAllqueries, function () use ($input, $output, &$cancelled) {
             $question    = 'WARNING! You are about to execute a database migration'
-                . ' that could result in schema changes and data lost.'
+                . ' that could result in schema changes and data loss.'
                 . ' Are you sure you wish to continue? (y/n)';
             $canContinue = $this->canExecute($question, $input, $output);
             $cancelled   = ! $canContinue;

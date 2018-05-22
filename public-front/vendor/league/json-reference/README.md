@@ -6,7 +6,16 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Documentation][ico-docs]][link-docs]
 
-A library for working with JSON References.
+Most JSON schemas use JSON references to minimize duplication. A JSON reference is an object that looks like {"$ref": "http://some/where"} and points to a JSON object somewhere else.
+
+JSON Reference is a library for resolving references.
+
+- Resolves all references, replacing them with proxy objects.
+- Supports references to external files, urls, or custom sources.
+- Safely resolves circular references.
+- Supports caching dereferenced schemas.
+- Dereferenced schemas can be safely json_encoded.
+- Works with Swagger, JSON Schema, and any other spec compliant JSON documents.
 
 ## Install
 
@@ -18,7 +27,7 @@ composer require league/json-reference
 
 ## Usage
 
-Complete documentation is available [here](http://json-guard.thephpleague.com/).
+Complete documentation is available [here](http://json-reference.thephpleague.com/).
 
 ## Change log
 
@@ -59,7 +68,7 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 [link-travis]: https://travis-ci.org/thephpleague/json-reference
 [link-scrutinizer]: https://scrutinizer-ci.com/g/thephpleague/json-reference/code-structure
 [link-code-quality]: https://scrutinizer-ci.com/g/thephpleague/json-reference
-[link-docs]: http://json-guard.thephpleague.com/
+[link-docs]: http://json-reference.thephpleague.com/
 [link-author]: https://github.com/thephpleague
 [link-contributors]: ../../contributors
 
