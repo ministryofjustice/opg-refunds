@@ -1,42 +1,54 @@
-<?php $this->layout('layout::standard', ['title'=>'Sorry, you can\'t claim online']) ?>
+<?php if (empty($ad)) { ?>
 
-<p class="print no-print">
-    <a href="#">
-        <i class="icon icon-print">
-            <span class="visually-hidden">Print</span>
-        </i>
-        <strong>print this page</strong>
-    </a>
-</p>
+    <?php $this->layout('layout::standard', ['title'=>'Sorry, you can\'t claim online']) ?>
 
-<p>
-If the donor has died, the executor of the will or administrator of the estate, needs to send us some extra information before we can start the claim.
-</p>
+    <p class="print no-print">
+        <a href="#">
+            <i class="icon icon-print">
+                <span class="visually-hidden">Print</span>
+            </i>
+            <strong>print this page</strong>
+        </a>
+    </p>
 
-<p>
-Please send us photocopies or scans of the donor’s:
-</p>
+    <p>
+    If the donor has died, the executor of the will or administrator of the estate, needs to send us some extra information before we can start the claim.
+    </p>
 
-<ul class="list list-bullet">
-    <li>death certificate</li>
-    <li>will or the grant of representation (for example, a grant of probate or letters of administration)</li>
-</ul>
+    <p>
+    Please send us photocopies or scans of the donor’s:
+    </p>
 
-<p>
-Make sure you include:
-</p>
+    <ul class="list list-bullet">
+        <li>death certificate</li>
+        <li>will or the grant of representation (for example, a grant of probate or letters of administration)</li>
+    </ul>
 
-<ul class="list list-bullet">
-    <li>your name</li>
-    <li>your contact telephone number, email and postal address</li>
-    <li>the donor’s name</li>
-    <li>the case reference number (if you know it)</li>
-</ul>
+    <p>
+    Make sure you include:
+    </p>
 
-<p>
-You can email the information and documents to <a href="mailto:poarefunds@justice.gsi.gov.uk">poarefunds@justice.gsi.gov.uk</a> or post it to POA Refunds Team, Office of the Public Guardian, PO Box 16185, Birmingham, B2 2WH.
-</p>
+    <ul class="list list-bullet">
+        <li>your name</li>
+        <li>your contact telephone number, email and postal address</li>
+        <li>the donor’s name</li>
+        <li>the case reference number (if you know it)</li>
+    </ul>
 
-<p>
-When we’ve received these documents we’ll contact you to complete a refund claim over the phone.
-</p>
+    <p>
+    You can email the information and documents to <a href="mailto:poarefunds@justice.gsi.gov.uk">poarefunds@justice.gsi.gov.uk</a> or post it to POA Refunds Team, Office of the Public Guardian, PO Box 16185, Birmingham, B2 2WH.
+    </p>
+
+    <p>
+    When we’ve received these documents we’ll contact you to complete a refund claim over the phone.
+    </p>
+
+<?php } else { ?>
+
+    <?php $this->layout('layout::standard', ['title'=>'Incorrect phone claim type']) ?>
+
+    <p>
+        If you are trying to process a donor deceased phone claim, please go back to the caseworker tool and start a new donor deceased phone claim.
+    </p>
+
+<?php } ?>
