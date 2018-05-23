@@ -173,24 +173,24 @@ pipeline {
           }
 
           stage('Caseworker API Lint') {
-              steps {
-                  echo 'PHP_CodeSniffer PSR-2'
-                  dir(env.CASEWORKER_API_WORKSPACE_DIR) {
-                    sh '''
-                        docker run \
-                        --rm \
-                        --user `id -u` \
-                        --volume $(pwd):/app \
-                        ${PHPCS_IMAGE} \
-                            --standard=PSR2 \
-                            --report=checkstyle \
-                            --report-file=caseworker-api-checkstyle.xml \
-                            --runtime-set ignore_warnings_on_exit true \
-                            --runtime-set ignore_errors_on_exit true \
-                            src/
-                    '''
-                    checkstyle pattern: 'caseworker-api-checkstyle.xml'
-                   }
+            steps {
+              echo 'PHP_CodeSniffer PSR-2'
+              dir(env.CASEWORKER_API_WORKSPACE_DIR) {
+                sh '''
+                  docker run \
+                  --rm \
+                  --user `id -u` \
+                  --volume $(pwd):/app \
+                  ${PHPCS_IMAGE} \
+                      --standard=PSR2 \
+                      --report=checkstyle \
+                      --report-file=caseworker-api-checkstyle.xml \
+                      --runtime-set ignore_warnings_on_exit true \
+                      --runtime-set ignore_errors_on_exit true \
+                      src/
+                '''
+                checkstyle pattern: 'caseworker-api-checkstyle.xml'
+              }
             }
           }
         }
