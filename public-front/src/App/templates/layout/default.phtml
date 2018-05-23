@@ -97,16 +97,17 @@
             <h2 class="visuallyhidden">Support links</h2>
             <ul>
                 <li><a href="/contact-us">Contact us</a></li>
-                <li><a href="/terms">Terms and conditions</a></li>
+                <li><a href="/terms">Terms of use</a></li>
+                <li><a href="/privacy">Privacy notice</a></li>
                 <li><a href="/cookies">Cookies</a></li>
                 <li>Built by <a href="https://www.gov.uk/government/organisations/office-of-the-public-guardian" rel="external" target="_blank">OPG Digital <span class="visuallyhidden">(Opens in a new window)</span></a></li>
             </ul>
 
             <div class="open-government-licence">
                 <p class="logo"><a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence</a></p>
-                
+
                 <p>All content is available under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" rel="license">Open Government Licence v3.0</a>, except where otherwise stated</p>
-                
+
             </div>
             </div>
 
@@ -128,7 +129,7 @@
                 RELEASE_TAG: '2'
             }
         }
-        
+
         <?php if ( isset($tracking) ): ?>
             gaConfig.sessionId = '<?= $this->e($tracking) ?>';
             gaConfig.releaseTag = '<?= $this->config()['version']['tag'] ?>';
