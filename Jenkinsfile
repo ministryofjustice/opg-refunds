@@ -98,7 +98,7 @@ pipeline {
 
   stages {
 
-    stage('Init')  {
+    stage('Init') {
 
       parallel {
         stage('Notify Slack') {
