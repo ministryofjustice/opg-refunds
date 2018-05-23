@@ -133,17 +133,17 @@ pipeline {
                 echo 'PHP_CodeSniffer PSR-2'
                 dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
                     sh '''
-                        docker run \
-                        --rm \
-                        --user `id -u` \
-                        --volume $(pwd):/app \
-                        ${PHPCS_IMAGE} \
-                            --standard=PSR2 \
-                            --report=checkstyle \
-                            --report-file=public-front-checkstyle.xml \
-                            --runtime-set ignore_warnings_on_exit true \
-                            --runtime-set ignore_errors_on_exit true \
-                            src/
+                      docker run \
+                      --rm \
+                      --user `id -u` \
+                      --volume $(pwd):/app \
+                      ${PHPCS_IMAGE} \
+                          --standard=PSR2 \
+                          --report=checkstyle \
+                          --report-file=public-front-checkstyle.xml \
+                          --runtime-set ignore_warnings_on_exit true \
+                          --runtime-set ignore_errors_on_exit true \
+                          src/
                     '''
                     checkstyle pattern: 'public-front-checkstyle.xml'
                 }
@@ -151,25 +151,25 @@ pipeline {
           }
 
           stage('Caseworker Front Lint') {
-                steps {
-                    echo 'PHP_CodeSniffer PSR-2'
-                      dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
-                        sh '''
-                            docker run \
-                            --rm \
-                            --user `id -u` \
-                            --volume $(pwd):/app \
-                            ${PHPCS_IMAGE} \
-                                --standard=PSR2 \
-                                --report=checkstyle \
-                                --report-file=caseworker-front-checkstyle.xml \
-                                --runtime-set ignore_warnings_on_exit true \
-                                --runtime-set ignore_errors_on_exit true \
-                                src/
-                        '''
-                        checkstyle pattern: 'caseworker-front-checkstyle.xml'
-                      }
-                  }
+            steps {
+              echo 'PHP_CodeSniffer PSR-2'
+              dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
+                sh '''
+                  docker run \
+                  --rm \
+                  --user `id -u` \
+                  --volume $(pwd):/app \
+                  ${PHPCS_IMAGE} \
+                      --standard=PSR2 \
+                      --report=checkstyle \
+                      --report-file=caseworker-front-checkstyle.xml \
+                      --runtime-set ignore_warnings_on_exit true \
+                      --runtime-set ignore_errors_on_exit true \
+                      src/
+                '''
+                checkstyle pattern: 'caseworker-front-checkstyle.xml'
+              }
+            }
           }
 
           stage('Caseworker API Lint') {
