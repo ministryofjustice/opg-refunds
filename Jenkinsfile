@@ -275,36 +275,36 @@ pipeline {
         }
 
         stage('Caseworker Front Unit Tests') {
-            steps {
-                ansiColor('xterm') {
-                  sh '''
-                      mkdir -p build/output/phpunit
-                      docker run \
-                          --rm \
-                          --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
-                          --workdir=/app \
-                          --env OPG_PHP_XDEBUG_ENABLE=1 \
-                          ${CASEWORKER_FRONT_IMAGE_FULL} \
-                          /sbin/my_init --quiet -- \
-                              sh -c 'umask 000 && \
-                                  php /app/vendor/bin/phpunit \
-                                      --verbose \
-                                      --configuration phpunit.xml.dist \
-                                      --coverage-clover build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml \
-                                      --coverage-html build/output/phpunit/coverage/caseworker-front-phpunit \
-                                      --exclude-group functional \
-                                      --log-junit build/output/phpunit/junit/caseworker-front-phpunit-output.xml \
-                                      --testsuite unit && \
-                              umask 022'
-                      sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml
-                  '''
-                }
+          steps {
+            ansiColor('xterm') {
+              sh '''
+                mkdir -p build/output/phpunit
+                docker run \
+                    --rm \
+                    --volume=$(pwd)/build/output/phpunit:/app/build/output/phpunit \
+                    --workdir=/app \
+                    --env OPG_PHP_XDEBUG_ENABLE=1 \
+                    ${CASEWORKER_FRONT_IMAGE_FULL} \
+                    /sbin/my_init --quiet -- \
+                        sh -c 'umask 000 && \
+                            php /app/vendor/bin/phpunit \
+                                --verbose \
+                                --configuration phpunit.xml.dist \
+                                --coverage-clover build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml \
+                                --coverage-html build/output/phpunit/coverage/caseworker-front-phpunit \
+                                --exclude-group functional \
+                                --log-junit build/output/phpunit/junit/caseworker-front-phpunit-output.xml \
+                                --testsuite unit && \
+                        umask 022'
+                sed -i "s#<file name=\\"/app#<file name=\\"#" build/output/phpunit/coverage/caseworker-front-phpunit/clover.xml
+              '''
             }
-            post {
-                always {
-                    junit 'build/output/phpunit/junit/caseworker-front-phpunit-output.xml'
-                }
+          }
+          post {
+            always {
+              junit 'build/output/phpunit/junit/caseworker-front-phpunit-output.xml'
             }
+          }
         }
 
         stage('Caseworker API Unit Tests') {
