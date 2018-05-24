@@ -127,109 +127,114 @@ pipeline {
     }
 
     stage('Lint Tests') {
-        parallel {
 
-          stage('Public Front Lint') {
-            steps {
-              echo 'PHP_CodeSniffer PSR-2'
-              dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
-                sh '''
-                  docker run \
-                  --rm \
-                  --user `id -u` \
-                  --volume $(pwd):/app \
-                  ${PHPCS_IMAGE} \
-                      --standard=PSR2 \
-                      --report=checkstyle \
-                      --report-file=public-front-checkstyle.xml \
-                      --runtime-set ignore_warnings_on_exit true \
-                      --runtime-set ignore_errors_on_exit true \
-                      src/
-                '''
-                checkstyle pattern: 'public-front-checkstyle.xml'
-              }
+      parallel {
+
+        stage('Public Front Lint') {
+          steps {
+            echo 'PHP_CodeSniffer PSR-2'
+            dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
+              sh '''
+                docker run \
+                --rm \
+                --user `id -u` \
+                --volume $(pwd):/app \
+                ${PHPCS_IMAGE} \
+                    --standard=PSR2 \
+                    --report=checkstyle \
+                    --report-file=public-front-checkstyle.xml \
+                    --runtime-set ignore_warnings_on_exit true \
+                    --runtime-set ignore_errors_on_exit true \
+                    src/
+              '''
+              checkstyle pattern: 'public-front-checkstyle.xml'
             }
           }
+        }
 
-          stage('Caseworker Front Lint') {
-            steps {
-              echo 'PHP_CodeSniffer PSR-2'
-              dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
-                sh '''
-                  docker run \
-                  --rm \
-                  --user `id -u` \
-                  --volume $(pwd):/app \
-                  ${PHPCS_IMAGE} \
-                      --standard=PSR2 \
-                      --report=checkstyle \
-                      --report-file=caseworker-front-checkstyle.xml \
-                      --runtime-set ignore_warnings_on_exit true \
-                      --runtime-set ignore_errors_on_exit true \
-                      src/
-                '''
-                checkstyle pattern: 'caseworker-front-checkstyle.xml'
-              }
+        stage('Caseworker Front Lint') {
+          steps {
+            echo 'PHP_CodeSniffer PSR-2'
+            dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
+              sh '''
+                docker run \
+                --rm \
+                --user `id -u` \
+                --volume $(pwd):/app \
+                ${PHPCS_IMAGE} \
+                    --standard=PSR2 \
+                    --report=checkstyle \
+                    --report-file=caseworker-front-checkstyle.xml \
+                    --runtime-set ignore_warnings_on_exit true \
+                    --runtime-set ignore_errors_on_exit true \
+                    src/
+              '''
+              checkstyle pattern: 'caseworker-front-checkstyle.xml'
             }
           }
+        }
 
-          stage('Caseworker API Lint') {
-            steps {
-              echo 'PHP_CodeSniffer PSR-2'
-              dir(env.CASEWORKER_API_WORKSPACE_DIR) {
-                sh '''
-                  docker run \
-                  --rm \
-                  --user `id -u` \
-                  --volume $(pwd):/app \
-                  ${PHPCS_IMAGE} \
-                      --standard=PSR2 \
-                      --report=checkstyle \
-                      --report-file=caseworker-api-checkstyle.xml \
-                      --runtime-set ignore_warnings_on_exit true \
-                      --runtime-set ignore_errors_on_exit true \
-                      src/
-                '''
-                checkstyle pattern: 'caseworker-api-checkstyle.xml'
+        stage('Caseworker API Lint') {
+          steps {
+            echo 'PHP_CodeSniffer PSR-2'
+            dir(env.CASEWORKER_API_WORKSPACE_DIR) {
+              sh '''
+                docker run \
+                --rm \
+                --user `id -u` \
+                --volume $(pwd):/app \
+                ${PHPCS_IMAGE} \
+                    --standard=PSR2 \
+                    --report=checkstyle \
+                    --report-file=caseworker-api-checkstyle.xml \
+                    --runtime-set ignore_warnings_on_exit true \
+                    --runtime-set ignore_errors_on_exit true \
+                    src/
+              '''
+              checkstyle pattern: 'caseworker-api-checkstyle.xml'
+            }
+          }
+        }
+
+      }
+    }
+
+    stage('Docker Build') {
+
+      parallel {
+
+        stage('Build Public Front') {
+          steps {
+            dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
+              ansiColor('xterm') {
+                sh "docker build --pull -t ${PUBLIC_FRONT_IMAGE_FULL} ."
               }
             }
           }
         }
-    }
 
-    stage('Docker Build') {
-      parallel {
-
-          stage('Build Public Front') {
-            steps {
-              dir(env.PUBLIC_FRONT_WORKSPACE_DIR) {
-                ansiColor('xterm') {
-                  sh "docker build --pull -t ${PUBLIC_FRONT_IMAGE_FULL} ."
-                }
+        stage('Build Caseworker Front') {
+          steps {
+            dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
+              ansiColor('xterm') {
+                sh "docker build --pull -t ${CASEWORKER_FRONT_IMAGE_FULL} ."
               }
             }
           }
+        }
 
-          stage('Build Caseworker Front') {
-            steps {
-              dir(env.CASEWORKER_FRONT_WORKSPACE_DIR) {
-                ansiColor('xterm') {
-                  sh "docker build --pull -t ${CASEWORKER_FRONT_IMAGE_FULL} ."
-                }
+        stage('Build Caseworker API') {
+          steps {
+            dir(env.CASEWORKER_API_WORKSPACE_DIR) {
+              ansiColor('xterm') {
+                sh "docker build --pull -t ${CASEWORKER_API_IMAGE_FULL} ."
               }
             }
           }
+        }
 
-          stage('Build Caseworker API') {
-            steps {
-              dir(env.CASEWORKER_API_WORKSPACE_DIR) {
-                ansiColor('xterm') {
-                  sh "docker build --pull -t ${CASEWORKER_API_IMAGE_FULL} ."
-                }
-              }
-            }
-          }
       }
+
     }
 
     stage('Unit Tests') {
