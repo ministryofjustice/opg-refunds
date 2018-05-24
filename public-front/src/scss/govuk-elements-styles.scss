@@ -26,6 +26,12 @@ $path: "../images/";
   @include button($grey-3);
 }
 
+.meta-data {
+  @include core-16;
+  color: $secondary-text-colour;
+  margin-top: em(60);
+}
+
 .print {
   text-align: right;
   margin-bottom: 0;

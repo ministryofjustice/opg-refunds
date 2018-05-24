@@ -38,6 +38,7 @@ $app->get('/exception', App\Action\ExceptionAction::class, 'exception');
 $app->get('/healthcheck.json', App\Action\HealthCheckAction::class, 'healthcheck.json');
 
 $app->get('/terms', App\Action\TermsPageAction::class, 'terms');
+$app->get('/privacy', App\Action\PrivacyPageAction::class, 'privacy');
 $app->get('/cookies', App\Action\CookiesPageAction::class, 'cookies');
 $app->get('/contact-us', App\Action\ContactUsAction::class, 'contact');
 
