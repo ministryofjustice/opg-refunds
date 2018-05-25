@@ -98,6 +98,8 @@ $this->fetch('snippet::actor-errors', [
         'formElement' => $form->get('dob'),
     ]) ?>
 
+    <?php if ($isDonorDeceased == false) { ?>
+
     <fieldset>
         <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Current address" : "Current donor address" ?></legend>
 
@@ -129,8 +131,9 @@ $this->fetch('snippet::actor-errors', [
             'formLabelBold' => false,
         ]) ?>
 
-
     </fieldset>
+
+    <?php } ?>
 
     <div class="form-group">
         <input class="button" type="submit" value="Continue">

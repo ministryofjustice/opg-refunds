@@ -53,7 +53,8 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
         $request = $request->withAttribute('isDonorDeceased', $isDonorDeceased);
 
         $this->plates->addData([
-            'ad'=> ($payload) ?? []
+            'ad'=> ($payload) ?? [],
+            'isDonorDeceased' => $isDonorDeceased
         ]);
 
         return $delegate->process($request);

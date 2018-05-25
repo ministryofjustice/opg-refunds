@@ -24,6 +24,7 @@ class DonorDetailsAction extends AbstractAction
         $form = new Form\DonorDetails([
             'csrf' => $session['meta']['csrf'],
             'notes' => ($session['notes']) ?? null,
+            'isDonorDeceased' => $request->getAttribute('isDonorDeceased')
         ]);
 
         $isUpdate = isset($session['donor']);
