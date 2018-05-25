@@ -451,10 +451,11 @@ class Notify implements Initializer\LogSupportInterface
                 $contactName = $claimModel->getDonorName();
                 break;
             case ApplicationModel::APPLICANT_ATTORNEY:
-                $contactName = $claimModel->getDonorName();
+                $contactName = $claimModel->getApplication()->getAttorney()->getCurrent()->getName()
+                    ->getFormattedName();
                 break;
             case ApplicationModel::APPLICANT_EXECUTOR:
-                $contactName = $claimModel->getDonorName();
+                $contactName = $claimModel->getApplication()->getExecutor()->getName()->getFormattedName();
                 break;
         }
 

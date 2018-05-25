@@ -44,7 +44,6 @@ class DonorDeceasedAction extends AbstractAction
                 $session['notes'] = $form->getNotes();
 
                 // If they are deceased, and it's not a Donor Deceased AD session, return page.
-                $ad = $request->getAttribute('ad');
                 if ($session['deceased'] && $request->getAttribute('isDonorDeceased') == false) {
                     return new Response\RedirectResponse(
                         $this->getUrlHelper()->generate('eligibility.donor.deceased')
