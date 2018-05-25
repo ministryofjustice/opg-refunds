@@ -59,7 +59,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
 
         // And an empty 'ad' array should be set in plates.
         $this->platesEngine->addData([
-            'ad' => []
+            'ad' => [],
+            'isDonorDeceased' => false
         ])->shouldBeCalled();
 
         $middleware->process(
@@ -93,7 +94,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
 
         // And an empty 'ad' array should be set in plates.
         $this->platesEngine->addData([
-            'ad' => []
+            'ad' => [],
+            'isDonorDeceased' => false
         ])->shouldBeCalled();
 
         $middleware->process(
@@ -102,13 +104,46 @@ class AssistedDigitalMiddlewareTest extends TestCase
         );
     }
 
-    public function testWithValidCookieSet()
+    public function testWithValidCookieSetDonorDeceased()
     {
         $middleware = $this->getInstance();
 
         $cookieValue = 'valid-cookie-value';
 
-        $payload = [ 'user'=>123 ];
+        $payload = [ 'user'=>123, 'type'=>'donor_deceased' ];
+
+        //---
+
+        $this->request->getCookieParams()->willReturn([
+            self::TEST_COOKIE_NAME => $cookieValue
+        ]);
+
+        //---
+
+        $this->linkChecker->verify( $cookieValue )->willReturn($payload)->shouldBeCalled();
+
+        $this->request->withAttribute( 'ad', $payload )->willReturn($this->request->reveal())->shouldBeCalled();
+
+        $this->request->withAttribute( 'isDonorDeceased', true )->willReturn($this->request)->shouldBeCalled();
+
+        $this->platesEngine->addData([
+            'ad' => $payload,
+            'isDonorDeceased' => true
+        ])->shouldBeCalled();
+
+        $middleware->process(
+            $this->request->reveal(),
+            $this->delegateInterface->reveal()
+        );
+    }
+
+    public function testWithValidCookieSetAssistedDigital()
+    {
+        $middleware = $this->getInstance();
+
+        $cookieValue = 'valid-cookie-value';
+
+        $payload = [ 'user'=>123, 'type'=>'assisted_digital' ];
 
         //---
 
@@ -125,7 +160,8 @@ class AssistedDigitalMiddlewareTest extends TestCase
         $this->request->withAttribute( 'isDonorDeceased', false )->willReturn($this->request)->shouldBeCalled();
 
         $this->platesEngine->addData([
-            'ad' => $payload
+            'ad' => $payload,
+            'isDonorDeceased' => false
         ])->shouldBeCalled();
 
         $middleware->process(
