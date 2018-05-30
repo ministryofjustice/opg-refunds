@@ -58,7 +58,6 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
                 ? $session['donor']['current']['address'] : $session['executor']['address'];
             
             // If here, pre-populate with either the donor or executor's address.
-
             $address = $prePopulationAddress['address-1'];
 
             $address.= (!empty($prePopulationAddress['address-2'])) ?
