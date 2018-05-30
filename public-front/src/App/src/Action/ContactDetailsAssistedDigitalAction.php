@@ -53,19 +53,22 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
         } else {
             // Ensure caseworker notes are shown
             $form->setData();
+
+            $prePopulationAddress = isset($session['donor']['current']['address'])
+                ? $session['donor']['current']['address'] : $session['executor']['address'];
             
-            // If here, pre-populate with Donor's current address.
+            // If here, pre-populate with either the donor or executor's address.
 
-            $address = $session['donor']['current']['address']['address-1'];
+            $address = $prePopulationAddress['address-1'];
 
-            $address.= (!empty($session['donor']['current']['address']['address-2'])) ?
-                "\n".$session['donor']['current']['address']['address-2'] : '';
+            $address.= (!empty($prePopulationAddress['address-2'])) ?
+                "\n".$prePopulationAddress['address-2'] : '';
 
-            $address.= (!empty($session['donor']['current']['address']['address-3'])) ?
-                "\n".$session['donor']['current']['address']['address-3'] : '';
+            $address.= (!empty($prePopulationAddress['address-3'])) ?
+                "\n".$prePopulationAddress['address-3'] : '';
 
-            $address.= (!empty($session['donor']['current']['address']['address-postcode'])) ?
-                "\n".$session['donor']['current']['address']['address-postcode'] : '';
+            $address.= (!empty($prePopulationAddress['address-postcode'])) ?
+                "\n".$prePopulationAddress['address-postcode'] : '';
 
             $form->get('address')->setValue($address);
         }
