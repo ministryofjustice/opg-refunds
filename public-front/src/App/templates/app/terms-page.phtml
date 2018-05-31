@@ -14,7 +14,7 @@ $this->layout('layout::standard', [
     <li>you are the 'donor' (the person who made a power of attorney), or are claiming the
         refund on their behalf and for them (as their attorney, for example)
     </li>
-    <li>the bank details you've given are the donor's</li>
+    <li>the bank details you've given are the <?= ($isDonorDeceased == true) ? 'executor' : 'donor' ?>'s</li>
 </ul>
 
 <p>The refund is for the donor, even if someone else paid the fees at the time.</p>

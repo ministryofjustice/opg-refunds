@@ -21,7 +21,7 @@ $this->fetch('snippet::actor-errors', [
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <fieldset>
-        <legend class="form-label-bold">Executor details</legend>
+        <legend class="form-label-bold">Executor name</legend>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('title'),
