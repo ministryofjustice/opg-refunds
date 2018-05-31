@@ -625,9 +625,6 @@ class Claim implements Initializer\LogSupportInterface
                 // Explicit assignment
                 $claim->setStatus(ClaimModel::STATUS_IN_PROGRESS);
 
-                // Attempt to pre-populate POA data
-                $this->addMerisAndSiriusPoaData($claimId, $userId);
-
                 $message = "Caseworker was assigned this claim";
 
                 if (!empty($reason)) {
@@ -640,6 +637,10 @@ class Claim implements Initializer\LogSupportInterface
                     NoteModel::TYPE_CLAIM_IN_PROGRESS,
                     $message
                 );
+
+                // Attempt to pre-populate POA data
+                $this->addMerisAndSiriusPoaData($claimId, $userId);
+
             } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
                 // Reassignment
                 $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
