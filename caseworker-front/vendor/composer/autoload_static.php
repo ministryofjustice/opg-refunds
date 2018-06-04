@@ -137,8 +137,8 @@ class ComposerStaticInitc217723c52a7a32304fe0576dd81a285
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'Zend\\Validator\\' => 
         array (
@@ -198,8 +198,8 @@ class ComposerStaticInitc217723c52a7a32304fe0576dd81a285
         ),
         'Zend\\Expressive\\Router\\' => 
         array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
-            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
         ),
         'Zend\\Expressive\\Plates\\' => 
         array (

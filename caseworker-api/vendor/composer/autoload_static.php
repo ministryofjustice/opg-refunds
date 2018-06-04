@@ -7,6 +7,7 @@ namespace Composer\Autoload;
 class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
 {
     public static $files = array (
+        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'aaf5b53a99b4de51dadc23016def253f' => __DIR__ . '/..' . '/webimpress/http-middleware-compatibility/autoload/http-middleware.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
@@ -20,7 +21,6 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
-        '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'be01b9b16925dcb22165c40b46681ac6' => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib/cli/cli.php',
     );
 
@@ -137,8 +137,8 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
-            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
         'Zend\\Stratigility\\' => 
         array (
@@ -174,8 +174,8 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         ),
         'Zend\\Expressive\\Router\\' => 
         array (
-            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
-            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
+            1 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
         ),
         'Zend\\Expressive\\Helper\\' => 
         array (

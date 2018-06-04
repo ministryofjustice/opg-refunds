@@ -32,7 +32,7 @@ final class Versions
   'guzzlehttp/promises' => 'v1.3.1@a59da6cf61d80060647ff4d3eb2c03a2bc694646',
   'guzzlehttp/psr7' => '1.4.2@f5b8a8512e2b58b0071a7280e39f14f72e05d87c',
   'http-interop/http-middleware' => '0.4.1@9a801fe60e70d5d608b61d56b2dcde29516c81b9',
-  'ministryofjustice/opg-refunds-caseworker-datamodels' => 'dev-donor-deceased-executor@96e1ec3b26edc95ec5da3c1a91efeb88d0cec358',
+  'ministryofjustice/opg-refunds-caseworker-datamodels' => '2.1.0@3578f2cfe90c9e329e9e6575deb3079bb88999e7',
   'ministryofjustice/opg-refunds-logger' => '2.0.1@3ff07c27536232a29a5ea23efb22a8819892e291',
   'mtdowling/jmespath.php' => '2.4.0@adcc9531682cf87dfda21e1fd5d0e7a41d292fac',
   'nikic/fast-route' => 'v1.3.0@181d480e08d9476e61381e04a71b34dc0432e812',
@@ -108,7 +108,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.7@ed7a89e5e839b7f71c9cf61a6fba4654031cafa4',
   'zfcampus/zf-composer-autoloading' => '2.1.0@537145efec53c784ddc06f1af93102ddede52ceb',
   'zfcampus/zf-development-mode' => '3.2.0@419004a320bab017d28f2bc5e7857dde7e19aecf',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-donor-deceased-executor@cef6cd7d181b2d2cb2ce88b9a7cf7c1e1977676a',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-donor-deceased-executor@bffc1c0814d82aba2f5bc1951d6ed41dab33c7d8',
 );
 
     private function __construct()
