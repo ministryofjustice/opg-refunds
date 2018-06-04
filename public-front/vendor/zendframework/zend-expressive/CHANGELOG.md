@@ -2,6 +2,168 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.2.1 - 2018-03-17
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#592](https://github.com/zendframework/zend-expressive/pull/592) fixes
+  a v3 to v2 backwards port issue where the `Router\Middleware\DispatchMiddleware`
+  is registered as an invokable and it should be registered with the
+  `Router\Middleware\DispatchMiddlewareFactory`. This caused a
+  "`DispatchMiddleware` already exists and cannot be overridden" exception.
+
+## 2.2.0 - 2018-03-12
+
+### Added
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) adds the
+  class `Zend\Expressive\ConfigProvider`, and exposes it to the
+  zend-component-installer Composer plugin. We recommend updating your
+  `config/config.php` to reference it, as well as the
+  `Zend\Expressive\Router\ConfigProvider` shipped with zend-expressive-router
+  versions 2.4 and up.
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) adds the
+  class `Zend\Expressive\Container\ApplicationConfigInjectionDelegator`. The
+  class can act as a delegator factory, and, when enabled, will inject routes
+  and pipeline middleware defined in configuration.
+
+  Additionally, the class exposes two static methods:
+
+  - `injectPipelineFromConfig(Application $app, array $config)`
+  - `injectRoutesFromConfig(Application $app, array $config)`
+
+  These may be called to modify an `Application` instance based on an array of
+  configuration. See thd documentation for more details.
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) adds the
+  class `Zend\Expressive\Handler\NotFoundHandler`; the class takes over the
+  functionality previously provided in `Zend\Expressive\Delegate\NotFoundDelegate`.
+
+### Changed
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) updates the
+  minimum supported zend-stratigility version to 2.2.0.
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) updates the
+  minimum supported zend-expressive-router version to 2.4.0.
+
+### Deprecated
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) deprecates
+  the following classes and traits:
+
+  - `Zend\Expressive\AppFactory`: if you are using this, you will need to switch
+    to direct usage of `Zend\Expressive\Application` or a
+    `Zend\Stratigility\MiddlewarePipe` instance.
+
+  - `Zend\Expressive\ApplicationConfigInjectionTrait`: if you are using it, it is
+    marked internal, and deprecated; it will be removed in version 3.
+
+  - `Zend\Expressive\Container\NotFoundDelegateFactory`: the `NotFoundDelegate`
+    will be renamed to `Zend\Expressive\Handler\NotFoundHandler` in version 3,
+    making this factory obsolete.
+
+  - `Zend\Expressive\Delegate\NotFoundDelegate`: this class becomes
+    `Zend\Expressive\Handler\NotFoundHandler` in v3, and the new class is added in
+    version 2.2 as well.
+
+  - `Zend\Expressive\Emitter\EmitterStack`: the emitter concept is extracted from
+    zend-diactoros to a new component, zend-httphandlerrunner. This latter
+    component is used in version 3, and defines the `EmitterStack` class. Unless
+    you are extending it or interacting with it directly, this change should not
+    affect you; the `Zend\Diactoros\Response\EmitterInterface` service will be
+    directed to the new class in that version.
+
+  - `Zend\Expressive\IsCallableInteropMiddlewareTrait`: if you are using it, it is
+    marked internal, and deprecated; it will be removed in version 3.
+
+  - `Zend\Expressive\MarshalMiddlewareTrait`: if you are using it, it is marked
+    internal, and deprecated; it will be removed in version 3.
+
+  - `Zend\Expressive\Middleware\DispatchMiddleware`: this functionality has been
+    moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
+    namespace.
+
+  - `Zend\Expressive\Middleware\ImplicitHeadMiddleware`: this functionality has been
+    moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
+    namespace.
+
+  - `Zend\Expressive\Middleware\ImplicitOptionsMiddleware`: this functionality has been
+    moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
+    namespace.
+
+  - `Zend\Expressive\Middleware\NotFoundHandler`: this will be removed in
+    version 3, where you can instead pipe `Zend\Expressive\Handler\NotFoundHandler`
+    directly instead.
+
+  - `Zend\Expressive\Middleware\RouteMiddleware`: this functionality has been
+    moved to zend-expressive-router, under the `Zend\Expressive\Router\Middleware`
+    namespace.
+
+- [#581](https://github.com/zendframework/zend-expressive/pull/581) deprecates
+  the following methods from `Zend\Expressive\Application`:
+  - `pipeRoutingMiddleware()`
+  - `pipeDispatchMiddleware()`
+  - `getContainer()`: this method is removed in version 3; container access will only be via the bootstrap.
+  - `getDefaultDelegate()`: the concept of a default delegate is removed in version 3.
+  - `getEmitter()`: emitters move to a different collaborator in version 3.
+  - `injectPipelineFromConfig()` andd `injectRoutesFromConfig()` are methods
+    defined by the `ApplicationConfigInjectionTrait`, which will be removed in
+    version 3. Use the `ApplicationConfigInjectionDelegator` instead.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.1.1 - 2018-03-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#583](https://github.com/zendframework/zend-expressive/pull/583) provides a
+  number of minor fixes and test changes to ensure the component works with the
+  zend-expressive-router 2.4 version. In particular, configuration-driven routes
+  will now work properly across all versions, without deprecation notices.
+
+- [#582](https://github.com/zendframework/zend-expressive/pull/582) fixes
+  redirects in the documentation.
+
 ## 2.1.0 - 2017-12-11
 
 ### Added

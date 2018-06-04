@@ -122,6 +122,10 @@ class FlowController
             return 'apply.deceased';
         }
 
+        if ($session['applicant'] === 'executor' && !isset($session['executor'])) {
+            return 'apply.executor';
+        }
+
         if (!isset($session['donor']['current']) || !is_array($session['donor']['current'])) {
             return 'apply.donor';
         }

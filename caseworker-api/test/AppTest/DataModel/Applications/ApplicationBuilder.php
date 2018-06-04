@@ -27,6 +27,12 @@ class ApplicationBuilder
         return $this->application;
     }
 
+    public function withApplicant(string $applicant)
+    {
+        $this->application->setApplicant($applicant);
+        return $this;
+    }
+
     public function withDonor(Donor $donor)
     {
         $this->application->setDonor($donor);

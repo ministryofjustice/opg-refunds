@@ -11,10 +11,19 @@ use DateTime;
  */
 class Application extends AbstractDataModel
 {
+    const APPLICANT_DONOR = 'donor';
+    const APPLICANT_ATTORNEY = 'attorney';
+    const APPLICANT_EXECUTOR = 'executor';
+
     /**
      * @var string
      */
     protected $applicant;
+
+    /**
+     * @var Executor
+     */
+    protected $executor;
 
     /**
      * @var Donor
@@ -86,6 +95,25 @@ class Application extends AbstractDataModel
     public function setApplicant(string $applicant)
     {
         $this->applicant = $applicant;
+
+        return $this;
+    }
+
+    /**
+     * @return Executor
+     */
+    public function getExecutor(): ?Executor
+    {
+        return $this->executor;
+    }
+
+    /**
+     * @param Executor $executor
+     * @return $this
+     */
+    public function setExecutor(?Executor $executor)
+    {
+        $this->executor = $executor;
 
         return $this;
     }
@@ -361,6 +389,8 @@ class Application extends AbstractDataModel
     protected function map($property, $value)
     {
         switch ($property) {
+            case 'executor':
+                return (($value instanceof Executor || is_null($value)) ? $value : new Executor($value));
             case 'donor':
                 return (($value instanceof Donor || is_null($value)) ? $value : new Donor($value));
             case 'attorney':

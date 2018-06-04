@@ -2,6 +2,7 @@
 
 namespace App\Spreadsheet;
 
+use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use DateTime;
@@ -32,8 +33,13 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
 
         foreach ($claims as $idx => $claim) {
             $rowIndex = $idx + 3;
-            $donorCurrent = $claim->getApplication()->getDonor()->getCurrent();
-            $addressArray = $donorCurrent->getAddress()->getArrayCopy();
+            $payeeName = $claim->getApplication()->getApplicant() === ApplicationModel::APPLICANT_EXECUTOR ?
+                $claim->getApplication()->getExecutor()->getName() :
+                $claim->getApplication()->getDonor()->getCurrent()->getName();
+            $payeeAddress = $claim->getApplication()->getApplicant() === ApplicationModel::APPLICANT_EXECUTOR ?
+                $claim->getApplication()->getExecutor()->getAddress() :
+                $claim->getApplication()->getDonor()->getCurrent()->getAddress();
+            $addressArray = $payeeAddress->getArrayCopy();
             unset($addressArray['address-postcode']);
             $payment = $claim->getPayment();
 
@@ -46,20 +52,21 @@ class SsclWorksheetGenerator implements ISpreadsheetWorksheetGenerator
             //Unique Payee Reference
             $cells[] = new SpreadsheetCell(4, $rowIndex, $claim->getReferenceNumber());
             //Payee Forename
-            $cells[] = new SpreadsheetCell(5, $rowIndex, $donorCurrent->getName()->getFirst());
+            $cells[] = new SpreadsheetCell(5, $rowIndex, $payeeName->getFirst());
             //Payee Surname
-            $cells[] = new SpreadsheetCell(6, $rowIndex, $donorCurrent->getName()->getLast());
+            $cells[] = new SpreadsheetCell(6, $rowIndex, $payeeName->getLast());
             //Payee Address Line 1
-            $cells[] = new SpreadsheetCell(7, $rowIndex, $donorCurrent->getAddress()->getAddress1());
+            $cells[] = new SpreadsheetCell(7, $rowIndex, $payeeAddress->getAddress1());
             //Payee Address Line 2
             //If address line 3 is blank we need to use address line 2 as the Town/City value and so blank it here
-            $payeeAddressLine2 = empty($donorCurrent->getAddress()->getAddress3()) ? '' : $donorCurrent->getAddress()->getAddress2();
+            $payeeAddressLine2 = empty($payeeAddress->getAddress3()) ? '' : $payeeAddress->getAddress2();
             $cells[] = new SpreadsheetCell(8, $rowIndex, $payeeAddressLine2);
             //Town/City
-            $payeeAddressLine3 = empty($donorCurrent->getAddress()->getAddress3()) ? $donorCurrent->getAddress()->getAddress2() : $donorCurrent->getAddress()->getAddress3();
+            $payeeAddressLine3 = empty($payeeAddress->getAddress3()) ?
+                $payeeAddress->getAddress2() : $payeeAddress->getAddress3();
             $cells[] = new SpreadsheetCell(9, $rowIndex, $payeeAddressLine3);
             //Payee Postcode
-            $cells[] = new SpreadsheetCell(10, $rowIndex, $donorCurrent->getAddress()->getAddressPostcode());
+            $cells[] = new SpreadsheetCell(10, $rowIndex, $payeeAddress->getAddressPostcode());
             //Remittance Email Address
             $cells[] = new SpreadsheetCell(11, $rowIndex, $claim->getApplication()->getContact()->getEmail());
             if ($claim->getApplication()->hasAccount() && $claim->getApplication()->isRefundByCheque() === false) {

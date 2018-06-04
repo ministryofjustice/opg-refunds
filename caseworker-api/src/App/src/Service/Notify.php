@@ -8,6 +8,7 @@ use App\Service\Claim as ClaimService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use Exception;
+use Opg\Refunds\Caseworker\DataModel\Applications\Application as ApplicationModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Log\Initializer;
@@ -186,9 +187,7 @@ class Notify implements Initializer\LogSupportInterface
         $successful = false;
 
         $contact = $claimModel->getApplication()->getContact();
-        $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
-            $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
-            : $claimModel->getDonorName();
+        $contactName = $this->getContactName($claimModel);
         $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         if ($claimModel->shouldSendEmail()) {
@@ -284,9 +283,7 @@ class Notify implements Initializer\LogSupportInterface
 
         if ($sendRejectionMessage) {
             $contact = $claimModel->getApplication()->getContact();
-            $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
-                $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
-                : $claimModel->getDonorName();
+            $contactName = $this->getContactName($claimModel);
             $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
             if ($claimModel->shouldSendEmail()) {
@@ -350,9 +347,7 @@ class Notify implements Initializer\LogSupportInterface
         $successful = false;
 
         $contact = $claimModel->getApplication()->getContact();
-        $contactName = $claimModel->getApplication()->getApplicant() === 'attorney' ?
-            $claimModel->getApplication()->getAttorney()->getCurrent()->getName()->getFormattedName()
-            : $claimModel->getDonorName();
+        $contactName = $this->getContactName($claimModel);
         $donorDob = date('j F Y', $claimModel->getApplication()->getDonor()->getCurrent()->getDob()->getTimestamp());
 
         $isRefundByCheque = $claimModel->getApplication()->isRefundByCheque()
@@ -441,5 +436,29 @@ class Notify implements Initializer\LogSupportInterface
         }
 
         return $donorName;
+    }
+
+    /**
+     * @param ClaimModel $claimModel
+     * @return string
+     */
+    private function getContactName(ClaimModel $claimModel): string
+    {
+        $contactName = '';
+
+        switch ($claimModel->getApplication()->getApplicant()) {
+            case ApplicationModel::APPLICANT_DONOR:
+                $contactName = $claimModel->getDonorName();
+                break;
+            case ApplicationModel::APPLICANT_ATTORNEY:
+                $contactName = $claimModel->getApplication()->getAttorney()->getCurrent()->getName()
+                    ->getFormattedName();
+                break;
+            case ApplicationModel::APPLICANT_EXECUTOR:
+                $contactName = $claimModel->getApplication()->getExecutor()->getName()->getFormattedName();
+                break;
+        }
+
+        return $contactName;
     }
 }

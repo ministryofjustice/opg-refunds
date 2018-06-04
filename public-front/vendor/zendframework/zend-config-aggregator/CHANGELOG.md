@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.1.1 - 2018-04-04
+
+### Added
+
+- [#18](https://github.com/zendframework/zend-config-aggregator/pull/18) adds
+  a package suggestion for [zend-config-aggregator-modulemanager](https://github.com/zendframework/zend-config-aggregator-modulemanager),
+  which supplies a custom provider for using zend-mvc `Module` classes as
+  configuration providers.
+
+- [#19](https://github.com/zendframework/zend-config-aggregator/pull/19) adds
+  a package suggestion for [zend-config-aggregator-parameters](https://github.com/zendframework/zend-config-aggregator-parameters),
+  which supplies a post-processor consuming the Symfony DI `ParameterBag` in
+  order to allow templated configuration parameter values.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 1.1.0 - 2018-02-26
 
 ### Added
