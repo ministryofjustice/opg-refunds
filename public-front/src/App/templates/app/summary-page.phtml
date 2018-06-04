@@ -130,7 +130,7 @@ $this->addErrorMap([
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => ($isDonorDeceased == true) ? 'Executor bank details' : 'Donor bank details',
         'fields' => [
-            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the ' . ($isDonorDeceased == true) ? 'executor' : 'donor' . ' details' : 'Bank details hidden for your security' ]
+            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the ' . (($isDonorDeceased == true) ? 'executor' : 'donor') . ' details' : 'Bank details hidden for your security' ]
         ],
         'changeURL' => $this->url('apply.account', ['who'=>$applicant])
     ]) ?>
