@@ -30,6 +30,20 @@ $this->addErrorMap([
 </p>
 
 <dl class="govuk-check-your-answers cya-questions-short">
+    
+    <?php if (!empty($details['executor'])) {
+        $this->insert('snippet::check-your-details-section', [
+            'title' => 'Executor details',
+            'fields' => [
+                ['value' => "{$details['executor']['name']['title']} {$details['executor']['name']['first']} {$details['executor']['name']['last']}"],
+                ['value' => ($details['executor']['address']['address-1']) ?? null],
+                ['value' => ($details['executor']['address']['address-2']) ?? null],
+                ['value' => ($details['executor']['address']['address-3']) ?? null],
+                ['value' => ($details['executor']['address']['address-postcode']) ?? null],
+            ],
+            'changeURL' => $this->url('apply.executor', ['who' => $applicant])
+        ]);
+    }?>
 
     <?php $this->insert('snippet::check-your-details-section', [
         'title' => 'Donor details',
@@ -114,9 +128,9 @@ $this->addErrorMap([
     ]) ?>
 
     <?php $this->insert('snippet::check-your-details-section', [
-        'title' => 'Donor bank details',
+        'title' => ($isDonorDeceased == true) ? 'Executor bank details' : 'Donor bank details',
         'fields' => [
-            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the donor details' : 'Bank details hidden for your security' ]
+            [ 'value' => ($details['cheque']) ? 'Payment will be made by cheque to the ' . (($isDonorDeceased == true) ? 'executor' : 'donor') . ' details' : 'Bank details hidden for your security' ]
         ],
         'changeURL' => $this->url('apply.account', ['who'=>$applicant])
     ]) ?>
@@ -134,7 +148,7 @@ $this->addErrorMap([
     <ul class="list list-bullet">
         <li>you're entitled to claim a refund</li>
         <li>the details you've given are correct</li>
-        <li>the bank details are the donor's</li>
+        <li>the bank details are the <?= ($isDonorDeceased == true) ? 'executor' : 'donor' ?>'s</li>
     </ul>
 
     <p class="text">

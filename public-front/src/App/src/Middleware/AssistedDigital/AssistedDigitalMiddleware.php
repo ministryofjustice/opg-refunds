@@ -33,6 +33,8 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
     {
         $cookies = $request->getCookieParams();
 
+        $isDonorDeceased = false;
+
         try {
             if (isset($cookies[$this->cookieName])) {
                 $value = $cookies[$this->cookieName];
@@ -41,13 +43,18 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
 
                 $request = $request->withAttribute('ad', $payload);
 
+                $isDonorDeceased = !is_null($payload)
+                    && array_key_exists('type', $payload) && $payload['type'] == 'donor_deceased';
             }
 
         } catch (\Exception $e) {
         }
 
+        $request = $request->withAttribute('isDonorDeceased', $isDonorDeceased);
+
         $this->plates->addData([
-            'ad'=> ($payload) ?? []
+            'ad'=> ($payload) ?? [],
+            'isDonorDeceased' => $isDonorDeceased
         ]);
 
         return $delegate->process($request);

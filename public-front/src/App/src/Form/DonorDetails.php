@@ -15,6 +15,8 @@ class DonorDetails extends AbstractForm
     {
         parent::__construct(self::class, $options);
 
+        $isDonorDeceased = isset($options['isDonorDeceased']) ? $options['isDonorDeceased'] : false;
+
         $inputFilter = new InputFilter;
         $this->setInputFilter($inputFilter);
 
@@ -143,74 +145,75 @@ class DonorDetails extends AbstractForm
         $this->add($dob);
         $inputFilter->add($dob->getInputFilter(), 'dob');
 
+        if ($isDonorDeceased === false) {
+            //------------------------
+            // Address - line 1
 
-        //------------------------
-        // Address - line 1
+            $field = new Element\Text('address-1');
+            $input = new Input($field->getName());
 
-        $field = new Element\Text('address-1');
-        $input = new Input($field->getName());
+            $input->getFilterChain()
+                ->attach(new StandardInputFilter);
 
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            $input->getValidatorChain()
+                ->attach(new Validator\NotEmpty, true)
+                ->attach((new Validator\StringLength(['max' => 300])));
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $this->add($field);
-        $inputFilter->add($input);
-
-
-        //------------------------
-        // Address - line 2
-
-        $field = new Element\Text('address-2');
-        $input = new Input($field->getName());
-
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
-
-        $input->getValidatorChain()
-            ->attach((new Validator\StringLength(['max' => 300])));
-
-        $input->setRequired(false);
-
-        $this->add($field);
-        $inputFilter->add($input);
+            $this->add($field);
+            $inputFilter->add($input);
 
 
-        //------------------------
-        // Address - line 3 (Town or city)
+            //------------------------
+            // Address - line 2
 
-        $field = new Element\Text('address-3');
-        $input = new Input($field->getName());
+            $field = new Element\Text('address-2');
+            $input = new Input($field->getName());
 
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            $input->getFilterChain()
+                ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 300])));
+            $input->getValidatorChain()
+                ->attach((new Validator\StringLength(['max' => 300])));
 
-        $this->add($field);
-        $inputFilter->add($input);
+            $input->setRequired(false);
+
+            $this->add($field);
+            $inputFilter->add($input);
 
 
-        //------------------------
-        // Address - Postcode
+            //------------------------
+            // Address - line 3 (Town or city)
 
-        $field = new Element\Text('address-postcode');
-        $input = new Input($field->getName());
+            $field = new Element\Text('address-3');
+            $input = new Input($field->getName());
 
-        $input->getFilterChain()
-            ->attach(new StandardInputFilter);
+            $input->getFilterChain()
+                ->attach(new StandardInputFilter);
 
-        $input->getValidatorChain()
-            ->attach(new Validator\NotEmpty, true)
-            ->attach((new Validator\StringLength(['max' => 300])));
+            $input->getValidatorChain()
+                ->attach(new Validator\NotEmpty, true)
+                ->attach((new Validator\StringLength(['max' => 300])));
 
-        $this->add($field);
-        $inputFilter->add($input);
+            $this->add($field);
+            $inputFilter->add($input);
+
+
+            //------------------------
+            // Address - Postcode
+
+            $field = new Element\Text('address-postcode');
+            $input = new Input($field->getName());
+
+            $input->getFilterChain()
+                ->attach(new StandardInputFilter);
+
+            $input->getValidatorChain()
+                ->attach(new Validator\NotEmpty, true)
+                ->attach((new Validator\StringLength(['max' => 300])));
+
+            $this->add($field);
+            $inputFilter->add($input);
+        }
 
         //---
 
@@ -226,10 +229,12 @@ class DonorDetails extends AbstractForm
         $data['first'] = $data['current']['name']['first'] ?? null;
         $data['last'] = $data['current']['name']['last'] ?? null;
 
-        $data['address-1'] = $data['current']['address']['address-1'] ?? null;
-        $data['address-2'] = $data['current']['address']['address-2'] ?? null;
-        $data['address-3'] = $data['current']['address']['address-3'] ?? null;
-        $data['address-postcode'] = $data['current']['address']['address-postcode'] ?? null;
+        if (isset($data['current']['address'])) {
+            $data['address-1'] = $data['current']['address']['address-1'] ?? null;
+            $data['address-2'] = $data['current']['address']['address-2'] ?? null;
+            $data['address-3'] = $data['current']['address']['address-3'] ?? null;
+            $data['address-postcode'] = $data['current']['address']['address-postcode'] ?? null;
+        }
 
         $data['poa-title'] = $data['poa']['name']['title'] ?? null;
         $data['poa-first'] = $data['poa']['name']['first'] ?? null;
@@ -273,12 +278,15 @@ class DonorDetails extends AbstractForm
 
         //---
 
-        $response['current']['address'] = array_intersect_key($result, array_flip([
-            'address-1',
-            'address-2',
-            'address-3',
-            'address-postcode'
-        ]));
+        if (isset($result['address-1']) && isset($result['address-2']) && isset($result['address-3'])
+            && isset($result['address-postcode'])) {
+            $response['current']['address'] = array_intersect_key($result, array_flip([
+                'address-1',
+                'address-2',
+                'address-3',
+                'address-postcode'
+            ]));
+        }
 
         //---
 

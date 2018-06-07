@@ -1,5 +1,5 @@
 <?php
-$title = ($applicant == 'donor') ? 'Donor\'s bank details' : 'Donor\'s bank details';
+$title = ($isDonorDeceased == true) ? 'Executor\'s bank details' : 'Donor\'s bank details';
 $this->layout('layout::standard',
     [
         'title' => $title,
@@ -90,7 +90,7 @@ $this->addErrorMap([
 
     <?php $this->insert('snippet::input-text', [
         'formElement' => $form->get('name'),
-        'formLabel' => 'Donor\'s account holder name',
+        'formLabel' => ($isDonorDeceased == true) ? 'Executor\'s account holder name' : 'Donor\'s account holder name',
         'formType' => 'text',
         'formLabelBold' => true
     ]) ?>
@@ -120,7 +120,7 @@ $this->addErrorMap([
     <div class="form-group">
         <input class="button" type="submit" value="Continue">
         <?php if (!(empty($ad))): ?>
-            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Send cheque to donor" name="cheque" >
+            <input style="margin-left: 20px;" class="button button-secondary" type="submit" value="Send cheque to <?= ($isDonorDeceased == true) ? 'executor' : 'donor' ?>" name="cheque" >
         <?php endif ?>
     </div>
 

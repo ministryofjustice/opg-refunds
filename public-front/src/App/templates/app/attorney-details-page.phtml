@@ -29,7 +29,7 @@ $this->fetch('snippet::actor-errors', [
     <?php $this->insert('snippet::form-csrf', [ 'form'=>$form ]) ?>
 
     <fieldset>
-        <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Attorney name" : "Name" ?></legend>
+        <legend class="form-label-bold"><?= ($applicant != 'attorney') ? "Attorney name" : "Name" ?></legend>
 
         <?php $this->insert('snippet::input-text', [
             'formElement' => $form->get('title'),
@@ -66,13 +66,13 @@ $this->fetch('snippet::actor-errors', [
                 <?= ($element->getValue()=='yes') ? ' checked="checked"' : '' ?>
             >
             <label for="name-on-poa-checkbox">
-                <?= ($applicant == 'donor') ? "Their" : "My" ?> name is different on the power of attorney documents
+                <?= ($applicant != 'attorney') ? "Their" : "My" ?> name is different on the power of attorney documents
             </label>
         </div>
     
         <div class="panel panel-border-narrow js-hidden" id="name-on-poa">
             <fieldset>
-                <legend class="form-label-bold"><?= ($applicant == 'donor') ? "Attorney name" : "Name" ?> on power of attorney documents</legend>
+                <legend class="form-label-bold"><?= ($applicant != 'attorney') ? "Attorney name" : "Name" ?> on power of attorney documents</legend>
 
                 <?php $this->insert('snippet::input-text', [
                     'formElement' => $form->get('poa-title'),
@@ -101,7 +101,7 @@ $this->fetch('snippet::actor-errors', [
     </div>
 
     <?php $this->insert('snippet::input-dob', [
-        'formLabel' => ($applicant == 'donor') ? 'Attorney date of birth' : 'Date of birth',
+        'formLabel' => ($applicant != 'attorney') ? 'Attorney date of birth' : 'Date of birth',
         'formElement' => $form->get('dob'),
     ]) ?>
 
