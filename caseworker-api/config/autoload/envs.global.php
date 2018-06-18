@@ -21,14 +21,6 @@ return [
             ],
         ],
 
-        'rsa' => [
-            'keys' => [
-                'private' => [
-                    'bank' => getenv('OPG_REFUNDS_CASEWORKER_API_BANK_KEY_PRIVATE') ?: null,
-                ],
-            ],
-        ],
-
         'hash' => [
             // ! < 32 characters.
             'salt' => getenv('OPG_REFUNDS_BANK_HASH_SALT') ?: '',
