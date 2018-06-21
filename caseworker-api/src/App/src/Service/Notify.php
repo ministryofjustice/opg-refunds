@@ -67,7 +67,7 @@ class Notify implements Initializer\LogSupportInterface
         $this->claimService = $claimService;
     }
 
-    public function notifyAll(int $userId)
+    public function notifyAll(int $userId, ?int $timeout = 59, ?int $maxNotifications = null)
     {
         $start = microtime(true);
 
@@ -158,7 +158,11 @@ class Notify implements Initializer\LogSupportInterface
             //Ensure that there are no timeouts by breaking part way through processing. We can then alert the user to try again
             //Ideally there would be a queuing mechanism but for now this will support retries and rudementary batch processing
             $elapsed = microtime(true) - $start;
-            if ($elapsed > 10) {
+            if ($timeout !== null && $elapsed > $timeout) {
+                break;
+            }
+
+            if ($maxNotifications !== null && $processedCount > $maxNotifications) {
                 break;
             }
         }
