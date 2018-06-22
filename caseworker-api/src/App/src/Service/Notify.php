@@ -162,7 +162,7 @@ class Notify implements Initializer\LogSupportInterface
                 break;
             }
 
-            if ($maxNotifications !== null && $processedCount > $maxNotifications) {
+            if ($maxNotifications !== null && $processedCount >= $maxNotifications) {
                 break;
             }
         }
