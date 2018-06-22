@@ -74,6 +74,6 @@ cli\line('Notify service initialisation complete. Starting with user id ' . $use
 
 $notified = $notifyService->notifyAll($userId, null, $maxNotifications);
 
-cli\line('Notify service executed successfully');
+cli\line('Notify service executed successfully. Processed ' . $notified['processed'] . ' from a total of ' . $notified['total'] . '. ' . ($notified['total'] - $notified['processed']) . ' remaining');
 
 exit(0);
