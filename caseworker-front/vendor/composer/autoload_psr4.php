@@ -23,6 +23,7 @@ return array(
     'Zend\\Expressive\\Template\\' => array($vendorDir . '/zendframework/zend-expressive-template/src'),
     'Zend\\Expressive\\Router\\' => array($vendorDir . '/zendframework/zend-expressive-fastroute/src', $vendorDir . '/zendframework/zend-expressive-router/src'),
     'Zend\\Expressive\\Plates\\' => array($vendorDir . '/zendframework/zend-expressive-platesrenderer/src'),
+    'Zend\\Expressive\\Migration\\' => array($vendorDir . '/zendframework/zend-expressive-migration/src'),
     'Zend\\Expressive\\Helper\\' => array($vendorDir . '/zendframework/zend-expressive-helpers/src'),
     'Zend\\Expressive\\' => array($vendorDir . '/zendframework/zend-expressive/src'),
     'Zend\\EventManager\\' => array($vendorDir . '/zendframework/zend-eventmanager/src'),
