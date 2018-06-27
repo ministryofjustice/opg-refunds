@@ -6,7 +6,8 @@ var appFiles = [
   "application.js",
 ];
 var appFilesRoot = __dirname + "/app/";
-appFiles = appFiles.map(function(file) { return appFilesRoot + file });
+appFiles = appFiles.map(function (file) {
+    return appFilesRoot + file });
 
 var vendorFiles = [
   "jquery/dist/jquery.min.js",
@@ -14,7 +15,8 @@ var vendorFiles = [
   "govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js",
 ];
 var vendorFilesRoot = __dirname + '/../../node_modules/';
-vendorFiles = vendorFiles.map(function(file) { return vendorFilesRoot + file });
+vendorFiles = vendorFiles.map(function (file) {
+    return vendorFilesRoot + file });
 
 // Write
 var vendorResult = UglifyJS.minify(vendorFiles);
