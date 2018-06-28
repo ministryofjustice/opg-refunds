@@ -18,7 +18,8 @@ class NotifyActionFactory
     public function __invoke(ContainerInterface $container)
     {
         return new NotifyAction(
-            $container->get(NotifyService::class)
+            $container->get(NotifyService::class),
+            $config = $container->get('config')['notify']
         );
     }
 }
