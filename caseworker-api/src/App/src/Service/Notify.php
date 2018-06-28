@@ -67,8 +67,10 @@ class Notify implements Initializer\LogSupportInterface
         $this->claimService = $claimService;
     }
 
-    public function notifyAll(int $userId, ?int $timeout = 59, ?int $maxNotifications = null)
+    public function notifyAll(int $userId, ?int $timeout = null, ?int $maxNotifications = null)
     {
+        $this->getLogger()->info("Notifying claimaints of the outcome of their claim using user id {$userId}, timeout {$timeout}, max number of notifications {$maxNotifications}");
+
         $start = microtime(true);
 
         //Select all claim ids that aren't associated with a notification note type

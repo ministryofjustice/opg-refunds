@@ -19,9 +19,20 @@ class NotifyAction extends AbstractRestfulAction
      */
     private $notifyService;
 
-    public function __construct(NotifyService $notifyService)
+    /**
+     * @var int
+     */
+    private $timeout;
+
+    /**
+     * NotifyAction constructor.
+     * @param NotifyService $notifyService
+     * @param array $notifyConfig
+     */
+    public function __construct(NotifyService $notifyService, array $notifyConfig)
     {
         $this->notifyService = $notifyService;
+        $this->timeout = $notifyConfig['timeout'];
     }
 
     /**
@@ -33,7 +44,7 @@ class NotifyAction extends AbstractRestfulAction
     {
         $identity = $request->getAttribute('identity');
 
-        $notified = $this->notifyService->notifyAll($identity->getId());
+        $notified = $this->notifyService->notifyAll($identity->getId(), $this->timeout);
 
         return new JsonResponse($notified);
     }
