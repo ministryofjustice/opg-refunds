@@ -54,9 +54,9 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/App/src/",
-            "Auth\\": "src/Auth/src/",
-            "Ingestion\\": "src/Ingestion/src/"
+            "App\\": "src/App/",
+            "Auth\\": "src/Auth/",
+            "Ingestion\\": "src/Ingestion/"
         }
     },
     "autoload-dev": {

@@ -58,8 +58,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Api\\": "src/Api/src/",
-            "App\\": "src/App/src/"
+            "Api\\": "src/Api/",
+            "App\\": "src/App/"
         }
     },
     "autoload-dev": {
