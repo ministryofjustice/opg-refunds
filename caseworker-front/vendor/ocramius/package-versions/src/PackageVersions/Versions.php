@@ -104,7 +104,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '1.0.1@0e5b030961cd980323dd48965d13d5cb904b51de',
   'zfcampus/zf-composer-autoloading' => '2.1.0@537145efec53c784ddc06f1af93102ddede52ceb',
   'zfcampus/zf-development-mode' => '3.2.0@419004a320bab017d28f2bc5e7857dde7e19aecf',
-  'ministryofjustice/opg-refunds-caseworker-front' => 'dev-LPA-2830-zend-expressive-3@c618721c9adc3fd9f79121eca0f204342fa25b67',
+  'ministryofjustice/opg-refunds-caseworker-front' => 'dev-LPA-2830-zend-expressive-3@3ac1ad174df0eec4b204a4173017e606fa4f8af1',
 );
 
     private function __construct()
