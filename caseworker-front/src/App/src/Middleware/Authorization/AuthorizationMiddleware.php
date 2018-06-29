@@ -9,8 +9,8 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
-use Zend\Expressive\Delegate\NotFoundDelegate;
 use Zend\Diactoros\Response\RedirectResponse;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Router\RouteResult;
 use Zend\Permissions\Rbac\Rbac;
@@ -38,9 +38,9 @@ class AuthorizationMiddleware implements MiddlewareInterface
     private $rbac;
 
     /**
-     * @var NotFoundDelegate
+     * @var NotFoundHandler
      */
-    private $notFoundDelegate;
+    private $notFoundHandler;
 
 
     /**
@@ -48,20 +48,20 @@ class AuthorizationMiddleware implements MiddlewareInterface
      *
      * @param AuthenticationService $authService
      * @param UrlHelper $urlHelper
-     * @param NotFoundDelegate $notFoundDelegate
+     * @param NotFoundHandler $notFoundHandler
      * @param Rbac $rbac
      */
     public function __construct(
         AuthenticationService $authService,
         UrlHelper $urlHelper,
         Rbac $rbac,
-        NotFoundDelegate $notFoundDelegate
+        NotFoundHandler $notFoundHandler
     ) {
 
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;
-        $this->notFoundDelegate = $notFoundDelegate;
+        $this->notFoundHandler = $notFoundHandler;
     }
 
     /**
@@ -81,7 +81,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
         $route = $request->getAttribute(RouteResult::class);
 
         if (is_null($route)) {
-            return $this->notFoundDelegate->process($request);
+            return $this->notFoundHandler->handle($request);
         }
 
         $routeName = $route->getMatchedRoute()->getName();
