@@ -830,55 +830,6 @@
         }
     },
     {
-        "name": "ministryofjustice/opg-refunds-logger",
-        "version": "2.0.1",
-        "version_normalized": "2.0.1.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/ministryofjustice/opg-refunds-logger.git",
-            "reference": "3ff07c27536232a29a5ea23efb22a8819892e291"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-logger/zipball/3ff07c27536232a29a5ea23efb22a8819892e291",
-            "reference": "3ff07c27536232a29a5ea23efb22a8819892e291",
-            "shasum": ""
-        },
-        "require": {
-            "aws/aws-sdk-php": "^3.36",
-            "http-interop/http-middleware": "^0.4.1",
-            "php": "^7.0",
-            "psr/http-message": "^1.0",
-            "zendframework/zend-log": "^2.9",
-            "zendframework/zend-stratigility": "^2.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "^6.3",
-            "squizlabs/php_codesniffer": "^3.0"
-        },
-        "time": "2018-04-03T13:38:28+00:00",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Opg\\Refunds\\Log\\": "src/Opg/Refunds/Log/"
-            }
-        },
-        "autoload-dev": {
-            "psr-4": {
-                "OpgTest\\Refunds\\Log\\": "test/Opg/Refunds/Log/"
-            }
-        },
-        "license": [
-            "MIT"
-        ],
-        "description": "Common logging component for OPG Refunds",
-        "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-logger/tree/2.0.1",
-            "issues": "https://github.com/ministryofjustice/opg-refunds-logger/issues"
-        }
-    },
-    {
         "name": "mockery/mockery",
         "version": "1.1.0",
         "version_normalized": "1.1.0.0",
@@ -4070,6 +4021,57 @@
         ]
     },
     {
+        "name": "zendframework/zend-expressive-migration",
+        "version": "0.1.3",
+        "version_normalized": "0.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-expressive-migration.git",
+            "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-expressive-migration/zipball/7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+            "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.1",
+            "symfony/console": "^2.8 || ^3.0 || ^4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7.0.2",
+            "zendframework/zend-coding-standard": "~1.0.0"
+        },
+        "time": "2018-03-20T21:10:35+00:00",
+        "bin": [
+            "bin/expressive-migration"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\Expressive\\Migration\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Migrate Expressive applications from v2 to v3",
+        "keywords": [
+            "ZendFramework",
+            "expressive",
+            "migration",
+            "zf"
+        ]
+    },
+    {
         "name": "zendframework/zend-expressive-platesrenderer",
         "version": "1.4.0",
         "version_normalized": "1.4.0.0",
@@ -4584,79 +4586,6 @@
             "ZendFramework",
             "inputfilter",
             "zf"
-        ]
-    },
-    {
-        "name": "zendframework/zend-log",
-        "version": "2.10.0",
-        "version_normalized": "2.10.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/zendframework/zend-log.git",
-            "reference": "9cec3b092acb39963659c2f32441cccc56b3f430"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/zendframework/zend-log/zipball/9cec3b092acb39963659c2f32441cccc56b3f430",
-            "reference": "9cec3b092acb39963659c2f32441cccc56b3f430",
-            "shasum": ""
-        },
-        "require": {
-            "php": "^5.6 || ^7.0",
-            "psr/log": "^1.0",
-            "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3",
-            "zendframework/zend-stdlib": "^2.7 || ^3.0"
-        },
-        "provide": {
-            "psr/log-implementation": "1.0.0"
-        },
-        "require-dev": {
-            "mikey179/vfsstream": "^1.6",
-            "phpunit/phpunit": "^5.7.15 || ^6.0.8",
-            "zendframework/zend-coding-standard": "~1.0.0",
-            "zendframework/zend-db": "^2.6",
-            "zendframework/zend-escaper": "^2.5",
-            "zendframework/zend-filter": "^2.5",
-            "zendframework/zend-mail": "^2.6.1",
-            "zendframework/zend-validator": "^2.10.1"
-        },
-        "suggest": {
-            "ext-mongo": "mongo extension to use Mongo writer",
-            "ext-mongodb": "mongodb extension to use MongoDB writer",
-            "zendframework/zend-console": "Zend\\Console component to use the RequestID log processor",
-            "zendframework/zend-db": "Zend\\Db component to use the database log writer",
-            "zendframework/zend-escaper": "Zend\\Escaper component, for use in the XML log formatter",
-            "zendframework/zend-mail": "Zend\\Mail component to use the email log writer",
-            "zendframework/zend-validator": "Zend\\Validator component to block invalid log messages"
-        },
-        "time": "2018-04-09T21:59:51+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "2.10.x-dev",
-                "dev-develop": "2.11.x-dev"
-            },
-            "zf": {
-                "component": "Zend\\Log",
-                "config-provider": "Zend\\Log\\ConfigProvider"
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Zend\\Log\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "BSD-3-Clause"
-        ],
-        "description": "component for general purpose logging",
-        "homepage": "https://github.com/zendframework/zend-log",
-        "keywords": [
-            "log",
-            "logging",
-            "zf2"
         ]
     },
     {
