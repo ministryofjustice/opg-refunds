@@ -37,7 +37,7 @@ final class Versions
   'mtdowling/jmespath.php' => '2.4.0@adcc9531682cf87dfda21e1fd5d0e7a41d292fac',
   'nikic/fast-route' => 'v1.3.0@181d480e08d9476e61381e04a71b34dc0432e812',
   'ocramius/package-versions' => '1.3.0@4489d5002c49d55576fa0ba786f42dbb009be46f',
-  'ocramius/proxy-manager' => '2.2.0@81d53b2878f1d1c40ad27270e64b51798485dfc5',
+  'ocramius/proxy-manager' => '2.1.1@e18ac876b2e4819c76349de8f78ccc8ef1554cd7',
   'opsway/doctrine-dbal-postgresql' => 'v0.8.1@fda403a60653c09637403384485f6db3c2e4ff73',
   'paragonie/random_compat' => 'v2.0.15@10bcb46e8f3d365170f6de9d05245aa066b81f09',
   'php-http/guzzle6-adapter' => 'v1.1.1@a56941f9dc6110409cfcddc91546ee97039277ab',
@@ -107,7 +107,7 @@ final class Versions
   'zendframework/zend-expressive-tooling' => '0.4.7@ed7a89e5e839b7f71c9cf61a6fba4654031cafa4',
   'zfcampus/zf-composer-autoloading' => '2.1.0@537145efec53c784ddc06f1af93102ddede52ceb',
   'zfcampus/zf-development-mode' => '3.2.0@419004a320bab017d28f2bc5e7857dde7e19aecf',
-  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-LPA-2758-deprecated-warnings-zend-expressive-2@d0f4fd47c02ab74827939a53f23dc7b21f7812b7',
+  'ministryofjustice/opg-refunds-caseworker-api' => 'dev-LPA-2758-deprecated-warnings-zend-expressive-2@6efdd1c2d4506ce1bd8e8744dcdaebf733069331',
 );
 
     private function __construct()
