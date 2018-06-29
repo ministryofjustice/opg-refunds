@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response;

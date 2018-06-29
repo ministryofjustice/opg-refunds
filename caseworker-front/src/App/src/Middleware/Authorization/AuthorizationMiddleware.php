@@ -3,8 +3,8 @@
 namespace App\Middleware\Authorization;
 
 use Api\Exception\ApiException;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,8 +56,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
         UrlHelper $urlHelper,
         Rbac $rbac,
         NotFoundDelegate $notFoundDelegate
-    )
-    {
+    ) {
+
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;
@@ -70,7 +70,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      * @throws Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $identity = $this->authService->getIdentity();
 
@@ -91,7 +91,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
             if ($this->rbac->hasRole($role) && $this->rbac->isGranted($role, $routeName)) {
                 //  Catch any unauthorized exceptions and trigger a sign out if required
                 try {
-                    return $delegate->process(
+                    return $delegate->handle(
                         $request->withAttribute('identity', $identity)
                     );
                 } catch (ApiException $ae) {

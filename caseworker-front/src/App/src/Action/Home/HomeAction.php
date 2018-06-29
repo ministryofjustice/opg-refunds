@@ -6,7 +6,7 @@ use App\Action\AbstractAction;
 use App\Form\PhoneClaim;
 use App\Form\ProcessNewClaim;
 use App\Service\User\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;

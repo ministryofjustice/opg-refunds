@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Form\Notify as NotifyForm;
 use App\Service\Notify\Notify as NotifyService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;

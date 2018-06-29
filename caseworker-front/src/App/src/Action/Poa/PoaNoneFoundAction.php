@@ -4,7 +4,7 @@ namespace App\Action\Poa;
 
 use App\Form\AbstractForm;
 use App\Form\PoaNoneFound;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ServerRequestInterface;

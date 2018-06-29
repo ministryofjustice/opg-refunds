@@ -6,7 +6,7 @@ use App\Form\SignIn;
 use App\Service\Authentication\Result;
 use App\Service\User\User as UserService;
 use Alphagov\Notifications\Client as NotifyClient;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
 use Zend\Diactoros\Response;

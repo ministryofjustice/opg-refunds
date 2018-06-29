@@ -7,7 +7,7 @@ use App\Action\AbstractAction;
 use App\Form\ResetPassword;
 use App\Service\User\User as UserService;
 use Alphagov\Notifications\Client as NotifyClient;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response;
@@ -78,14 +78,15 @@ class PasswordResetAction extends AbstractAction
                     $this->notifyClient->sendEmail($email, '0f993cd8-41d4-4274-9a60-b35dcadad1a9', [
                         'change-password-url' => $changePasswordUrl,
                     ]);
-                } catch (ApiException $ignore) {}
+                } catch (ApiException $ignore) {
+                }
 
                 /** @var Messages $flash */
                 $flash = $request->getAttribute('flash');
                 $flash->addMessage('info', 'Password reset email sent');
 
                 return $this->redirectToRoute('sign.in');
-           }
+            }
         }
 
         return new Response\HtmlResponse($this->getTemplateRenderer()->render('app::password-reset-page', [

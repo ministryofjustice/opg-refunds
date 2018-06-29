@@ -8,7 +8,7 @@ use App\Service\User\User as UserService;
 use App\Action\AbstractAction;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Fig\Http\Message\RequestMethodInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;

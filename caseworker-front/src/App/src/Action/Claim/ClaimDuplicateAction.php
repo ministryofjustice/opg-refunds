@@ -5,7 +5,7 @@ namespace App\Action\Claim;
 use Api\Exception\ApiException;
 use App\Form\AbstractForm;
 use App\Form\ClaimDuplicate;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ServerRequestInterface;
