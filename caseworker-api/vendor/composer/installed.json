@@ -1374,17 +1374,17 @@
     },
     {
         "name": "ministryofjustice/opg-refunds-caseworker-datamodels",
-        "version": "2.1.0",
-        "version_normalized": "2.1.0.0",
+        "version": "dev-LPA-2832-phone-number-validation",
+        "version_normalized": "dev-LPA-2832-phone-number-validation",
         "source": {
             "type": "git",
             "url": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels.git",
-            "reference": "3578f2cfe90c9e329e9e6575deb3079bb88999e7"
+            "reference": "46423fc535c96f56cd1adee8608fd62fb5bfd156"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/3578f2cfe90c9e329e9e6575deb3079bb88999e7",
-            "reference": "3578f2cfe90c9e329e9e6575deb3079bb88999e7",
+            "url": "https://api.github.com/repos/ministryofjustice/opg-refunds-caseworker-datamodels/zipball/46423fc535c96f56cd1adee8608fd62fb5bfd156",
+            "reference": "46423fc535c96f56cd1adee8608fd62fb5bfd156",
             "shasum": ""
         },
         "require": {
@@ -1393,7 +1393,7 @@
         "require-dev": {
             "phpunit/phpunit": "^7.0"
         },
-        "time": "2018-06-04T16:13:32+00:00",
+        "time": "2018-07-09T14:44:00+00:00",
         "type": "library",
         "installation-source": "source",
         "autoload": {
@@ -1406,7 +1406,7 @@
         ],
         "description": "PHP data models for the LPA Refunds project",
         "support": {
-            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/2.1.0",
+            "source": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/tree/LPA-2832-phone-number-validation",
             "issues": "https://github.com/ministryofjustice/opg-refunds-caseworker-datamodels/issues"
         }
     },
