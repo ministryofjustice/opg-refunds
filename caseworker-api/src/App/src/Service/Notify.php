@@ -85,7 +85,7 @@ class Notify implements Initializer\LogSupportInterface
                 WHERE outcome_text_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\' UNION
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') SIMILAR TO \'07[1-9]%\' UNION
                 SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
@@ -96,7 +96,7 @@ class Notify implements Initializer\LogSupportInterface
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'address\' IS NULL
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' NOT LIKE \'07%\'
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') NOT SIMILAR TO \'07[1-9]%\'
                 ORDER BY finished_datetime';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
