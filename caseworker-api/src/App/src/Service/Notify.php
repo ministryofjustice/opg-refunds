@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use Alphagov\Notifications\Exception\ApiException as NotifyApiException;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Service\Claim as ClaimService;
 use DateTime;
@@ -244,6 +245,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so duplicate text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send duplicate text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
@@ -339,6 +349,15 @@ class Notify implements Initializer\LogSupportInterface
                     $claimEntity->setOutcomeTextSent(true);
 
                     $successful = true;
+                } catch (NotifyApiException $ex) {
+                    if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                        $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so rejection text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                        $claimEntity->setOutcomeTextSent(true);
+
+                        $successful = true;
+                    } else {
+                        $this->getLogger()->err("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                    }
                 } catch (Exception $ex) {
                     $this->getLogger()->crit("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
@@ -427,6 +446,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so acceptance text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
