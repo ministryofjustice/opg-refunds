@@ -91,6 +91,7 @@ class Notify implements Initializer\LogSupportInterface
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
+                AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'phone\' IS NULL
                 AND json_data->\'contact\'->\'address\' IS NOT NULL UNION
                 SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_phone_called IS NOT TRUE
@@ -106,7 +107,7 @@ class Notify implements Initializer\LogSupportInterface
                 'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
                 'statusRejected' => ClaimModel::STATUS_REJECTED,
                 'acceptedStatus' => ClaimModel::STATUS_ACCEPTED,
-                'today' => (new DateTime('today'))->format('Y-m-d H:i:s')
+                'today' => (new DateTime('today'))->format('Y-m-d')
             ]
         );
 
