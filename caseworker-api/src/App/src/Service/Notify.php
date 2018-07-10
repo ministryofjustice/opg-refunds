@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use Alphagov\Notifications\Exception\ApiException as NotifyApiException;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Service\Claim as ClaimService;
 use DateTime;
@@ -85,7 +86,7 @@ class Notify implements Initializer\LogSupportInterface
                 WHERE outcome_text_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\' UNION
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') SIMILAR TO \'07[1-9]%\' UNION
                 SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
@@ -96,7 +97,7 @@ class Notify implements Initializer\LogSupportInterface
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'address\' IS NULL
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' NOT LIKE \'07%\'
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') NOT SIMILAR TO \'07[1-9]%\'
                 ORDER BY finished_datetime';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
@@ -244,6 +245,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so duplicate text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send duplicate text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
@@ -339,6 +349,15 @@ class Notify implements Initializer\LogSupportInterface
                     $claimEntity->setOutcomeTextSent(true);
 
                     $successful = true;
+                } catch (NotifyApiException $ex) {
+                    if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                        $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so rejection text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                        $claimEntity->setOutcomeTextSent(true);
+
+                        $successful = true;
+                    } else {
+                        $this->getLogger()->err("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                    }
                 } catch (Exception $ex) {
                     $this->getLogger()->crit("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
@@ -427,6 +446,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so acceptance text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
