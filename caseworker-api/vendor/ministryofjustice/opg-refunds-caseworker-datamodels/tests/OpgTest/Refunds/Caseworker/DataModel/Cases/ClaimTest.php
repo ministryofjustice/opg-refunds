@@ -3,6 +3,7 @@
 namespace OpgTest\Refunds\Caseworker\DataModel\Applications;
 
 use Opg\Refunds\Caseworker\DataModel\Applications\Application;
+use Opg\Refunds\Caseworker\DataModel\Applications\Contact;
 use Opg\Refunds\Caseworker\DataModel\Cases\Payment;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim;
 use OpgTest\Refunds\Caseworker\DataModel\AbstractDataModelTestCase;
@@ -116,5 +117,44 @@ class ClaimTest extends AbstractDataModelTestCase
         $model = new Claim($data);
 
         $this->assertSame($data, $model->getArrayCopy());
+    }
+
+    /**
+     * @dataProvider phoneDataProvider
+     * @param string $number
+     * @param bool $expectedResult
+     */
+    public function testShouldSendTextOrPhone(string $number, bool $expectedResult)
+    {
+        $model = new Claim();
+        $application = new Application();
+        $contact = new Contact();
+        $application->setContact($contact);
+        $model->setApplication($application);
+
+        $model->setOutcomeTextSent(false);
+        $model->setOutcomePhoneCalled(false);
+        $contact->setReceiveNotifications(true);
+        $contact->setPhone($number);
+
+        self::assertEquals($expectedResult, $model->shouldSendText());
+        self::assertEquals(!$expectedResult, $model->shouldPhone());
+    }
+
+    public function phoneDataProvider()
+    {
+        return [
+            ['07890123456', true],
+            ['+447890123456', true],
+            ['00447890123456', true],
+            ['0447890123456', true], //Wrong but preserving to pin current functionality
+            ['+0447890123456', true], //Wrong but preserving to pin current functionality
+            ['01234567890', false],
+            ['07090123456', false],
+            ['+4407890123456', false],
+            ['004407890123456', false],
+            ['+447090123456', false],
+            ['00447090123456', false],
+        ];
     }
 }

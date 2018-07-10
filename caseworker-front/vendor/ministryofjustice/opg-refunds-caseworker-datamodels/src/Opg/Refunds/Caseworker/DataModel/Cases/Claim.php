@@ -1150,7 +1150,7 @@ class Claim extends AbstractDataModel
         $contact = $this->getApplication()->getContact();
 
         return $contact->isReceiveNotifications() && !$this->isOutcomeTextSent()
-            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) === '07';
+            && $contact->hasPhone() && $this->isMobile($contact->getPhone());
     }
 
     /**
@@ -1173,8 +1173,17 @@ class Claim extends AbstractDataModel
 
         return $contact->isReceiveNotifications() && !$this->isOutcomePhoneCalled()
             && !$contact->hasEmail()
-            && $contact->hasPhone() && substr($contact->getPhone(), 0, 2) !== '07'
+            && $contact->hasPhone() && !$this->isMobile($contact->getPhone())
             && !$contact->hasAddress();
+    }
+
+    /**
+     * @param string $phone
+     * @return bool
+     */
+    private function isMobile(string $phone): bool
+    {
+        return (bool)preg_match('/^07[1-9]/', preg_replace('/^[+]?[0]*44/', '0', $phone));
     }
 
     /**
