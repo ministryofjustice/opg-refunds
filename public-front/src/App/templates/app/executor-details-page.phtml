@@ -1,6 +1,7 @@
 <?php
+$title = 'Executor details';
 $this->layout('layout::standard', [
-    'title' => 'Executor details',
+    'title' => $title,
     'pageTitle' => (!empty($form->getMessages())) ? "Error: {$title}" : null,
 ]);
 

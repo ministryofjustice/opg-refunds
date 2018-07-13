@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use Alphagov\Notifications\Client as NotifyClient;
+use Alphagov\Notifications\Exception\ApiException as NotifyApiException;
 use App\Entity\Cases\Claim as ClaimEntity;
 use App\Service\Claim as ClaimService;
 use DateTime;
@@ -67,8 +68,10 @@ class Notify implements Initializer\LogSupportInterface
         $this->claimService = $claimService;
     }
 
-    public function notifyAll(int $userId)
+    public function notifyAll(int $userId, ?int $timeout = null, ?int $maxNotifications = null)
     {
+        $this->getLogger()->info("Notifying claimaints of the outcome of their claim using user id {$userId}, timeout {$timeout}, max number of notifications {$maxNotifications}");
+
         $start = microtime(true);
 
         //Select all claim ids that aren't associated with a notification note type
@@ -83,18 +86,19 @@ class Notify implements Initializer\LogSupportInterface
                 WHERE outcome_text_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' LIKE \'07%\' UNION
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') SIMILAR TO \'07[1-9]%\' UNION
                 SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_letter_sent IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
+                AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'phone\' IS NULL
                 AND json_data->\'contact\'->\'address\' IS NOT NULL UNION
                 SELECT c.id, finished_datetime FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id
                 WHERE outcome_phone_called IS NOT TRUE
                 AND (json_data->\'contact\'->\'receive-notifications\' IS NULL OR ((json_data->>\'contact\')::json->>\'receive-notifications\')::boolean IS TRUE)
                 AND ((status IN (:statusDuplicate, :statusRejected) AND finished_datetime < :today) OR (status = :acceptedStatus AND p.id IS NOT NULL))
                 AND json_data->\'contact\'->\'email\' IS NULL AND json_data->\'contact\'->\'address\' IS NULL
-                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND (json_data->>\'contact\')::json->>\'phone\' NOT LIKE \'07%\'
+                AND json_data->\'contact\'->\'phone\' IS NOT NULL AND regexp_replace((json_data->>\'contact\')::json->>\'phone\', \'^[+]?[0]*44\', \'0\') NOT SIMILAR TO \'07[1-9]%\'
                 ORDER BY finished_datetime';
 
         $statement = $this->entityManager->getConnection()->executeQuery(
@@ -103,7 +107,7 @@ class Notify implements Initializer\LogSupportInterface
                 'statusDuplicate' => ClaimModel::STATUS_DUPLICATE,
                 'statusRejected' => ClaimModel::STATUS_REJECTED,
                 'acceptedStatus' => ClaimModel::STATUS_ACCEPTED,
-                'today' => (new DateTime('today'))->format('Y-m-d H:i:s')
+                'today' => (new DateTime('today'))->format('Y-m-d')
             ]
         );
 
@@ -158,7 +162,11 @@ class Notify implements Initializer\LogSupportInterface
             //Ensure that there are no timeouts by breaking part way through processing. We can then alert the user to try again
             //Ideally there would be a queuing mechanism but for now this will support retries and rudementary batch processing
             $elapsed = microtime(true) - $start;
-            if ($elapsed > 10) {
+            if ($timeout !== null && $elapsed > $timeout) {
+                break;
+            }
+
+            if ($maxNotifications !== null && $processedCount >= $maxNotifications) {
                 break;
             }
         }
@@ -238,6 +246,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so duplicate text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send duplicate text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
@@ -333,6 +350,15 @@ class Notify implements Initializer\LogSupportInterface
                     $claimEntity->setOutcomeTextSent(true);
 
                     $successful = true;
+                } catch (NotifyApiException $ex) {
+                    if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                        $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so rejection text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                        $claimEntity->setOutcomeTextSent(true);
+
+                        $successful = true;
+                    } else {
+                        $this->getLogger()->err("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                    }
                 } catch (Exception $ex) {
                     $this->getLogger()->crit("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
@@ -421,6 +447,15 @@ class Notify implements Initializer\LogSupportInterface
                 $claimEntity->setOutcomeTextSent(true);
 
                 $successful = true;
+            } catch (NotifyApiException $ex) {
+                if (strpos($ex->getMessage(), 'phone_number') !== false) {
+                    $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so acceptance text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
+                    $claimEntity->setOutcomeTextSent(true);
+
+                    $successful = true;
+                } else {
+                    $this->getLogger()->err("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}. Please check if this is a recoverable error", [$ex]);
+                }
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }

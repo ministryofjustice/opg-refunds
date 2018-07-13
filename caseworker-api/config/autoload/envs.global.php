@@ -82,6 +82,10 @@ return [
     ],
 
     'notify' => [
+        'enabled' => getenv('OPG_REFUNDS_CASEWORKER_NOTIFY_ENABLED') ?: true,
+        'user_id' => getenv('OPG_REFUNDS_CASEWORKER_NOTIFY_USER_ID') ?: 16, //Initial admin user
+        'max_notifications' => getenv('OPG_REFUNDS_CASEWORKER_NOTIFY_MAX_NOTIFICATIONS') ?: 4000,
+        'timeout' => getenv('OPG_REFUNDS_CASEWORKER_NOTIFY_TIMEOUT') ?: 50,
         'api' => [
             'key' => getenv('OPG_REFUNDS_NOTIFY_API_KEY') ?: null,
         ],
