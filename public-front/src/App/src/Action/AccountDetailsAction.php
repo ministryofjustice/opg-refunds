@@ -60,10 +60,11 @@ class AccountDetailsAction extends AbstractAction
                 if (isset($session['account'])) {
                     unset($session['account']);
                 }
-                
+
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session))
+                        FlowController::getNextRouteName($session)
+                    )
                 );
             }
 
@@ -78,7 +79,8 @@ class AccountDetailsAction extends AbstractAction
 
                 return new Response\RedirectResponse(
                     $this->getUrlHelper()->generate(
-                        FlowController::getNextRouteName($session))
+                        FlowController::getNextRouteName($session)
+                    )
                 );
             }
         } else {

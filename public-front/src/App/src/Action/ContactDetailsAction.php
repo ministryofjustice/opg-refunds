@@ -62,7 +62,6 @@ class ContactDetailsAction extends AbstractAction
                     )
                 );
             }
-
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
         } else {
@@ -75,5 +74,4 @@ class ContactDetailsAction extends AbstractAction
             'applicant' => $session['applicant']
         ]));
     }
-
 }

@@ -67,7 +67,7 @@ class HealthCheckAction implements ServerMiddlewareInterface
 
         //---
 
-        return new JsonResponse($result, ($ok) ? 200 : 500 );
+        return new JsonResponse($result, ($ok) ? 200 : 500);
     }
 
     private function canCreateApplicationProcessor()
@@ -150,5 +150,4 @@ class HealthCheckAction implements ServerMiddlewareInterface
 
         return false;
     }
-
 }

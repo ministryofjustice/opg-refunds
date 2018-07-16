@@ -46,7 +46,6 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
                 $isDonorDeceased = !is_null($payload)
                     && array_key_exists('type', $payload) && $payload['type'] == 'donor_deceased';
             }
-
         } catch (\Exception $e) {
         }
 

@@ -87,6 +87,4 @@ class ContactAddress extends AbstractForm
 
         return $this->setData($data);
     }
-
 }
-
