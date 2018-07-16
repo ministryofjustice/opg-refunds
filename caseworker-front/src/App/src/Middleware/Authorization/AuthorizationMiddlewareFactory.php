@@ -9,7 +9,6 @@ use Zend\Permissions\Rbac\Rbac;
 use Exception;
 use Zend\Expressive\Delegate\NotFoundDelegate;
 
-
 /**
  * Class AuthorizationMiddlewareFactory
  * @package App\Middleware\Auth

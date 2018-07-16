@@ -97,7 +97,7 @@ class EncryptedDynamoDB extends DynamoDbSessionHandler implements SaveHandlerInt
             $sessionData = $data[0];
         } else {
             // If the key ident doesn't match a known key...
-            if(!isset($this->keys[$data[0]])) {
+            if (!isset($this->keys[$data[0]])) {
                 return '';
             }
 

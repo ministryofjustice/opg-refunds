@@ -56,8 +56,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
         UrlHelper $urlHelper,
         Rbac $rbac,
         NotFoundDelegate $notFoundDelegate
-    )
-    {
+    ) {
+
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;

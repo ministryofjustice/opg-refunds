@@ -155,5 +155,4 @@ class SessionManager
     {
         return hash('sha512', $id.$data);
     }
-
 }
