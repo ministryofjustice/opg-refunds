@@ -16,7 +16,6 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use PDO;
-use Zend\Crypt\PublicKey\Rsa;
 use Aws\Kms\KmsClient;
 
 use Opg\Refunds\Log\Initializer;
@@ -49,11 +48,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
      * @var EntityManager
      */
     private $entityManager;
-
-    /**
-     * @var Rsa
-     */
-    private $bankCipher;
 
     /**
      * @var KmsClient
@@ -94,7 +88,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
     public function __construct(
         EntityManager $entityManager,
         KmsClient $kmsClient,
-        Rsa $bankCipher,
         ClaimService $claimService,
         AccountService $accountService,
         array $spreadsheetConfig,
@@ -105,7 +98,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
         $this->paymentRepository = $entityManager->getRepository(PaymentEntity::class);
         $this->entityManager = $entityManager;
         $this->kmsClient = $kmsClient;
-        $this->bankCipher = $bankCipher;
         $this->claimService = $claimService;
         $this->accountService = $accountService;
         $this->spreadsheetConfig = $spreadsheetConfig;
@@ -488,29 +480,18 @@ class Spreadsheet implements Initializer\LogSupportInterface
     }
 
     /**
-     * Decrypts bank details. First it tries AWS KMS.
-     * If that fails it falls back to the original public/private key.
+     * Decrypts bank details via AWS KMS.
      *
      * @param $ciphertext
      * @return string
      */
     private function decryptBankDetails($ciphertext)
     {
-        try {
-            $clearText = $this->kmsClient->decrypt([
-                'CiphertextBlob' => base64_decode($ciphertext)
-            ]);
+        $clearText = $this->kmsClient->decrypt([
+            'CiphertextBlob' => base64_decode($ciphertext)
+        ]);
 
-            return $clearText->get('Plaintext');
-        } catch (\Exception $e) {
-            // swallow exception so old style decryption will be used
-        }
-
-        // else fall back to old style encryption
-
-        $this->getLogger()->warn('RSA decryption still used');
-
-        return $this->bankCipher->decrypt($ciphertext);
+        return $clearText->get('Plaintext');
     }
 
     /**
