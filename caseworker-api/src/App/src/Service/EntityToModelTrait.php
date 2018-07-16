@@ -5,7 +5,6 @@ namespace App\Service;
 use App\Entity\AbstractEntity;
 use App\Exception\InvalidInputException;
 
-
 /**
  * Trait to assist with entity to model translation
  *

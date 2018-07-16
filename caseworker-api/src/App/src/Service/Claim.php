@@ -580,9 +580,7 @@ class Claim implements Initializer\LogSupportInterface
                     $message
                 );
             }
-
-
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->getLogger()->crit("Error processing Meris or Sirius data for claim {$claimId} - " . $e->getMessage());
         }
     }
@@ -641,7 +639,6 @@ class Claim implements Initializer\LogSupportInterface
 
                 // Attempt to pre-populate POA data
                 $this->addMerisAndSiriusPoaData($claimId, $userId);
-
             } elseif ($claim->getStatus() === ClaimModel::STATUS_IN_PROGRESS) {
                 // Reassignment
                 $message = "Claim has been reassigned from {$originalAssignedTo->getName()} to {$assignedTo->getName()}";
@@ -836,7 +833,7 @@ class Claim implements Initializer\LogSupportInterface
 
         if ($type === NoteModel::TYPE_USER) {
             $claimModel = $this->getClaimModel($userId, $claim);
-            
+
             $notes = $claimModel->getNotes();
 
             /** @var NoteModel $firstNote */

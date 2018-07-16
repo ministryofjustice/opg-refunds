@@ -502,7 +502,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
             ]);
 
             return $clearText->get('Plaintext');
-
         } catch (\Exception $e) {
             // swallow exception so old style decryption will be used
         }

@@ -1,11 +1,11 @@
 <?php
 
-$files = array(
+$files = [
     __DIR__ . '/../../vendor/autoload.php',
     __DIR__ . '/../../../autoload.php',
     __DIR__ . '/../../../../autoload.php',
     __DIR__ . '/../vendor/autoload.php',
-);
+];
 
 $found = false;
 foreach ($files as $file) {
@@ -62,9 +62,9 @@ $worker = $container->get(IngestionWorker::class);
 
 // Hook into system events
 declare(ticks = 1);
-pcntl_signal(SIGTERM, array($worker, 'stop'));
-pcntl_signal(SIGINT, array($worker, 'stop'));
-pcntl_signal(SIGQUIT, array($worker, 'stop'));
+pcntl_signal(SIGTERM, [$worker, 'stop']);
+pcntl_signal(SIGINT, [$worker, 'stop']);
+pcntl_signal(SIGQUIT, [$worker, 'stop']);
 
 cli\line('Ingestion daemon initialisation complete. Starting');
 
