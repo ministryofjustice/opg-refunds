@@ -1,6 +1,0 @@
-[template]
-src = "config_keys_public_full.pub.tmpl"
-dest = "/app/config/keys/public/everything.pub"
-keys = [
-    "/opg/refunds/public/front/full/key/public/data",
-]
