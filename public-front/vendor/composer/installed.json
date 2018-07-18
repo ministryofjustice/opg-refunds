@@ -4037,6 +4037,57 @@
         ]
     },
     {
+        "name": "zendframework/zend-expressive-migration",
+        "version": "0.1.3",
+        "version_normalized": "0.1.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/zendframework/zend-expressive-migration.git",
+            "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/zendframework/zend-expressive-migration/zipball/7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+            "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+            "shasum": ""
+        },
+        "require": {
+            "php": "^7.1",
+            "symfony/console": "^2.8 || ^3.0 || ^4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^7.0.2",
+            "zendframework/zend-coding-standard": "~1.0.0"
+        },
+        "time": "2018-03-20T21:10:35+00:00",
+        "bin": [
+            "bin/expressive-migration"
+        ],
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Zend\\Expressive\\Migration\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "description": "Migrate Expressive applications from v2 to v3",
+        "keywords": [
+            "ZendFramework",
+            "expressive",
+            "migration",
+            "zf"
+        ]
+    },
+    {
         "name": "zendframework/zend-expressive-platesrenderer",
         "version": "1.4.0",
         "version_normalized": "1.4.0.0",

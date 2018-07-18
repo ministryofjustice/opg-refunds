@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "58602a1c19213ec378dbf79479f8a7be",
+    "content-hash": "5eb8c91d16c5ea4d7ab936261188c839",
     "packages": [
         {
             "name": "alphagov/notifications-php-client",
@@ -4775,6 +4775,55 @@
                 "zf2"
             ],
             "time": "2018-04-25T15:33:34+00:00"
+        },
+        {
+            "name": "zendframework/zend-expressive-migration",
+            "version": "0.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/zendframework/zend-expressive-migration.git",
+                "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/zendframework/zend-expressive-migration/zipball/7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+                "reference": "7c5f697f7a53f03b204c2194f919d3d34e5701c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1",
+                "symfony/console": "^2.8 || ^3.0 || ^4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^7.0.2",
+                "zendframework/zend-coding-standard": "~1.0.0"
+            },
+            "bin": [
+                "bin/expressive-migration"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Zend\\Expressive\\Migration\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Migrate Expressive applications from v2 to v3",
+            "keywords": [
+                "ZendFramework",
+                "expressive",
+                "migration",
+                "zf"
+            ],
+            "time": "2018-03-20T21:10:35+00:00"
         },
         {
             "name": "zendframework/zend-expressive-tooling",
