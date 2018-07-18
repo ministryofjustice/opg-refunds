@@ -3,8 +3,8 @@ namespace App\Action;
 
 use App\Form;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use Zend\Diactoros\Response;
 
 use App\Service\Refund\FlowController;
@@ -20,7 +20,7 @@ class AccountDetailsAction extends AbstractAction
         $this->bankDetailsHandlerService = $bankDetailsHandlerService;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         if (!$this->isActionAccessible($request)) {
             return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));

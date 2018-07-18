@@ -2,6 +2,105 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 5.1.0 - 2018-06-05
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperFactory` to allow specifying both a string `$basePath` as well as a string `$routerServiceName`
+  to its constructor. This change allows having discrete factory instances for generating helpers
+  that use different router instances and/or which operate under path-segregated middleware.
+
+- [#62](https://github.com/zendframework/zend-expressive-helpers/pull/62) modifies the `UrlHelperMiddlewareFactory` to allow specifying a string `$urlHelperServiceName` to its constructor.
+  This change allows having discrete factory instances for generating URL helper middleware
+  that use different URL helper instances.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 5.0.1 - TBD
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 5.0.0 - 2018-03-15
+
+### Added
+
+- [#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
+  adds support for PSR-15 middleware.
+
+- [#57](https://github.com/zendframework/zend-expressive-helpers/pull/57)
+  adds `Zend\Expressive\Router\ZendRouter\ConfigProvider` and exposes it as a
+  config provider within the package definition.
+
+### Changed
+
+- [#51](https://github.com/zendframework/zend-expressive-helpers/pull/51)
+  changes a number of signatures to provide scalar type hints, return type hints,
+  and nullable types. Signatures with changes include:
+
+  - `Zend\Expressive\Helper\BodyParams\StrategyInterface`:
+    - The `match()` signature changes to `match(string $contentType) : bool`
+    - The `parse()` signature changes to `parse(ServerRequestInterface $request) : ServerRequestInterface`
+  - `Zend\Expressive\Helper\ServerUrlHelper` updates its public API to read as follows:
+    - `__invoke(string $path = null) : string`
+    - `generate(string $path = null) : string`
+    - `setUri(UriInterface $uri) : void`
+  - `Zend\Expressive\Helper\UrlHelper` updates its public API to read as follows:
+    - `__invoke(?string $routeName = null, array $routeParams = [], array $queryParams = [], ?string $fragmentIdentifier = null, array $options = []) : string`
+    - `generate(?string $routeName = null, array $routeParams = [], array $queryParams = [], ?string $fragmentIdentifier = null, array $options = []) : string`
+    - `setRouteResult(RouteResult $result) : void`
+    - `setBasePath(string $path) : void`
+    - `getRouteResult() : ?RouteResult`
+    - `getBasePath() : string`
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#50](https://github.com/zendframework/zend-expressive-helpers/pull/50)
+  removes support for PHP versions 5.6 and 7.0.
+
+- [#50](https://github.com/zendframework/zend-expressive-helpers/pull/50) and
+  [#55](https://github.com/zendframework/zend-expressive-helpers/pull/55)
+  remove support for http-interop/http-middleware of all versions.
+
+### Fixed
+
+- Nothing.
+
 ## 4.2.0 - 2017-10-09
 
 ### Added
@@ -182,7 +281,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - [#30](https://github.com/zendframework/zend-expressive-helpers/pull/30) Use
   new ZF coding standard
-- [#31](https://github.com/zendframework/zend-expressive-helpers/pull/32) Check
+- [#31](https://github.com/zendframework/zend-expressive-helpers/pull/31) Check
   to ensure 100% test coverage is retained
 
 ### Deprecated

@@ -2,8 +2,8 @@
 namespace App\Middleware\AssistedDigital;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
 use App\Service\Refund\AssistedDigital\LinkToken;
 
@@ -29,7 +29,7 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
         $this->plates = $plates;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : \Psr\Http\Message\ResponseInterface
     {
         $cookies = $request->getCookieParams();
 
@@ -56,6 +56,6 @@ class AssistedDigitalMiddleware implements ServerMiddlewareInterface
             'isDonorDeceased' => $isDonorDeceased
         ]);
 
-        return $delegate->process($request);
+        return $delegate->handle($request);
     }
 }

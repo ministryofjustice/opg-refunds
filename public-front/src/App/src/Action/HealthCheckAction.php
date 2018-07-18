@@ -5,14 +5,13 @@ use App;
 
 use Throwable;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Zend\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Interop\Container\ContainerInterface;
 
-class HealthCheckAction implements ServerMiddlewareInterface
+class HealthCheckAction implements RequestHandlerInterface
 {
 
     private $container;
@@ -24,7 +23,7 @@ class HealthCheckAction implements ServerMiddlewareInterface
         $this->config = $container->get('config');
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
 
         $result = [];

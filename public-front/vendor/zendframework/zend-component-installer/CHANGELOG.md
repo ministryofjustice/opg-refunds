@@ -2,6 +2,92 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 2.1.1 - 2018-03-21
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#54](https://github.com/zendframework/zend-component-installer/pull/54) fixes
+  issues when run with symfony/console v4 releases.
+
+## 2.1.0 - 2018-02-08
+
+### Added
+
+- [#52](https://github.com/zendframework/zend-component-installer/pull/52) adds
+  the ability to whitelist packages exposing config providers and/or modules.
+  When whitelisted, the installer will not prompt to inject configuration, but
+  instead do it automatically. This is done at the root package level, using the
+  following configuration:
+
+  ```json
+  "extra": {
+    "zf": {
+      "component-whitelist": [
+        "some/package"
+      ]
+    }
+  }
+  ```
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
+## 2.0.0 - 2018-02-06
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#49](https://github.com/zendframework/zend-component-installer/pull/49)
+  modifies the default options for installer prompts. If providers and/or
+  modules are discovered, the installer uses the first discovered as the default
+  option, instead of the "Do not inject" option. Additionally, the "remember
+  this selection" prompt now defaults to "y" instead of "n".
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#50](https://github.com/zendframework/zend-component-installer/pull/50)
+  removes support for PHP versions 5.6 and 7.0.
+
+### Fixed
+
+- Nothing.
+
 ## 1.1.1 - 2018-01-11
 
 ### Added
