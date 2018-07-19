@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Reporting as ReportingService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -27,10 +27,9 @@ class ReportingAction extends AbstractRestfulAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface|Response
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $reports = $this->reportingService->getAllReports();
 

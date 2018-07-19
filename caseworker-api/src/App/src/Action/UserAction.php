@@ -5,7 +5,7 @@ namespace App\Action;
 use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
 use App\Service\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
@@ -42,10 +42,9 @@ class UserAction extends AbstractRestfulAction
      * READ/GET index action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $userId = $request->getAttribute('id');
         $token = $request->getAttribute('token');
@@ -77,10 +76,9 @@ class UserAction extends AbstractRestfulAction
      * CREATE/POST add action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $user = new UserModel($request->getParsedBody());
 
@@ -93,10 +91,9 @@ class UserAction extends AbstractRestfulAction
      * UPDATE/PUT edit action - override in subclass if required
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         //  Get the user ID and refresh the set up token value
         $userId = $request->getAttribute('id');
@@ -110,11 +107,10 @@ class UserAction extends AbstractRestfulAction
      * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      * @throws InvalidInputException
      */
-    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function modifyAction(ServerRequestInterface $request)
     {
         $userId = $request->getAttribute('id');
         $token = $request->getAttribute('token');
@@ -156,10 +152,9 @@ class UserAction extends AbstractRestfulAction
      * DELETE/DELETE delete action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $userId = $request->getAttribute('id');
 

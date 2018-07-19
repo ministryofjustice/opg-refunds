@@ -4,13 +4,11 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
+class ComposerStaticInit4b748f9a15ee56e95601fee7fa919698
 {
     public static $files = array (
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        'aaf5b53a99b4de51dadc23016def253f' => __DIR__ . '/..' . '/webimpress/http-middleware-compatibility/autoload/http-middleware.php',
-        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'cf97c57bfe0f23854afd2f3818abb7a0' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/create_uploaded_file.php',
         '9bf37a3d0dad93e29cb4e1b1bfab04e9' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/marshal_headers_from_sapi.php',
         'ce70dccb4bcc2efc6e94d2ee526e6972' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/marshal_method_from_sapi.php',
@@ -19,16 +17,19 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         '0b0974a5566a1077e4f2e111341112c1' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_server.php',
         '1ca3bc274755662169f9629d5412a1da' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/normalize_uploaded_files.php',
         '40360c0b9b437e69bcbb7f1349ce029e' => __DIR__ . '/..' . '/zendframework/zend-diactoros/src/functions/parse_cookie_header.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'c0c684e103c597a31a3e514398f79ec1' => __DIR__ . '/..' . '/zendframework/zend-stratigility/src/functions/double-pass-middleware.php',
+        '968cb91a78f08ea033c0e1afe256c864' => __DIR__ . '/..' . '/zendframework/zend-stratigility/src/functions/host.php',
         '73f02b5e05532acfb968fa91193a3d17' => __DIR__ . '/..' . '/zendframework/zend-stratigility/src/functions/middleware.php',
         '7ba36b1c7d480f53d620df374623203a' => __DIR__ . '/..' . '/zendframework/zend-stratigility/src/functions/path.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'f0e119a83772115c43c01dd050fd77a8' => __DIR__ . '/..' . '/zendframework/zend-expressive/src/constants.php',
         'be01b9b16925dcb22165c40b46681ac6' => __DIR__ . '/..' . '/wp-cli/php-cli-tools/lib/cli/cli.php',
     );
 
@@ -45,9 +46,11 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
             'Zend\\Permissions\\Rbac\\' => 22,
             'Zend\\Math\\' => 10,
             'Zend\\Log\\' => 9,
+            'Zend\\HttpHandlerRunner\\' => 23,
             'Zend\\Expressive\\Tooling\\' => 24,
             'Zend\\Expressive\\Template\\' => 25,
             'Zend\\Expressive\\Router\\' => 23,
+            'Zend\\Expressive\\Migration\\' => 26,
             'Zend\\Expressive\\Helper\\' => 23,
             'Zend\\Expressive\\' => 16,
             'Zend\\EventManager\\' => 18,
@@ -64,7 +67,6 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         array (
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
-            'Webimpress\\ComposerExtraDependency\\' => 35,
         ),
         'S' => 
         array (
@@ -77,6 +79,7 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
+            'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'PhpOffice\\PhpSpreadsheet\\' => 25,
@@ -173,6 +176,10 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-log/src',
         ),
+        'Zend\\HttpHandlerRunner\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-httphandlerrunner/src',
+        ),
         'Zend\\Expressive\\Tooling\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-expressive-tooling/src',
@@ -185,6 +192,10 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-expressive-fastroute/src',
             1 => __DIR__ . '/..' . '/zendframework/zend-expressive-router/src',
+        ),
+        'Zend\\Expressive\\Migration\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-expressive-migration/src',
         ),
         'Zend\\Expressive\\Helper\\' => 
         array (
@@ -238,10 +249,6 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
-        'Webimpress\\ComposerExtraDependency\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/webimpress/composer-extra-dependency/src',
-        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -265,6 +272,11 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Psr\\Http\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-server-handler/src',
+            1 => __DIR__ . '/..' . '/psr/http-server-middleware/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -377,6 +389,9 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         'Doctrine\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
+            1 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
+            2 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
+            3 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
         ),
         'DeepCopy\\' => 
         array (
@@ -1078,20 +1093,21 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
         'PharIo\\Manifest\\RequiresElement' => __DIR__ . '/..' . '/phar-io/manifest/src/xml/RequiresElement.php',
         'PharIo\\Manifest\\Type' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Type.php',
         'PharIo\\Manifest\\Url' => __DIR__ . '/..' . '/phar-io/manifest/src/values/Url.php',
-        'PharIo\\Version\\AbstractVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/AbstractVersionConstraint.php',
-        'PharIo\\Version\\AndVersionConstraintGroup' => __DIR__ . '/..' . '/phar-io/version/src/AndVersionConstraintGroup.php',
-        'PharIo\\Version\\AnyVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/AnyVersionConstraint.php',
-        'PharIo\\Version\\ExactVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/ExactVersionConstraint.php',
-        'PharIo\\Version\\Exception' => __DIR__ . '/..' . '/phar-io/version/src/Exception.php',
-        'PharIo\\Version\\GreaterThanOrEqualToVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/GreaterThanOrEqualToVersionConstraint.php',
-        'PharIo\\Version\\InvalidVersionException' => __DIR__ . '/..' . '/phar-io/version/src/InvalidVersionException.php',
-        'PharIo\\Version\\OrVersionConstraintGroup' => __DIR__ . '/..' . '/phar-io/version/src/OrVersionConstraintGroup.php',
+        'PharIo\\Version\\AbstractVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/AbstractVersionConstraint.php',
+        'PharIo\\Version\\AndVersionConstraintGroup' => __DIR__ . '/..' . '/phar-io/version/src/constraints/AndVersionConstraintGroup.php',
+        'PharIo\\Version\\AnyVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/AnyVersionConstraint.php',
+        'PharIo\\Version\\ExactVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/ExactVersionConstraint.php',
+        'PharIo\\Version\\Exception' => __DIR__ . '/..' . '/phar-io/version/src/exceptions/Exception.php',
+        'PharIo\\Version\\GreaterThanOrEqualToVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/GreaterThanOrEqualToVersionConstraint.php',
+        'PharIo\\Version\\InvalidPreReleaseSuffixException' => __DIR__ . '/..' . '/phar-io/version/src/exceptions/InvalidPreReleaseSuffixException.php',
+        'PharIo\\Version\\InvalidVersionException' => __DIR__ . '/..' . '/phar-io/version/src/exceptions/InvalidVersionException.php',
+        'PharIo\\Version\\OrVersionConstraintGroup' => __DIR__ . '/..' . '/phar-io/version/src/constraints/OrVersionConstraintGroup.php',
         'PharIo\\Version\\PreReleaseSuffix' => __DIR__ . '/..' . '/phar-io/version/src/PreReleaseSuffix.php',
-        'PharIo\\Version\\SpecificMajorAndMinorVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/SpecificMajorAndMinorVersionConstraint.php',
-        'PharIo\\Version\\SpecificMajorVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/SpecificMajorVersionConstraint.php',
-        'PharIo\\Version\\UnsupportedVersionConstraintException' => __DIR__ . '/..' . '/phar-io/version/src/UnsupportedVersionConstraintException.php',
+        'PharIo\\Version\\SpecificMajorAndMinorVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/SpecificMajorAndMinorVersionConstraint.php',
+        'PharIo\\Version\\SpecificMajorVersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/SpecificMajorVersionConstraint.php',
+        'PharIo\\Version\\UnsupportedVersionConstraintException' => __DIR__ . '/..' . '/phar-io/version/src/exceptions/UnsupportedVersionConstraintException.php',
         'PharIo\\Version\\Version' => __DIR__ . '/..' . '/phar-io/version/src/Version.php',
-        'PharIo\\Version\\VersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraint.php',
+        'PharIo\\Version\\VersionConstraint' => __DIR__ . '/..' . '/phar-io/version/src/constraints/VersionConstraint.php',
         'PharIo\\Version\\VersionConstraintParser' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintParser.php',
         'PharIo\\Version\\VersionConstraintValue' => __DIR__ . '/..' . '/phar-io/version/src/VersionConstraintValue.php',
         'PharIo\\Version\\VersionNumber' => __DIR__ . '/..' . '/phar-io/version/src/VersionNumber.php',
@@ -1311,10 +1327,10 @@ class ComposerStaticInit39d23f8970aa528cb903255261c14b1b
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit39d23f8970aa528cb903255261c14b1b::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit39d23f8970aa528cb903255261c14b1b::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit39d23f8970aa528cb903255261c14b1b::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit39d23f8970aa528cb903255261c14b1b::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4b748f9a15ee56e95601fee7fa919698::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4b748f9a15ee56e95601fee7fa919698::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4b748f9a15ee56e95601fee7fa919698::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4b748f9a15ee56e95601fee7fa919698::$classMap;
 
         }, null, ClassLoader::class);
     }

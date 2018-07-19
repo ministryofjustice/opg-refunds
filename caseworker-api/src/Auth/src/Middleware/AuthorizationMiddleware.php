@@ -7,8 +7,8 @@ use App\Exception\InvalidInputException;
 use App\Exception\NotFoundException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\Authentication as AuthenticationService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -50,7 +50,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      * @throws Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $user = null;
         $role = 'guest';
@@ -84,7 +84,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
 
         //  Check that the role is allowed to access the requested route
         if ($this->rbac->hasRole($role) && $this->rbac->isGranted($role, $routeName)) {
-            return $delegate->process(
+            return $delegate->handle(
                 $request->withAttribute('identity', $user)
             );
         }

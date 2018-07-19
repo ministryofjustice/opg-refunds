@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,11 +29,10 @@ class ClaimPoaAction extends AbstractRestfulAction
      * READ/GET index action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claimId = $request->getAttribute('claimId');
 
@@ -67,10 +66,9 @@ class ClaimPoaAction extends AbstractRestfulAction
      * CREATE/POST add action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $requestBody = $request->getParsedBody();
         $poaModel = new PoaModel($requestBody);
@@ -88,10 +86,9 @@ class ClaimPoaAction extends AbstractRestfulAction
      * UPDATE/PUT edit action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         $requestBody = $request->getParsedBody();
         $poaModel = new PoaModel($requestBody);
@@ -110,10 +107,9 @@ class ClaimPoaAction extends AbstractRestfulAction
      * DELETE/DELETE delete action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $claimId = $request->getAttribute('claimId');
         $poaId = $request->getAttribute('id');

@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Notify as NotifyService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -37,10 +37,9 @@ class NotifyAction extends AbstractRestfulAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $identity = $request->getAttribute('identity');
 

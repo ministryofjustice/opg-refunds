@@ -7,7 +7,7 @@ use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\ISpreadsheetWorksheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use DateTime;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -51,10 +51,9 @@ class SpreadsheetAction extends AbstractRestfulAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface|Response
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $dateString = $request->getAttribute('date');
 
@@ -104,10 +103,9 @@ class SpreadsheetAction extends AbstractRestfulAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface|Response
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         // Retrieve spreadsheet file
         $worksheetData = $this->spreadsheetGenerator->getWorksheetData($request->getBody());
