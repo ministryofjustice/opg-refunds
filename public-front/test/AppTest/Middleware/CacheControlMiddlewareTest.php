@@ -96,33 +96,6 @@ class CacheControlMiddlewareTest extends TestCase
     }
 
     /**
-     * Tests that if no (null) Response is returned form the delegate,
-     * that we don't attempt to apply any headers.
-     */
-    public function testWithoutResponse()
-    {
-        $this->markTestIncomplete(
-            'This test may no longer be needed.'
-        );
-        return;
-
-        $middleware = new CacheControlMiddleware();
-
-        $this->routeResult->getMatchedRouteName()->willReturn( 'eligibility.test' );
-
-        $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
-
-        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(null);
-
-        $response = $middleware->process(
-            $this->request->reveal(),
-            $this->delegateInterface->reveal()
-        );
-
-        $this->assertNull($response);
-    }
-
-    /**
      * Ensure we only add headers to pages who's route name starts with 'eligibility.'.
      */
     public function testWithoutEligibilityPrefix()
