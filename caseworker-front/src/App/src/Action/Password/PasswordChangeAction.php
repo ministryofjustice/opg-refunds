@@ -6,7 +6,7 @@ use Api\Exception\ApiException;
 use App\Action\AbstractAction;
 use App\Form\SetPassword;
 use App\Service\User\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -39,7 +39,7 @@ class PasswordChangeAction extends AbstractAction
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         /** @var User $user */
         $user = $request->getAttribute('identity');

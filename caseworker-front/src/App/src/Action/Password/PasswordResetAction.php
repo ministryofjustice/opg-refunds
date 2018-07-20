@@ -7,7 +7,7 @@ use App\Action\AbstractAction;
 use App\Form\ResetPassword;
 use App\Service\User\User as UserService;
 use Alphagov\Notifications\Client as NotifyClient;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response;
@@ -42,7 +42,7 @@ class PasswordResetAction extends AbstractAction
      * @param DelegateInterface $delegate
      * @return Response\HtmlResponse|Response\RedirectResponse
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $identity = $request->getAttribute('identity');
 

@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 1.8.2 - 2018-07-19
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#318](https://github.com/zendframework/zend-diactoros/pull/318) fixes the logic for discovering whether an HTTPS scheme is in play
+  to be case insensitive when comparing header and SAPI values, ensuring no
+  false negative lookups occur.
+
+- [#314](https://github.com/zendframework/zend-diactoros/pull/314) modifies error handling around opening a file resource within
+  `Zend\Diactoros\Stream::setStream()` to no longer use the second argument to
+  `set_error_handler()`, and instead check the error type in the handler itself;
+  this fixes an issue when the handler is nested inside another error handler,
+  which currently has buggy behavior within the PHP engine.
+
+## 1.8.1 - 2018-07-09
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- [#313](https://github.com/zendframework/zend-diactoros/pull/313) changes the reason phrase associated with the status code 425
+  to "Too Early", corresponding to a new definition of the code as specified by the IANA.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#312](https://github.com/zendframework/zend-diactoros/pull/312) fixes how the `normalizeUploadedFiles()` utility function handles nested trees of
+  uploaded files, ensuring it detects them properly.
+
 ## 1.8.0 - 2018-06-27
 
 ### Added

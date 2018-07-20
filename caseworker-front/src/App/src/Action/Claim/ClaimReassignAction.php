@@ -6,7 +6,7 @@ use App\Form\AbstractForm;
 use App\Form\ClaimReassign;
 use App\Service\Claim\Claim as ClaimService;
 use App\Service\User\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;

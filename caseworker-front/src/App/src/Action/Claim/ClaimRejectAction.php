@@ -7,7 +7,7 @@ use App\Form\AbstractForm;
 use App\Form\ClaimReject;
 use App\Service\Claim\Claim as ClaimService;
 use App\View\Details\DetailsFormatterPlatesExtension;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\RejectionReasonsFormatter;
 use Psr\Http\Message\ServerRequestInterface;

@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Service\Refund\Refund as RefundService;
 use DateTime;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -34,7 +34,7 @@ class DownloadAction extends AbstractAction
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $dateString = $request->getAttribute('date');
         $date = $dateString === null ? new DateTime('today') : new DateTime($dateString);

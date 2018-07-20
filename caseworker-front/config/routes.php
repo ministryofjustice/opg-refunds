@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Setup routes with a single request method:
  *
@@ -27,6 +29,11 @@
  */
 
 //  Unauthenticated routes
+return function (
+    \Zend\Expressive\Application $app,
+    \Zend\Expressive\MiddlewareFactory $factory,
+    \Psr\Container\ContainerInterface $container
+) : void {
 $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->route('/reset-password', App\Action\Password\PasswordResetAction::class, ['GET', 'POST'], 'password.reset');
@@ -59,3 +66,4 @@ $app->route('/claim/{claimId:\d+}/notified', App\Action\Claim\ConfirmNotifiedAct
 $app->route('/claim/{claimId:\d+}/contact-details', App\Action\Claim\ClaimContactDetailsAction::class, ['GET', 'POST'], 'claim.contact.details');
 $app->route('/phone-claim', App\Action\PhoneClaimAction::class, ['GET', 'POST'], 'phone-claim');
 $app->route('/notify', App\Action\NotifyAction::class, ['GET', 'POST'], 'notify');
+};

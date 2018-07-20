@@ -4,7 +4,7 @@ namespace App\Action\Claim;
 
 use App\Service\Claim\Claim as ClaimService;
 use App\Action\AbstractAction;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -34,7 +34,7 @@ class ClaimSearchDownloadAction extends AbstractAction
      * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $searchParameters = $request->getQueryParams();
 

@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Form\Verify as VerifyForm;
 use App\Service\Refund\Refund as RefundService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 

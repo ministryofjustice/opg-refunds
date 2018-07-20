@@ -8,7 +8,7 @@ use App\Form\ConfirmNotified;
 use App\Service\Claim\Claim as ClaimService;
 use App\View\Details\DetailsFormatterPlatesExtension;
 use App\View\Poa\PoaFormatterPlatesExtension;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;

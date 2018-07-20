@@ -7,7 +7,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Expressive\Helper\UrlHelper;
 use Zend\Permissions\Rbac\Rbac;
 use Exception;
-use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Handler\NotFoundHandler;
 
 /**
  * Class AuthorizationMiddlewareFactory
@@ -55,7 +55,7 @@ class AuthorizationMiddlewareFactory
             $authenticationService,
             $urlHelper,
             $rbac,
-            $container->get(NotFoundDelegate::class)
+            $container->get(NotFoundHandler::class)
         );
     }
 }

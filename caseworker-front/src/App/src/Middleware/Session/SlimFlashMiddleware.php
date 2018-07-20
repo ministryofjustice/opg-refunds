@@ -2,8 +2,8 @@
 
 namespace App\Middleware\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
@@ -26,7 +26,7 @@ class SlimFlashMiddleware implements ServerMiddlewareInterface
      *
      * @return ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $session = $request->getAttribute('session');
 
@@ -34,7 +34,7 @@ class SlimFlashMiddleware implements ServerMiddlewareInterface
             throw new UnexpectedValueException('Session required');
         }
 
-        return $delegate->process(
+        return $delegate->handle(
             $request->withAttribute('flash', new Messages())
         );
     }

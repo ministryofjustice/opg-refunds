@@ -6,7 +6,7 @@ use App\Form\SignIn;
 use App\Service\Authentication\Result;
 use App\Service\User\User as UserService;
 use Alphagov\Notifications\Client as NotifyClient;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
 use Zend\Diactoros\Response;
@@ -51,10 +51,9 @@ class SignInAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return Response\HtmlResponse|Response\RedirectResponse
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         if ($this->authService->hasIdentity()) {
             return $this->redirectToRoute('home');

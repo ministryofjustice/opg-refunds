@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Refund\Refund as RefundService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -28,7 +28,7 @@ class RefundAction extends AbstractAction
      * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $historicRefundDates = $this->refundService->getHistoricRefundDates();
 

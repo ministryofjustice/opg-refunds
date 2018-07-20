@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use Fig\Http\Message\RequestMethodInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Exception;
 
@@ -24,7 +24,7 @@ abstract class AbstractModelAction extends AbstractAction
      * @return mixed
      * @throws Exception
      */
-    final public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    final public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         //  Using the route action and the request method map to a specific action function
         $method = $request->getMethod();
