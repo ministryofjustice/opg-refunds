@@ -4,7 +4,7 @@ namespace AppTest\Middleware\Session;
 use Prophecy\Argument;
 use PHPUnit\Framework\TestCase;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -35,7 +35,7 @@ class SessionMiddlewareTest extends TestCase
             $this->prophesize(ServerRequestInterface::class)->reveal()
         );
 
-        $this->delegateInterface->process( Argument::type(ServerRequestInterface::class) )->willReturn(
+        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(
             new RealResponse
         );
 

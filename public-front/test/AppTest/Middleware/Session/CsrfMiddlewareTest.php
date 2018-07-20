@@ -3,10 +3,13 @@ namespace AppTest\Middleware\Session;
 
 use ArrayObject;
 
+use Prophecy\Argument;
+
 use PHPUnit\Framework\TestCase;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 use App\Middleware\Session\CsrfMiddleware;
 
@@ -20,6 +23,10 @@ class CsrfMiddlewareTest extends TestCase
     {
         $this->request = $this->prophesize(ServerRequestInterface::class);
         $this->delegateInterface = $this->prophesize(DelegateInterface::class);
+
+        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(
+            $this->prophesize(ResponseInterface::class)->reveal()
+        );
     }
 
     public function testCanInstantiate()
