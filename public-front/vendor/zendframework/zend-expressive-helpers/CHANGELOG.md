@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 5.1.2 - 2018-07-26
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#66](https://github.com/zendframework/zend-expressive-helpers/pull/66) updates the `Content-Type` header matching to be more robust, preventing invalid matches.
+
+## 5.1.1 - 2018-07-25
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#64](https://github.com/zendframework/zend-expressive-helpers/pull/64) prevents an unnecessary `json_decode()` call when the request contains
+  no body or an empty body.
+
 ## 5.1.0 - 2018-06-05
 
 ### Added

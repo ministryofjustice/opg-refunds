@@ -27,9 +27,7 @@ class JsonStrategy implements StrategyInterface
 {
     public function match(string $contentType) : bool
     {
-        $parts = explode(';', $contentType);
-        $mime = array_shift($parts);
-        return (bool) preg_match('#[/+]json$#', trim($mime));
+        return 1 === preg_match('#^application/(|[\S]+\+)json($|[ ;])#', $contentType);
     }
 
     /**
@@ -40,9 +38,16 @@ class JsonStrategy implements StrategyInterface
     public function parse(ServerRequestInterface $request) : ServerRequestInterface
     {
         $rawBody = (string) $request->getBody();
+
+        if (empty($rawBody)) {
+            return $request
+                ->withAttribute('rawBody', $rawBody)
+                ->withParsedBody(null);
+        }
+
         $parsedBody = json_decode($rawBody, true);
 
-        if (! empty($rawBody) && json_last_error() !== JSON_ERROR_NONE) {
+        if (json_last_error() !== JSON_ERROR_NONE) {
             throw new MalformedRequestBodyException(sprintf(
                 'Error when parsing JSON request body: %s',
                 json_last_error_msg()
