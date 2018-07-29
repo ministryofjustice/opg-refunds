@@ -19,11 +19,10 @@ class PoaDeleteAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 
@@ -47,11 +46,10 @@ class PoaDeleteAction extends AbstractPoaAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 

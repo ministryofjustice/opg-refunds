@@ -42,7 +42,6 @@ class ClaimSearchAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|RedirectResponse
      */
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface

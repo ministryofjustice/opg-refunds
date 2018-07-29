@@ -39,7 +39,6 @@ class PasswordResetAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return Response\HtmlResponse|Response\RedirectResponse
      */
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface

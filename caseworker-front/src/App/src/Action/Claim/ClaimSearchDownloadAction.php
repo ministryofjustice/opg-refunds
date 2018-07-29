@@ -31,7 +31,6 @@ class ClaimSearchDownloadAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface

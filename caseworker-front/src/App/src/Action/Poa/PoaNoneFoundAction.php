@@ -18,11 +18,10 @@ class PoaNoneFoundAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 

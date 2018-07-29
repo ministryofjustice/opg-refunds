@@ -25,7 +25,6 @@ class RefundAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface

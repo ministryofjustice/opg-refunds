@@ -30,7 +30,6 @@ class DownloadAction extends AbstractAction
      * to the next middleware component to create the response.
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
