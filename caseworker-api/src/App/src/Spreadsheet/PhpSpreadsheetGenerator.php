@@ -55,6 +55,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
      * @param string $fileName The desired name of the generated spreadsheet file
      * @param SpreadsheetWorksheet $spreadsheetWorksheet the data to be written to the spreadsheet
      * @return string full path of the generated spreadsheet file
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function generateFile(
         string $schema,
@@ -84,14 +86,20 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
 
             $rowStart = microtime(true);
 
+            $maxColumnIndex = 34;
             foreach ($spreadsheetWorksheet->getRows() as $row) {
                 $start = microtime(true);
 
                 foreach ($row->getCells() as $cell) {
+                    $maxColumnIndex = max($cell->getColumn() + 1, $maxColumnIndex);
                     $dataSheet->setCellValueByColumnAndRow($cell->getColumn() + 1, $cell->getRow(), $cell->getData());
                 }
 
                 $this->getLogger()->debug('Spreadsheet row set in ' . $this->getElapsedTimeInMs($start) . 'ms');
+            }
+
+            for ($i = 1; $i <= $maxColumnIndex; $i++) {
+                $dataSheet->getColumnDimensionByColumn($i)->setAutoSize(true);
             }
 
             $this->getLogger()->debug('All spreadsheet rows set in ' . $this->getElapsedTimeInMs($rowStart) . 'ms');
@@ -116,6 +124,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
      * @param string $fileFormat The file format of the resulting stream e.g. XLS
      * @param SpreadsheetWorksheet $spreadsheetWorksheet the data to be written to the spreadsheet
      * @return bool|resource a file pointer resource on success, or false on error.
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function generateStream(
         string $schema,
@@ -182,6 +192,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
      * @param ClaimSummary[] $claimSummaries
      * @param array $queryParameters
      * @return bool|resource a file pointer resource on success, or false on error.
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function getClaimSearchStream(string $fileFormat, array $claimSummaries, array $queryParameters)
     {
@@ -278,6 +290,12 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
         return $handle;
     }
 
+    /**
+     * @param Worksheet $worksheet
+     * @param string $coordinate
+     * @param $dateTime
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
     private function setCellDateTime(Worksheet $worksheet, string $coordinate, $dateTime)
     {
         if ($dateTime instanceof \DateTime) {
