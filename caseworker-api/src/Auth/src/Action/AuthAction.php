@@ -5,8 +5,7 @@ namespace Auth\Action;
 use App\Exception\InvalidInputException;
 use Auth\Exception\UnauthorizedException;
 use Auth\Service\Authentication;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -16,7 +15,7 @@ use Opg\Refunds\Log\Initializer;
  * Class AuthAction
  * @package Auth\Action
  */
-class AuthAction implements ServerMiddlewareInterface, Initializer\LogSupportInterface
+class AuthAction implements RequestHandlerInterface, Initializer\LogSupportInterface
 {
     use Initializer\LogSupportTrait;
 
@@ -37,11 +36,10 @@ class AuthAction implements ServerMiddlewareInterface, Initializer\LogSupportInt
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return JsonResponse
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws UnauthorizedException
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $requestBody = $request->getParsedBody();
 

@@ -4,8 +4,8 @@ namespace App\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
 class CacheControlMiddleware implements ServerMiddlewareInterface
 {
@@ -26,10 +26,10 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
         'eligibility.donor.deceased',
     ];
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
 
-        $response = $delegate->process($request);
+        $response = $delegate->handle($request);
 
         $route = $request->getAttribute('Zend\Expressive\Router\RouteResult');
 

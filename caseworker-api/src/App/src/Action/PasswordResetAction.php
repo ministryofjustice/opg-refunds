@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Exception\InvalidInputException;
 use App\Service\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
 
@@ -33,11 +33,10 @@ class PasswordResetAction extends AbstractRestfulAction
      * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      * @throws InvalidInputException
      */
-    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function modifyAction(ServerRequestInterface $request)
     {
         $requestBody = $request->getParsedBody();
 

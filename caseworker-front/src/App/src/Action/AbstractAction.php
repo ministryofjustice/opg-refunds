@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response;
@@ -12,7 +12,7 @@ use Zend\Diactoros\Response;
  * @package App\Action
  */
 abstract class AbstractAction implements
-    ServerMiddlewareInterface,
+    RequestHandlerInterface,
     Initializers\UrlHelperInterface,
     Initializers\TemplatingSupportInterface
 {

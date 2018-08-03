@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 use Zend\Expressive\Helper\ServerUrlMiddleware;
 use Zend\Expressive\Helper\UrlHelperMiddleware;
 use Zend\Expressive\Router\Middleware\DispatchMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
 use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
 use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Expressive\Middleware\NotFoundHandler;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Stratigility\Middleware\ErrorHandler;
 
 /**
@@ -17,6 +19,11 @@ use Zend\Stratigility\Middleware\ErrorHandler;
 
 // The error handler should be the first (most outer) middleware to catch
 // all Exceptions.
+return function (
+    \Zend\Expressive\Application $app,
+    \Zend\Expressive\MiddlewareFactory $factory,
+    \Psr\Container\ContainerInterface $container
+) : void {
 $app->pipe(ErrorHandler::class);
 $app->pipe(ServerUrlMiddleware::class);
 
@@ -41,6 +48,7 @@ $app->pipe(ServerUrlMiddleware::class);
 $app->pipe(RouteMiddleware::class);
 $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
+$app->pipe(\Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);
 $app->pipe(UrlHelperMiddleware::class);
 
 // Apply caching headers to non-personalised responses
@@ -71,3 +79,4 @@ $app->pipe(DispatchMiddleware::class);
 // NotFoundHandler kicks in; alternately, you can provide other fallback
 // middleware to execute.
 $app->pipe(NotFoundHandler::class);
+};

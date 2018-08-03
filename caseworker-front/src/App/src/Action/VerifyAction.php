@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Form\Verify as VerifyForm;
 use App\Service\Refund\Refund as RefundService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 
@@ -26,10 +26,9 @@ class VerifyAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $form = $this->getForm($request);
 
@@ -41,10 +40,9 @@ class VerifyAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $form = $this->getForm($request);
 

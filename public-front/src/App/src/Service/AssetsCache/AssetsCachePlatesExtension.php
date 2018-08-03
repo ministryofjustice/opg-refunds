@@ -27,7 +27,6 @@ class AssetsCachePlatesExtension implements ExtensionInterface
 
     public function amendUrl(string $path)
     {
-        return str_replace( '/assets/', "/assets/{$this->cacheToken}/", $path );
+        return str_replace('/assets/', "/assets/{$this->cacheToken}/", $path);
     }
-
 }

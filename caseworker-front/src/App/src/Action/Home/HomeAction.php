@@ -6,7 +6,7 @@ use App\Action\AbstractAction;
 use App\Form\PhoneClaim;
 use App\Form\ProcessNewClaim;
 use App\Service\User\User as UserService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -34,10 +34,9 @@ class HomeAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|RedirectResponse
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         /** @var User $identity */
         $identity = $request->getAttribute('identity');

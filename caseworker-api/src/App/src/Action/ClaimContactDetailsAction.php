@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,10 +29,9 @@ class ClaimContactDetailsAction extends AbstractRestfulAction
      * UPDATE/PUT edit action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         $requestBody = $request->getParsedBody();
         $contactDetailsModel = new ContactDetailsModel($requestBody);

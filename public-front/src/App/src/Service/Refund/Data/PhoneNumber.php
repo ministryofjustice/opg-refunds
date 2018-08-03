@@ -28,5 +28,4 @@ class PhoneNumber
     {
         return (bool)preg_match('/^07/', $this->number) && !preg_match('/^070/', $this->number);
     }
-
 }

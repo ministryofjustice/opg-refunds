@@ -1,14 +1,13 @@
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
 
 class StartRedirectAction extends AbstractAction
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         return new Response\RedirectResponse($this->getUrlHelper()->generate('eligibility.when'));
     }

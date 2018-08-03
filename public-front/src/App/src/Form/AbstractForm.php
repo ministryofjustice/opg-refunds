@@ -85,7 +85,8 @@ class AbstractForm extends ZendForm
      *
      * @return string
      */
-    public function getNotes(){
+    public function getNotes()
+    {
         $data = parent::getData(FormInterface::VALUES_NORMALIZED);
         return ($data['notes']) ?? '';
     }

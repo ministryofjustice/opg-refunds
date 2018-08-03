@@ -22,5 +22,4 @@ class AssistedDigitalMiddlewareFactory
             $container->get(PlatesEngine::class)
         );
     }
-
 }

@@ -16,5 +16,4 @@ class AssetsCachePlatesExtensionFactory
 
         return new AssetsCachePlatesExtension($config['version']['cache']);
     }
-
 }

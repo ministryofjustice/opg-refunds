@@ -119,7 +119,7 @@ class ContactDetails extends AbstractForm
         $this->addCaseworkerNotesElement($inputFilter);
     }
 
-    public function setData($data = array())
+    public function setData($data = [])
     {
         // If at least one field is passed, enter a value into the 'one-field-required' check.
         $allFieldsEmpty = empty($data['email']) && empty($data['phone']);
@@ -136,7 +136,7 @@ class ContactDetails extends AbstractForm
     {
         return (new Callback(function ($value) {
 
-            if (!preg_match('/^[+]?[0-9]+$/', $value)){
+            if (!preg_match('/^[+]?[0-9]+$/', $value)) {
                 return false;
             }
 

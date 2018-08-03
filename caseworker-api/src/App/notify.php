@@ -1,11 +1,11 @@
 <?php
 
-$files = array(
+$files = [
     __DIR__ . '/../../vendor/autoload.php',
     __DIR__ . '/../../../autoload.php',
     __DIR__ . '/../../../../autoload.php',
     __DIR__ . '/../vendor/autoload.php',
-);
+];
 
 $found = false;
 foreach ($files as $file) {

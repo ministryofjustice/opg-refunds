@@ -29,5 +29,4 @@ class TemplateConfigInjectionPlatesExtension implements ExtensionInterface
             return $config;
         });
     }
-
 }

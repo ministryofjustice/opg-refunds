@@ -4,7 +4,6 @@ namespace App\Action;
 
 use App\Exception\InvalidInputException;
 use App\Service\Claim as ClaimService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ResponseInterface;
@@ -35,10 +34,9 @@ class ClaimAction extends AbstractRestfulAction implements Initializer\LogSuppor
      * READ/GET index action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return JsonResponse
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claimId = $request->getAttribute('id');
 
@@ -59,11 +57,10 @@ class ClaimAction extends AbstractRestfulAction implements Initializer\LogSuppor
      * MODIFY/PATCH modify action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      * @throws InvalidInputException
      */
-    public function modifyAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function modifyAction(ServerRequestInterface $request)
     {
         $claimId = $request->getAttribute('id');
 

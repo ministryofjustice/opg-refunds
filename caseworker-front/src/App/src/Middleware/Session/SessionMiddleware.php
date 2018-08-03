@@ -2,8 +2,8 @@
 
 namespace App\Middleware\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Session\SessionManager;
@@ -36,12 +36,12 @@ class SessionMiddleware implements ServerMiddlewareInterface
      * @param DelegateInterface $delegate
      * @return ResponseInterface|static
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         //  Pass the session storage in the request for convenience
         $session = $this->sessionManager->getStorage();
 
-        return $delegate->process(
+        return $delegate->handle(
             $request->withAttribute('session', $session)
         );
     }

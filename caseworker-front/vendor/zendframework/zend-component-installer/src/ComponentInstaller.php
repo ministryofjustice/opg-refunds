@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-component-installer for the canonical source repository
- * @copyright Copyright (c) 2015-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright Copyright (c) 2015-2018 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   https://github.com/zendframework/zend-component-installer/blob/master/LICENSE.md New BSD License
  */
 
@@ -18,7 +18,6 @@ use DirectoryIterator;
 use Zend\ComponentInstaller\Injector\AbstractInjector;
 use Zend\ComponentInstaller\Injector\ConfigInjectorChain;
 use Zend\ComponentInstaller\Injector\InjectorInterface;
-use Zend\ComponentInstaller\Injector\NoopInjector;
 
 /**
  * If a package represents a component module, update the application configuration.
@@ -191,8 +190,12 @@ class ComponentInstaller implements
             ->each(function ($module) use ($name) {
             })
             // Create injectors
-            ->reduce(function ($injectors, $module) use ($options, $packageTypes) {
-                $injectors[$module] = $this->promptForConfigOption($module, $options, $packageTypes[$module]);
+            ->reduce(function ($injectors, $module) use ($options, $packageTypes, $name) {
+                // Get extra from root package
+                $rootExtra = $this->getExtraMetadata($this->composer->getPackage()->getExtra());
+                $whitelist = $rootExtra['component-whitelist'] ?? [];
+                $packageType = $packageTypes[$module];
+                $injectors[$module] = $this->promptForConfigOption($module, $options, $packageType, $name, $whitelist);
                 return $injectors;
             }, new Collection([]))
             // Inject modules into configuration
@@ -407,14 +410,28 @@ class ComponentInstaller implements
      * @param string $name
      * @param Collection $options
      * @param int $packageType
+     * @param string $packageName
+     * @param array $whitelist
      * @return Injector\InjectorInterface
      */
-    private function promptForConfigOption($name, Collection $options, $packageType)
-    {
+    private function promptForConfigOption(
+        string $name,
+        Collection $options,
+        int $packageType,
+        string $packageName,
+        array $whitelist
+    ) {
         if ($cachedInjector = $this->getCachedInjector($packageType)) {
             return $cachedInjector;
         }
 
+        // If package is whitelisted, don't ask...
+        if (in_array($packageName, $whitelist, true)) {
+            return $options[1]->getInjector();
+        }
+
+        // Default to first discovered option; index 0 is always "Do not inject"
+        $default = $options->count() > 1 ? 1 : 0;
         $ask = $options->reduce(function ($ask, $option, $index) {
             $ask[] = sprintf(
                 "  [<comment>%d</comment>] %s\n",
@@ -428,10 +445,10 @@ class ComponentInstaller implements
             "\n  <question>Please select which config file you wish to inject '%s' into:</question>\n",
             $name
         ));
-        $ask[] = '  Make your selection (default is <comment>0</comment>):';
+        $ask[] = sprintf('  Make your selection (default is <comment>%d</comment>):', $default);
 
         while (true) {
-            $answer = $this->io->ask($ask, 0);
+            $answer = $this->io->ask(implode($ask), $default);
 
             if (is_numeric($answer) && isset($options[(int) $answer])) {
                 $injector = $options[(int) $answer]->getInjector();
@@ -453,10 +470,10 @@ class ComponentInstaller implements
      */
     private function promptToRememberOption(Injector\InjectorInterface $injector, $packageType)
     {
-        $ask = ["\n  <question>Remember this option for other packages of the same type? (y/N)</question>"];
+        $ask = ["\n  <question>Remember this option for other packages of the same type? (Y/n)</question>"];
 
         while (true) {
-            $answer = strtolower($this->io->ask($ask, 'n'));
+            $answer = strtolower($this->io->ask(implode($ask), 'y'));
 
             switch ($answer) {
                 case 'y':
@@ -481,7 +498,7 @@ class ComponentInstaller implements
      */
     private function injectModuleIntoConfig($package, $module, Injector\InjectorInterface $injector, $packageType)
     {
-        $this->io->write(sprintf('<info>Installing %s from package %s</info>', $module, $package));
+        $this->io->write(sprintf('<info>    Installing %s from package %s</info>', $module, $package));
 
         try {
             if (! $injector->inject($module, $packageType)) {
@@ -540,7 +557,7 @@ class ComponentInstaller implements
     private function removeModuleFromConfig($module, $package, Collection $injectors)
     {
         $injectors->each(function (InjectorInterface $injector) use ($module, $package) {
-            $this->io->write(sprintf('<info>Removing %s from package %s</info>', $module, $package));
+            $this->io->write(sprintf('<info>    Removing %s from package %s</info>', $module, $package));
 
             if ($injector->remove($module)) {
                 $this->io->write(sprintf(
