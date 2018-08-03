@@ -2,7 +2,7 @@
 
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
 use Zend\Session\SessionManager;
@@ -37,10 +37,9 @@ class SignOutAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
-     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @return \Psr\Http\Message\ResponseInterface
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         if ($this->authService->hasIdentity()) {
             //  Clear the identity

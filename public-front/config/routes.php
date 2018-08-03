@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Setup routes with a single request method:
  *
@@ -27,6 +29,11 @@
  */
 
 //Assisted digital entry point
+return function (
+    \Zend\Expressive\Application $app,
+    \Zend\Expressive\MiddlewareFactory $factory,
+    \Psr\Container\ContainerInterface $container
+) : void {
 $app->get('/assisted-digital/{token}', App\Action\AssistedDigitalAction::class, 'ad');
 
 //---
@@ -68,3 +75,4 @@ $app->route($prefix.'/contact-address', App\Action\ContactDetailsAssistedDigital
 $app->route($prefix.'/account-details', App\Action\AccountDetailsAction::class, ['GET', 'POST'], 'apply.account');
 $app->route($prefix.'/summary', App\Action\SummaryAction::class, ['GET', 'POST'], 'apply.summary');
 $app->route($prefix.'/done', App\Action\DoneAction::class, ['GET'], 'apply.done');
+};

@@ -3,13 +3,13 @@
 namespace App\Middleware\Authorization;
 
 use Api\Exception\ApiException;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Authentication\AuthenticationService;
-use Zend\Expressive\Delegate\NotFoundDelegate;
+use Zend\Expressive\Handler\NotFoundHandler;
 use Zend\Diactoros\Response\RedirectResponse;
 use Zend\Expressive\Helper\UrlHelper;
 use Zend\Expressive\Router\RouteResult;
@@ -38,7 +38,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
     private $rbac;
 
     /**
-     * @var NotFoundDelegate
+     * @var NotFoundHandler
      */
     private $notFoundDelegate;
 
@@ -48,16 +48,16 @@ class AuthorizationMiddleware implements MiddlewareInterface
      *
      * @param AuthenticationService $authService
      * @param UrlHelper $urlHelper
-     * @param NotFoundDelegate $notFoundDelegate
+     * @param NotFoundHandler $notFoundDelegate
      * @param Rbac $rbac
      */
     public function __construct(
         AuthenticationService $authService,
         UrlHelper $urlHelper,
         Rbac $rbac,
-        NotFoundDelegate $notFoundDelegate
-    )
-    {
+        NotFoundHandler $notFoundDelegate
+    ) {
+
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;
@@ -70,7 +70,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      * @throws Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $identity = $this->authService->getIdentity();
 
@@ -91,7 +91,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
             if ($this->rbac->hasRole($role) && $this->rbac->isGranted($role, $routeName)) {
                 //  Catch any unauthorized exceptions and trigger a sign out if required
                 try {
-                    return $delegate->process(
+                    return $delegate->handle(
                         $request->withAttribute('identity', $identity)
                     );
                 } catch (ApiException $ae) {

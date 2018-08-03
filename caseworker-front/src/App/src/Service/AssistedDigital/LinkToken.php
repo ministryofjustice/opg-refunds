@@ -17,7 +17,7 @@ class LinkToken
 
     public function __construct(string $key)
     {
-        if (mb_strlen( hex2bin($key), '8bit' ) != 32) {
+        if (mb_strlen(hex2bin($key), '8bit') != 32) {
             throw new UnexpectedValueException('Invalid key; 256-bit hex value expected');
         }
 

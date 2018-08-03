@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Form\PhoneClaim;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
 use Zend\Diactoros\Response\RedirectResponse;
@@ -48,10 +48,9 @@ class PhoneClaimAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $form = $this->getForm($request);
 
@@ -62,10 +61,9 @@ class PhoneClaimAction extends AbstractModelAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|RedirectResponse
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $form = $this->getForm($request);
 

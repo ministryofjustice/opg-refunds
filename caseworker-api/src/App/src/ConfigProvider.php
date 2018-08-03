@@ -4,7 +4,6 @@ namespace App;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Aws\Kms\KmsClient;
-use Zend\Crypt\PublicKey\Rsa;
 
 /**
  * The configuration provider for the App module
@@ -77,11 +76,8 @@ class ConfigProvider
                 Service\PoaLookup::class => Service\PoaLookupFactory::class,
 
                 //Crypt
-                Crypt\Hybrid::class => Crypt\HybridFactory::class,
-                Rsa::class => Crypt\RsaFactory::class,
                 KmsClient::class => Crypt\AwsKmsFactory::class,
             ],
         ];
     }
-
 }

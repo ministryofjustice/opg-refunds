@@ -2,8 +2,8 @@
 namespace App\Middleware\ProcessingTime;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
 /**
  * Adds the expected processing time of an application into the request.
@@ -21,9 +21,9 @@ class ProcessingTimeMiddleware implements ServerMiddlewareInterface
         $this->processingTime = $processingTime;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : \Psr\Http\Message\ResponseInterface
     {
-        return $delegate->process(
+        return $delegate->handle(
             $request->withAttribute('processingTime', $this->processingTime)
         );
     }

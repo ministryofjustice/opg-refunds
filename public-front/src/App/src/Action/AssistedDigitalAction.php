@@ -3,9 +3,7 @@ namespace App\Action;
 
 use DateTime;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Zend\Diactoros\Response;
 
 use Dflydev\FigCookies\SetCookie;
@@ -24,7 +22,7 @@ class AssistedDigitalAction extends AbstractAction
         $this->cookieName = $cookieName;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $session = $request->getAttribute('session');
 

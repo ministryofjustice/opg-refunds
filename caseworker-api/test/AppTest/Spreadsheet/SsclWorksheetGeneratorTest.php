@@ -242,7 +242,7 @@ class SsclWorksheetGeneratorTest extends TestCase
 
             //Objective - From config
             $this->assertEquals(25, $cells[22]->getColumn());
-            $this->assertEquals('0', $cells[22]->getData());
+            $this->assertEquals('00000000', $cells[22]->getData());
 
             //Analysis - From config
             $this->assertEquals(26, $cells[23]->getColumn());

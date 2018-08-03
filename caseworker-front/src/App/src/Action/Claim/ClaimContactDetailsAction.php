@@ -4,7 +4,7 @@ namespace App\Action\Claim;
 
 use App\Form\AbstractForm;
 use App\Form\ClaimContactDetails;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
@@ -19,11 +19,10 @@ class ClaimContactDetailsAction extends AbstractClaimAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 
@@ -43,10 +42,9 @@ class ClaimContactDetailsAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 

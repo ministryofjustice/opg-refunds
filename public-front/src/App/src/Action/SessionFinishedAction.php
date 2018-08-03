@@ -3,14 +3,14 @@ namespace App\Action;
 
 use App\Service\Session\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use Zend\Diactoros\Response\HtmlResponse;
 
 class SessionFinishedAction extends AbstractAction
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $session = $request->getAttribute('session');
 

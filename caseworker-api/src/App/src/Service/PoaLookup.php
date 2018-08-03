@@ -12,7 +12,8 @@ use RuntimeException;
  * Class PoaLookup
  * @package App\Service
  */
-class PoaLookup {
+class PoaLookup
+{
 
     private $adapter;
 
@@ -28,7 +29,8 @@ class PoaLookup {
      * @param int $caseNumber
      * @return array
      */
-    public function queryByCaseNumber( int $caseNumber ){
+    public function queryByCaseNumber(int $caseNumber)
+    {
 
         $result = [
             'meris' => $this->runQuery('meris', [
@@ -51,7 +53,8 @@ class PoaLookup {
      * @param $lastName
      * @return array
      */
-    public function queryByDobAndName( string $dob, $firstName, $lastName ){
+    public function queryByDobAndName(string $dob, $firstName, $lastName)
+    {
 
         $result = [
             'meris' => $this->runQuery('meris', [
@@ -77,7 +80,8 @@ class PoaLookup {
      * @param array $params
      * @return array
      */
-    private function runQuery(string $table, array $params){
+    private function runQuery(string $table, array $params)
+    {
 
         //-------------------------------
         // Create the query (filters)
@@ -85,9 +89,7 @@ class PoaLookup {
         $query = '';
 
         if (!empty($params['case-number'])) {
-
             $query .= 'case_number = :case';
-
         } // if
 
         if (isset($params['dob'])) {
@@ -167,7 +169,7 @@ class PoaLookup {
         //---
 
         // JSON decode the data
-        $results = array_map(function($v){
+        $results = array_map(function ($v) {
             $v['data'] = json_decode($v['data'], true);
             return $v;
         }, $results);
@@ -175,7 +177,7 @@ class PoaLookup {
         //---
 
         // Use the case number (& sequence) as the array's index.
-        $results = array_combine(array_map(function($v){
+        $results = array_combine(array_map(function ($v) {
             $index = (string)$v['case_number'];
             if (isset($v['sequence_number'])) {
                 $index .= '/' . $v['sequence_number'];
@@ -194,7 +196,7 @@ class PoaLookup {
      * @param int $caseNumber
      * @return array Finance records
      */
-    public function lookupFinanceRecord( int $caseNumber )
+    public function lookupFinanceRecord(int $caseNumber)
     {
         $sql = "SELECT * FROM finance WHERE case_number = :case LIMIT 20";
 

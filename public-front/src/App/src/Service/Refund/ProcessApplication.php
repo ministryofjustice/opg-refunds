@@ -44,7 +44,7 @@ class ProcessApplication implements Initializer\LogSupportInterface
         //---
 
         // Tidy up data - strip out quote marks
-        array_walk_recursive($data, function(&$item, $key){
+        array_walk_recursive($data, function (&$item, $key) {
             $item = (is_string($item)) ? str_replace('"', '', $item) : $item;
         });
 
@@ -89,7 +89,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         // If we are sending notifications...
         if ($contact['receive-notifications']) {
-
             /*
                 The logic is:
                     Only email entered - We send them just an email
@@ -152,7 +151,6 @@ class ProcessApplication implements Initializer\LogSupportInterface
                     ]
                 );
             }
-
         } // if receive-notifications
 
         //---
