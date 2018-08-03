@@ -1,16 +1,14 @@
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
-
 use App\Form\WhenFeesPaid;
 
 class WhenFeesPaidAction extends AbstractAction
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
 
         $form = new WhenFeesPaid();

@@ -22,7 +22,6 @@ $aggregator = new ConfigAggregator([
     App\ConfigProvider::class,
     Auth\ConfigProvider::class,
     Ingestion\ConfigProvider::class,
-
     Log\ConfigProvider::class,
 
     // Load application config in a pre-defined order in such a way that local settings

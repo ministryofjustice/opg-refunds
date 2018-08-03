@@ -8,7 +8,7 @@ use App\Form\PoaNoneFound;
 use App\Form\ProcessNewClaim;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -23,11 +23,10 @@ class ClaimAction extends AbstractClaimAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 
@@ -45,11 +44,10 @@ class ClaimAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $session = $request->getAttribute('session');
         $form = new ProcessNewClaim([
@@ -78,10 +76,9 @@ class ClaimAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         //Even though we are adding a note here,
         //we are technically editing the claim by adding a note to it

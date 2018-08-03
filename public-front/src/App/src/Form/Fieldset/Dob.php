@@ -144,7 +144,10 @@ class Dob extends Fieldset
             }
 
             return checkdate(
-                (int)$context['month'], (int)$context['day'], (int)$context['year']) && ((int)$context['year'] < 9999
+                (int)$context['month'],
+                (int)$context['day'],
+                (int)$context['year']
+            ) && ((int)$context['year'] < 9999
             );
         }))->setMessage('invalid-date', Callback::INVALID_VALUE);
     }

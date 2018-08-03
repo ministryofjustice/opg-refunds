@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -29,11 +29,10 @@ class ClaimNoteAction extends AbstractRestfulAction
      * READ/GET index action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claimId = $request->getAttribute('claimId');
 
@@ -67,10 +66,9 @@ class ClaimNoteAction extends AbstractRestfulAction
      * CREATE/POST add action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return ResponseInterface
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         $requestBody = $request->getParsedBody();
         $note = new NoteModel($requestBody);

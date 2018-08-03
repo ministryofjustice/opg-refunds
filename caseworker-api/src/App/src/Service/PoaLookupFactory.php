@@ -5,7 +5,8 @@ namespace App\Service;
 use PDO;
 use Interop\Container\ContainerInterface;
 
-class PoaLookupFactory {
+class PoaLookupFactory
+{
 
     /**
      * @param ContainerInterface $container
@@ -33,5 +34,4 @@ class PoaLookupFactory {
 
         return new PoaLookup($db);
     }
-
 }

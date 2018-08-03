@@ -1,8 +1,8 @@
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use Zend\Diactoros\Response;
 
 use App\Form;
@@ -11,7 +11,7 @@ use App\Service\Refund\FlowController;
 class DonorDeceasedAction extends AbstractAction
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
 

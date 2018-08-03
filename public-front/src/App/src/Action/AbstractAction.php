@@ -4,10 +4,10 @@ namespace App\Action;
 use App\Service\Refund\FlowController;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class AbstractAction implements
-    ServerMiddlewareInterface,
+    RequestHandlerInterface,
     Initializers\UrlHelperInterface,
     Initializers\TemplatingSupportInterface
 {

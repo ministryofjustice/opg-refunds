@@ -147,8 +147,7 @@ class FlowController
         }
 
 
-        if (
-            (!isset($session['account']) || !is_array($session['account'])) &&
+        if ((!isset($session['account']) || !is_array($session['account'])) &&
             (!isset($session['cheque']) || $session['cheque'] !== true)
         ) {
             return 'apply.account';

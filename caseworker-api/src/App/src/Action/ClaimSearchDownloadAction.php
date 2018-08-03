@@ -5,7 +5,7 @@ namespace App\Action;
 use App\Service\Claim as ClaimService;
 use App\Spreadsheet\ISpreadsheetGenerator;
 use App\Spreadsheet\SpreadsheetFileNameFormatter;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response;
@@ -37,11 +37,10 @@ class ClaimSearchDownloadAction extends AbstractRestfulAction
      * READ/GET index action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $queryParameters = $request->getQueryParams();
 

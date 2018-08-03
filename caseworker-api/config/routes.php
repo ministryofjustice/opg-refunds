@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 /**
  * Setup routes with a single request method:
  *
@@ -27,6 +29,11 @@
  */
 
 //  Unauthenticated routes
+return function (
+    \Zend\Expressive\Application $app,
+    \Zend\Expressive\MiddlewareFactory $factory,
+    \Psr\Container\ContainerInterface $container
+) : void {
 $app->post('/v1/auth', Auth\Action\AuthAction::class, 'auth');
 $app->route('/v1/user-by-token/{token}', App\Action\UserAction::class, ['GET', 'PATCH'], 'user.by.token');
 $app->patch('/v1/reset-password', App\Action\PasswordResetAction::class, 'password.reset');
@@ -45,3 +52,4 @@ $app->get('/v1/user/search', App\Action\UserSearchAction::class, 'user.search');
 $app->route('/v1/spreadsheet[/{date:\d{4}-\d{2}-\d{2}}]', App\Action\SpreadsheetAction::class, ['GET', 'POST'], 'spreadsheet');
 $app->post('/v1/notify', App\Action\NotifyAction::class, 'notify');
 $app->get('/v1/report', App\Action\ReportingAction::class, 'report');
+};

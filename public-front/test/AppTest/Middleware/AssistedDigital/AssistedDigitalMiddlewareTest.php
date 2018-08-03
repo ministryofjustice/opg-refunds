@@ -6,8 +6,9 @@ use Prophecy\Argument;
 
 use App\Middleware\AssistedDigital\AssistedDigitalMiddleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 use App\Service\Refund\AssistedDigital\LinkToken;
 use League\Plates\Engine as PlatesEngine;
@@ -30,6 +31,10 @@ class AssistedDigitalMiddlewareTest extends TestCase
         $this->platesEngine = $this->prophesize(PlatesEngine::class);
 
         $this->request->getCookieParams()->willReturn([]);
+
+        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(
+            $this->prophesize(ResponseInterface::class)->reveal()
+        );
     }
 
     private function getInstance()

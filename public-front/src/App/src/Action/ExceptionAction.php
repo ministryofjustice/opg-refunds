@@ -1,15 +1,14 @@
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class ExceptionAction implements ServerMiddlewareInterface, Initializers\TemplatingSupportInterface
+class ExceptionAction implements RequestHandlerInterface, Initializers\TemplatingSupportInterface
 {
     use Initializers\TemplatingSupportTrait;
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         throw new \Exception('Exception Test');
     }

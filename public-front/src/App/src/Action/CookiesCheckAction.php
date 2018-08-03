@@ -1,8 +1,8 @@
 <?php
 namespace App\Action;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use Zend\Diactoros\Response;
 
 use Dflydev\FigCookies\SetCookie;
@@ -13,7 +13,7 @@ class CookiesCheckAction extends AbstractAction
 
     const COOKIE_NAME = 'cookies_enabled';
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
 
         $cookies = $request->getCookieParams();

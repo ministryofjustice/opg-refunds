@@ -4,7 +4,7 @@ namespace App\Action\Poa;
 
 use App\Form\AbstractForm;
 use App\Form\PoaDelete;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -19,11 +19,10 @@ class PoaDeleteAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 
@@ -47,11 +46,10 @@ class PoaDeleteAction extends AbstractPoaAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $claim = $this->getClaim($request);
 

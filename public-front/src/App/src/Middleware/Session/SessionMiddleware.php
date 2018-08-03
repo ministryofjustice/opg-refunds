@@ -1,8 +1,8 @@
 <?php
 namespace App\Middleware\Session;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -45,7 +45,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
         $this->sessionManager = $sessionManager;
     }
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         $cookies = $request->getCookieParams();
 
@@ -68,7 +68,7 @@ class SessionMiddleware implements ServerMiddlewareInterface
 
         //---
 
-        $response = $delegate->process(
+        $response = $delegate->handle(
             $request->withAttribute('session', $session)
         );
 

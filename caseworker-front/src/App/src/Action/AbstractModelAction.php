@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use Fig\Http\Message\RequestMethodInterface;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Exception;
 
@@ -20,11 +20,10 @@ abstract class AbstractModelAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return mixed
      * @throws Exception
      */
-    final public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    final public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         //  Using the route action and the request method map to a specific action function
         $method = $request->getMethod();
@@ -51,17 +50,16 @@ abstract class AbstractModelAction extends AbstractAction
             }
         }
 
-        return $this->{$actionName . 'Action'}($request, $delegate);
+        return $this->{$actionName . 'Action'}($request);
     }
 
     /**
      * GET index action - override in subclass if required
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         throw new Exception('Index action not implemented on ' . get_class($this), 404);
     }
@@ -70,10 +68,9 @@ abstract class AbstractModelAction extends AbstractAction
      * POST add action - override in subclass if required
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @throws Exception
      */
-    public function addAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function addAction(ServerRequestInterface $request)
     {
         throw new Exception('Add action not implemented on ' . get_class($this), 404);
     }
@@ -82,10 +79,9 @@ abstract class AbstractModelAction extends AbstractAction
      * POST edit action - override in subclass if required
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @throws Exception
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         throw new Exception('Edit action not implemented on ' . get_class($this), 404);
     }
@@ -94,10 +90,9 @@ abstract class AbstractModelAction extends AbstractAction
      * POST delete action - override in subclass if required
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @throws Exception
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         throw new Exception('Delete action not implemented on ' . get_class($this), 404);
     }

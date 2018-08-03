@@ -2,8 +2,8 @@
 
 namespace App\Middleware\ViewData;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -37,7 +37,7 @@ class ViewDataMiddleware implements MiddlewareInterface
      * @return ResponseInterface
      * @throws Exception
      */
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : ResponseInterface
     {
         //  Set any data that is required for all templates and layouts
         $identity = $request->getAttribute('identity');
@@ -46,6 +46,6 @@ class ViewDataMiddleware implements MiddlewareInterface
             $this->renderer->addDefaultParam(PlatesRenderer::TEMPLATE_ALL, 'identity', $identity);
         }
 
-        return $delegate->process($request);
+        return $delegate->handle($request);
     }
 }

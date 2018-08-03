@@ -3,7 +3,7 @@
 namespace App\Action\User;
 
 use App\Form\UserDelete;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\HtmlResponse;
@@ -17,11 +17,10 @@ class UserDeleteAction extends AbstractUserAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function indexAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function indexAction(ServerRequestInterface $request)
     {
         $user = $this->userService->getUser($this->modelId);
 
@@ -47,11 +46,10 @@ class UserDeleteAction extends AbstractUserAction
 
     /**
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      * @return \Zend\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $form = $this->getForm($request);
 

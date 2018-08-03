@@ -3,7 +3,7 @@
 namespace App\Action;
 
 use App\Service\Claim as ClaimService;
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -28,11 +28,10 @@ class UserClaimAction extends AbstractRestfulAction
      * UPDATE/PUT edit action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function editAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function editAction(ServerRequestInterface $request)
     {
         $assignToUserId = $request->getAttribute('id');
         $claimId = $request->getAttribute('claimId');
@@ -54,11 +53,10 @@ class UserClaimAction extends AbstractRestfulAction
      * DELETE/DELETE delete action
      *
      * @param ServerRequestInterface $request
-     * @param DelegateInterface $delegate
      *
      * @return ResponseInterface
      */
-    public function deleteAction(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function deleteAction(ServerRequestInterface $request)
     {
         $userId = $request->getAttribute('id');
         $claimId = $request->getAttribute('claimId');

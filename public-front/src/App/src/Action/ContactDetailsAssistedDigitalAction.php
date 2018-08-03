@@ -3,17 +3,16 @@
 namespace App\Action;
 
 use App\Form;
-use App\Service\Session\Session;
 use App\Service\Refund\FlowController;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
 use Zend\Diactoros\Response;
 
 class ContactDetailsAssistedDigitalAction extends AbstractAction
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
         if (!$this->isActionAccessible($request) || $request->getAttribute('ad') == null) {
             return new Response\RedirectResponse($this->getUrlHelper()->generate('session'));
@@ -47,7 +46,6 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
                     )
                 );
             }
-
         } elseif ($isUpdate) {
             $form->setFormattedData($session['contact']);
         } else {
@@ -56,7 +54,7 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
 
             $prePopulationAddress = isset($session['donor']['current']['address'])
                 ? $session['donor']['current']['address'] : $session['executor']['address'];
-            
+
             // If here, pre-populate with either the donor or executor's address.
             $address = $prePopulationAddress['address-1'];
 
@@ -79,5 +77,4 @@ class ContactDetailsAssistedDigitalAction extends AbstractAction
             'applicant' => $session['applicant']
         ]));
     }
-
 }

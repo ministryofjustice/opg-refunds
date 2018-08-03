@@ -1,7 +1,7 @@
 <?php
 namespace AppTest\Middleware;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use PHPUnit\Framework\TestCase;
@@ -44,7 +44,7 @@ class CacheControlMiddlewareTest extends TestCase
 
         $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
 
-        $this->delegateInterface->process( Argument::type(ServerRequestInterface::class) )->willReturn(
+        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(
             /*
              * We're using a real response here as the elaborate mocking
              * required not to does not justify the risk of using a concrete object.
@@ -96,28 +96,6 @@ class CacheControlMiddlewareTest extends TestCase
     }
 
     /**
-     * Tests that if no (null) Response is returned form the delegate,
-     * that we don't attempt to apply any headers.
-     */
-    public function testWithoutResponse()
-    {
-        $middleware = new CacheControlMiddleware();
-
-        $this->routeResult->getMatchedRouteName()->willReturn( 'eligibility.test' );
-
-        $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
-
-        $this->delegateInterface->process( Argument::type(ServerRequestInterface::class) )->willReturn(null);
-
-        $response = $middleware->process(
-            $this->request->reveal(),
-            $this->delegateInterface->reveal()
-        );
-
-        $this->assertNull($response);
-    }
-
-    /**
      * Ensure we only add headers to pages who's route name starts with 'eligibility.'.
      */
     public function testWithoutEligibilityPrefix()
@@ -128,7 +106,7 @@ class CacheControlMiddlewareTest extends TestCase
 
         $this->request->getAttribute(RouteResult::class)->willReturn( $this->routeResult->reveal() );
 
-        $this->delegateInterface->process( Argument::type(ServerRequestInterface::class) )->willReturn(
+        $this->delegateInterface->handle( Argument::type(ServerRequestInterface::class) )->willReturn(
         /*
          * We're using a real response here as the elaborate mocking
          * required not to does not justify the risk of using a concrete object.

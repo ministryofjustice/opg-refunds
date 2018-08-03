@@ -5,8 +5,8 @@ use UnexpectedValueException;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Interop\Http\ServerMiddleware\DelegateInterface;
-use Interop\Http\ServerMiddleware\MiddlewareInterface as ServerMiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
+use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
 use Zend\Math\BigInteger\BigInteger;
 
@@ -19,7 +19,7 @@ use Zend\Math\BigInteger\BigInteger;
 class CsrfMiddleware implements ServerMiddlewareInterface
 {
 
-    public function process(ServerRequestInterface $request, DelegateInterface $delegate)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate) : \Psr\Http\Message\ResponseInterface
     {
 
         $session = $request->getAttribute('session');
@@ -32,7 +32,7 @@ class CsrfMiddleware implements ServerMiddlewareInterface
             $session['meta']['csrf'] = $this->generateSecret();
         }
 
-        return $delegate->process($request);
+        return $delegate->handle($request);
     }
 
     /**
