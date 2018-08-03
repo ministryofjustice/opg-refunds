@@ -54,7 +54,8 @@ class ClaimReject extends AbstractForm
             ->attach(new StandardInputFilter);
 
         $input->getValidatorChain()
-            ->attach(new Validator\NotEmptyIfRadioSelected($radioElement, ['other']));
+            ->attach(new Validator\NotEmptyIfRadioSelected($radioElement, ['other']))
+            ->attach((new Validator\StringLength(['max' => 255])));
 
         $this->add($field);
         $inputFilter->add($input);
