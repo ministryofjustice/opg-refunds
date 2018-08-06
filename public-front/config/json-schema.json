@@ -53,6 +53,9 @@
     }
 
   },
+
+  "required": ["applicant", "donor", "attorney"],
+
   "additionalProperties": false,
   "properties": {
 
