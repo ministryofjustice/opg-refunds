@@ -1,21 +1,14 @@
 <!DOCTYPE html>
-<!--[if lt IE 9]><html class="lte-ie8" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--><html lang="en"><!--<![endif]-->
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <?php $subTitle = 'Claim a power of attorney refund'; ?>
     <title><?= (isset($pageTitle)) ? $this->e($pageTitle).' | ' : '' ?><?= ($pageTitle!=$subTitle) ? $subTitle.' | '  : '' ?>GOV.UK</title>
 
-    <!--[if gt IE 8]><!--><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template.css') ?>" media="screen" rel="stylesheet" /><!--<![endif]-->
-    <!--[if IE 6]><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-ie6.css') ?>" media="screen" rel="stylesheet" /><![endif]-->
-    <!--[if IE 7]><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-ie7.css') ?>" media="screen" rel="stylesheet" /><![endif]-->
-    <!--[if IE 8]><link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-ie8.css') ?>" media="screen" rel="stylesheet" /><![endif]-->
+    <link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template.css') ?>" media="screen" rel="stylesheet" />
     <link href="<?= $this->static('/assets/govuk_template/stylesheets/govuk-template-print.css') ?>" media="print" rel="stylesheet" />
-
-    <!--[if IE 8]><link href="<?= $this->static('/assets/govuk_template/stylesheets/fonts-ie8.css') ?>" media="all" rel="stylesheet" /><![endif]-->
-    <!--[if gte IE 9]><!--><link href="<?= $this->static('/assets/govuk_template/stylesheets/fonts.css') ?>" media="all" rel="stylesheet" /><!--<![endif]-->
-    <!--[if lt IE 9]><script src="<?= $this->static('/assets/govuk_template/javascripts/ie.js') ?>"></script><![endif]-->
+    <link href="<?= $this->static('/assets/govuk_template/stylesheets/fonts.css') ?>" media="all" rel="stylesheet" />
 
     <link rel="shortcut icon" href="<?= $this->static('/assets/govuk_template/images/favicon.ico') ?>" type="image/x-icon" />
 
@@ -30,12 +23,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="<?= $this->static('/assets/govuk_template/images/opengraph-image.png') ?>">
 
-    <!--[if gt IE 8]><!-->
     <link href="<?= $this->static('/assets/styles/govuk-elements-styles.css') ?>" rel="stylesheet" type="text/css">
-    <!--<![endif]-->
-    <!--[if IE 6]><link href="<?= $this->static('/assets/styles/govuk-elements-styles-ie6.css') ?>" rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if IE 7]><link href="<?= $this->static('/assets/styles/govuk-elements-styles-ie7.css') ?>" rel="stylesheet" type="text/css" /><![endif]-->
-    <!--[if IE 8]><link href="<?= $this->static('/assets/styles/govuk-elements-styles-ie8.css') ?>" rel="stylesheet" type="text/css" /><![endif]-->
 
 </head>
 
