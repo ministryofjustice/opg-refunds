@@ -6,6 +6,29 @@ Versions prior to 1.0 were originally released as `phly/conduit`; please visit
 its [CHANGELOG](https://github.com/phly/conduit/blob/master/CHANGELOG.md) for
 details.
 
+## 3.0.2 - 2018-07-24
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- [#177](https://github.com/zendframework/zend-stratigility/pull/177) removes a conditional from `Zend\Stratigility\Middleware\ErrorHandler` that can
+  never be reached.
+
+### Fixed
+
+- Nothing.
+
 ## 3.0.1 - 2018-04-04
 
 ### Added

@@ -26,12 +26,9 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
-        '383eaff206634a77a1be54e64e6459c7' => __DIR__ . '/..' . '/sabre/uri/lib/functions.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
-        'c843e8ef90c78ff0c203eb3834eb0a82' => __DIR__ . '/..' . '/league/json-reference/src/functions.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'f0e119a83772115c43c01dd050fd77a8' => __DIR__ . '/..' . '/zendframework/zend-expressive/src/constants.php',
-        'f8b0b5f351aa0dc2d4b9c3b8f451115f' => __DIR__ . '/..' . '/league/json-guard/src/functions.php',
         '34901568a1e26d13dd475cb2c85e0284' => __DIR__ . '/..' . '/zendframework/zend-form/autoload/formElementManagerPolyfill.php',
     );
 
@@ -80,15 +77,16 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Component\\Console\\' => 26,
-            'Sabre\\Uri\\' => 10,
+            'Swaggest\\JsonSchema\\' => 20,
+            'Swaggest\\JsonDiff\\' => 18,
         ),
         'P' => 
         array (
-            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Server\\' => 16,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
+            'PhpLang\\' => 8,
             'PackageVersions\\' => 16,
         ),
         'O' => 
@@ -98,8 +96,6 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         'L' => 
         array (
             'League\\Plates\\' => 14,
-            'League\\JsonReference\\' => 21,
-            'League\\JsonGuard\\' => 17,
         ),
         'J' => 
         array (
@@ -283,13 +279,13 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'Sabre\\Uri\\' => 
+        'Swaggest\\JsonSchema\\' => 
         array (
-            0 => __DIR__ . '/..' . '/sabre/uri/lib',
+            0 => __DIR__ . '/..' . '/swaggest/json-schema/src',
         ),
-        'Psr\\SimpleCache\\' => 
+        'Swaggest\\JsonDiff\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+            0 => __DIR__ . '/..' . '/swaggest/json-diff/src',
         ),
         'Psr\\Log\\' => 
         array (
@@ -308,6 +304,10 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
+        'PhpLang\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phplang/scope-exit/src',
+        ),
         'PackageVersions\\' => 
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
@@ -319,14 +319,6 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         'League\\Plates\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/plates/src',
-        ),
-        'League\\JsonReference\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/json-reference/src',
-        ),
-        'League\\JsonGuard\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/json-guard/src',
         ),
         'JmesPath\\' => 
         array (
@@ -664,10 +656,14 @@ class ComposerStaticInit564a2ef465a9cd35e6e783d277fa2a5d
         'PHPUnit\\Runner\\Filter\\IncludeGroupFilterIterator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Filter/IncludeGroupFilterIterator.php',
         'PHPUnit\\Runner\\Filter\\NameFilterIterator' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Filter/NameFilterIterator.php',
         'PHPUnit\\Runner\\Hook' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Hook/Hook.php',
+        'PHPUnit\\Runner\\NullTestResultCache' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/NullTestResultCache.php',
         'PHPUnit\\Runner\\PhptTestCase' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/PhptTestCase.php',
+        'PHPUnit\\Runner\\ResultCacheExtension' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/ResultCacheExtension.php',
         'PHPUnit\\Runner\\StandardTestSuiteLoader' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/StandardTestSuiteLoader.php',
         'PHPUnit\\Runner\\TestHook' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Hook/TestHook.php',
         'PHPUnit\\Runner\\TestListenerAdapter' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Hook/TestListenerAdapter.php',
+        'PHPUnit\\Runner\\TestResultCache' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/TestResultCache.php',
+        'PHPUnit\\Runner\\TestResultCacheInterface' => __DIR__ . '/..' . '/phpunit/phpunit/src/Util/TestResultCacheInterface.php',
         'PHPUnit\\Runner\\TestSuiteLoader' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/TestSuiteLoader.php',
         'PHPUnit\\Runner\\TestSuiteSorter' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/TestSuiteSorter.php',
         'PHPUnit\\Runner\\Version' => __DIR__ . '/..' . '/phpunit/phpunit/src/Runner/Version.php',
