@@ -65,7 +65,8 @@ class ProcessApplication implements Initializer\LogSupportInterface
             );
 
         } catch (InvalidValue $e) {
-            throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($e->inspect(), true));
+            $browser = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : 'Browser not known';
+            throw new \UnexpectedValueException( "Invalid JSON generated\n{$browser}\n" . print_r($e->inspect(), true));
         }
 
         //---
