@@ -88,7 +88,7 @@ class CaseNumber extends AbstractForm
     private function getCaseNumberValidator() : ValidatorInterface
     {
         return (new Callback(function ($value) {
-            if (!is_numeric($value)) {
+            if (!ctype_digit($value)) {
                 return false;
             }
             return (strlen($value) == 7 || strlen($value) == 12);
