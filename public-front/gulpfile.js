@@ -96,11 +96,7 @@ function vendorScripts() {
   return gulp.src(vendorModules)
     .pipe(sourcemaps.init())
     .pipe(concat('vendor.js'))
-    .pipe(uglify({
-        compress: { ie8: true },
-        mangle: { ie8: true },
-        output: { ie8: true }
-      }))
+    .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
@@ -109,11 +105,7 @@ function appScripts() {
   return gulp.src(applicationModules)
     .pipe(sourcemaps.init())
     .pipe(concat('app.js'))
-    .pipe(uglify({
-      compress: { ie8: true },
-      mangle: { ie8: true },
-      output: { ie8: true }
-    }))
+    .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
@@ -122,11 +114,7 @@ function analyticScripts() {
   return gulp.src(analyticsModules)
     .pipe(sourcemaps.init())
     .pipe(concat('custom-analytics.js'))
-    .pipe(uglify({
-      compress: { ie8: true },
-      mangle: { ie8: true },
-      output: { ie8: true }
-    }))
+    .pipe(uglify())
     .pipe(sourcemaps.write('./'))
     .pipe(gulp.dest(`${paths.build}/javascripts`));
 }
@@ -161,7 +149,7 @@ function watch() {
 }
 
 // Task sets
-const compile = gulp.series(clean, 
+const compile = gulp.series(clean,
   gulp.parallel(vendorScripts,appScripts,analyticScripts,govuk_template,images,styles,govuk_frontend_toolkit_images)
 );
 
