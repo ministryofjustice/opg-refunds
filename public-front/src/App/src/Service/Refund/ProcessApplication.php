@@ -2,9 +2,8 @@
 namespace App\Service\Refund;
 
 use App\Service\Refund\Data\PhoneNumber;
-use League\JsonGuard\Validator as JsonValidator;
-use League\JsonReference\Dereferencer as JsonDereferencer;
-use League\JsonReference\ReferenceSerializer\InlineReferenceSerializer;
+use Swaggest\JsonSchema\Schema;
+use Swaggest\JsonSchema\InvalidValue;
 
 use Alphagov\Notifications\Client as NotifyClient;
 use Alphagov\Notifications\Exception\ApiException;
@@ -58,20 +57,16 @@ class ProcessApplication implements Initializer\LogSupportInterface
 
         //---
 
-        $dereferencer = JsonDereferencer::draft6();
-        $dereferencer->setReferenceSerializer(new InlineReferenceSerializer());
+        try {
+            $schema = Schema::import(json_decode(file_get_contents($this->jsonSchemaPath)));
 
-        $schema = $dereferencer->dereference(json_decode(file_get_contents($this->jsonSchemaPath)));
+            $schema->in(
+                json_decode(json_encode($data)) // Simplest way to convert to stdClass
+            );
 
-        // Validate the generated JSON against our schema.
-        $validator = new JsonValidator(
-            json_decode(json_encode($data)), // Simplest way to convert to stdClass
-            $schema
-        );
-
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            throw new \UnexpectedValueException('Invalid JSON generated: ' . print_r($errors, true));
+        } catch (InvalidValue $e) {
+            $browser = (isset($_SERVER['HTTP_USER_AGENT'])) ? $_SERVER['HTTP_USER_AGENT'] : 'Browser not known';
+            throw new \UnexpectedValueException( "Invalid JSON generated\n{$browser}\n" . print_r($e->inspect(), true));
         }
 
         //---
