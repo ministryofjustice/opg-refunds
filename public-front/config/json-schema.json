@@ -53,6 +53,9 @@
     }
 
   },
+
+  "required": ["applicant", "donor", "attorney"],
+
   "additionalProperties": false,
   "properties": {
 
@@ -128,8 +131,7 @@
             }
           },
           "type": "object"
-        },
-        "type": "object"
+        }
       },
       "type": "object"
     },
@@ -159,8 +161,7 @@
             }
           },
           "type": "object"
-        },
-        "type": "object"
+        }
       },
       "type": "object"
     },
