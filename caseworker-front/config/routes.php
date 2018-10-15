@@ -28,12 +28,12 @@ declare(strict_types=1);
  * );
  */
 
-//  Unauthenticated routes
 return function (
     \Zend\Expressive\Application $app,
     \Zend\Expressive\MiddlewareFactory $factory,
     \Psr\Container\ContainerInterface $container
 ) : void {
+//  Unauthenticated routes
 $app->route('/sign-in', App\Action\SignInAction::class, ['GET', 'POST'], 'sign.in');
 $app->get('/sign-out', App\Action\SignOutAction::class, 'sign.out');
 $app->route('/reset-password', App\Action\Password\PasswordResetAction::class, ['GET', 'POST'], 'password.reset');
