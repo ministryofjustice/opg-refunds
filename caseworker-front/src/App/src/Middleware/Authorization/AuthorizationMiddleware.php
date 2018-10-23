@@ -40,7 +40,7 @@ class AuthorizationMiddleware implements MiddlewareInterface
     /**
      * @var NotFoundHandler
      */
-    private $notFoundDelegate;
+    private $notFoundHandler;
 
 
     /**
@@ -48,20 +48,20 @@ class AuthorizationMiddleware implements MiddlewareInterface
      *
      * @param AuthenticationService $authService
      * @param UrlHelper $urlHelper
-     * @param NotFoundHandler $notFoundDelegate
      * @param Rbac $rbac
+     * @param NotFoundHandler $notFoundHandler
      */
     public function __construct(
         AuthenticationService $authService,
         UrlHelper $urlHelper,
         Rbac $rbac,
-        NotFoundHandler $notFoundDelegate
+        NotFoundHandler $notFoundHandler
     ) {
 
         $this->authService = $authService;
         $this->urlHelper = $urlHelper;
         $this->rbac = $rbac;
-        $this->notFoundDelegate = $notFoundDelegate;
+        $this->notFoundHandler = $notFoundHandler;
     }
 
     /**
@@ -80,8 +80,8 @@ class AuthorizationMiddleware implements MiddlewareInterface
         //  Determine the route was are attempting to access
         $route = $request->getAttribute(RouteResult::class);
 
-        if (is_null($route)) {
-            return $this->notFoundDelegate->process($request);
+        if (is_null($route) || $route->isFailure()) {
+            return $this->notFoundHandler->handle($request);
         }
 
         $routeName = $route->getMatchedRoute()->getName();
