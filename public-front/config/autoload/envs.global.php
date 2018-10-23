@@ -62,6 +62,7 @@ return [
                 'version' => '2014-11-01',
                 'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_ENDPOINT') ?: null,
                 'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION') ?: null,
+                'timeout' => 2.0,
             ],
             'settings' => [
                 'keyId' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS') ?: null,
@@ -106,6 +107,7 @@ return [
                 'version' => '2012-08-10',
                 'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_ENDPOINT') ?: null,
                 'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION') ?: null,
+                'timeout' => 2.0,
             ],
             'settings' => [
                 'table_name' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE') ?: null,
@@ -131,6 +133,7 @@ return [
                 'version' => '2010-03-31',
                 'region' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_REGION') ?: null,
                 'endpoint' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINT') ?: null,
+                'timeout' => 2.0,
             ],
             'endpoints' => [
 
