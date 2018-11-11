@@ -57,7 +57,11 @@ services:
     command: ["-sharedDb"]
 
   kms:
-    build: ./local-kms
+    image: nsmithuk/local-kms:2
+    volumes:
+      - ./local-kms:/init
+    environment:
+      REGION: eu-west-1
 
   sns:
     build: ./local-sns
