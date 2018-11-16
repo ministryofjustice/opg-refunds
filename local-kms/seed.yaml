@@ -1,0 +1,11 @@
+
+Keys:
+  - Metadata:
+      KeyId: bc436485-5092-42b8-92a3-0aa8b93536dc
+      Description: "Non-secret Refunds Test Key"
+    BackingKeys:
+      - 34743777217A25432A46294A404E635266556A586E3272357538782F413F4428
+
+Aliases:
+  - AliasName: alias/dev-local-testing
+    TargetKeyId: bc436485-5092-42b8-92a3-0aa8b93536dc
