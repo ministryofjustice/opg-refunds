@@ -1416,7 +1416,6 @@ class Claim implements Initializer\LogSupportInterface
     public function editContactDetails(int $claimId, int $userId, ContactDetailsModel $contactDetails)
     {
         $claim = $this->getClaimEntity($claimId);
-        $claimModel = $this->getClaimModel($userId, $claim);
 
         $claimData = $claim->getJsonData();
         $claimData['contact'] = array_filter($contactDetails->getArrayCopy(), function ($value) {
@@ -1424,20 +1423,6 @@ class Claim implements Initializer\LogSupportInterface
         });
 
         $claim->setJsonData($claimData);
-
-        $originalContactDetails = $claimModel->getApplication()->getContact();
-        if ($originalContactDetails->getEmail() !== $contactDetails->getEmail()) {
-            // Email changed. Outcome email should be sent again
-            $claim->setOutcomeEmailSent(false);
-        }
-        if ($originalContactDetails->getPhone() !== $contactDetails->getPhone()) {
-            // Mobile number changed. Outcome text should be sent again
-            $claim->setOutcomeTextSent(false);
-        }
-        if ($originalContactDetails->getAddress() !== $contactDetails->getAddress()) {
-            // Address changed. Outcome letter should be sent again
-            $claim->setOutcomeLetterSent(false);
-        }
 
         $claim->setUpdatedDateTime(new DateTime());
 
