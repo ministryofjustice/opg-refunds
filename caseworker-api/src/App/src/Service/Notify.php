@@ -217,8 +217,6 @@ class Notify implements Initializer\LogSupportInterface
                     'Successfully sent duplicate claim email to ' . $contact->getEmail()
                 );
 
-                $claimEntity->setOutcomeEmailSent(true);
-
                 $successful = true;
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send duplicate claim email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -243,13 +241,10 @@ class Notify implements Initializer\LogSupportInterface
                     'Successfully sent duplicate claim text to ' . $contact->getPhone()
                 );
 
-                $claimEntity->setOutcomeTextSent(true);
-
                 $successful = true;
             } catch (NotifyApiException $ex) {
                 if (strpos($ex->getMessage(), 'phone_number') !== false) {
                     $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so duplicate text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
-                    $claimEntity->setOutcomeTextSent(true);
 
                     $successful = true;
                 } else {
@@ -258,6 +253,15 @@ class Notify implements Initializer\LogSupportInterface
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send duplicate claim text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
+        }
+
+        if ($successful) {
+            /**
+             * Both are set to prevent erroneous notifications being sent if contact details are amended
+             * after the initial notification is sent.
+             */
+            $claimEntity->setOutcomeEmailSent(true);
+            $claimEntity->setOutcomeTextSent(true);
         }
 
         return $successful;
@@ -322,8 +326,6 @@ class Notify implements Initializer\LogSupportInterface
                         'Successfully sent rejection email to ' . $contact->getEmail()
                     );
 
-                    $claimEntity->setOutcomeEmailSent(true);
-
                     $successful = true;
                 } catch (Exception $ex) {
                     $this->getLogger()->crit("Failed to send rejection email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -347,13 +349,10 @@ class Notify implements Initializer\LogSupportInterface
                         'Successfully sent rejection text to ' . $contact->getPhone()
                     );
 
-                    $claimEntity->setOutcomeTextSent(true);
-
                     $successful = true;
                 } catch (NotifyApiException $ex) {
                     if (strpos($ex->getMessage(), 'phone_number') !== false) {
                         $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so rejection text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
-                        $claimEntity->setOutcomeTextSent(true);
 
                         $successful = true;
                     } else {
@@ -363,6 +362,15 @@ class Notify implements Initializer\LogSupportInterface
                     $this->getLogger()->crit("Failed to send rejection text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
                 }
             }
+        }
+
+        if ($successful) {
+            /**
+             * Both are set to prevent erroneous notifications being sent if contact details are amended
+             * after the initial notification is sent.
+             */
+            $claimEntity->setOutcomeEmailSent(true);
+            $claimEntity->setOutcomeTextSent(true);
         }
 
         return $successful;
@@ -411,8 +419,6 @@ class Notify implements Initializer\LogSupportInterface
                     'Successfully sent acceptance email to ' . $contact->getEmail()
                 );
 
-                $claimEntity->setOutcomeEmailSent(true);
-
                 $successful = true;
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send acceptance email for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
@@ -444,13 +450,10 @@ class Notify implements Initializer\LogSupportInterface
                     'Successfully sent acceptance text to ' . $contact->getPhone()
                 );
 
-                $claimEntity->setOutcomeTextSent(true);
-
                 $successful = true;
             } catch (NotifyApiException $ex) {
                 if (strpos($ex->getMessage(), 'phone_number') !== false) {
                     $this->getLogger()->warn("Phone number {$contact->getPhone()} for claim {$claimModel->getReferenceNumber()} failed validation so acceptance text cannot be sent. Marking claim as text sent to prevent retry. {$ex->getMessage()}", [$ex]);
-                    $claimEntity->setOutcomeTextSent(true);
 
                     $successful = true;
                 } else {
@@ -459,6 +462,15 @@ class Notify implements Initializer\LogSupportInterface
             } catch (Exception $ex) {
                 $this->getLogger()->crit("Failed to send acceptance text for claim {$claimModel->getReferenceNumber()} due to {$ex->getMessage()}", [$ex]);
             }
+        }
+
+        if ($successful) {
+            /**
+             * Both are set to prevent erroneous notifications being sent if contact details are amended
+             * after the initial notification is sent.
+             */
+            $claimEntity->setOutcomeEmailSent(true);
+            $claimEntity->setOutcomeTextSent(true);
         }
 
         return $successful;

@@ -226,7 +226,6 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                 <th class="numeric" style="width: 20%">Donor</th>
                 <th class="numeric" style="width: 20%">Attorney</th>
                 <th class="numeric" style="width: 20%">Phone claim</th>
-                <th class="numeric" style="width: 20%">Donor deceased</th>
             </tr>
             </thead>
             <tbody>
@@ -236,12 +235,10 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                     <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor']) ?></a></td>
                     <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['attorney']) ?></a></td>
                     <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['assisted_digital']) ?></a></td>
-                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor_deceased']) ?></td>
                 <?php } else { ?>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor']) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['attorney']) ?></td>
                     <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['assisted_digital']) ?></td>
-                    <td class="numeric"><?= $this->getValueWithPercentage($claimSourceAllTime['total'], $claimSourceAllTime['donor_deceased']) ?></td>
                 <?php } ?>
             </tr>
             </tbody>
@@ -258,7 +255,6 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                 <th class="numeric" style="width: 20%">Donor</th>
                 <th class="numeric" style="width: 20%">Attorney</th>
                 <th class="numeric" style="width: 20%">Phone claim</th>
-                <th class="numeric" style="width: 20%">Donor deceased</th>
             </tr>
             </thead>
             <tbody>
@@ -270,12 +266,10 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></a></td>
-                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
-                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
                     <?php } ?>
                 </tr>
             <?php } ?>
@@ -293,7 +287,6 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                 <th class="numeric" style="width: 20%">Donor</th>
                 <th class="numeric" style="width: 20%">Attorney</th>
                 <th class="numeric" style="width: 20%">Phone claim</th>
-                <th class="numeric" style="width: 20%">Donor deceased</th>
             </tr>
             </thead>
             <tbody>
@@ -307,12 +300,10 @@ $generateSearchLinks = in_array(\Opg\Refunds\Caseworker\DataModel\Cases\User::RO
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'donor'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'attorney'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></a></td>
                         <td class="numeric"><a href="<?= $this->generateUrl('claim.search', [], $this->getSearchParameters(['received' => $dateFilter, 'source' => 'phone'])) ?>"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></a></td>
-                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
                     <?php } else { ?>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor']) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['attorney']) ?></td>
                         <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['assisted_digital']) ?></td>
-                        <td class="numeric"><?= $this->getValueWithPercentage($counts['total'], $counts['donor_deceased']) ?></td>
                     <?php } ?>
                 </tr>
             <?php } ?>
