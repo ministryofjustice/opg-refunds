@@ -18,6 +18,7 @@ return [
                 'version' => '2014-11-01',
                 'region' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_REGION') ?: null,
                 'endpoint' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT') ?: null,
+                'timeout' => 2.0
             ],
         ],
 
@@ -107,6 +108,7 @@ return [
                 'version' => '2010-03-31',
                 'region' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_REGION') ?: null,
                 'endpoint' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINT') ?: null,
+                'timeout' => 2.0
             ],
             'endpoints' => [
 
