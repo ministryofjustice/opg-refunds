@@ -65,6 +65,7 @@ return [
                     'key'    => getenv('AWS_ACCESS_KEY_ID'),
                     'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
                 ] : null,
+                'timeout' => 2.0,
             ],
             'settings' => [
                 'table_name' => getenv('OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_TABLE') ?: null,
@@ -91,6 +92,7 @@ return [
                 'version' => '2010-03-31',
                 'region' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_REGION') ?: null,
                 'endpoint' => getenv('OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINT') ?: null,
+                'timeout' => 2.0,
             ],
             'endpoints' => [
 
