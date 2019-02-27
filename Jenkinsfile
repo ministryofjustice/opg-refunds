@@ -66,7 +66,7 @@ Commit Message: ${getLastCommitMessage()}
 
 pipeline {
 
-  agent { label '!J2_slave && !master' }
+  agent { label '!master' }
 
   environment {
     DOCKER_REGISTRY = 'registry.service.opg.digital'
