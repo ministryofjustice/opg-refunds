@@ -1,13 +1,8 @@
 <?php
 namespace AppTest\Service\Session;
 
-use Prophecy\Argument;
 use PHPUnit\Framework\TestCase;
-
-use App\Service\Session\KeyChain;
 use App\Service\Session\SessionManager;
-
-use Zend\Crypt\BlockCipher;
 use Aws\DynamoDb\SessionConnectionInterface as DynamoDbSessionConnectionInterface;
 
 class SessionManagerTest extends TestCase
@@ -15,33 +10,25 @@ class SessionManagerTest extends TestCase
 
     const TEST_SESSION_ID = 'test-session-id';
 
-    const BASE_ENC_KEY = 'test-encryption-key';
+    const HASH_ALGORITHM = 'sha256';
 
-    const HASH_ALGORITHM = 'sha512';
-
-    private $keys;
     private $dynamoDb;
-    private $blockCipher;
 
     protected function setUp()
     {
 
         $this->dynamoDb = $this->prophesize(DynamoDbSessionConnectionInterface::class);
-        $this->blockCipher = $this->prophesize(BlockCipher::class);
 
-        $this->keys = new KeyChain(
-            [ 1 => bin2hex(random_bytes(32)) ]
-        );
     }
 
     private function getSessionManager(){
-        return new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal(), $this->keys );
+        return new SessionManager( $this->dynamoDb->reveal() );
     }
 
     public function testCanInstantiate()
     {
 
-        $sm = new SessionManager( $this->dynamoDb->reveal(), $this->blockCipher->reveal(), new KeyChain );
+        $sm = new SessionManager( $this->dynamoDb->reveal() );
         $this->assertInstanceOf(SessionManager::class, $sm);
     }
 
@@ -63,25 +50,14 @@ class SessionManagerTest extends TestCase
 
     public function testCanWriteWithNewData()
     {
-
         $data = [ 'test'=>true ];
-        $testEncryptedData = '-data-';
+
+        $expected = base64_encode(gzdeflate(json_encode($data)));
 
         $sm = $this->getSessionManager();
 
-        // We expect the key to be set
-        $this->blockCipher->setKey( current($this->keys).self::TEST_SESSION_ID )
-            ->shouldBeCalled()
-            ->willReturn( $this->blockCipher->reveal() );
-
-        // We expect the compressed data to be passed to the Cipher.
-        $this->blockCipher->encrypt( gzdeflate(json_encode( $data )) )->shouldBeCalled();
-
-        // Setup some test encrypted data.
-        $this->blockCipher->encrypt( gzdeflate(json_encode( $data )) )->willReturn( $testEncryptedData );
-
         // We expect a base64 version of that data to be saved to DynamoDD
-        $this->dynamoDb->write( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ), key($this->keys).'.'.$testEncryptedData, true )->shouldBeCalled();
+        $this->dynamoDb->write( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ), $expected, true )->shouldBeCalled();
 
         $sm->write( self::TEST_SESSION_ID, $data );
     }
@@ -134,23 +110,17 @@ class SessionManagerTest extends TestCase
     public function testCanReadExistingData()
     {
         $data = [ 'test' => true ];
-        $testEncryptedData = '-data-';
+
+        $expected = base64_encode(gzdeflate(json_encode($data)));
 
         $sm = $this->getSessionManager();
 
         $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->shouldBeCalled();
 
-        // We expect the key to be set
-        $this->blockCipher->setKey( current($this->keys).self::TEST_SESSION_ID )
-            ->shouldBeCalled()
-            ->willReturn( $this->blockCipher->reveal() );
-
         $this->dynamoDb->read( hash( self::HASH_ALGORITHM, self::TEST_SESSION_ID ) )->willReturn([
             'expires' => time() + 1000,
-            'data' => key($this->keys).'.'.$testEncryptedData
+            'data' => $expected
         ]);
-
-        $this->blockCipher->decrypt( $testEncryptedData )->willReturn( gzdeflate(json_encode( $data )) );
 
         $result = $sm->read( self::TEST_SESSION_ID );
 
