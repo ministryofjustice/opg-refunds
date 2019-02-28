@@ -23,6 +23,8 @@ refunds-sessions-caseworker-front-<opg_stackname> |
 
 ## Consequences
 
+Using a AWS owned CMK, as opposed to a AWS managed CMK, means there will be no KMS level audit trail for DynamoDB encryption within CloudTrail.
+
 Release processes will be simpler and less prone to config drift.
 
 Config management by Salt is reduced.
