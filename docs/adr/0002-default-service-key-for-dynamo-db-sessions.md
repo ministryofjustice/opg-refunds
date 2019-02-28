@@ -14,7 +14,7 @@ This has resulted in one incident of losing syncronisation, causing errors for u
 
 ## Decision
 
-We will use the Default Service Key for the Sessions Dynamo DB tables to encrypt session tokens, and not push encryption keys into containers.
+We will use a AWS owned Customer Master Key for the Sessions Dynamo DB tables to encrypt session tokens, and not push encryption keys into containers.
 
 Table names                                       |
 --------------------------------------------------|
