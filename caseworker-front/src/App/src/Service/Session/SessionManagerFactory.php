@@ -36,31 +36,14 @@ class SessionManagerFactory
             }
         }
 
-        //  Set up the required keys
-        if (!isset($config['encryption']['keys'])) {
-            throw new UnexpectedValueException('Session encryption keys not configured');
-        }
-
-        //  Build the key chain
-        $keyChain = new KeyChain(explode(',', $config['encryption']['keys']));
-
-        //  TODO - This ksort is done the in EncryptedDynamoDB class too - perhaps it doesn't need to be done here
-        $keyChain->ksort();
-        $keys = $keyChain->getArrayCopy();
-
         //  Set up the connection to dynamoDB and the block cipher
         $dynamoDbConfig = $config['dynamodb'];
 
         $dynamoDbClient = new DynamoDbClient($dynamoDbConfig['client']);
         $connection = new SaveHandler\HashedKeyDynamoDbSessionConnection($dynamoDbClient, $dynamoDbConfig['settings']);
 
-        $blockCipher = BlockCipher::factory('openssl', [
-            'algo' => 'aes'
-        ]);
-
         //  Create the save handler for the session manager
-        $saveHandler = new SaveHandler\EncryptedDynamoDB($connection);
-        $saveHandler->setBlockCipher($blockCipher, $keys);
+        $saveHandler = new SaveHandler\DynamoDB($connection);
 
         //  Set up the session manager and return it
         $manager = new SessionManager();
