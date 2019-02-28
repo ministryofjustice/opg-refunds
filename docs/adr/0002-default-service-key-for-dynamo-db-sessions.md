@@ -30,3 +30,11 @@ Release processes will be simpler and less prone to config drift.
 Config management by Salt is reduced.
 
 Application code will be updated to use the Default Service Key, and not the keys provided by config management.
+
+## People
+
+Involved: Matt Machell, Andrew Pearce and Neil Smith
+
+Signed off by Matt Machell
+
+Joel Samuel (MoJ) was consulted.
