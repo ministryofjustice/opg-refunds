@@ -33,7 +33,7 @@ Application code will be updated to use the Default Service Key, and not the key
 
 ## People
 
-Involved: Matt Machell, Andrew Pearce and Neil Smith
+Involved: Matt Machell, Andrew Pearce, Richard McHale and Neil Smith
 
 Signed off by Matt Machell
 
