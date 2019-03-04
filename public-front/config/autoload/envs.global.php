@@ -97,11 +97,6 @@ return [
 
         'ttl' => 60 * 60 * 1, // 1 hour
 
-        'encryption' => [
-            // Keys must be in the format: <ident: int> => <key: 256 bit hex value>
-            'keys' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEYS') ?: null,
-        ],
-
         'dynamodb' => [
             'client' => [
                 'version' => '2012-08-10',

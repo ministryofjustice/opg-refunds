@@ -6,8 +6,6 @@ use Interop\Container\ContainerInterface;
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\StandardSessionConnection;
 
-use Zend\Crypt\BlockCipher;
-
 class SessionManagerFactory
 {
 
@@ -37,33 +35,6 @@ class SessionManagerFactory
 
         //---
 
-        if (!isset($config['encryption']['keys'])) {
-            throw new \UnexpectedValueException('Session encryption keys not configured');
-        }
-
-        $keys = explode(',', $config['encryption']['keys']);
-
-        $keyChain = new KeyChain;
-
-        foreach ($keys as $key) {
-            $items = explode(':', $key);
-
-            $value = hex2bin($items[1]);
-            if (count($items) != 2 || mb_strlen($value, '8bit') < 32) {
-                throw new \UnexpectedValueException('Session encryption key is too short');
-            }
-
-            $keyChain->offsetSet($items[0], $value);
-        }
-
-        $keyChain->ksort();
-
-        //---
-
-        $blockCipher = BlockCipher::factory('openssl', ['algo' => 'aes']);
-
-        //---
-
-        return new SessionManager($sessionConnection, $blockCipher, $keyChain);
+        return new SessionManager($sessionConnection);
     }
 }

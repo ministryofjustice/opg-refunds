@@ -3,24 +3,12 @@ namespace App\Service\Session;
 
 use Aws\DynamoDb\SessionConnectionInterface as DynamoDbSessionConnectionInterface;
 
-use Zend\Crypt\BlockCipher;
-
 class SessionManager
 {
-    /**
-     * @var KeyChain Available keys
-     */
-    private $keys;
-
     /**
      * @var DynamoDbSessionConnectionInterface
      */
     private $dynamoDbSessionConnection;
-
-    /**
-     * @var BlockCipher
-     */
-    private $blockCipher;
 
     /**
      * A hash of the data from the last read()
@@ -30,10 +18,8 @@ class SessionManager
     private $lastReadHash = null;
 
 
-    public function __construct(DynamoDbSessionConnectionInterface $connection, BlockCipher $blockCipher, KeyChain $keys)
+    public function __construct(DynamoDbSessionConnectionInterface $connection)
     {
-        $this->keys = $keys;
-        $this->blockCipher = $blockCipher;
         $this->dynamoDbSessionConnection = $connection;
     }
 
@@ -59,15 +45,8 @@ class SessionManager
             return false;
         }
 
-        /*
-         * Determine what key the session was encrypted with.
-         * If the key is not found the decrypt will fail and a new session started.
-         */
-        $data = explode('.', $data['data'], 2);
-        $key = $this->keys->offsetGet($data[0]);
-
-        // Decrypt
-        $data = $this->blockCipher->setKey($key.$id)->decrypt($data[1]);
+        // Decode
+        $data = base64_decode($data['data']);
 
         // Decompress
         $data = gzinflate($data);
@@ -101,12 +80,8 @@ class SessionManager
         // Compress
         $data = gzdeflate($data);
 
-        // Find the latest key and its ID.
-        $key = end($this->keys);
-        $keyId = key($this->keys);
-
-        // Encrypt
-        $data = $keyId.'.'.$this->blockCipher->setKey($key.$id)->encrypt($data);
+        // Encode
+        $data = base64_encode($data);
 
         // Save
         $this->dynamoDbSessionConnection->write($this->hashId($id), $data, $changed);
@@ -130,12 +105,12 @@ class SessionManager
      */
     private function hashId(string $id) : string
     {
-        return hash('sha512', $id);
+        return hash('sha256', $id);
     }
 
     /**
      * Hash used to check if the data has changed since the last read.
-     * $id is included to essentially invalidate the hash if a new session ID is created.
+     * $id is included to invalidate the hash if a new session ID is created.
      *
      * @param $id
      * @param $data
@@ -143,6 +118,6 @@ class SessionManager
      */
     private function hashLastRead(string $id, string $data) : string
     {
-        return hash('sha512', $id.$data);
+        return hash('sha256', $id.$data);
     }
 }
