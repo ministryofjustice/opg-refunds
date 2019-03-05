@@ -51,11 +51,6 @@ return [
             'gc_divisor' => 20,
         ],
 
-        'encryption' => [
-            // Keys must be in the format: <ident: int> => <key: 256 bit hex value>
-            'keys' => getenv('OPG_REFUNDS_CASEWORKER_FRONT_SESSION_ENCRYPTION_KEYS') ?: null,
-        ],
-
         'dynamodb' => [
             'client' => [
                 'version' => '2012-08-10',

@@ -29,9 +29,6 @@ class SessionManagerFactoryTest extends TestCase
                 ],
                 'settings' => array(),
             ],
-            'encryption' => [
-                'keys' => ''
-            ],
         ], array_flip($fields));
 
         return [ 'session' => $details ];
@@ -60,38 +57,6 @@ class SessionManagerFactoryTest extends TestCase
 
         $this->expectException(\UnexpectedValueException::class);
         $this->expectExceptionMessageRegExp( '/Dynamo DB/' );
-
-        $factory($this->container->reveal());
-    }
-
-
-    public function testFactoryWithoutEncryptionKeyConfigured()
-    {
-
-        $factory = new SessionManagerFactory();
-        $this->assertInstanceOf(SessionManagerFactory::class, $factory);
-
-        $this->container->get( 'config' )->willReturn( $this->getConfigArray(['ttl', 'dynamodb']) );
-
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessageRegExp( '/encryption/' );
-
-        $factory($this->container->reveal());
-    }
-
-    public function testFactoryWithoutEncryptionKeyTooShortConfigured()
-    {
-
-        $factory = new SessionManagerFactory();
-        $this->assertInstanceOf(SessionManagerFactory::class, $factory);
-
-        $config = $this->getConfigArray(['ttl', 'dynamodb', 'encryption']);
-        $config['session']['encryption']['keys'] = '1:1234';
-
-        $this->container->get( 'config' )->willReturn( $config );
-
-        $this->expectException(\UnexpectedValueException::class);
-        $this->expectExceptionMessageRegExp( '/short/' );
 
         $factory($this->container->reveal());
     }
