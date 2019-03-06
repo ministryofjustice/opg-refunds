@@ -30,14 +30,6 @@ class HealthCheckAction implements RequestHandlerInterface
 
         //---
 
-        $result['keys'] = [
-            'symmetric' => $this->canSessionKeysAreValid(),
-        ];
-
-        $result['keys']['ok'] = $result['keys']['symmetric']['ok'];
-
-        //---
-
         $result['db'] = ['ok'=>$this->canAccessDatabase()];
 
         //---
@@ -93,38 +85,6 @@ class HealthCheckAction implements RequestHandlerInterface
         }
 
         return false;
-    }
-
-    private function canSessionKeysAreValid()
-    {
-        $result = [
-            'number' => 0,
-            'ok' => false
-        ];
-
-        $config = $this->config['session'];
-
-        if (!isset($config['encryption']['keys'])) {
-            return $result;
-        }
-
-        $keys = explode(',', $config['encryption']['keys']);
-
-        $result['number'] = count($keys);
-
-        try {
-            foreach ($keys as $key) {
-                $items = explode(':', $key);
-                hex2bin($items[1]);
-            }
-
-            $result['ok'] = true;
-
-            return $result;
-        } catch (Throwable $e) {
-        }
-
-        return $result;
     }
 
     private function canAccessSessions()
