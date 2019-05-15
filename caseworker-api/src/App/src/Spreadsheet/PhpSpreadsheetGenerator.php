@@ -208,8 +208,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
 
         $resultsSheet->setCellValueByColumnAndRow(1, 1, 'Claim code');
         $resultsSheet->setCellValueByColumnAndRow(2, 1, 'Donor name');
-        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Received');
-        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Finished');
+        $resultsSheet->setCellValueByColumnAndRow(3, 1, 'Received (GMT)');
+        $resultsSheet->setCellValueByColumnAndRow(4, 1, 'Finished (GMT)');
         $resultsSheet->setCellValueByColumnAndRow(5, 1, 'Assigned to/Finished by');
         $resultsSheet->setCellValueByColumnAndRow(6, 1, 'Status');
 

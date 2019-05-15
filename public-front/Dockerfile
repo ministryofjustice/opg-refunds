@@ -12,6 +12,7 @@ RUN mkdir -p /srv/opg-refunds-public-front/application && \
 
 ADD docker/confd /etc/confd
 COPY docker/nginx/cache.conf /etc/nginx/app.conf.d/cache.conf
+COPY docker/nginx/redirect.conf /etc/nginx/app.conf.d/redirect.conf
 RUN cd /tmp && \
     curl -s https://getcomposer.org/installer | php && \
     cd /app && \
