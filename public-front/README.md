@@ -3,9 +3,9 @@ opg-refunds-public-front
 
 ## GOV.UK Assets
 
-Dependencies: Yarn
+Dependencies: NPM
 
-`yarn` to install dependencies
+`npm i` to install dependencies
 
 The project uses the following npm packages to generate the styles and necessary JavaScript.
 
@@ -13,7 +13,7 @@ The project uses the following npm packages to generate the styles and necessary
 - govuk_elements
 - govuk_frontend_toolkit
 
-`yarn run build` will:
+`npm run build` will:
 
 - concatenate and compress the JavaScript into:
   - main.js (all thirdparty scripts)
