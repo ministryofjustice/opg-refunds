@@ -2,7 +2,7 @@ version: '2'
 
 services:
   router:
-    image: registry.service.opg.digital/opg-nginx-router-1604
+    image: registry.service.opg.digital/opg-nginx-router-1604:0.0.318
     ports:
       - 80:80
       - 443:443
