@@ -1,4 +1,4 @@
-from registry.service.opg.digital/opg-golang-alpine:0.0.318
+from registry.service.opg.digital/opg-golang-alpine
 
 ARG LIB_VERSION="0.0.3"
 ARG LIB_PATH="$GOPATH/src/github.com/NSmithUK/local-sns-go"
