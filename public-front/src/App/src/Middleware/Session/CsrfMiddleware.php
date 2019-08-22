@@ -8,7 +8,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 
-use Zend\Math\BigInteger\BigInteger;
+use ParagonIE\ConstantTime;
 
 /**
  * Injects a CSRF secret into the session.
@@ -39,13 +39,10 @@ class CsrfMiddleware implements ServerMiddlewareInterface
      * Returns a randomly generated session id.
      *
      * @return string
+     * @throws \Exception
      */
     private function generateSecret() : string
     {
-        return BigInteger::factory('bcmath')->baseConvert(
-            bin2hex(random_bytes(64)),
-            16,
-            62
-        );
+        return ConstantTime\Base64UrlSafe::encode(random_bytes(64));
     }
 }
