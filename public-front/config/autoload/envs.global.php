@@ -61,7 +61,7 @@ return [
             'client' => [
                 'version' => '2014-11-01',
                 'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_ENDPOINT') ?: null,
-                'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION') ?: null,
+                'region' => 'eu-west-1',
                 'timeout' => 2.0,
             ],
             'settings' => [
@@ -101,7 +101,7 @@ return [
             'client' => [
                 'version' => '2012-08-10',
                 'endpoint' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_ENDPOINT') ?: null,
-                'region' => getenv('OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION') ?: null,
+                'region' => 'eu-west-1',
                 'timeout' => 2.0,
             ],
             'settings' => [
@@ -115,7 +115,7 @@ return [
     'log' => [
 
         'logstash' => [
-            'path' => '/var/log/app/application.log',
+            'path' => '/tmp/application.log',
         ],
 
         'priorities' => [
