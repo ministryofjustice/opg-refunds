@@ -5,3 +5,4 @@ public/assets/govuk_elements/stylesheets/elements*
 /local-staff
 /coverage
 yarn-error.log
+/vendor
