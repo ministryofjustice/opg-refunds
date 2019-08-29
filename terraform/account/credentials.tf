@@ -4,9 +4,13 @@ terraform {
     key            = "moj-lpa-refunds-account/terraform.tfstate"
     encrypt        = true
     region         = "eu-west-1"
-    role_arn       = "arn:aws:iam::311462405659:role/state_write"
+    role_arn       = "arn:aws:iam::311462405659:role/opg-refunds-ci"
     dynamodb_table = "remote_lock"
   }
+}
+
+variable "default_role" {
+  default = "opg-refunds-ci"
 }
 
 provider "aws" {
@@ -28,30 +32,14 @@ provider "aws" {
   }
 }
 
-variable "default_role" {
-  default = "opg-refunds-ci"
-}
-
-variable "management_role" {
-  default = "opg-refunds-ci"
-}
 
 provider "aws" {
   region = "eu-west-1"
   alias  = "management"
 
   assume_role {
-    role_arn     = "arn:aws:iam::311462405659:role/${var.management_role}"
+    role_arn     = "arn:aws:iam::311462405659:role/${var.default_role}"
     session_name = "terraform-session"
   }
 }
 
-provider "aws" {
-  region = "eu-west-1"
-  alias  = "opg-lpa-prod"
-
-  assume_role {
-    role_arn     = "arn:aws:iam::550790013665:role/${var.default_role}"
-    session_name = "terraform-session"
-  }
-}
