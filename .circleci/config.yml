@@ -1,0 +1,105 @@
+version: 2.1
+
+workflows:
+  pr-build-and-test:
+    jobs:
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: lint_and_validate_terraform
+          filters:
+            branches:
+              ignore: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: dev_account_apply_terraform
+          workspace: development
+          requires: [lint_and_validate_terraform]
+          filters:
+            branches:
+              ignore: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: preprod_account_apply_terraform
+          workspace: preproduction
+          filters:
+            branches:
+              only: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: prod_account_apply_terraform
+          workspace: production
+          requires: [preprod_account_apply_terraform]
+          filters:
+            branches:
+              only: master
+
+orbs:
+  infrastructure_and_deployment:
+    commands:
+      install_aws_cli:
+        steps:
+          - run:
+              name: Install AWS CLI
+              command: sudo pip3 install awscli --upgrade
+      install_terraform:
+        steps:
+          - run:
+              name: Install Terraform
+              command: |
+                export TERRAFORM_VERSION=0.12.5
+                export TERRAFORM_SHA256SUM=babb4a30b399fb6fc87a6aa7435371721310c2e2102a95a763ef2c979ab06ce2
+                curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
+                rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    executors:
+      python:
+        docker: [image: circleci/python]
+      terraform:
+        docker: [image: hashicorp/terraform:0.12.5]
+    jobs:
+      #----------------------------------------------------
+      # Terraform
+      lint_and_validate_terraform:
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        executor: terraform
+        steps:
+          - checkout
+          - run:
+              name: terraform lint
+              command: terraform fmt -diff -check -recursive
+          - run:
+              name: Validate Account Terraform
+              command: |
+                terraform --version
+                cd ~/project/terraform/terraform_account
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=development >> $BASH_ENV
+                echo $TF_WORKSPACE
+                terraform validate
+
+      apply_account_terraform:
+        #
+        # Apply the shared terraform configuration. This:
+        #   - Updates the account infrastructure;
+        #
+        executor: terraform
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: development
+        steps:
+          - checkout
+          - run:
+              name: Apply Account Terraform
+              command: |
+                cd ~/project/terraform/terraform_account
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=<<parameters.workspace>>
+                echo $TF_WORKSPACE
+                terraform apply -lock-timeout=300s --auto-approve
