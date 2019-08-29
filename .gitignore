@@ -3,3 +3,5 @@
 .vscode
 venv
 /OPG Returns Paw.paw
+.circleci/stash.yml
+terraform/account/.terraform
