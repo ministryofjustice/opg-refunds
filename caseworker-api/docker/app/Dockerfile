@@ -7,15 +7,16 @@ RUN composer install --prefer-dist --no-suggest --no-interaction --no-scripts --
 FROM php:7-fpm-alpine
 
 # Postgres lib needs to remain in the container
-RUN apk add --update --no-cache postgresql-libs libpng
+RUN apk add --update --no-cache postgresql-libs libpng libzip
 
 # Postgres dev lib is temporary
-RUN apk add --update --no-cache --virtual .build-dependencies $PHPIZE_DEPS postgresql-dev libpng-dev \
+RUN apk add --update --no-cache --virtual .build-dependencies $PHPIZE_DEPS postgresql-dev libpng-dev libzip-dev \
         && pecl install xdebug \
         && pecl clear-cache \
         && docker-php-ext-install pgsql pdo_pgsql \
         && docker-php-ext-install opcache \
         && docker-php-ext-install gd \
+        && docker-php-ext-install zip \
         && apk del .build-dependencies
 
 COPY caseworker-api /app
