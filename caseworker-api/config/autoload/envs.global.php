@@ -8,7 +8,7 @@ return [
     'password_reset_ttl' => 60 * 60 * 1, //  1 hour
 
     'ingestion' => [
-        'enabled' => (bool)getenv('OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED'),
+        'enabled' => (bool)(getenv('OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT') ?: false),
     ],
 
     'security' => [
@@ -16,7 +16,7 @@ return [
         'kms' => [
             'client' => [
                 'version' => '2014-11-01',
-                'region' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_REGION') ?: null,
+                'region' => 'eu-west-1',
                 'endpoint' => getenv('OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT') ?: null,
                 'timeout' => 2.0
             ],
