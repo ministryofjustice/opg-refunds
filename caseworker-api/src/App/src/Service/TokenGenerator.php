@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-use Zend\Math\BigInteger\BigInteger;
+use ParagonIE\ConstantTime;
 use Exception;
 
 /**
@@ -19,11 +19,6 @@ class TokenGenerator
      */
     public function generate()
     {
-        $token = bin2hex(random_bytes(32));
-
-        // Use base62 for shorter tokens
-        $token = BigInteger::factory('bcmath')->baseConvert($token, 16, 62);
-
-        return $token;
+        return ConstantTime\Base64UrlSafe::encode(random_bytes(32));
     }
 }
