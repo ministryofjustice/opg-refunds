@@ -8,6 +8,18 @@ workflows:
           filters:
             branches:
               ignore: master
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: validate_preproduction_terraform
+          workspace: preproduction
+          filters:
+            branches:
+              ignore: master
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: validate_production_terraform
+          workspace: production
+          filters:
+            branches:
+              ignore: master
 
       - infrastructure_and_deployment/apply_account_terraform:
           name: dev_account_apply_terraform
