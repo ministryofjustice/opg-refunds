@@ -146,7 +146,7 @@ services:
     #      - localstack
     #      - local-config
     environment:
-      API_URL: 'https://api'
+      API_URL: 'http://caseworker-api-web'
       OPG_REFUNDS_PUBLIC_FRONT_HOSTNAME: 'localhost:9001'
       OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_TABLE: 'CaseworkerSessions'
 
@@ -192,6 +192,91 @@ services:
       TARGET_HOST: 'caseworker-front-web'
       TARGET_PORT: '80'
 
+  # ---------------------------
+  # Caseworker API
+
+  caseworker-api-web:
+    container_name: caseworker-api-web
+    image: caseworker-api-web
+    ports:
+      - 9003:80
+    depends_on:
+      - caseworker-api-app
+    volumes:
+      - ./caseworker-api/public:/web
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/web/Dockerfile
+    environment:
+      APP_HOST: caseworker-api-app
+      APP_PORT: 9000
+      NGINX_LOG_LEVEL: warn
+
+  caseworker-api-app:
+    container_name: caseworker-api-app
+    image: caseworker-api-app
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/app/Dockerfile
+    volumes:
+      - ./caseworker-api:/app
+    depends_on:
+      - caseworker-api-composer
+    #      - dynamodb
+    #      - localstack
+    #      - local-config
+    environment:
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT: 'http://kms:8080'
+
+      OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_APPLICATIONS_PORT: '5432'
+      OPG_REFUNDS_DB_APPLICATIONS_NAME: 'applications'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME: 'applications_full'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD: 'applications_full'
+
+      OPG_REFUNDS_DB_CASES_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_CASES_PORT: '5432'
+      OPG_REFUNDS_DB_CASES_NAME: 'cases'
+      OPG_REFUNDS_DB_CASES_FULL_USERNAME: 'cases_full'
+      OPG_REFUNDS_DB_CASES_FULL_PASSWORD: 'cases_full'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_SSCL_ENTITY: '0123'
+      OPG_REFUNDS_SSCL_COST_CENTRE: '99999999'
+      OPG_REFUNDS_SSCL_ACCOUNT: '123450000'
+      OPG_REFUNDS_SSCL_ANALYSIS: '12345678'
+
+      # Fake account, deliberately committed.
+      OPG_REFUNDS_CASEWORKER_ADMIN_NAME: 'Admin User 01'
+      OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME: 'testing@example.com'
+      OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD: 'pass1234'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_BANK_HASH_SALT: '00000000000000000000000000000000'
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=caseworker-api-app
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  caseworker-api-composer:
+    image: caseworker-api-composer
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/composer/Dockerfile
+    volumes:
+      - ./caseworker-api:/app
+    command:
+      - install
+      - --prefer-dist
+      - --no-suggest
+      - --no-interaction
+      - --no-scripts
+      - --optimize-autoloader
 
   # ---------------------------
 
