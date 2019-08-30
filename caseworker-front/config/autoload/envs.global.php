@@ -4,7 +4,7 @@ use Zend\Log\Logger;
 
 return [
 
-    'api_base_uri' => 'https://' . (getenv('API_HOSTNAME') ?: 'api'),
+    'api_base_uri' => getenv('API_URL') ?: null,
 
     'notify' => [
         'api' => [
@@ -15,7 +15,7 @@ return [
     // Assisted digital
     'ad' => [
         'link' => [
-            'domain' => getenv('OPG_REFUNDS_PUBLIC_FRONT_URL') ?: null,
+            'domain' => getenv('OPG_REFUNDS_PUBLIC_FRONT_HOSTNAME') ?: null,
             'signature' => [
                 'key' => getenv('OPG_REFUNDS_AD_LINK_SIGNATURE_KEY') ?: null,
             ]
@@ -27,7 +27,7 @@ return [
         // ini session.* settings...
         'native_settings' => [
             //  The cookie name used in the session
-            'name' => 'rs',
+            'name' => 'rs_cw',
 
             //  Hash settings
             'hash_function' => 'sha512',
@@ -55,11 +55,7 @@ return [
             'client' => [
                 'version' => '2012-08-10',
                 'endpoint' => getenv('OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_ENDPOINT') ?: null,
-                'region' => getenv('OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_REGION') ?: null,
-                'credentials' => ( getenv('AWS_ACCESS_KEY_ID') && getenv('AWS_SECRET_ACCESS_KEY') ) ? [
-                    'key'    => getenv('AWS_ACCESS_KEY_ID'),
-                    'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
-                ] : null,
+                'region' => 'eu-west-1',
                 'timeout' => 2.0,
             ],
             'settings' => [

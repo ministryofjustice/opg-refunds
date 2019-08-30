@@ -32,7 +32,7 @@
 
         <h2 class="heading-medium heading-refunds">My claims</h2>
 
-        <?php if (count($user->getClaims()) > 0) { ?>
+        <?php if (!is_null($user->getClaims()) && count($user->getClaims()) > 0) { ?>
 
         <table>
             <thead>
