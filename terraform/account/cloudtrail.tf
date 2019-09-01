@@ -18,6 +18,12 @@ resource "aws_cloudtrail" "cloudtrail" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "example" {
+  bucket = "${aws_s3_bucket.example.id}"
+
+  block_public_acls   = true
+  block_public_policy = true
+}
 resource "aws_cloudwatch_log_group" "cloudtrail_logs" {
   name = "cloudtrail_logs"
 }
@@ -78,6 +84,13 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
   }
 
   policy = data.aws_iam_policy_document.cloudtrail_bucket_policy.json
+}
+
+resource "aws_s3_bucket_public_access_block" "cloudtrail_logs" {
+  bucket = aws_s3_bucket.cloudtrail_logs.id
+
+  block_public_acls   = true
+  block_public_policy = true
 }
 
 data "aws_iam_policy_document" "cloudtrail_bucket_policy" {
