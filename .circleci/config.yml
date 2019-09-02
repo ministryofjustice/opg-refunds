@@ -15,6 +15,7 @@ workflows:
           name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
+          build_composer_container: true
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: lint_and_validate_terraform
           filters:
@@ -90,6 +91,9 @@ orbs:
             description: The ecr repo name up to _app or _web. These will be assumed to be present and added by the job.
           service_path:
             type: string
+          build_composer_container:
+            type: boolean
+            default: false
         steps:
           - checkout
           - install_aws_cli
@@ -103,7 +107,9 @@ orbs:
           - run:
               name: Build caseworker-api-composer container
               command: |
-                docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+                if [ << parameters.build_composer_container >> ]; then
+                  docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+                fi
           - run:
               name: Build web container
               command: |
