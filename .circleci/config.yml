@@ -141,6 +141,7 @@ orbs:
                 else
                   # Else, push branch tag only
                   docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
+                fi
           - run:
               name: Push app container
               command: |
@@ -153,6 +154,7 @@ orbs:
                 else
                   # Else, push branch tag only
                   docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                fi
           - run:
               name: Push caseworker-api-ingestion container
               command: |
