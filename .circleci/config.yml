@@ -109,24 +109,32 @@ orbs:
               command: |
                 if [ << parameters.build_composer_container >> = true ]; then
                   docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+                else
+                  echo "skipped"
                 fi
           - run:
               name: Build web container
               command: |
                 if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
                   docker build -f << parameters.service_path >>/docker/web/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web .
+                else
+                  echo "skipped"
                 fi
           - run:
               name: Build app container
               command: |
                 if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
                   docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
+                else
+                  echo "skipped"
                 fi
           - run:
               name: Build caseworker-api-ingestion container
               command: |
                 if [ << parameters.service_path >> == "caseworker-api-ingestion" ]; then
                   docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> .
+                else
+                  echo "skipped"
                 fi
           - ecr_login
           - run:
@@ -143,6 +151,8 @@ orbs:
                     # Else, push branch tag only
                     docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
                   fi
+                else
+                  echo "skipped"
                 fi
           - run:
               name: Push app container
@@ -158,6 +168,8 @@ orbs:
                     # Else, push branch tag only
                     docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
                   fi
+                else
+                  echo "skipped"
                 fi
           - run:
               name: Push caseworker-api-ingestion container
@@ -172,7 +184,9 @@ orbs:
                   else
                     # Else, push branch tag only
                     docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
-                  fi                  
+                  fi
+                else
+                  echo "skipped"
                 fi
   infrastructure_and_deployment:
     commands:
