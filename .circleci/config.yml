@@ -115,24 +115,16 @@ orbs:
           - run:
               name: Build web container
               command: |
-                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
-                  docker build -f << parameters.service_path >>/docker/web/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web .
-                else
-                  echo "skipped"
-                fi
+                docker build -f << parameters.service_path >>/docker/web/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web .
           - run:
               name: Build app container
               command: |
-                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
-                  docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
-                else
-                  echo "skipped"
-                fi
+                docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
           - run:
               name: Build caseworker-api-ingestion container
               command: |
-                if [ << parameters.service_path >> == "caseworker-api-ingestion" ]; then
-                  docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> .
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
+                  docker build -f << parameters.service_path >>/docker/ingestion/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> .
                 else
                   echo "skipped"
                 fi
@@ -140,41 +132,31 @@ orbs:
           - run:
               name: Push web container
               command: |
-                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
-                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
-                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                    # If master, push branch tag and latest
-                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:latest
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web
-                  else
-                    # Else, push branch tag only
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
-                  fi
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web
                 else
-                  echo "skipped"
-                fi
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
           - run:
               name: Push app container
               command: |
-                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
-                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
-                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                    # If master, push branch tag and latest
-                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
-                  else
-                    # Else, push branch tag only
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
-                  fi
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
                 else
-                  echo "skipped"
-                fi
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
           - run:
               name: Push caseworker-api-ingestion container
               command: |
-                if [ << parameters.service_path >> == "caseworker-api-ingestion" ]; then
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
                   export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
                   docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
                   if [ "${CIRCLE_BRANCH}" == "master" ]; then
