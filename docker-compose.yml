@@ -1,13 +1,13 @@
 version: '2'
 
 services:
-  router:
-    image: registry.service.opg.digital/opg-nginx-router-1604:0.0.318
-    links:
-      - front
-      - caseworker
-      - api
-      - maintenance
+#  router:
+#    image: registry.service.opg.digital/opg-nginx-router-1604:0.0.318
+#    links:
+#      - front
+#      - caseworker
+#      - api
+#      - maintenance
 
   # ---------------------------
   # Local Services
@@ -279,44 +279,86 @@ services:
       - --optimize-autoloader
 
   # ---------------------------
+  # Ingestion
 
-  maintenance:
-    build: ../opg-refunds-maintenance
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
-    volumes:
-      - ../opg-refunds-maintenance:/app
-
-  front:
-    build: ./public-front
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
-    volumes:
-      - ./public-front:/app
-    links:
-      - postgres
-      - dynamodb
-      - kms
-
-  caseworker:
-    build: ./caseworker-front
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-    volumes:
-      - ./caseworker-front:/app
-    links:
-      - dynamodb
-      - kms
-
-  api:
-    build: ./caseworker-api
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
+  caseworker-api-ingestion:
+    container_name: caseworker-api-ingestion
+    image: caseworker-api-ingestion
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/ingestion/Dockerfile
     volumes:
       - ./caseworker-api:/app
-    links:
-      - postgres
+    depends_on:
+      - caseworker-api-composer
       - dynamodb
+      - local-config
+      - postgres
+    environment:
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED: 'true'
+
+      OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_APPLICATIONS_PORT: '5432'
+      OPG_REFUNDS_DB_APPLICATIONS_NAME: 'applications'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME: 'applications_full'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD: 'applications_full'
+
+      OPG_REFUNDS_DB_CASES_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_CASES_PORT: '5432'
+      OPG_REFUNDS_DB_CASES_NAME: 'cases'
+      OPG_REFUNDS_DB_CASES_FULL_USERNAME: 'cases_full'
+      OPG_REFUNDS_DB_CASES_FULL_PASSWORD: 'cases_full'
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=caseworker-api-ingestion
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  # We mount the same code as caseworker-api-app locally, so no need for a separate composer service.
+
+  # ---------------------------
+
+#  maintenance:
+#    build: ../opg-refunds-maintenance
+#    # Currently the registry has no images so we have to build locally
+#    # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
+#    volumes:
+#      - ../opg-refunds-maintenance:/app
+#
+#  front:
+#    build: ./public-front
+#    # Currently the registry has no images so we have to build locally
+#    # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
+#    volumes:
+#      - ./public-front:/app
+#    links:
+#      - postgres
+#      - dynamodb
+#      - kms
+#
+#  caseworker:
+#    build: ./caseworker-front
+#    # Currently the registry has no images so we have to build locally
+#    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
+#    volumes:
+#      - ./caseworker-front:/app
+#    links:
+#      - dynamodb
+#      - kms
+#
+#  api:
+#    build: ./caseworker-api
+#    # Currently the registry has no images so we have to build locally
+#    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
+#    volumes:
+#      - ./caseworker-api:/app
+#    links:
+#      - postgres
+#      - dynamodb
 
   postgres:
     image: postgres:9.6.2
