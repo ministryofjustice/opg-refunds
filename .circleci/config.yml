@@ -119,7 +119,14 @@ orbs:
           - run:
               name: Build app container
               command: |
-                docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
+                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
+                  docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
+                fi
+          - run:
+              name: Build caseworker-api-ingestion container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api-ingestion" ]; then
+                  docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> .
           - ecr_login
           - run:
               name: Push web container
@@ -139,15 +146,32 @@ orbs:
           - run:
               name: Push app container
               command: |
-                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
-                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
-                if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  # If master, push branch tag and latest
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
-                else
-                  # Else, push branch tag only
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
+                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                    # If master, push branch tag and latest
+                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
+                  else
+                    # Else, push branch tag only
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                  fi
+                fi
+          - run:
+              name: Push caseworker-api-ingestion container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api-ingestion" ]; then
+                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
+                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                    # If master, push branch tag and latest
+                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:latest
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>
+                  else
+                    # Else, push branch tag only
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
+                  fi                  
                 fi
   infrastructure_and_deployment:
     commands:
