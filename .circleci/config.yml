@@ -101,6 +101,10 @@ orbs:
               command: |
                 git checkout LPA-3334-ecs-move
           - run:
+              name: Build caseworker-api-composer container
+              command: |
+                docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+          - run:
               name: Build web container
               command: |
                 if [ << parameters.service_path >> != "caseworker-api-ingestion" ]; then
