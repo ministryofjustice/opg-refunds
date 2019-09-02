@@ -4,15 +4,15 @@ workflows:
   pr-build-and-test:
     jobs:
       - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
-          name: public front docker build
+          name: public_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
       - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
-          name: caseworker front docker build
+          name: caseworker_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
       - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
-          name: caseworker api docker build
+          name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
       - infrastructure_and_deployment/lint_and_validate_terraform:
