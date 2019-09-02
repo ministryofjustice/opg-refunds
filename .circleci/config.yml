@@ -107,7 +107,7 @@ orbs:
           - run:
               name: Build caseworker-api-composer container
               command: |
-                if [ << parameters.build_composer_container >> ]; then
+                if [ << parameters.build_composer_container >> = true ]; then
                   docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
                 fi
           - run:
