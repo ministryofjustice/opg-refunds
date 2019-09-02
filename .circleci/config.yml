@@ -158,14 +158,14 @@ orbs:
               command: |
                 if [ << parameters.service_path >> == "caseworker-api" ]; then
                   export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >> << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
+                  docker tag << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
                   if [ "${CIRCLE_BRANCH}" == "master" ]; then
                     # If master, push branch tag and latest
-                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:latest
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>
+                    docker tag << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion:latest
+                    docker push << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion
                   else
                     # Else, push branch tag only
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>:$CIRCLE_BRANCH-$SHORT_HASH
+                    docker push << parameters.ecr_url >>/lpa-refunds/caseworker_api_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
                   fi
                 else
                   echo "skipped"
