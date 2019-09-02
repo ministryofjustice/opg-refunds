@@ -5,3 +5,6 @@ venv
 /OPG Returns Paw.paw
 .circleci/stash.yml
 terraform/account/.terraform
+terraform/environment/.terraform
+terraform/account_ingress/.terraform
+terraform/environment/notes
