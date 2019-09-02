@@ -40,3 +40,9 @@ resource "aws_s3_bucket_policy" "access_log" {
   bucket = aws_s3_bucket.access_log.id
   policy = data.aws_iam_policy_document.loadbalancer_logging.json
 }
+
+resource "aws_s3_bucket_public_access_block" "access_log" {
+  bucket              = aws_s3_bucket.access_log.id
+  block_public_acls   = true
+  block_public_policy = true
+}

@@ -81,8 +81,7 @@ resource "aws_s3_bucket" "cloudtrail_logs" {
 }
 
 resource "aws_s3_bucket_public_access_block" "cloudtrail_logs" {
-  bucket = aws_s3_bucket.cloudtrail_logs.id
-
+  bucket              = aws_s3_bucket.cloudtrail_logs.id
   block_public_acls   = true
   block_public_policy = true
 }
