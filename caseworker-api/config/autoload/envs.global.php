@@ -8,7 +8,7 @@ return [
     'password_reset_ttl' => 60 * 60 * 1, //  1 hour
 
     'ingestion' => [
-        'enabled' => (bool)(getenv('OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT') ?: false),
+        'enabled' => (bool)(getenv('OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED') ?: false),
     ],
 
     'security' => [
