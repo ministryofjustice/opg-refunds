@@ -214,12 +214,23 @@ orbs:
           - run:
               name: Validate Account Terraform
               command: |
-                terraform --version
+                ENV_NAME=<<parameters.workspace>>
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=development >> $BASH_ENV
+                export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
                 terraform validate
+          - run:
+              name: validate Environment Terraform
+              command: |
+                ENV_NAME=<<parameters.workspace>>
+                export SHORT_HASH=${CIRCLE_SHA1:0:7}
+                echo $SHORT_HASH
+                cd ~/project/terraform/environment
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=${ENV_NAME:0:13}
+                echo $TF_WORKSPACE
+                terraform apply                
 
       apply_account_terraform:
         #
