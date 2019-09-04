@@ -3,12 +3,18 @@ variable "account_mapping" {
   type = "map"
 }
 
+variable "container_version" {
+  type    = string
+  default = "latest"
+}
+
 variable "accounts" {
   type = map(
     object({
       account_id                           = string
       is_production                        = string
       public_front_certificate_domain_name = string
+      public_front_dns                     = string
     })
   )
 }
@@ -16,9 +22,10 @@ variable "accounts" {
 locals {
   opg_project = "lpa refunds"
 
-  account_name = lookup(var.account_mapping, terraform.workspace, "development")
-  account      = var.accounts[local.account_name]
-  environment  = terraform.workspace
+  account_name      = lookup(var.account_mapping, terraform.workspace, "development")
+  account           = var.accounts[local.account_name]
+  environment       = terraform.workspace
+  dns_namespace_env = local.account_name != "development" ? "" : "${local.environment}."
 
 
   mandatory_moj_tags = {
