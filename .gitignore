@@ -8,3 +8,4 @@ terraform/account/.terraform
 terraform/environment/.terraform
 terraform/account_ingress/.terraform
 terraform/environment/notes
+terraform/account/notes
