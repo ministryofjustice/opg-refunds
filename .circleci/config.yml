@@ -18,18 +18,21 @@ workflows:
           build_composer_container: true
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: lint_and_validate_terraform
+          account_workspace: development
           filters:
             branches:
               ignore: master
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_preproduction_terraform
-          workspace: preproduction
+          account_workspace: preproduction
+          environment_workspace: preproduction
           filters:
             branches:
               ignore: master
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_production_terraform
-          workspace: production
+          account_workspace: production
+          environment_workspace: production
           filters:
             branches:
               ignore: master
@@ -201,7 +204,10 @@ orbs:
       # Terraform
       lint_and_validate_terraform:
         parameters:
-          workspace:
+          account_workspace:
+            description: Terraform workspace name
+            type: string
+          environment_workspace:
             description: Terraform workspace name
             type: string
             default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
@@ -214,23 +220,23 @@ orbs:
           - run:
               name: Validate Account Terraform
               command: |
-                ENV_NAME=<<parameters.workspace>>
+                ENV_NAME=<<parameters.account_workspace>>
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
                 terraform validate
           - run:
-              name: validate Environment Terraform
+              name: Validate Environment Terraform
               command: |
-                ENV_NAME=<<parameters.workspace>>
+                ENV_NAME=<<parameters.environment_workspace>>
                 export SHORT_HASH=${CIRCLE_SHA1:0:7}
                 echo $SHORT_HASH
                 cd ~/project/terraform/environment
                 terraform init -lock-timeout=300s
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
-                terraform apply                
+                terraform validate
 
       apply_account_terraform:
         #
