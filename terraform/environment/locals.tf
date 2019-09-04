@@ -6,8 +6,9 @@ variable "account_mapping" {
 variable "accounts" {
   type = map(
     object({
-      account_id    = string
-      is_production = string
+      account_id                           = string
+      is_production                        = string
+      public_front_certificate_domain_name = string
     })
   )
 }
@@ -15,9 +16,9 @@ variable "accounts" {
 locals {
   opg_project = "lpa refunds"
 
-  account_name     = lookup(var.account_mapping, terraform.workspace, "development")
-  account          = var.accounts[local.account_name]
-  environment_name = terraform.workspace
+  account_name = lookup(var.account_mapping, terraform.workspace, "development")
+  account      = var.accounts[local.account_name]
+  environment  = terraform.workspace
 
 
   mandatory_moj_tags = {
@@ -28,7 +29,7 @@ locals {
   }
 
   optional_tags = {
-    environment-name       = local.environment_name
+    environment-name       = local.environment
     infrastructure-support = "OPG LPA Product Team: opgteam+online-lpa@digital.justice.gov.uk"
     runbook                = "https://github.com/ministryofjustice/opg-webops-runbooks/tree/master/LPA"
     source-code            = "https://github.com/ministryofjustice/opg-lpa"
