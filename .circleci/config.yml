@@ -313,4 +313,4 @@ orbs:
                 terraform init -lock-timeout=300s
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
-                terraform apply -lock-timeout=300s --auto-approve
+                terraform apply -lock-timeout=300s -auto-approve -var container_version=$CIRCLE_BRANCH-$SHORT_HASH
