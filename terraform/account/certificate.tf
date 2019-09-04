@@ -23,4 +23,30 @@ resource "aws_acm_certificate_validation" "certificate_public_front" {
 resource "aws_acm_certificate" "certificate_public_front" {
   domain_name       = local.account.public_front_certificate_domain_name
   validation_method = "DNS"
+  lifecycle {
+    create_before_destroy = true
+  }
+  tags = local.default_tags
 }
+
+
+//------------------------
+// Public Front Cloudfront Certificates
+
+resource "aws_acm_certificate" "cloudfront_public_front" {
+  domain_name       = local.account.public_front_certificate_domain_name
+  validation_method = "DNS"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+  provider = aws.us_east_1
+  tags     = local.default_tags
+}
+
+resource "aws_acm_certificate_validation" "cloudfront_public_front" {
+  certificate_arn         = aws_acm_certificate.cloudfront_public_front.arn
+  validation_record_fqdns = [aws_route53_record.certificate_validation_public_front.fqdn]
+  provider                = aws.us_east_1
+}
+
