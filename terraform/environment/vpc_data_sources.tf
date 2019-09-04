@@ -29,3 +29,7 @@ data "aws_acm_certificate" "certificate_public_front" {
 module "whitelist" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
 }
+
+data "aws_ip_ranges" "cloudfront" {
+  services = ["cloudfront"]
+}
