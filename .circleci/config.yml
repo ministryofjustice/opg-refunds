@@ -46,7 +46,7 @@ workflows:
               ignore: master
 
       - infrastructure_and_deployment/apply_environment_terraform:
-          name: dev_account_apply_terraform
+          name: dev_environment_apply_terraform
           requires:
             [
               dev_account_apply_terraform,
@@ -65,6 +65,19 @@ workflows:
             branches:
               only: master
 
+      - infrastructure_and_deployment/apply_environment_terraform:
+          name: preprod_environment_apply_terraform
+          requires:
+            [
+              preprod_account_apply_terraform,
+              public_front_docker_build,
+              caseworker_front_docker_build,
+              caseworker_api_docker_build,
+            ]
+          filters:
+            branches:
+              ignore: master
+
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
@@ -72,6 +85,12 @@ workflows:
           filters:
             branches:
               only: master
+      - infrastructure_and_deployment/apply_environment_terraform:
+          name: prod_environment_apply_terraform
+          requires: [prod_account_apply_terraform]
+          filters:
+            branches:
+              ignore: master
 
 orbs:
   build_containers_and_push_to_ecr:
