@@ -58,6 +58,13 @@ workflows:
             branches:
               ignore: master
 
+      - slack_notify_domain:
+          name: post_environment_domains
+          requires: [dev_environment_apply_terraform]
+          filters:
+            branches:
+              ignore: master
+
       - infrastructure_and_deployment/apply_account_terraform:
           name: preprod_account_apply_terraform
           workspace: preproduction
@@ -93,6 +100,7 @@ workflows:
               only: master
 
 orbs:
+  slack: circleci/slack@3.3.0
   build_containers_and_push_to_ecr:
     commands:
       install_aws_cli:
@@ -314,3 +322,19 @@ orbs:
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s -auto-approve -var container_version=$CIRCLE_BRANCH-$SHORT_HASH
+jobs:
+  slack_notify_domain:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Get URLs
+          command: |
+            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+      - slack/notify:
+          title: "LPA Refunds Development Environment Ready"
+          message: "front url: https://$FRONT_DOMAIN/home \nadmin url: https://$CASEWORKER_DOMAIN"
