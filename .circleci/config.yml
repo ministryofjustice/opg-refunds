@@ -76,7 +76,7 @@ workflows:
             ]
           filters:
             branches:
-              ignore: master
+              only: master
 
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
@@ -90,7 +90,7 @@ workflows:
           requires: [prod_account_apply_terraform]
           filters:
             branches:
-              ignore: master
+              only: master
 
 orbs:
   build_containers_and_push_to_ecr:
