@@ -322,6 +322,10 @@ orbs:
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s -auto-approve -var container_version=$CIRCLE_BRANCH-$SHORT_HASH
+          - persist_to_workspace:
+              root: /tmp
+              paths:
+                - environment_pipeline_tasks_config.json
 jobs:
   slack_notify_domain:
     docker:
@@ -337,4 +341,4 @@ jobs:
             echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
-          message: "front url: https://$FRONT_DOMAIN/home \nadmin url: https://$CASEWORKER_DOMAIN"
+          message: "front url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
