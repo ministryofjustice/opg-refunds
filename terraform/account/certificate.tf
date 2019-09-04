@@ -34,6 +34,7 @@ resource "aws_acm_certificate" "certificate_public_front" {
 // Public Front Cloudfront Certificates
 
 resource "aws_acm_certificate" "cloudfront_public_front" {
+  count             = local.account.has_cloudfront_distribution ? 1 : 0
   domain_name       = local.account.public_front_certificate_domain_name
   validation_method = "DNS"
 
@@ -45,7 +46,8 @@ resource "aws_acm_certificate" "cloudfront_public_front" {
 }
 
 resource "aws_acm_certificate_validation" "cloudfront_public_front" {
-  certificate_arn         = aws_acm_certificate.cloudfront_public_front.arn
+  count                   = local.account.has_cloudfront_distribution ? 1 : 0
+  certificate_arn         = aws_acm_certificate.cloudfront_public_front[0].arn
   validation_record_fqdns = [aws_route53_record.certificate_validation_public_front.fqdn]
   provider                = aws.us_east_1
 }
