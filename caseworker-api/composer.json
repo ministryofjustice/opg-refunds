@@ -28,6 +28,7 @@
         "http-interop/http-middleware": "^0.4.1",
         "ministryofjustice/opg-refunds-caseworker-datamodels": "^2.2",
         "ministryofjustice/opg-refunds-logger": "dev-ecs",
+        "nategood/commando": "^0.4.0",
         "opsway/doctrine-dbal-postgresql": "^0.8.0",
         "paragonie/halite": "^4.5",
         "php-http/guzzle6-adapter": "^1.1",
