@@ -70,10 +70,6 @@ resource "aws_secretsmanager_secret" "postgres_password" {
   tags = local.default_tags
 }
 
-resource "aws_secretsmanager_secret" "opg_refunds_db_applications_write_password" {
-  name = "${local.account_name}/opg_refunds_db_applications_write_password"
-  tags = local.default_tags
-}
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_migration_password" {
   name = "${local.account_name}/opg_refunds_db_applications_migration_password"
