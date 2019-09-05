@@ -11,10 +11,13 @@ variable "container_version" {
 variable "accounts" {
   type = map(
     object({
-      account_id                           = string
-      is_production                        = bool
-      public_front_certificate_domain_name = string
-      public_front_dns                     = string
+      account_id                            = string
+      is_production                         = bool
+      public_front_certificate_domain_name  = string
+      public_front_dns                      = string
+      aurora_serverless_auto_pause          = bool
+      aurora_serverless_deletion_protection = bool
+      has_cloudfront_distribution           = bool
     })
   )
 }
@@ -24,7 +27,7 @@ locals {
 
   account_name      = lookup(var.account_mapping, terraform.workspace, "development")
   account           = var.accounts[local.account_name]
-  environment       = terraform.workspace
+  environment       = lower(terraform.workspace)
   dns_namespace_env = local.account_name != "development" ? "" : "${local.environment}."
 
 
