@@ -227,7 +227,7 @@ locals {
     {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR", "value": "arn:aws:sns:eu-west-1" }, 
     {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO", "value": "arn:aws:sns:eu-west-1" }, 
     {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION", "value": "eu-west-1" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "alias/-bank-encrypt-decrypt" }
+    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" }
       ]
   }
   EOF

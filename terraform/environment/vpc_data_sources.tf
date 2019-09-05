@@ -33,3 +33,7 @@ module "whitelist" {
 data "aws_ip_ranges" "cloudfront" {
   services = ["cloudfront"]
 }
+
+data "aws_kms_alias" "bank_encrypt_decrypt" {
+  name = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
+}
