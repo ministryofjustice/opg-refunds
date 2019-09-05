@@ -113,18 +113,16 @@ data "aws_iam_policy_document" "public_front_permissions_role" {
       aws_dynamodb_table.sessions_public_front.arn,
     ]
   }
-  # statement {
-  #   sid    = "lpaCacheDecrypt"
-  #   effect = "Allow"
-  #   actions = [
-  #     "kms:Decrypt",
-  #     "kms:GenerateDataKey",
-  #   ]
-  #   resources = [
-  #     data.aws_s3_bucket.lpa_pdf_cache.arn,
-  #     data.aws_kms_key.lpa_pdf_cache.arn,
-  #   ]
-  # }
+  statement {
+    sid    = "bank_encrypt"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+    ]
+    resources = [
+      data.aws_kms_alias.bank_encrypt_decrypt.target_key_arn,
+    ]
+  }
 }
 
 data "aws_ecr_repository" "public_lpa_front_web" {
