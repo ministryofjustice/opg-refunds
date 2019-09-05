@@ -25,6 +25,27 @@ services:
       AWS_SECRET_ACCESS_KEY: '-'
       AWS_ENDPOINT_DYNAMODB: dynamodb:8000
 
+  postgres:
+    image: postgres:9.6.2
+    env_file:
+      - ./postgres/local.env
+    ports:
+      - 5432:5432
+
+  dynamodb:
+    image: amazon/dynamodb-local
+    ports:
+      - 8000:8000
+
+  kms:
+    image: nsmithuk/local-kms:2
+    volumes:
+      - ./local-kms:/init
+    environment:
+      REGION: eu-west-1
+    ports:
+      - 8001:8080
+
   # ---------------------------
   # Front
 
@@ -294,6 +315,8 @@ services:
       - dynamodb
       - local-config
       - postgres
+    env_file:
+      - ./postgres/local.env
     environment:
       # Local only
       AWS_ACCESS_KEY_ID: '-'
@@ -301,17 +324,8 @@ services:
 
       OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED: 'true'
 
-      OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME: 'postgres'
-      OPG_REFUNDS_DB_APPLICATIONS_PORT: '5432'
-      OPG_REFUNDS_DB_APPLICATIONS_NAME: 'applications'
-      OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME: 'applications_full'
-      OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD: 'applications_full'
-
-      OPG_REFUNDS_DB_CASES_HOSTNAME: 'postgres'
-      OPG_REFUNDS_DB_CASES_PORT: '5432'
-      OPG_REFUNDS_DB_CASES_NAME: 'cases'
-      OPG_REFUNDS_DB_CASES_FULL_USERNAME: 'cases_full'
-      OPG_REFUNDS_DB_CASES_FULL_PASSWORD: 'cases_full'
+      OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE: 'Locks'
+      OPG_REFUNDS_DYNAMODB_ENDPOINT: http://dynamodb:8000
 
       PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
       #ENABLE_XDEBUG: 'true'
@@ -319,64 +333,3 @@ services:
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
 
   # We mount the same code as caseworker-api-app locally, so no need for a separate composer service.
-
-  # ---------------------------
-
-#  maintenance:
-#    build: ../opg-refunds-maintenance
-#    # Currently the registry has no images so we have to build locally
-#    # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
-#    volumes:
-#      - ../opg-refunds-maintenance:/app
-#
-#  front:
-#    build: ./public-front
-#    # Currently the registry has no images so we have to build locally
-#    # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
-#    volumes:
-#      - ./public-front:/app
-#    links:
-#      - postgres
-#      - dynamodb
-#      - kms
-#
-#  caseworker:
-#    build: ./caseworker-front
-#    # Currently the registry has no images so we have to build locally
-#    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-#    volumes:
-#      - ./caseworker-front:/app
-#    links:
-#      - dynamodb
-#      - kms
-#
-#  api:
-#    build: ./caseworker-api
-#    # Currently the registry has no images so we have to build locally
-#    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-#    volumes:
-#      - ./caseworker-api:/app
-#    links:
-#      - postgres
-#      - dynamodb
-
-  postgres:
-    image: postgres:9.6.2
-    volumes:
-      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-
-  dynamodb:
-    image: forty8bit/dynamodb-local
-    ports:
-      - 8000:8000
-    command: ["-sharedDb"]
-
-  kms:
-    image: nsmithuk/local-kms:2
-    volumes:
-      - ./local-kms:/init
-    environment:
-      REGION: eu-west-1
-
-  sns:
-    build: ./local-sns

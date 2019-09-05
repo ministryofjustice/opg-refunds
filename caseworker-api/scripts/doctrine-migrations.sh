@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "First parameter is database name e.g. Applications, Cases, Sirius, second parameter is doctrine-migrations command e.g. 'migrations:diff' or 'migrations:migrate --no-interaction -vvv'"
 
