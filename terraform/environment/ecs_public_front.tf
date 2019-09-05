@@ -211,13 +211,13 @@ locals {
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public_data.name}" }
   ],
     "environment": [
-      {"name": "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
-      {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
-      {"name": "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
-      {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
-      {"name": "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
-      {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" }
-      {"name": "OPG_REFUNDS_STACK_TYPE", "value": "testing" }, 
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" },
+      { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "testing" }
     ]
   }
   EOF
