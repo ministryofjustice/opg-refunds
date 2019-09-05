@@ -24,3 +24,11 @@ aws dynamodb create-table \
 --provisioned-throughput ReadCapacityUnits=100,WriteCapacityUnits=100 \
 --region eu-west-1 \
 --endpoint $DYNAMODN_ENDPOINT
+
+aws dynamodb create-table \
+--attribute-definitions AttributeName=id,AttributeType=S \
+--table-name Locks \
+--key-schema AttributeName=id,KeyType=HASH \
+--provisioned-throughput ReadCapacityUnits=100,WriteCapacityUnits=100 \
+--region eu-west-1 \
+--endpoint $DYNAMODN_ENDPOINT
