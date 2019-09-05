@@ -63,6 +63,16 @@ resource "aws_security_group_rule" "public_front_loadbalancer_ingress" {
   cidr_blocks       = module.whitelist.moj_sites
   security_group_id = aws_security_group.public_front_loadbalancer.id
 }
+
+resource "aws_security_group_rule" "public_front_loadbalancer_cloudfront_ingress" {
+  count             = local.account.has_cloudfront_distribution ? 1 : 0
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  cidr_blocks       = data.aws_ip_ranges.cloudfront.cidr_blocks
+  security_group_id = aws_security_group.public_front_loadbalancer.id
+}
 resource "aws_security_group_rule" "public_front_loadbalancer_ingress_production" {
   count             = local.environment == "production" ? 1 : 0
   type              = "ingress"
