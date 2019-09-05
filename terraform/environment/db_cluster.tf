@@ -2,22 +2,34 @@ resource "aws_rds_cluster" "applications" {
   cluster_identifier     = "applications-${local.environment}"
   vpc_security_group_ids = [aws_security_group.applications_rds_cluster.id]
   db_subnet_group_name   = "${aws_db_subnet_group.applications_rds_cluster.name}"
-  engine                 = "aurora-postgresql"
-  engine_mode            = "serverless"
-  engine_version         = "9.6.11"
-  master_username        = "user"
-  master_password        = "password"
+
+  engine                          = "aurora-postgresql"
+  engine_mode                     = "serverless"
+  engine_version                  = "10.7"
+  db_cluster_parameter_group_name = "default.aurora-postgresql10"
+
+  backtrack_window  = 0
+  apply_immediately = true
+  storage_encrypted = true
+
+  master_username = "dbusername"
+  master_password = "password"
   # master_username         = data.aws_secretsmanager_secret_version.api_rds_username.secret_string
   # master_password         = data.aws_secretsmanager_secret_version.api_rds_password.secret_string
-  deletion_protection     = local.account.aurora_serverless_deletion_protection
-  backup_retention_period = 7
-  skip_final_snapshot     = false
+
+  deletion_protection             = local.account.aurora_serverless_deletion_protection
+  enabled_cloudwatch_logs_exports = []
+  backup_retention_period         = 7
+  preferred_backup_window         = "00:14-00:44"
+  preferred_maintenance_window    = "wed:22:26-wed:22:56"
+  skip_final_snapshot             = false
 
   scaling_configuration {
     auto_pause               = local.account.aurora_serverless_auto_pause
-    max_capacity             = 2
+    max_capacity             = 384
     min_capacity             = 2
     seconds_until_auto_pause = 300
+    timeout_action           = "RollbackCapacityChange"
   }
   tags = local.default_tags
 }
