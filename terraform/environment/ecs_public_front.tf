@@ -196,9 +196,38 @@ locals {
             "awslogs-stream-prefix": "public-front-app.lpa-refunds"
         }
     },
-
+    "secrets": [
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_key.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEYS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_keys.name}" },
+    { "name" : "OPG_REFUNDS_BANK_HASH_SALT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_bank_hash_salt.name}" },
+    { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" },
+    { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_username.name}" },
+    { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_password.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_beta_link_signature_key.name}" },
+    { "name" : "OPG_REFUNDS_AD_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_ad_link_signature_key.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public_data.name}" },
+    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public_data.name}" }
+  ],
     "environment": [
-      {"name": "ENV_VAR_ONE", "value": "one"}
+    {"name": "OPG_PHP_POOL_CHILDREN_MAX", "value": "12" }, 
+    {"name": "OPG_NGINX_SSL_FORCE_REDIRECT", "value": "true" }, 
+    {"name": "OPG_NGINX_SERVER_NAMES", "value": "" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION", "value": "eu-west-1" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION", "value": "eu-west-1" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE", "value": "refunds-beta-tokens-" }, 
+    {"name": "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "applications.internal" }, 
+    {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
+    {"name": "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
+    {"name": "OPG_REFUNDS_STACK_TYPE", "value": "testing" }, 
+    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_REGION", "value": "eu-west-1" }, 
+    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR", "value": "arn:aws:sns:eu-west-1" }, 
+    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR", "value": "arn:aws:sns:eu-west-1" }, 
+    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO", "value": "arn:aws:sns:eu-west-1" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION", "value": "eu-west-1" }, 
+    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "alias/-bank-encrypt-decrypt" }
       ]
   }
   EOF
