@@ -22,8 +22,3 @@ resource "aws_route53_record" "public_front" {
     create_before_destroy = true
   }
 }
-
-output "public_front_domain" {
-  value = "https://${aws_route53_record.public_front.fqdn}/home"
-}
-
