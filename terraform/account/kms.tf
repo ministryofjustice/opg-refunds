@@ -1,5 +1,5 @@
 resource "aws_kms_key" "bank_encrypt_decrypt" {
-  description             = "lpa-refunds-${local.account_name}-${local.timestampday}-bank-encrypt-decrypt"
+  description             = "lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
   deletion_window_in_days = 7
   enable_key_rotation     = true
   is_enabled              = true
