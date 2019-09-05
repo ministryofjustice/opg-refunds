@@ -22,7 +22,7 @@ class HashedKeyDynamoDbSessionConnection extends StandardSessionConnection
     protected function formatKey($key)
     {
         return [
-            $this->config['hash_key'] => [
+            $this->getHashKey() => [
                 'S' => hash('sha512', $key)
             ]
         ];

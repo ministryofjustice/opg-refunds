@@ -11,11 +11,13 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git"
+            "url": "git@github.com:ministryofjustice/opg-refunds-caseworker-datamodels.git",
+            "no-api": true
         },
         {
             "type": "vcs",
-            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git"
+            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
+            "no-api": true
         }
     ],
     "require": {
