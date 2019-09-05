@@ -4,9 +4,7 @@
 venv
 /OPG Returns Paw.paw
 .circleci/stash.yml
-terraform/account/.terraform
-terraform/environment/.terraform
-terraform/account_ingress/.terraform
-terraform/environment/notes
-terraform/account/notes
-terraform/account/import_secrets_cli
+terraform/**/.terraform
+terraform/**/notes
+**import_public_front_secrets_cli
+**import_ingestion_secrets_cli

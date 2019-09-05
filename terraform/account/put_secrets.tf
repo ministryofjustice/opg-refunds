@@ -63,13 +63,15 @@ resource "aws_secretsmanager_secret" "opg_refunds_public_front_full_key_public_d
   tags = local.default_tags
 }
 
-
 # ingestion and db secrets
 resource "aws_secretsmanager_secret" "postgres_password" {
   name = "${local.account_name}/postgres_password"
   tags = local.default_tags
 }
-
+resource "aws_secretsmanager_secret" "opg_refunds_db_applications_full_password" {
+  name = "${local.account_name}/opg_refunds_db_applications_full_password"
+  tags = local.default_tags
+}
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_migration_password" {
   name = "${local.account_name}/opg_refunds_db_applications_migration_password"
