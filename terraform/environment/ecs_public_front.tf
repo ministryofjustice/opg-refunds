@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "public_front_permissions_role" {
     ]
   }
   statement {
-    sid    = "bank_encrypt"
+    sid    = "bankencrypt"
     effect = "Allow"
     actions = [
       "kms:Encrypt",
