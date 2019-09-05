@@ -65,6 +65,7 @@ resource "aws_ecs_task_definition" "public_front" {
   task_role_arn            = aws_iam_role.public_front_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
   tags                     = local.default_tags
+  depends_on               = [aws_rds_cluster.applications]
 }
 
 //----------------
@@ -217,7 +218,7 @@ locals {
     {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION", "value": "eu-west-1" }, 
     {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE", "value": "refunds-beta-tokens-" }, 
     {"name": "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
-    {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "${aws_rds_cluster.applications.database_name}" }, 
+    {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
     {"name": "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "${aws_rds_cluster.applications.port}" }, 
     {"name": "OPG_REFUNDS_STACK_TYPE", "value": "testing" }, 
     {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_REGION", "value": "eu-west-1" }, 

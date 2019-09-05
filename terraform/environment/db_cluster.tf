@@ -23,7 +23,7 @@ resource "aws_rds_cluster" "applications" {
   backup_retention_period         = 7
   preferred_backup_window         = "00:14-00:44"
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
-  skip_final_snapshot             = false
+  skip_final_snapshot             = true
 
   scaling_configuration {
     auto_pause               = local.account.aurora_serverless_auto_pause
