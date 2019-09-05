@@ -13,10 +13,8 @@ resource "aws_rds_cluster" "applications" {
   apply_immediately = true
   storage_encrypted = true
 
-  master_username = "dbusername"
-  master_password = "password"
-  # master_username         = data.aws_secretsmanager_secret_version.api_rds_username.secret_string
-  # master_password         = data.aws_secretsmanager_secret_version.api_rds_password.secret_string
+  master_username = "applications_rds_cluster_master"
+  master_password = data.aws_secretsmanager_secret_version.postgres_password.secret_string
 
   deletion_protection             = local.account.aurora_serverless_deletion_protection
   enabled_cloudwatch_logs_exports = []

@@ -9,7 +9,10 @@ resource "aws_ecs_service" "public_front" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    security_groups  = [aws_security_group.public_front_ecs_service.id]
+    security_groups = [
+      aws_security_group.public_front_ecs_service.id,
+      aws_security_group.applications_rds_cluster_client.id,
+    ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false
   }
@@ -20,7 +23,7 @@ resource "aws_ecs_service" "public_front" {
     container_port   = 80
   }
 
-  depends_on = [aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_rds_cluster.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
 }
 
 //----------------------------------
@@ -125,12 +128,12 @@ data "aws_iam_policy_document" "public_front_permissions_role" {
   }
 }
 
-data "aws_ecr_repository" "public_lpa_front_web" {
+data "aws_ecr_repository" "lpa_refunds_public_front_web" {
   provider = "aws.management"
   name     = "lpa-refunds/public_front_web"
 }
 
-data "aws_ecr_repository" "public_lpa_front_app" {
+data "aws_ecr_repository" "lpa_refunds_public_front_app" {
   provider = "aws.management"
   name     = "lpa-refunds/public_front_app"
 }
@@ -143,7 +146,7 @@ locals {
   {
     "cpu": 1,
     "essential": true,
-    "image": "${data.aws_ecr_repository.public_lpa_front_web.repository_url}:${var.container_version}",
+    "image": "${data.aws_ecr_repository.lpa_refunds_public_front_web.repository_url}:${var.container_version}",
     "mountPoints": [],
     "name": "web",
     "portMappings": [
@@ -175,7 +178,7 @@ locals {
   {
     "cpu": 1,
     "essential": true,
-    "image": "${data.aws_ecr_repository.public_lpa_front_app.repository_url}:${var.container_version}",
+    "image": "${data.aws_ecr_repository.lpa_refunds_public_front_app.repository_url}:${var.container_version}",
     "mountPoints": [],
     "name": "app",
     "portMappings": [
@@ -195,38 +198,38 @@ locals {
         }
     },
     "secrets": [
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_key.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEYS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_keys.name}" },
-    { "name" : "OPG_REFUNDS_BANK_HASH_SALT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_bank_hash_salt.name}" },
-    { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" },
-    { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_username.name}" },
-    { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_password.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_beta_link_signature_key.name}" },
-    { "name" : "OPG_REFUNDS_AD_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_ad_link_signature_key.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public_data.name}" },
-    { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public_data.name}" }
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_key.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_ENCRYPTION_KEYS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_session_encryption_keys.name}" },
+      { "name" : "OPG_REFUNDS_BANK_HASH_SALT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_bank_hash_salt.name}" },
+      { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_username.name}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_write_password.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_beta_link_signature_key.name}" },
+      { "name" : "OPG_REFUNDS_AD_LINK_SIGNATURE_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_ad_link_signature_key.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_BANK_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_bank_key_public_data.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_FULL_KEY_PUBLIC_DATA", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_front_full_key_public_data.name}" }
   ],
     "environment": [
-    {"name": "OPG_PHP_POOL_CHILDREN_MAX", "value": "12" }, 
-    {"name": "OPG_NGINX_SSL_FORCE_REDIRECT", "value": "true" }, 
-    {"name": "OPG_NGINX_SERVER_NAMES", "value": "" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION", "value": "eu-west-1" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION", "value": "eu-west-1" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE", "value": "refunds-beta-tokens-" }, 
-    {"name": "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
-    {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
-    {"name": "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
-    {"name": "OPG_REFUNDS_STACK_TYPE", "value": "testing" }, 
-    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_REGION", "value": "eu-west-1" }, 
-    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR", "value": "arn:aws:sns:eu-west-1" }, 
-    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR", "value": "arn:aws:sns:eu-west-1" }, 
-    {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO", "value": "arn:aws:sns:eu-west-1" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION", "value": "eu-west-1" }, 
-    {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" }
-      ]
+      {"name": "OPG_PHP_POOL_CHILDREN_MAX", "value": "12" }, 
+      {"name": "OPG_NGINX_SSL_FORCE_REDIRECT", "value": "true" }, 
+      {"name": "OPG_NGINX_SERVER_NAMES", "value": "" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_REGION", "value": "eu-west-1" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_REGION", "value": "eu-west-1" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_BETA_LINK_DYNAMODB_TABLE", "value": "refunds-beta-tokens-" }, 
+      {"name": "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
+      {"name": "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
+      {"name": "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
+      {"name": "OPG_REFUNDS_STACK_TYPE", "value": "testing" }, 
+      {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_REGION", "value": "eu-west-1" }, 
+      {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MAJOR", "value": "arn:aws:sns:eu-west-1" }, 
+      {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_MINOR", "value": "arn:aws:sns:eu-west-1" }, 
+      {"name": "OPG_REFUNDS_COMMON_LOGGING_SNS_ENDPOINTS_INFO", "value": "arn:aws:sns:eu-west-1" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_REGION", "value": "eu-west-1" }, 
+      {"name": "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" }
+    ]
   }
   EOF
 }

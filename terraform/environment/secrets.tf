@@ -52,19 +52,60 @@ data "aws_secretsmanager_secret" "opg_refunds_public_front_full_key_public_data"
   name = "${local.account_name}/opg_refunds_public_front_full_key_public_data"
 }
 
-# database secrets
-# data "aws_secretsmanager_secret" "api_rds_username" {
-#   name = "${local.account_name}/api_rds_username"
-# }
 
-# data "aws_secretsmanager_secret" "api_rds_password" {
-#   name = "${local.account_name}/api_rds_password"
-# }
+# ingestion and db secrets
+data "aws_secretsmanager_secret" "postgres_password" {
+  name = "${local.account_name}/postgres_password"
+}
 
-# data "aws_secretsmanager_secret_version" "api_rds_username" {
-#   secret_id = data.aws_secretsmanager_secret.api_rds_username.id
-# }
+data "aws_secretsmanager_secret_version" "postgres_password" {
+  secret_id = data.aws_secretsmanager_secret.postgres_password.id
+}
 
-# data "aws_secretsmanager_secret_version" "api_rds_password" {
-#   secret_id = data.aws_secretsmanager_secret.api_rds_password.id
-# }
+data "aws_secretsmanager_secret" "opg_refunds_db_applications_full_password" {
+  name = "${local.account_name}/opg_refunds_db_applications_full_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_applications_migration_password" {
+  name = "${local.account_name}/opg_refunds_db_applications_migration_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_cases_full_password" {
+  name = "${local.account_name}/opg_refunds_db_cases_full_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_cases_migration_password" {
+  name = "${local.account_name}/opg_refunds_db_cases_migration_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_sirius_full_password" {
+  name = "${local.account_name}/opg_refunds_db_sirius_full_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_sirius_migration_password" {
+  name = "${local.account_name}/opg_refunds_db_sirius_migration_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_meris_full_password" {
+  name = "${local.account_name}/opg_refunds_db_meris_full_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_meris_migration_password" {
+  name = "${local.account_name}/opg_refunds_db_meris_migration_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_finance_full_password" {
+  name = "${local.account_name}/opg_refunds_db_finance_full_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_db_finance_migration_password" {
+  name = "${local.account_name}/opg_refunds_db_finance_migration_password"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_username" {
+  name = "${local.account_name}/opg_refunds_caseworker_admin_username"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_password" {
+  name = "${local.account_name}/opg_refunds_caseworker_admin_password"
+}
