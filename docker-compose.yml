@@ -26,7 +26,7 @@ services:
       AWS_ENDPOINT_DYNAMODB: dynamodb:8000
 
   postgres:
-    image: postgres:9.6.2
+    image: postgres:10.7
     env_file:
       - ./postgres/local.env
     ports:
