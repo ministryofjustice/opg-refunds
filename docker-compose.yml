@@ -271,11 +271,6 @@ services:
       OPG_REFUNDS_SSCL_ACCOUNT: '123450000'
       OPG_REFUNDS_SSCL_ANALYSIS: '12345678'
 
-      # Fake account, deliberately committed.
-      OPG_REFUNDS_CASEWORKER_ADMIN_NAME: 'Admin User 01'
-      OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME: 'testing@example.com'
-      OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD: 'pass1234'
-
       # Testing values, deliberately committed.
       OPG_REFUNDS_BANK_HASH_SALT: '00000000000000000000000000000000'
 
@@ -321,6 +316,11 @@ services:
       # Local only
       AWS_ACCESS_KEY_ID: '-'
       AWS_SECRET_ACCESS_KEY: '-'
+
+      # Fake account, deliberately committed.
+      OPG_REFUNDS_CASEWORKER_ADMIN_NAME: 'Admin User 01'
+      OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME: 'smtuser01@publicguardian.gov.uk'
+      OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD: 'pass1234'
 
       OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED: 'true'
 
