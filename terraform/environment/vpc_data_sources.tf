@@ -34,6 +34,10 @@ data "aws_ip_ranges" "cloudfront" {
   services = ["cloudfront"]
 }
 
+data "aws_ip_ranges" "ec2" {
+  services = ["ec2"]
+}
+
 data "aws_kms_alias" "bank_encrypt_decrypt" {
   name = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
 }
