@@ -6,6 +6,5 @@ venv
 .circleci/stash.yml
 terraform/**/.terraform
 terraform/**/notes
-**import_public_front_secrets_cli
-**import_ingestion_secrets_cli
-**import_sscl_secrets_cli
+**_secrets_cli
+

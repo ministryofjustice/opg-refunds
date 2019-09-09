@@ -206,7 +206,8 @@ locals {
   ],
     "environment": [
       { "name" : "OPG_LPA_STACK_NAME", "value": "${local.environment}" }, 
-      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" }, 
+      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" },
+      { "name" : "OPG_DOCKER_TAG", "value": "${var.container_version}"},
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
