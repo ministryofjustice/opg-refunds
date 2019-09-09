@@ -126,4 +126,3 @@ data "aws_secretsmanager_secret" "opg_refunds_sscl_account" {
 data "aws_secretsmanager_secret" "opg_refunds_sscl_analysis" {
   name = "${local.account_name}/opg_refunds_sscl_analysis"
 }
-
