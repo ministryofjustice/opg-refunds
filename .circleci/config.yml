@@ -341,4 +341,4 @@ jobs:
             echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
-          message: "front url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
+          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
