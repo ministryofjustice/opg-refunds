@@ -76,6 +76,33 @@ resource "aws_iam_role_policy" "ingestion_permissions_role" {
 */
 data "aws_iam_policy_document" "ingestion_permissions_role" {
   statement {
+    sid = "DynamoDBAccess"
+
+    effect = "Allow"
+
+    actions = [
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:DescribeStream",
+      "dynamodb:DescribeTable",
+      "dynamodb:GetItem",
+      "dynamodb:GetRecords",
+      "dynamodb:GetShardIterator",
+      "dynamodb:ListStreams",
+      "dynamodb:ListTables",
+      "dynamodb:PutItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:UpdateItem",
+      "dynamodb:UpdateTable",
+    ]
+
+    resources = [
+      aws_dynamodb_table.cronlock.arn,
+    ]
+  }
+  statement {
     sid    = "bankencrypt"
     effect = "Allow"
     actions = [
@@ -137,7 +164,7 @@ locals {
       { "name" : "OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_caseworker_admin_password.name}" }
     ],
     "environment": [
-      { "name" : "POSTGRES_USER", "value": "${aws_rds_cluster.applications.master_username}" } ,
+      { "name" : "POSTGRES_USER", "value": "${aws_rds_cluster.applications.master_username}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },
@@ -163,9 +190,9 @@ locals {
       { "name" : "OPG_REFUNDS_DB_FINANCE_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_NAME", "value": "finance" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_FULL_USERNAME", "value": "finance_full" },
-      { "name" : "OPG_REFUNDS_DB_FINANCE_MIGRATION_USERNAME", "value": "finance_migration" },
       { "name" : "OPG_REFUNDS_CASEWORKER_ADMIN_NAME", "value": "Admin User 01" },
       { "name" : "OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED", "value": "true" },
+      { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" },
       { "name" : "PHP_OPCACHE_VALIDATE_TIMESTAMPS", "value": "1" }
     ]
   }
