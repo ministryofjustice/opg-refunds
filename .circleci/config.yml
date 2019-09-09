@@ -326,6 +326,58 @@ orbs:
               root: /tmp
               paths:
                 - environment_pipeline_tasks_config.json
+      run_healthcheck_test:
+        #
+        # Checks the health check is returning 200
+        #
+        executor: python
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        steps:
+          - checkout
+          - attach_workspace:
+              at: /tmp
+          - run:
+              name: Install python dependencies
+              command: |
+                pip install -r ~/project/pipeline_scripts/requirements.txt --user
+          - install_terraform
+          - run:
+              name: Wait for new tasks in services to be running
+              command: |
+                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                echo $TF_WORKSPACE              
+                python ~/project/pipeline_scripts/ecs_monitor.py
+          - run:
+              name: Add CircleCI ingress to environment
+              command: |
+                if [ <<parameters.workspace>> != "production" ]; then
+                  ENV_NAME=<<parameters.workspace>>
+                  cd ~/project/terraform/account_ingress
+                  terraform init -lock-timeout=300s
+                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  echo $TF_WORKSPACE
+                  terraform apply -lock-timeout=300s -auto-approve
+                fi
+          - run:
+              name: Run test
+              command: |
+                python ~/project/pipeline_scripts/healthcheck_test.py
+          - run:
+              name: Remove CircleCI ingress to environment
+              command: |
+                if [ <<parameters.workspace>> != "production" ]; then
+                  ENV_NAME=<<parameters.workspace>>
+                  cd ~/project/terraform/account_ingress
+                  terraform init -lock-timeout=300s
+                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  echo $TF_WORKSPACE
+                  terraform destroy -lock-timeout=300s -auto-approve
+                fi
+              when: always
 jobs:
   slack_notify_domain:
     docker:
