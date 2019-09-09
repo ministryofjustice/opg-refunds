@@ -1,5 +1,5 @@
-resource "aws_lb_target_group" "public_front" {
-  name                 = "${local.environment}-public-front"
+resource "aws_lb_target_group" "caseworker_front" {
+  name                 = "${local.environment}-caseworker-front"
   port                 = 80
   protocol             = "HTTP"
   target_type          = "ip"
@@ -13,101 +13,101 @@ resource "aws_lb_target_group" "public_front" {
     unhealthy_threshold = 3
     matcher             = 200
   }
-  depends_on = ["aws_lb.public_front"]
+  depends_on = ["aws_lb.caseworker_front"]
   tags       = local.default_tags
 }
 
-resource "aws_lb" "public_front" {
-  name               = "${local.environment}-public-front"
+resource "aws_lb" "caseworker_front" {
+  name               = "${local.environment}-caseworker-front"
   internal           = false
   load_balancer_type = "application"
   subnets            = data.aws_subnet_ids.public.ids
   tags               = local.default_tags
 
   security_groups = [
-    aws_security_group.public_front_loadbalancer.id,
+    aws_security_group.caseworker_front_loadbalancer.id,
   ]
 
   access_logs {
     bucket  = data.aws_s3_bucket.access_log.bucket
-    prefix  = "${local.environment}-public_front"
+    prefix  = "${local.environment}-caseworker_front"
     enabled = true
   }
 }
 
-resource "aws_lb_listener" "public_front_loadbalancer" {
-  load_balancer_arn = aws_lb.public_front.arn
+resource "aws_lb_listener" "caseworker_front_loadbalancer" {
+  load_balancer_arn = aws_lb.caseworker_front.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
-  certificate_arn   = data.aws_acm_certificate.certificate_public_front.arn
+  certificate_arn   = data.aws_acm_certificate.certificate_caseworker_front.arn
 
   default_action {
-    target_group_arn = aws_lb_target_group.public_front.arn
+    target_group_arn = aws_lb_target_group.caseworker_front.arn
     type             = "forward"
   }
 }
 
-resource "aws_security_group" "public_front_loadbalancer" {
-  name        = "${local.environment}-public-front-loadbalancer"
+resource "aws_security_group" "caseworker_front_loadbalancer" {
+  name        = "${local.environment}-caseworker-front-loadbalancer"
   description = "Allow inbound traffic"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
 
-resource "aws_security_group_rule" "public_front_loadbalancer_ingress" {
+resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = module.whitelist.moj_sites
-  security_group_id = aws_security_group.public_front_loadbalancer.id
+  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 
-resource "aws_security_group_rule" "public_front_loadbalancer_cloudfront_ingress" {
+resource "aws_security_group_rule" "caseworker_front_loadbalancer_cloudfront_ingress" {
   count             = local.account.has_cloudfront_distribution ? 1 : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = data.aws_ip_ranges.cloudfront.cidr_blocks
-  security_group_id = aws_security_group.public_front_loadbalancer.id
+  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
-resource "aws_security_group_rule" "public_front_loadbalancer_ingress_production" {
+resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress_production" {
   count             = local.environment == "production" ? 1 : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.public_front_loadbalancer.id
+  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 
 // Allow http traffic in to be redirected to https
-resource "aws_security_group_rule" "public_front_loadbalancer_ingress_http" {
+resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress_http" {
   type              = "ingress"
   from_port         = 80
   to_port           = 80
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.public_front_loadbalancer.id
+  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 
-resource "aws_security_group_rule" "public_front_loadbalancer_egress" {
+resource "aws_security_group_rule" "caseworker_front_loadbalancer_egress" {
   type              = "egress"
   from_port         = 0
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.public_front_loadbalancer.id
+  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 
 
 //------------------------------------------------
 // HTTP Redirect
 
-resource "aws_lb_listener" "public_front_loadbalancer_http_redirect" {
-  load_balancer_arn = aws_lb.public_front.arn
+resource "aws_lb_listener" "caseworker_front_loadbalancer_http_redirect" {
+  load_balancer_arn = aws_lb.caseworker_front.arn
   port              = "80"
   protocol          = "HTTP"
 
