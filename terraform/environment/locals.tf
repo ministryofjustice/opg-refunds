@@ -11,13 +11,15 @@ variable "container_version" {
 variable "accounts" {
   type = map(
     object({
-      account_id                            = string
-      is_production                         = bool
-      public_front_certificate_domain_name  = string
-      public_front_dns                      = string
-      aurora_serverless_auto_pause          = bool
-      aurora_serverless_deletion_protection = bool
-      has_cloudfront_distribution           = bool
+      account_id                               = string
+      is_production                            = bool
+      public_front_certificate_domain_name     = string
+      public_front_dns                         = string
+      caseworker_front_certificate_domain_name = string
+      caseworker_front_dns                     = string
+      aurora_serverless_auto_pause             = bool
+      aurora_serverless_deletion_protection    = bool
+      has_cloudfront_distribution              = bool
     })
   )
 }

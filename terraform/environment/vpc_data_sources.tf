@@ -26,6 +26,10 @@ data "aws_acm_certificate" "certificate_public_front" {
   domain = local.account.public_front_certificate_domain_name
 }
 
+data "aws_acm_certificate" "certificate_caseworker_front" {
+  domain = local.account.caseworker_front_certificate_domain_name
+}
+
 module "whitelist" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
 }
