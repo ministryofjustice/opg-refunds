@@ -109,3 +109,21 @@ data "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_username" {
 data "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_password" {
   name = "${local.account_name}/opg_refunds_caseworker_admin_password"
 }
+
+# sscl secrets
+data "aws_secretsmanager_secret" "opg_refunds_sscl_entity" {
+  name = "${local.account_name}/opg_refunds_sscl_entity"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_sscl_cost_centre" {
+  name = "${local.account_name}/opg_refunds_sscl_cost_centre"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_sscl_account" {
+  name = "${local.account_name}/opg_refunds_sscl_account"
+}
+
+data "aws_secretsmanager_secret" "opg_refunds_sscl_analysis" {
+  name = "${local.account_name}/opg_refunds_sscl_analysis"
+}
+
