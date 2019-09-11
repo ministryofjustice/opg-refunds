@@ -164,7 +164,7 @@ locals {
       { "name" : "OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_caseworker_admin_password.name}" }
     ],
     "environment": [
-      { "name" : "POSTGRES_USER", "value": "${aws_rds_cluster.applications.master_username}" },
+      { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },

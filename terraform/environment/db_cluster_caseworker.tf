@@ -13,7 +13,7 @@ resource "aws_rds_cluster" "caseworker" {
   apply_immediately = true
   storage_encrypted = true
 
-  master_username = "caseworker_rds_cluster_master"
+  master_username = local.rds_master_username
   master_password = data.aws_secretsmanager_secret_version.postgres_password.secret_string
 
   deletion_protection             = local.account.aurora_serverless_deletion_protection
