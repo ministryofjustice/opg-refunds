@@ -1,0 +1,396 @@
+version: 2.1
+
+workflows:
+  pr-build-and-test:
+    jobs:
+      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+          name: public_front_docker_build
+          ecr_repository_name_prefix: lpa-refunds/public_front
+          service_path: public-front
+      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+          name: caseworker_front_docker_build
+          ecr_repository_name_prefix: lpa-refunds/caseworker_front
+          service_path: caseworker-front
+      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+          name: caseworker_api_docker_build
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: lint_and_validate_terraform
+          account_workspace: development
+          filters:
+            branches:
+              ignore: master
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: validate_preproduction_terraform
+          account_workspace: preproduction
+          environment_workspace: preproduction
+          filters:
+            branches:
+              ignore: master
+      - infrastructure_and_deployment/lint_and_validate_terraform:
+          name: validate_production_terraform
+          account_workspace: production
+          environment_workspace: production
+          filters:
+            branches:
+              ignore: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: dev_account_apply_terraform
+          workspace: development
+          requires: [lint_and_validate_terraform]
+          filters:
+            branches:
+              ignore: master
+
+      - infrastructure_and_deployment/apply_environment_terraform:
+          name: dev_environment_apply_terraform
+          requires:
+            [
+              dev_account_apply_terraform,
+              public_front_docker_build,
+              caseworker_front_docker_build,
+              caseworker_api_docker_build,
+            ]
+          filters:
+            branches:
+              ignore: master
+
+      - slack_notify_domain:
+          name: post_environment_domains
+          requires: [dev_environment_apply_terraform]
+          filters:
+            branches:
+              ignore: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: preprod_account_apply_terraform
+          workspace: preproduction
+          filters:
+            branches:
+              only: master
+
+      - infrastructure_and_deployment/apply_environment_terraform:
+          name: preprod_environment_apply_terraform
+          requires:
+            [
+              preprod_account_apply_terraform,
+              public_front_docker_build,
+              caseworker_front_docker_build,
+              caseworker_api_docker_build,
+            ]
+          filters:
+            branches:
+              only: master
+
+      - infrastructure_and_deployment/apply_account_terraform:
+          name: prod_account_apply_terraform
+          workspace: production
+          requires: [preprod_account_apply_terraform]
+          filters:
+            branches:
+              only: master
+      - infrastructure_and_deployment/apply_environment_terraform:
+          name: prod_environment_apply_terraform
+          requires: [prod_account_apply_terraform]
+          filters:
+            branches:
+              only: master
+
+orbs:
+  slack: circleci/slack@3.3.0
+  build_containers_and_push_to_ecr:
+    commands:
+      install_aws_cli:
+        steps:
+          - run:
+              name: Install AWS CLI
+              command: sudo pip3 install awscli --upgrade
+      ecr_login:
+        steps:
+          - run:
+              name: Login to ECR
+              command: |
+                temp_role=$(aws sts assume-role --role-arn arn:aws:iam::311462405659:role/opg-refunds-ci --role-session-name ci)
+                export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq .Credentials.AccessKeyId | xargs)
+                export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq .Credentials.SecretAccessKey | xargs)
+                export AWS_SESSION_TOKEN=$(echo $temp_role | jq .Credentials.SessionToken | xargs)
+                eval $(aws ecr get-login --no-include-email --region=eu-west-1)
+    executors:
+      python:
+        docker:
+          - image: circleci/python
+    jobs:
+      checkout_docker_build_push_web-app:
+        executor: python
+        parameters:
+          ecr_url:
+            type: string
+            default: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+          ecr_repository_name_prefix:
+            type: string
+            description: The ecr repo name up to _app, _web or _ingestion. These will be added by the job.
+          service_path:
+            type: string
+          build_composer_container:
+            type: boolean
+            default: false
+        steps:
+          - checkout
+          - install_aws_cli
+          - setup_remote_docker:
+              version: 18.06.0-ce
+              docker_layer_caching: false
+          - run:
+              name: checkout ecs branch for builds
+              command: |
+                git checkout LPA-3334-ecs-move
+          - run:
+              name: Build caseworker-api-composer container
+              command: |
+                if [ << parameters.build_composer_container >> = true ]; then
+                  docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+                else
+                  echo "skipped"
+                fi
+          - run:
+              name: Build web container
+              command: |
+                docker build -f << parameters.service_path >>/docker/web/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web .
+          - run:
+              name: Build app container
+              command: |
+                docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
+          - run:
+              name: Build caseworker-api-ingestion container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
+                  docker build -f << parameters.service_path >>/docker/ingestion/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion .
+                else
+                  echo "skipped"
+                fi
+          - ecr_login
+          - run:
+              name: Push web container
+              command: |
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web
+                else
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:$CIRCLE_BRANCH-$SHORT_HASH
+                fi
+          - run:
+              name: Push app container
+              command: |
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
+                else
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
+                fi
+          - run:
+              name: Push caseworker-api-ingestion container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
+                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
+                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                    # If master, push branch tag and latest
+                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:latest
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion
+                  else
+                    # Else, push branch tag only
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
+                  fi
+                else
+                  echo "skipped"
+                fi
+  infrastructure_and_deployment:
+    commands:
+      install_aws_cli:
+        steps:
+          - run:
+              name: Install AWS CLI
+              command: sudo pip3 install awscli --upgrade
+      install_terraform:
+        steps:
+          - run:
+              name: Install Terraform
+              command: |
+                export TERRAFORM_VERSION=0.12.8
+                export TERRAFORM_SHA256SUM=babb4a30b399fb6fc87a6aa7435371721310c2e2102a95a763ef2c979ab06ce2
+                curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
+                rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+    executors:
+      python:
+        docker: [image: circleci/python]
+      terraform:
+        docker: [image: hashicorp/terraform:0.12.8]
+    jobs:
+      #----------------------------------------------------
+      # Terraform
+      lint_and_validate_terraform:
+        parameters:
+          account_workspace:
+            description: Terraform workspace name
+            type: string
+          environment_workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        executor: terraform
+        steps:
+          - checkout
+          - run:
+              name: terraform lint
+              command: terraform fmt -diff -check -recursive
+          - run:
+              name: Validate Account Terraform
+              command: |
+                cd ~/project/terraform/account
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=<<parameters.account_workspace>>
+                echo $TF_WORKSPACE
+                terraform validate
+          - run:
+              name: Validate Environment Terraform
+              command: |
+                ENV_NAME=<<parameters.environment_workspace>>
+                export SHORT_HASH=${CIRCLE_SHA1:0:7}
+                echo $SHORT_HASH
+                cd ~/project/terraform/environment
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=${ENV_NAME:0:13}
+                echo $TF_WORKSPACE
+                terraform validate
+
+      apply_account_terraform:
+        #
+        # Apply the shared terraform configuration. This:
+        #   - Updates the account infrastructure;
+        #
+        executor: terraform
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: development
+        steps:
+          - checkout
+          - run:
+              name: Apply Account Terraform
+              command: |
+                cd ~/project/terraform/account
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=<<parameters.workspace>>
+                echo $TF_WORKSPACE
+                terraform apply -lock-timeout=300s --auto-approve
+      apply_environment_terraform:
+        #
+        # Apply the shared terraform configuration. This:
+        #   - Updates the account infrastructure;
+        #
+        executor: terraform
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        steps:
+          - checkout
+          - run:
+              name: Apply Environment Terraform
+              command: |
+                ENV_NAME=<<parameters.workspace>>
+                export SHORT_HASH=${CIRCLE_SHA1:0:7}
+                echo $SHORT_HASH
+                cd ~/project/terraform/environment
+                terraform init -lock-timeout=300s
+                export TF_WORKSPACE=${ENV_NAME:0:13}
+                echo $TF_WORKSPACE
+                terraform apply -lock-timeout=300s -auto-approve -var container_version=$CIRCLE_BRANCH-$SHORT_HASH
+          - persist_to_workspace:
+              root: /tmp
+              paths:
+                - environment_pipeline_tasks_config.json
+      run_healthcheck_test:
+        #
+        # Checks the health check is returning 200
+        #
+        executor: python
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        steps:
+          - checkout
+          - attach_workspace:
+              at: /tmp
+          - run:
+              name: Install python dependencies
+              command: |
+                pip install -r ~/project/pipeline_scripts/requirements.txt --user
+          - install_terraform
+          - run:
+              name: Wait for new tasks in services to be running
+              command: |
+                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                echo $TF_WORKSPACE              
+                python ~/project/pipeline_scripts/ecs_monitor.py
+          - run:
+              name: Add CircleCI ingress to environment
+              command: |
+                if [ <<parameters.workspace>> != "production" ]; then
+                  ENV_NAME=<<parameters.workspace>>
+                  cd ~/project/terraform/account_ingress
+                  terraform init -lock-timeout=300s
+                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  echo $TF_WORKSPACE
+                  terraform apply -lock-timeout=300s -auto-approve
+                fi
+          - run:
+              name: Run test
+              command: |
+                python ~/project/pipeline_scripts/healthcheck_test.py
+          - run:
+              name: Remove CircleCI ingress to environment
+              command: |
+                if [ <<parameters.workspace>> != "production" ]; then
+                  ENV_NAME=<<parameters.workspace>>
+                  cd ~/project/terraform/account_ingress
+                  terraform init -lock-timeout=300s
+                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  echo $TF_WORKSPACE
+                  terraform destroy -lock-timeout=300s -auto-approve
+                fi
+              when: always
+jobs:
+  slack_notify_domain:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Get URLs
+          command: |
+            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+      - slack/notify:
+          title: "LPA Refunds Development Environment Ready"
+          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
