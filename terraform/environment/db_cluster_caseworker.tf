@@ -1,6 +1,5 @@
 resource "aws_rds_cluster" "caseworker" {
   cluster_identifier     = "caseworker-${local.environment}"
-  database_name          = "caseworker"
   vpc_security_group_ids = [aws_security_group.caseworker_rds_cluster.id, aws_security_group.caseworker_rds_cluster_client.id]
   db_subnet_group_name   = "${aws_db_subnet_group.caseworker_rds_cluster.name}"
 
