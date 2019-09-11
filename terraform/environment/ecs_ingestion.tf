@@ -190,6 +190,7 @@ locals {
       { "name" : "OPG_REFUNDS_DB_FINANCE_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_NAME", "value": "finance" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_FULL_USERNAME", "value": "finance_full" },
+      { "name" : "OPG_REFUNDS_DB_FINANCE_MIGRATION_USERNAME", "value": "finance_migration" },
       { "name" : "OPG_REFUNDS_CASEWORKER_ADMIN_NAME", "value": "Admin User 01" },
       { "name" : "OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED", "value": "true" },
       { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" },

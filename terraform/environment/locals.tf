@@ -32,7 +32,7 @@ locals {
   environment       = lower(terraform.workspace)
   dns_namespace_env = local.account_name != "development" ? "" : "${local.environment}."
 
-  rds_master_username = "admin"
+  rds_master_username = "root"
 
   mandatory_moj_tags = {
     business-unit = "OPG"
