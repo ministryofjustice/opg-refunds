@@ -273,13 +273,13 @@ orbs:
               command: |
                 echo 'export TERRAFORM_VERSION=0.12.8' >> $BASH_ENV
                 echo 'export TERRAFORM_SHA256SUM=babb4a30b399fb6fc87a6aa7435371721310c2e2102a95a763ef2c979ab06ce2' >> $BASH_ENV
-                echo ${TERRAFORM_VERSION}
-                echo ${TERRAFORM_SHA256SUM}
+                echo $TERRAFORM_VERSION
+                echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
-                sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
-                sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
-                rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                # echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                # sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
+                # sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
+                # rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
     executors:
       python:
         docker: [image: circleci/python]
