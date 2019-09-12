@@ -64,6 +64,25 @@ workflows:
           filters:
             branches:
               ignore: master
+      - slack_notify_production_release:
+          name: post_environment_domains
+          requires: [dev_environment_apply_terraform]
+          filters:
+            branches:
+              ignore: master
+      - hold-for-destruction:
+          name: hold_env_for_destruction
+          type: approval
+          requires: [post_environment_domains]
+          filters:
+            branches:
+              ignore: master
+      - infrastructure_and_deployment/destroy_dev_environment:
+          name: dev_destroy_environment
+          requires: [hold_env_for_destruction]
+          filters:
+            branches:
+              ignore: master
 
       - infrastructure_and_deployment/apply_account_terraform:
           name: preprod_account_apply_terraform
@@ -378,6 +397,32 @@ orbs:
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
               when: always
+      destroy_dev_environment:
+        #
+        # Destroys a development environment after testing and approval
+        # Cannot be run on master branch
+        #
+        executor: terraform
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        steps:
+          - checkout
+          - run:
+              name: Destroy Development Environment
+              command: |
+                ENV_NAME=<<parameters.workspace>>
+                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                echo $TF_WORKSPACE
+                if [ "${CIRCLE_BRANCH}" != "master" ]; then
+                  cd ~/project/terraform/terraform_environment
+                  terraform init -lock-timeout=300s
+                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  echo $TF_WORKSPACE
+                  terraform destroy -lock-timeout=300s -auto-approve
+                fi
 jobs:
   slack_notify_domain:
     docker:
@@ -394,3 +439,19 @@ jobs:
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
           message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
+  slack_notify_production_release:
+    docker:
+      - image: circleci/python
+    steps:
+      - checkout
+      - attach_workspace:
+          at: /tmp
+      - run:
+          name: Get URLs
+          command: |
+            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+      - slack/notify:
+          title: "LPA Refunds Production Release Successful"
+          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \nadmin url: https://$CASEWORKER_DOMAIN"
+          webhook: ${PROD_RELEASE_SLACK_WEBHOOK}
