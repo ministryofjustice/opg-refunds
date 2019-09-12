@@ -271,16 +271,16 @@ orbs:
           - run:
               name: Install Terraform
               command: |
-                echo 'export TERRAFORM_VERSION=0.12.8' >> $BASH_ENV
-                echo 'export TERRAFORM_SHA256SUM=43806e68f7af396449dd4577c6e5cb63c6dc4a253ae233e1dddc46cf423d808b' >> $BASH_ENV
+                curl https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip > terraform_0.12.8_linux_amd64.zip
+                sudo unzip terraform_0.12.8_linux_amd64.zip -d /bin
+                rm -f terraform_0.12.8_linux_amd64.zip
+                export TERRAFORM_VERSION=0.12.8
+                export TERRAFORM_SHA256SUM=43806e68f7af396449dd4577c6e5cb63c6dc4a253ae233e1dddc46cf423d808b
                 echo $TERRAFORM_VERSION
                 echo $TERRAFORM_SHA256SUM
                 # curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                curl https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip > terraform_0.12.8_linux_amd64.zip
                 # echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
                 # sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
-                sudo unzip terraform_0.12.8_linux_amd64.zip -d /bin
-                rm -f terraform_0.12.8_linux_amd64.zip
     executors:
       python:
         docker: [image: circleci/python]
