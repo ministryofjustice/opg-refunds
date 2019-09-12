@@ -15,5 +15,5 @@ variable "accounts" {
 locals {
   account_name = lookup(var.account_mapping, terraform.workspace, "development")
   account      = var.accounts[local.account_name]
-  environment  = terraform.workspace
+  environment  = lower(terraform.workspace)
 }
