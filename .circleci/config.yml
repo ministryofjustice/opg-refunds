@@ -279,8 +279,8 @@ orbs:
                 curl https://releases.hashicorp.com/terraform/0.12.8/terraform_0.12.8_linux_amd64.zip > terraform_0.12.8_linux_amd64.zip
                 # echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
                 # sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
-                sudo unzip terraform_0.12.8_linux_amd64_linux_amd64.zip -d /bin
-                rm -f terraform_0.12.8_linux_amd64_linux_amd64.zip
+                sudo unzip terraform_0.12.8_linux_amd64.zip -d /bin
+                rm -f terraform_0.12.8_linux_amd64.zip
     executors:
       python:
         docker: [image: circleci/python]
