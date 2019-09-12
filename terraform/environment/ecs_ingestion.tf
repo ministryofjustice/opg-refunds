@@ -193,8 +193,7 @@ locals {
       { "name" : "OPG_REFUNDS_DB_FINANCE_MIGRATION_USERNAME", "value": "finance_migration" },
       { "name" : "OPG_REFUNDS_CASEWORKER_ADMIN_NAME", "value": "Admin User 01" },
       { "name" : "OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED", "value": "true" },
-      { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" },
-      { "name" : "PHP_OPCACHE_VALIDATE_TIMESTAMPS", "value": "1" }
+      { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" }
     ]
   }
   EOF
