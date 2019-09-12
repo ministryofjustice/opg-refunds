@@ -7,13 +7,13 @@ data "aws_vpc_endpoint_service" "dynamodb" {
 }
 
 resource "aws_vpc_endpoint" "dynamodb" {
-  vpc_id = aws_default_vpc.default.id
+  vpc_id            = aws_default_vpc.default.id
   service_name      = data.aws_vpc_endpoint_service.dynamodb.service_name
   vpc_endpoint_type = "Gateway"
 
   route_table_ids = aws_route_table.private.*.id
 
-  tags        = local.default_tags
+  tags = local.default_tags
 }
 
 //-----------------------------------------
@@ -24,7 +24,7 @@ data "aws_vpc_endpoint_service" "kms" {
 }
 
 resource "aws_vpc_endpoint" "kms" {
-  vpc_id = aws_default_vpc.default.id
+  vpc_id            = aws_default_vpc.default.id
   service_name      = data.aws_vpc_endpoint_service.kms.service_name
   vpc_endpoint_type = "Interface"
 
@@ -33,7 +33,7 @@ resource "aws_vpc_endpoint" "kms" {
 
   private_dns_enabled = true
 
-  tags        = local.default_tags
+  tags = local.default_tags
 }
 
 resource "aws_security_group" "kms_vpc_endpoint_access" {
@@ -47,5 +47,5 @@ resource "aws_security_group" "kms_vpc_endpoint_access" {
     self      = true
   }
 
-  tags        = local.default_tags
+  tags = local.default_tags
 }
