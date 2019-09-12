@@ -65,7 +65,7 @@ workflows:
             branches:
               ignore: master
       - slack_notify_production_release:
-          name: post_environment_domains
+          name: post_production_release_message
           requires: [dev_environment_apply_terraform]
           filters:
             branches:
