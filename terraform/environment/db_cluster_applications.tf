@@ -1,6 +1,5 @@
 resource "aws_rds_cluster" "applications" {
   cluster_identifier     = "applications-${local.environment}"
-  database_name          = "applications"
   vpc_security_group_ids = [aws_security_group.applications_rds_cluster.id]
   db_subnet_group_name   = "${aws_db_subnet_group.applications_rds_cluster.name}"
 
@@ -34,7 +33,7 @@ resource "aws_rds_cluster" "applications" {
 }
 
 resource "aws_db_subnet_group" "applications_rds_cluster" {
-  name       = "applications"
+  name       = "applications-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
