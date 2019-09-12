@@ -201,8 +201,8 @@ locals {
     },
     "secrets": [
       { "name" : "OPG_REFUNDS_BANK_HASH_SALT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_bank_hash_salt.name}" },
-      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.postgres_password.name}" },
-      { "name" : "OPG_REFUNDS_DB_CASES_FULL_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.postgres_password.name}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_applications_full_password.name}" },
+      { "name" : "OPG_REFUNDS_DB_CASES_FULL_PASSWORD", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_db_cases_full_password.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ENTITY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_entity.name}" },
       { "name" : "OPG_REFUNDS_SSCL_COST_CENTRE", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_cost_centre.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ACCOUNT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_account.name}" },
