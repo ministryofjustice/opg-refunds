@@ -18,14 +18,14 @@ class HealthcheckTester:
         with open(config_file) as json_file:
             parameters = json.load(json_file)
             self.front_url = "https://{}/healthcheck.json".format(
-                parameters['front_fqdn'])
+                parameters['public_front_fqdn'])
             self.expected_tag = parameters['tag']
 
     def read_healthcheck(self):
         print("Reading health check for {}...".format(self.front_url))
         with requests.get(url=self.front_url) as healthcheck_response:
             self.healthcheck_status_code = healthcheck_response.status_code
-            self.deployed_tag = healthcheck_response.json()['tag']
+            self.deployed_tag = healthcheck_response.json()['version']['tag']
 
     def check_status_code(self):
         print("Status code check...")
