@@ -47,5 +47,5 @@ data "aws_kms_alias" "bank_encrypt_decrypt" {
 }
 
 data "aws_iam_policy" "enforce_vpc_endpoint_access" {
-  arn = "arn:aws:iam::aws:policy/enforce-vpc-endpoint-access"
+  arn = "arn:aws:iam::${local.account.id}:policy/enforce-vpc-endpoint-access"
 }
