@@ -13,7 +13,10 @@ resource "aws_vpc_endpoint" "dynamodb" {
 
   route_table_ids = aws_route_table.private.*.id
 
-  tags = local.default_tags
+  tags = merge(
+    local.default_tags,
+    map("Name", "DynamoDB Gateway")
+  )
 }
 
 //-----------------------------------------
@@ -47,5 +50,8 @@ resource "aws_security_group" "kms_vpc_endpoint" {
     cidr_blocks = [aws_default_vpc.default.cidr_block]
   }
 
-  tags = local.default_tags
+  tags = merge(
+    local.default_tags,
+    map("Name", "KMS Gateway")
+  )
 }
