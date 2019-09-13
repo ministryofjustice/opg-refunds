@@ -45,3 +45,7 @@ data "aws_ip_ranges" "ec2" {
 data "aws_kms_alias" "bank_encrypt_decrypt" {
   name = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
 }
+
+data "aws_iam_policy" "enforce_vpc_endpoint_access" {
+  arn = "arn:aws:iam::aws:policy/enforce-vpc-endpoint-access"
+}

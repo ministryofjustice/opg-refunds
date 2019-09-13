@@ -15,8 +15,8 @@ data "aws_iam_policy_document" "enforce_endpoint_access" {
   }
 }
 
-resource "aws_iam_policy" "enforce_endpoint_access" {
-  name        = "enforce_vpc_endpoint_access"
+resource "aws_iam_policy" "enforce_vpc_endpoint_access" {
+  name        = "enforce-vpc-endpoint-access"
   description = "Forces traffic to originate from the default VPC"
   policy      = data.aws_iam_policy_document.enforce_endpoint_access.json
 }

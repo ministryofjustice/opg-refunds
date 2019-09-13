@@ -65,6 +65,11 @@ resource "aws_iam_role" "ingestion_task_role" {
   tags               = local.default_tags
 }
 
+resource "aws_iam_role_policy_attachment" "ingestion_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.enforce_vpc_endpoint_access.arn
+  role       = aws_iam_role.ingestion_task_role.id
+}
+
 resource "aws_iam_role_policy" "ingestion_permissions_role" {
   name   = "${local.environment}-ingestionApplicationPermissions"
   policy = data.aws_iam_policy_document.ingestion_permissions_role.json
