@@ -28,7 +28,7 @@ resource "aws_vpc_endpoint" "kms" {
   service_name      = data.aws_vpc_endpoint_service.kms.service_name
   vpc_endpoint_type = "Interface"
 
-  security_group_ids = [aws_security_group.kms_vpc_endpoint_access.id]
+  security_group_ids = [aws_security_group.kms_vpc_endpoint.id]
   subnet_ids         = aws_subnet.private.*.id
 
   private_dns_enabled = true
@@ -36,15 +36,15 @@ resource "aws_vpc_endpoint" "kms" {
   tags = local.default_tags
 }
 
-resource "aws_security_group" "kms_vpc_endpoint_access" {
-  name   = "kms-vpc-endpoint-access"
+resource "aws_security_group" "kms_vpc_endpoint" {
+  name   = "kms-vpc-endpoint"
   vpc_id = aws_default_vpc.default.id
 
   ingress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
-    self      = true
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [aws_default_vpc.default.cidr_block]
   }
 
   tags = local.default_tags
