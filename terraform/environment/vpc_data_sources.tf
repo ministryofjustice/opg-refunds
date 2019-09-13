@@ -46,6 +46,6 @@ data "aws_kms_alias" "bank_encrypt_decrypt" {
   name = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
 }
 
-data "aws_iam_policy" "enforce_vpc_endpoint_access" {
-  arn = "arn:aws:iam::${local.account.account_id}:policy/enforce-vpc-endpoint-access"
+data "aws_iam_policy" "restrict_to_vpc_endpoints" {
+  arn = "arn:aws:iam::${local.account.account_id}:policy/restrict-to-vpc-endpoints"
 }

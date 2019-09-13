@@ -108,7 +108,7 @@ resource "aws_iam_role" "caseworker_api_task_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "caseworker_api_vpc_endpoint_access" {
-  policy_arn = data.aws_iam_policy.enforce_vpc_endpoint_access.arn
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
   role       = aws_iam_role.caseworker_api_task_role.id
 }
 
