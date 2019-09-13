@@ -107,6 +107,11 @@ resource "aws_iam_role" "caseworker_api_task_role" {
   tags               = local.default_tags
 }
 
+resource "aws_iam_role_policy_attachment" "caseworker_api_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
+  role       = aws_iam_role.caseworker_api_task_role.id
+}
+
 resource "aws_iam_role_policy" "caseworker_api_permissions_role" {
   name   = "${local.environment}-caseworker_apiApplicationPermissions"
   policy = data.aws_iam_policy_document.caseworker_api_permissions_role.json

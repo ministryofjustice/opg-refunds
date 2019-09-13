@@ -1,6 +1,6 @@
 # opg-lpa-refund-docker
 
-Initial boilerplate setup for docker-refund project.  This will create an application stack with the following components.
+Initial boilerplate setup for docker-refund project.  This will create an application stack with the following components
 
 - public frontend container
 - caseworker api container
