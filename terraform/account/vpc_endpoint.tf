@@ -1,6 +1,28 @@
 
 //-----------------------------------------
-// DynamoDB
+// Endpoint Access Policy
+
+data "aws_iam_policy_document" "enforce_endpoint_access" {
+  statement {
+    effect    = "Deny"
+    actions   = ["*"]
+    resources = ["*"]
+    condition {
+      test     = "StringNotEquals"
+      variable = "aws:sourceVpc"
+      values   = [aws_default_vpc.default.id]
+    }
+  }
+}
+
+resource "aws_iam_policy" "enforce_endpoint_access" {
+  name        = "enforce_vpc_endpoint_access"
+  description = "Forces traffic to originate from the default VPC"
+  policy      = data.aws_iam_policy_document.enforce_endpoint_access.json
+}
+
+//-----------------------------------------
+// DynamoDB Endpoint
 
 data "aws_vpc_endpoint_service" "dynamodb" {
   service = "dynamodb"
@@ -20,7 +42,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
 }
 
 //-----------------------------------------
-// KMS
+// KMS Endpoint
 
 data "aws_vpc_endpoint_service" "kms" {
   service = "kms"
