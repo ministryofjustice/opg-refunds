@@ -11,7 +11,7 @@ resource "aws_ecs_service" "caseworker_front" {
   network_configuration {
     security_groups = [
       aws_security_group.caseworker_front_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
+      aws_security_group.caseworker_api_ecs_service.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false
