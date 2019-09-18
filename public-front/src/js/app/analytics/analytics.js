@@ -16,7 +16,13 @@
   // for custom dimensions, virtual pageviews and events
   GOVUK.analytics = new GOVUK.Analytics({
     universalId: gaConfig.universalId  || '',
-    cookieDomain: cookieDomain
+    cookieDomain: cookieDomain,
+    allowLinker: true,
+    allowAnchor: true,
+
+    //TODO are we tracking this within lpa
+    stripPostcodePII: true,
+    stripDatePII: true
   });
 
   // Set custom dimensions before tracking pageviews
@@ -26,6 +32,10 @@
 
   if (typeof gaConfig.releaseTag !== 'undefined') {
     GOVUK.analytics.setDimension(gaConfig.dimensions.RELEASE_TAG, gaConfig.releaseTag)
+  }
+
+  if (document.domain === 'powerofattorneyrefund.service.justice.gov.uk') {
+    GOVUK.analytics.addLinkedTrackerDomain(gaConfig.govId, 'govuk_shared', ['www.gov.uk'])
   }
   
   // Activate any event plugins eg. print intent, error tracking

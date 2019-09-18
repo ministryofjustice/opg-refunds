@@ -49,7 +49,7 @@ const applicationModules = [
 
 // Analytics JavaScript files
 const analyticsModules = [
-  `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/google-analytics-universal-tracker.js`,
+  `${paths.src}/js/app/analytics/moj.ga-tracker.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/govuk-tracker.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/analytics.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/analytics/external-link-tracker.js`,
