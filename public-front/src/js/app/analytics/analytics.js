@@ -9,8 +9,8 @@
   GOVUK.Analytics.load();
 
   // Use document.domain in dev, preview and staging so that tracking works
-  // Otherwise explicitly set the domain as powerofattorneyrefund.service.justice.gov.uk.
-  var cookieDomain = (document.domain === 'powerofattorneyrefund.service.justice.gov.uk') ? '.powerofattorneyrefund.service.justice.gov.uk' : document.domain;
+  // Otherwise explicitly set the domain as .claim-power-of-attorney-refund.service.gov.uk.
+  var cookieDomain = (document.domain === 'claim-power-of-attorney-refund.service.gov.uk') ? '.claim-power-of-attorney-refund.service.gov.uk' : document.domain;
 
   // Configure profiles and make interface public
   // for custom dimensions, virtual pageviews and events
@@ -34,7 +34,7 @@
     GOVUK.analytics.setDimension(gaConfig.dimensions.RELEASE_TAG, gaConfig.releaseTag)
   }
 
-  if (document.domain === 'powerofattorneyrefund.service.justice.gov.uk') {
+  if (document.domain === 'claim-power-of-attorney-refund.service.gov.uk') {
     GOVUK.analytics.addLinkedTrackerDomain(gaConfig.govId, 'govuk_shared', ['www.gov.uk'])
   }
   
