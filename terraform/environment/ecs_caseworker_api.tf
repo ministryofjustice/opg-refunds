@@ -210,7 +210,8 @@ locals {
       { "name" : "OPG_REFUNDS_SSCL_ENTITY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_entity.name}" },
       { "name" : "OPG_REFUNDS_SSCL_COST_CENTRE", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_cost_centre.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ACCOUNT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_account.name}" },
-      { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" }
+      { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" },
+      { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" }
 
     ],
     "environment": [
