@@ -215,6 +215,14 @@ orbs:
                 else
                   echo "skipped"
                 fi
+          - run:
+              name: Build caseworker-api-seeding container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
+                  docker build -f << parameters.service_path >>/docker/seeding/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding .
+                else
+                  echo "skipped"
+                fi
           - ecr_login
           - run:
               name: Push web container
@@ -255,6 +263,23 @@ orbs:
                   else
                     # Else, push branch tag only
                     docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
+                  fi
+                else
+                  echo "skipped"
+                fi
+          - run:
+              name: Push caseworker-api-eeding container
+              command: |
+                if [ << parameters.service_path >> == "caseworker-api" ]; then
+                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH
+                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                    # If master, push branch tag and latest
+                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:latest
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding
+                  else
+                    # Else, push branch tag only
+                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH
                   fi
                 else
                   echo "skipped"
