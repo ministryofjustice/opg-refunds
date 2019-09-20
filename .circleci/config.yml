@@ -4,26 +4,21 @@ workflows:
   pr-build-and-test:
     jobs:
       # Docker Build
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: public_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_ingestions_seeding:
-          name: caseworker_api_docker_build
-          ecr_repository_name_prefix: lpa-refunds/caseworker_api
-          service_path: caseworker-api
-          build_composer_container: true
-      - ? build_containers_and_push_to_ecr/checkout_docker_build_push_ingestions_seeding
-        : name: ingestion_seeding_docker_build
+      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
+          name: ingestion_seeding_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
@@ -179,7 +174,7 @@ orbs:
         docker:
           - image: circleci/python
     jobs:
-      checkout_docker_build_push_web-app:
+      docker_build_push_web-app:
         executor: python
         parameters:
           ecr_url:
@@ -242,7 +237,7 @@ orbs:
                   # Else, push branch tag only
                   docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
                 fi
-      checkout_docker_build_push_ingestions_seeding:
+      docker_build_push_ingestion_seeding:
         executor: python
         parameters:
           ecr_url:
