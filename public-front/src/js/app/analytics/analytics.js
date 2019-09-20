@@ -9,14 +9,21 @@
   GOVUK.Analytics.load();
 
   // Use document.domain in dev, preview and staging so that tracking works
-  // Otherwise explicitly set the domain as powerofattorneyrefund.service.justice.gov.uk.
-  var cookieDomain = (document.domain === 'powerofattorneyrefund.service.justice.gov.uk') ? '.powerofattorneyrefund.service.justice.gov.uk' : document.domain;
+  // Otherwise explicitly set the domain as .claim-power-of-attorney-refund.service.gov.uk.
+  var prodDomain = new RegExp('^(www\.)*claim-power-of-attorney-refund\.service\.gov\.uk$')
+  var cookieDomain = prodDomain.test(document.domain) ? '.claim-power-of-attorney-refund.service.gov.uk' : document.domain;
 
   // Configure profiles and make interface public
   // for custom dimensions, virtual pageviews and events
   GOVUK.analytics = new GOVUK.Analytics({
     universalId: gaConfig.universalId  || '',
-    cookieDomain: cookieDomain
+    cookieDomain: cookieDomain,
+    allowLinker: true,
+    allowAnchor: true,
+
+    //TODO are we tracking this within lpa
+    stripPostcodePII: true,
+    stripDatePII: true
   });
 
   // Set custom dimensions before tracking pageviews
@@ -26,6 +33,10 @@
 
   if (typeof gaConfig.releaseTag !== 'undefined') {
     GOVUK.analytics.setDimension(gaConfig.dimensions.RELEASE_TAG, gaConfig.releaseTag)
+  }
+
+  if (prodDomain.test(document.domain)) {
+    GOVUK.analytics.addLinkedTrackerDomain(gaConfig.govId, 'govuk_shared', ['www.gov.uk'])
   }
   
   // Activate any event plugins eg. print intent, error tracking
