@@ -17,6 +17,11 @@ workflows:
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
+      - build_containers_and_push_to_ecr/checkout_docker_build_push_ingestions_seeding:
+          name: caseworker_api_docker_build
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
       - ? build_containers_and_push_to_ecr/checkout_docker_build_push_ingestions_seeding
         : name: ingestion_seeding_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
@@ -61,6 +66,7 @@ workflows:
               public_front_docker_build,
               caseworker_front_docker_build,
               caseworker_api_docker_build,
+              ingestion_seeding_docker_build,
             ]
           filters:
             branches:
@@ -106,6 +112,7 @@ workflows:
               public_front_docker_build,
               caseworker_front_docker_build,
               caseworker_api_docker_build,
+              ingestion_seeding_docker_build,
             ]
           workspace: preproduction
           filters:
