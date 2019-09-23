@@ -160,9 +160,7 @@ def main():
 
     work = ECSMonitor(args.config_file_path)
     work.run_seeding_task()
-    # work.multithread()
-
-    # work.wait_for_task_to_stop()
+    work.wait_for_task_to_stop()
 
 
 if __name__ == "__main__":
