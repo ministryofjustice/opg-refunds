@@ -31,6 +31,7 @@ resource "aws_ecs_service" "public_front" {
 
 resource "aws_security_group" "public_front_ecs_service" {
   name_prefix = "${local.environment}-public-front-ecs-service"
+  description = "public front ecs access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

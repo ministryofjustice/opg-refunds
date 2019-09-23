@@ -31,6 +31,7 @@ resource "aws_ecs_service" "caseworker_front" {
 
 resource "aws_security_group" "caseworker_front_ecs_service" {
   name_prefix = "${local.environment}-caseworker-front-ecs-service"
+  description = "caseworker front access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

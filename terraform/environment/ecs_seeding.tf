@@ -31,6 +31,7 @@ resource "aws_ecs_service" "seeding" {
 
 resource "aws_security_group" "seeding_ecs_service" {
   name_prefix = "${local.environment}-seeding-ecs-service"
+  description = "seeding access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

@@ -26,6 +26,7 @@ resource "aws_ecs_service" "ingestion" {
 
 resource "aws_security_group" "ingestion_ecs_service" {
   name_prefix = "${local.environment}-ingestion-ecs-service"
+  description = "ingestion access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

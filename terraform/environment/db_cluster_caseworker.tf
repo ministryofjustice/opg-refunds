@@ -42,15 +42,15 @@ resource "aws_db_subnet_group" "caseworker_rds_cluster" {
 
 resource "aws_security_group" "caseworker_rds_cluster_client" {
   name                   = "${local.environment}-caseworker-rds-cluster-client"
-  description            = "rds access for ${local.environment}"
+  description            = "client access to caseworker db cluster"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
   tags                   = local.default_tags
 }
 
 resource "aws_security_group" "caseworker_rds_cluster" {
-  name                   = "${local.environment}-rds-cluster-caseworker"
-  description            = "api rds access"
+  name                   = "${local.environment}-caseworker-rds-cluster"
+  description            = "caseworker db cluster access"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
   tags                   = local.default_tags

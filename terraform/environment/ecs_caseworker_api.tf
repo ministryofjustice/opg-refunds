@@ -54,6 +54,7 @@ locals {
 
 resource "aws_security_group" "caseworker_api_ecs_service" {
   name_prefix = "${local.environment}-caseworker_api-ecs-service"
+  description = "caseworker api access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

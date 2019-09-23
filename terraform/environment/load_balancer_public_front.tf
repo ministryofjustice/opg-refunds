@@ -50,7 +50,7 @@ resource "aws_lb_listener" "public_front_loadbalancer" {
 
 resource "aws_security_group" "public_front_loadbalancer" {
   name        = "${local.environment}-public-front-loadbalancer"
-  description = "Allow inbound traffic"
+  description = "public front load balancer access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }

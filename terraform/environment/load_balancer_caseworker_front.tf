@@ -50,7 +50,7 @@ resource "aws_lb_listener" "caseworker_front_loadbalancer" {
 
 resource "aws_security_group" "caseworker_front_loadbalancer" {
   name        = "${local.environment}-caseworker-front-loadbalancer"
-  description = "Allow inbound traffic"
+  description = "caseworker front load balancer access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
