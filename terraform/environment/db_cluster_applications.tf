@@ -1,5 +1,5 @@
 resource "aws_rds_cluster" "applications" {
-  cluster_identifier     = "${local.environment}-applications"
+  cluster_identifier     = "applications-${local.environment}"
   vpc_security_group_ids = [aws_security_group.applications_rds_cluster.id]
   db_subnet_group_name   = "${aws_db_subnet_group.applications_rds_cluster.name}"
 
