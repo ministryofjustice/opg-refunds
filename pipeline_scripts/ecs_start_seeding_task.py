@@ -1,0 +1,169 @@
+import urllib.request
+import boto3
+import argparse
+import json
+import os
+import pprint
+import threading
+import time
+
+pp = pprint.PrettyPrinter(indent=4)
+
+
+class ECSMonitor:
+    aws_account_id = ''
+    aws_iam_session = ''
+    aws_ecs_client = ''
+    aws_ecs_cluster = ''
+    aws_ec2_client = ''
+    aws_private_subnets = []
+    db_client_security_group = ''
+    seeding_security_group = ''
+    environment = ''
+    seeding_task_definition = ''
+    seeding_task = ''
+    task_running = True
+
+    def __init__(self, config_file):
+        self.read_parameters_from_file(config_file)
+        self.set_iam_role_session()
+
+        self.aws_ecs_client = boto3.client(
+            'ecs',
+            region_name='eu-west-1',
+            aws_access_key_id=self.aws_iam_session['Credentials']['AccessKeyId'],
+            aws_secret_access_key=self.aws_iam_session['Credentials']['SecretAccessKey'],
+            aws_session_token=self.aws_iam_session['Credentials']['SessionToken'])
+        self.aws_ec2_client = boto3.client(
+            'ec2',
+            region_name='eu-west-1',
+            aws_access_key_id=self.aws_iam_session['Credentials']['AccessKeyId'],
+            aws_secret_access_key=self.aws_iam_session['Credentials']['SecretAccessKey'],
+            aws_session_token=self.aws_iam_session['Credentials']['SessionToken'])
+
+        self.get_seeding_task_definition()
+        self.get_subnet_id()
+
+        self.db_client_security_group = self.get_security_group_id('{}-caseworker-rds-cluster-client'.format(
+            self.environment))
+        self.seeding_security_group = self.get_security_group_id('{}-seeding-ecs-service'.format(
+            self.environment))
+
+    def read_parameters_from_file(self, config_file):
+        with open(config_file) as json_file:
+            parameters = json.load(json_file)
+            self.aws_account_id = parameters['account_id']
+            self.aws_ecs_cluster = parameters['cluster_name']
+            self.environment = parameters['environment']
+
+    def get_seeding_task_definition(self):
+        self.seeding_task_definition = self.aws_ecs_client.list_task_definitions(
+            familyPrefix='{}-seeding'.format(self.environment),
+            status='ACTIVE',
+            sort='DESC',
+            maxResults=1
+        )['taskDefinitionArns'][0]
+        print(self.seeding_task_definition)
+
+    def set_iam_role_session(self):
+        if os.getenv('CI'):
+            role_arn = 'arn:aws:iam::{}:role/opg-refunds-ci'.format(
+                self.aws_account_id)
+        else:
+            role_arn = 'arn:aws:iam::{}:role/operator'.format(
+                self.aws_account_id)
+
+        sts = boto3.client(
+            'sts',
+            region_name='eu-west-1',
+        )
+        session = sts.assume_role(
+            RoleArn=role_arn,
+            RoleSessionName='checking_ecs_task',
+            DurationSeconds=900
+        )
+        self.aws_iam_session = session
+
+    def get_security_group_id(self, security_group_name):
+        print(security_group_name)
+        self.db_client_security_group = self.aws_ec2_client.describe_security_groups(
+            Filters=[
+                {
+                    'Name': 'group-name',
+                    'Values': [security_group_name + "*"]
+                },
+            ],
+            MaxResults=50
+        )['SecurityGroups'][0]['GroupId']
+        pp.pprint(self.db_client_security_group)
+        return self.db_client_security_group
+
+    def get_subnet_id(self):
+        subnets = self.aws_ec2_client.describe_subnets(
+            Filters=[
+                {
+                    'Name': 'tag:Name',
+                    'Values': [
+                        'private',
+                    ]
+                },
+            ],
+            MaxResults=5
+        )
+        for subnet in subnets['Subnets']:
+            self.aws_private_subnets.append(subnet['SubnetId'])
+
+    def run_seeding_task(self):
+        print("starting seeding task...")
+        response = self.aws_ecs_client.run_task(
+            cluster=self.aws_ecs_cluster,
+            taskDefinition=self.seeding_task_definition,
+            count=1,
+            launchType='FARGATE',
+            networkConfiguration={
+                'awsvpcConfiguration': {
+                    'subnets': self.aws_private_subnets,
+                    'securityGroups': [
+                        self.db_client_security_group,
+                        self.seeding_security_group,
+                    ],
+                    'assignPublicIp': 'DISABLED'
+                }
+            },
+        )
+        self.seeding_task = response['tasks'][0]['taskArn']
+
+    def wait_for_task_to_stop(self):
+        print("waiting for seeding task to stop...")
+        waiter = self.aws_ecs_client.get_waiter('tasks_stopped')
+        waiter.wait(
+            cluster=self.aws_ecs_cluster,
+            tasks=[
+                self.seeding_task,
+            ],
+            WaiterConfig={
+                'Delay': 10,
+                'MaxAttempts': 100
+            }
+        )
+        self.task_running = False
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Wait for services in an ECS cluster to become stable.")
+
+    parser.add_argument("config_file_path", nargs='?', default="/tmp/environment_pipeline_tasks_config.json", type=str,
+                        help="Path to config file produced by terraform")
+
+    args = parser.parse_args()
+
+    work = ECSMonitor(args.config_file_path)
+    work.run_seeding_task()
+    # work.multithread()
+
+    # work.wait_for_task_to_stop()
+
+
+if __name__ == "__main__":
+    main()
