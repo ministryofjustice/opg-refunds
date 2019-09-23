@@ -1,30 +1,30 @@
 //----------------------------------
 // seeding ECS Service level config
 
-resource "aws_ecs_service" "seeding" {
-  name            = "seeding"
-  cluster         = aws_ecs_cluster.lpa_refunds.id
-  task_definition = aws_ecs_task_definition.seeding.arn
-  desired_count   = 0
-  launch_type     = "FARGATE"
+# resource "aws_ecs_service" "seeding" {
+#   name            = "seeding"
+#   cluster         = aws_ecs_cluster.lpa_refunds.id
+#   task_definition = aws_ecs_task_definition.seeding.arn
+#   desired_count   = 0
+#   launch_type     = "FARGATE"
 
-  network_configuration {
-    security_groups = [
-      aws_security_group.seeding_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
-      aws_security_group.caseworker_rds_cluster_client.id,
-    ]
-    subnets          = data.aws_subnet_ids.private.ids
-    assign_public_ip = false
-  }
+#   network_configuration {
+#     security_groups = [
+#       aws_security_group.seeding_ecs_service.id,
+#       aws_security_group.applications_rds_cluster_client.id,
+#       aws_security_group.caseworker_rds_cluster_client.id,
+#     ]
+#     subnets          = data.aws_subnet_ids.private.ids
+#     assign_public_ip = false
+#   }
 
-  depends_on = [
-    aws_rds_cluster.applications,
-    aws_rds_cluster.caseworker,
-    aws_iam_role.seeding_task_role,
-    aws_iam_role.execution_role
-  ]
-}
+#   depends_on = [
+#     aws_rds_cluster.applications,
+#     aws_rds_cluster.caseworker,
+#     aws_iam_role.seeding_task_role,
+#     aws_iam_role.execution_role
+#   ]
+# }
 
 //----------------------------------
 // The service's Security Groups
