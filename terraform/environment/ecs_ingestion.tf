@@ -18,7 +18,7 @@ resource "aws_ecs_service" "ingestion" {
     assign_public_ip = false
   }
 
-  depends_on = [aws_rds_cluster.applications, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_rds_cluster.applications, aws_rds_cluster.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
 }
 
 //----------------------------------
