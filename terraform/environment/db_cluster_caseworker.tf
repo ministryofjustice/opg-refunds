@@ -1,5 +1,5 @@
 resource "aws_rds_cluster" "caseworker" {
-  cluster_identifier     = "caseworker-${local.environment}"
+  cluster_identifier     = "${local.environment}-caseworker"
   vpc_security_group_ids = [aws_security_group.caseworker_rds_cluster.id, aws_security_group.caseworker_rds_cluster_client.id]
   db_subnet_group_name   = "${aws_db_subnet_group.caseworker_rds_cluster.name}"
 
@@ -33,7 +33,7 @@ resource "aws_rds_cluster" "caseworker" {
 }
 
 resource "aws_db_subnet_group" "caseworker_rds_cluster" {
-  name       = "caseworker-${local.environment}"
+  name       = "${local.environment}-caseworker"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
@@ -41,7 +41,7 @@ resource "aws_db_subnet_group" "caseworker_rds_cluster" {
 
 
 resource "aws_security_group" "caseworker_rds_cluster_client" {
-  name                   = "caseworker-rds-cluster-client-${local.environment}"
+  name                   = "${local.environment}-caseworker-rds-cluster-client"
   description            = "rds access for ${local.environment}"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
@@ -49,7 +49,7 @@ resource "aws_security_group" "caseworker_rds_cluster_client" {
 }
 
 resource "aws_security_group" "caseworker_rds_cluster" {
-  name                   = "rds-cluster-caseworker-${local.environment}"
+  name                   = "${local.environment}-rds-cluster-caseworker"
   description            = "api rds access"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true

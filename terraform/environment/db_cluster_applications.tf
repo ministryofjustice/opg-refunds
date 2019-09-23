@@ -1,5 +1,5 @@
 resource "aws_rds_cluster" "applications" {
-  cluster_identifier     = "applications-${local.environment}"
+  cluster_identifier     = "${local.environment}-applications"
   vpc_security_group_ids = [aws_security_group.applications_rds_cluster.id]
   db_subnet_group_name   = "${aws_db_subnet_group.applications_rds_cluster.name}"
 
@@ -33,7 +33,7 @@ resource "aws_rds_cluster" "applications" {
 }
 
 resource "aws_db_subnet_group" "applications_rds_cluster" {
-  name       = "applications-${local.environment}"
+  name       = "${local.environment}-applications"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
@@ -41,7 +41,7 @@ resource "aws_db_subnet_group" "applications_rds_cluster" {
 
 
 resource "aws_security_group" "applications_rds_cluster_client" {
-  name                   = "applications-rds-cluster-client-${local.environment}"
+  name                   = "${local.environment}-applications-rds-cluster-client"
   description            = "rds access for ${local.environment}"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
@@ -49,7 +49,7 @@ resource "aws_security_group" "applications_rds_cluster_client" {
 }
 
 resource "aws_security_group" "applications_rds_cluster" {
-  name                   = "rds-cluster-applications-${local.environment}"
+  name                   = "${local.environment}-rds-cluster-applications"
   description            = "api rds access"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true

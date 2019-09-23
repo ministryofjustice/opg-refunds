@@ -53,7 +53,7 @@ locals {
 // The caseworker_api service's Security Groups
 
 resource "aws_security_group" "caseworker_api_ecs_service" {
-  name_prefix = "${terraform.workspace}-caseworker_api-ecs-service"
+  name_prefix = "${local.environment}-caseworker_api-ecs-service"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -85,7 +85,7 @@ resource "aws_security_group_rule" "caseworker_api_ecs_service_egress" {
 // caseworker_api ECS Service Task level config
 
 resource "aws_ecs_task_definition" "caseworker_api" {
-  family                   = "${terraform.workspace}-caseworker_api"
+  family                   = "${local.environment}-caseworker_api"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 2048
