@@ -7,6 +7,7 @@ import pprint
 import threading
 import time
 
+
 pp = pprint.PrettyPrinter(indent=4)
 
 
@@ -16,13 +17,15 @@ class ECSMonitor:
     aws_ecs_client = ''
     aws_ecs_cluster = ''
     aws_ec2_client = ''
+    aws_logs_client = ''
     aws_private_subnets = []
     db_client_security_group = ''
     seeding_security_group = ''
     environment = ''
     seeding_task_definition = ''
     seeding_task = ''
-    task_running = True
+    nextForwardToken = ''
+    logStreamName = ''
 
     def __init__(self, config_file):
         self.read_parameters_from_file(config_file)
@@ -36,6 +39,12 @@ class ECSMonitor:
             aws_session_token=self.aws_iam_session['Credentials']['SessionToken'])
         self.aws_ec2_client = boto3.client(
             'ec2',
+            region_name='eu-west-1',
+            aws_access_key_id=self.aws_iam_session['Credentials']['AccessKeyId'],
+            aws_secret_access_key=self.aws_iam_session['Credentials']['SecretAccessKey'],
+            aws_session_token=self.aws_iam_session['Credentials']['SessionToken'])
+        self.aws_logs_client = boto3.client(
+            'logs',
             region_name='eu-west-1',
             aws_access_key_id=self.aws_iam_session['Credentials']['AccessKeyId'],
             aws_secret_access_key=self.aws_iam_session['Credentials']['SecretAccessKey'],
@@ -85,8 +94,7 @@ class ECSMonitor:
         self.aws_iam_session = session
 
     def get_security_group_id(self, security_group_name):
-        print(security_group_name)
-        self.db_client_security_group = self.aws_ec2_client.describe_security_groups(
+        security_group_id = self.aws_ec2_client.describe_security_groups(
             Filters=[
                 {
                     'Name': 'group-name',
@@ -95,8 +103,7 @@ class ECSMonitor:
             ],
             MaxResults=50
         )['SecurityGroups'][0]['GroupId']
-        pp.pprint(self.db_client_security_group)
-        return self.db_client_security_group
+        return security_group_id
 
     def get_subnet_id(self):
         subnets = self.aws_ec2_client.describe_subnets(
@@ -132,10 +139,20 @@ class ECSMonitor:
             },
         )
         self.seeding_task = response['tasks'][0]['taskArn']
+        pp.pprint(self.seeding_task)
 
-    def wait_for_task_to_stop(self):
-        print("waiting for seeding task to stop...")
-        waiter = self.aws_ecs_client.get_waiter('tasks_stopped')
+    def check_task_status(self):
+        response = self.aws_ecs_client.describe_tasks(
+            cluster=self.aws_ecs_cluster,
+            tasks=[
+                self.seeding_task,
+            ]
+        )
+        return response['tasks'][0]['lastStatus']
+
+    def wait_for_task_to_start(self):
+        print("waiting for seeding task to start...")
+        waiter = self.aws_ecs_client.get_waiter('tasks_running')
         waiter.wait(
             cluster=self.aws_ecs_cluster,
             tasks=[
@@ -146,7 +163,31 @@ class ECSMonitor:
                 'MaxAttempts': 100
             }
         )
-        self.task_running = False
+
+    def get_logs(self):
+        log_events = self.aws_logs_client.get_log_events(
+            logGroupName='lpa-refunds',
+            logStreamName=self.logStreamName,
+            nextToken=self.nextForwardToken,
+            startFromHead=False
+        )
+        for event in log_events['events']:
+            print('timestamp: {0}: message: {1}'.format(
+                event['timestamp'], event['message']))
+        self.nextForwardToken = log_events['nextForwardToken']
+
+    def print_task_logs(self):
+        self.logStreamName = 'seeding-app.lpa-refunds/app/{}'.format(
+            self.seeding_task.rsplit('/', 1)[-1])
+        print(self.logStreamName)
+
+        self.nextForwardToken = 'f/0'
+
+        while self.check_task_status() == "RUNNING":
+            self.get_logs()
+
+        self.get_logs()
+        print("task stopped running")
 
 
 def main():
@@ -160,7 +201,8 @@ def main():
 
     work = ECSMonitor(args.config_file_path)
     work.run_seeding_task()
-    work.wait_for_task_to_stop()
+    work.wait_for_task_to_start()
+    work.print_task_logs()
 
 
 if __name__ == "__main__":
