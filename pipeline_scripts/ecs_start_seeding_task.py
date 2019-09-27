@@ -4,8 +4,6 @@ import argparse
 import json
 import os
 import pprint
-import threading
-import time
 
 
 pp = pprint.PrettyPrinter(indent=4)
@@ -66,6 +64,8 @@ class ECSMonitor:
             self.environment = parameters['environment']
 
     def get_seeding_task_definition(self):
+      # get the latest task definition for seeding
+      # returns task defintion arn
         self.seeding_task_definition = self.aws_ecs_client.list_task_definitions(
             familyPrefix='{}-seeding'.format(self.environment),
             status='ACTIVE',
@@ -88,12 +88,14 @@ class ECSMonitor:
         )
         session = sts.assume_role(
             RoleArn=role_arn,
-            RoleSessionName='checking_ecs_task',
+            RoleSessionName='starting_seeding_ecs_task',
             DurationSeconds=900
         )
         self.aws_iam_session = session
 
     def get_security_group_id(self, security_group_name):
+      # get security group ids by security group name
+      # returns security group id
         security_group_id = self.aws_ec2_client.describe_security_groups(
             Filters=[
                 {
@@ -106,6 +108,8 @@ class ECSMonitor:
         return security_group_id
 
     def get_subnet_id(self):
+      # get ids for private subnets
+      # returns a list of private subnet ids
         subnets = self.aws_ec2_client.describe_subnets(
             Filters=[
                 {
@@ -121,8 +125,10 @@ class ECSMonitor:
             self.aws_private_subnets.append(subnet['SubnetId'])
 
     def run_seeding_task(self):
+      # run a seeding task in ecs with a network configuration
+      # sets a task arn for the seeding task started
         print("starting seeding task...")
-        response = self.aws_ecs_client.run_task(
+        running_tasks = self.aws_ecs_client.run_task(
             cluster=self.aws_ecs_cluster,
             taskDefinition=self.seeding_task_definition,
             count=1,
@@ -138,19 +144,22 @@ class ECSMonitor:
                 }
             },
         )
-        self.seeding_task = response['tasks'][0]['taskArn']
-        pp.pprint(self.seeding_task)
+        self.seeding_task = running_tasks['tasks'][0]['taskArn']
+        print(self.seeding_task)
 
     def check_task_status(self):
-        response = self.aws_ecs_client.describe_tasks(
+      # returns the status of the seeding task
+        tasks = self.aws_ecs_client.describe_tasks(
             cluster=self.aws_ecs_cluster,
             tasks=[
                 self.seeding_task,
             ]
         )
-        return response['tasks'][0]['lastStatus']
+        print(tasks)
+        return tasks['tasks'][0]['lastStatus']
 
     def wait_for_task_to_start(self):
+      # wait for the seeding task to start
         print("waiting for seeding task to start...")
         waiter = self.aws_ecs_client.get_waiter('tasks_running')
         waiter.wait(
@@ -165,6 +174,8 @@ class ECSMonitor:
         )
 
     def get_logs(self):
+      # retrieve logstreeam for the seeding task started
+      # formats and prints simple log output
         log_events = self.aws_logs_client.get_log_events(
             logGroupName='lpa-refunds',
             logStreamName=self.logStreamName,
@@ -177,9 +188,12 @@ class ECSMonitor:
         self.nextForwardToken = log_events['nextForwardToken']
 
     def print_task_logs(self):
+      # lifecycle for getting log streams
+      # get logs while task is running
+      # after task finishes, print remaining logs
         self.logStreamName = 'seeding-app.lpa-refunds/app/{}'.format(
             self.seeding_task.rsplit('/', 1)[-1])
-        print(self.logStreamName)
+        print("Streaming logs for logstream: ".format(self.logStreamName))
 
         self.nextForwardToken = 'f/0'
 
@@ -192,7 +206,7 @@ class ECSMonitor:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Wait for services in an ECS cluster to become stable.")
+        description="Start the seeding task for the lpa refunds caseworkr database")
 
     parser.add_argument("config_file_path", nargs='?', default="/tmp/environment_pipeline_tasks_config.json", type=str,
                         help="Path to config file produced by terraform")
