@@ -155,7 +155,6 @@ class ECSMonitor:
                 self.seeding_task,
             ]
         )
-        print(tasks)
         return tasks['tasks'][0]['lastStatus']
 
     def wait_for_task_to_start(self):
