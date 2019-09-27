@@ -3,10 +3,6 @@ import boto3
 import argparse
 import json
 import os
-import pprint
-
-
-pp = pprint.PrettyPrinter(indent=4)
 
 
 class ECSMonitor:
