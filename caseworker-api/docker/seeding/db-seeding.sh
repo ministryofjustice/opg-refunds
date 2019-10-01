@@ -19,9 +19,9 @@
 #     if [ $retval -eq 0 ]; then
 #         # Acquired lock
 
-psql -h ${OPG_REFUNDS_DB_FINANCE_HOSTNAME} -p ${OPG_REFUNDS_DB_FINANCE_PORT} -U ${POSTGRES_USER} -d cases -f finance/develop/data.sql
-psql -h ${OPG_REFUNDS_DB_MERIS_HOSTNAME} -p ${OPG_REFUNDS_DB_MERIS_PORT} -U ${POSTGRES_USER} -d cases -f meris/develop/data.sql
-psql -h ${OPG_REFUNDS_DB_SIRIUS_HOSTNAME} -p ${OPG_REFUNDS_DB_SIRIUS_PORT} -U ${POSTGRES_USER} -d cases -f sirius/develop/data.sql
+psql -h ${OPG_REFUNDS_DB_FINANCE_HOSTNAME} -p ${OPG_REFUNDS_DB_FINANCE_PORT} -U ${POSTGRES_USER} -d postgres -f finance/develop/data.sql
+psql -h ${OPG_REFUNDS_DB_MERIS_HOSTNAME} -p ${OPG_REFUNDS_DB_MERIS_PORT} -U ${POSTGRES_USER} -d postgres -f meris/develop/data.sql
+psql -h ${OPG_REFUNDS_DB_SIRIUS_HOSTNAME} -p ${OPG_REFUNDS_DB_SIRIUS_PORT} -U ${POSTGRES_USER} -d postgres -f sirius/develop/data.sql
 
 #         break
 #     elif [ $retval -eq 1 ]; then
