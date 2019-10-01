@@ -1,8 +1,6 @@
 \c cases
 
-DROP TABLE IF EXISTS finance;
-
-CREATE TABLE finance (
+CREATE TABLE IF NOT EXISTS finance (
   case_number     bigint  NOT NULL,
   sequence_number smallint  NOT NULL,
   amount  smallint   NOT NULL,
