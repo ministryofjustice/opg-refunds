@@ -1,3 +1,4 @@
+\c cases
 BEGIN;
 INSERT INTO sirius VALUES (752762863877, '{"donor-title":"miss","donor-forename":"lola","donor-lastname":"clarke","donor-dob":"1962-08-05","donor-postcode":"w9x3gf","date-of-receipt":"2014-12-19"}');
 INSERT INTO sirius VALUES (735387713258, '{"donor-title":"mr","donor-forename":"jeffery","donor-lastname":"herrera","donor-dob":"1982-08-28","donor-postcode":"gd6o3xu","date-of-receipt":"2013-02-02"}');

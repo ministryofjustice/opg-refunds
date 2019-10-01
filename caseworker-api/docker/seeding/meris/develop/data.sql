@@ -1,3 +1,4 @@
+\c cases
 BEGIN;
 INSERT INTO meris VALUES (6046779, 1, '{"donor-title":"mr","donor-forename":"phillip","donor-lastname":"anderson","donor-dob":"1994-05-15","donor-postcode":"e1o8nw","date-of-receipt":"2014-07-04","attorneys":[{"attorney-name":"mr juan scott","attorney-dob":"1983-10-17","attorney-postcode":"cf57ps"}]}');
 INSERT INTO meris VALUES (9746904, 1, '{"donor-title":"mrs","donor-forename":"andrea","donor-lastname":"jacobs","donor-dob":"1967-05-30","donor-postcode":"wo1u1dw","date-of-receipt":"2017-06-15","attorneys":[{"attorney-name":"mrs angela lawrence","attorney-dob":"1947-01-06","attorney-postcode":"cd770nl"}]}');
