@@ -66,16 +66,15 @@ workflows:
           filters:
             branches:
               ignore: master
-      # - infrastructure_and_deployment/seed_environment_databases:
-      #     name: dev_seed_environment_databases
-      #     requires: [dev_environment_apply_terraform]
-      #     filters:
-      #       branches:
-      #         ignore: master
+      - infrastructure_and_deployment/seed_environment_databases:
+          name: dev_seed_environment_databases
+          requires: [dev_environment_apply_terraform]
+          filters:
+            branches:
+              ignore: master
       - infrastructure_and_deployment/run_healthcheck_test:
           name: dev_run_healthcheck_test
-          requires: [dev_environment_apply_terraform]
-          # requires: [dev_seed_environment_databases]
+          requires: [dev_seed_environment_databases]
           filters:
             branches:
               ignore: master
