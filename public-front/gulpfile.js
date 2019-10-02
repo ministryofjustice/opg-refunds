@@ -45,6 +45,7 @@ const applicationModules = [
   `${paths.src}/js/app/print-link.js`,
   `${paths.src}/js/app/single-use.js`,
   `${paths.src}/js/app/cookie-functions.js`,
+  `${paths.src}/js/app/cookie-consent.js`,
   `${paths.src}/js/app/application.js`,
 ];
 
