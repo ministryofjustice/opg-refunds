@@ -32,7 +32,7 @@ const govukTemplateImages = `${paths.modules}/govuk_frontend_toolkit/images/**/*
 
 // Vendor JavaScript files
 const vendorModules = [
-  `${paths.modules}/govuk_template_jinja/assets/javascripts/govuk-template.js`,
+  //`${paths.modules}/govuk_template_jinja/assets/javascripts/govuk-template.js`,
   `${paths.modules}/jquery/dist/jquery.min.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js`
