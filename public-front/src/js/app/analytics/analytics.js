@@ -5,6 +5,12 @@
   var GOVUK = global.GOVUK || {}
   var gaConfig = global.gaConfig || {}
 
+  // Check if we have permission to enable tracking
+  if (typeof GOVUK.checkConsentCookieCategory !== 'function'
+      || !GOVUK.checkConsentCookieCategory('analytics', 'usage')) {
+    return; // no permission
+  }
+
   // Load Google Analytics libraries
   GOVUK.Analytics.load();
 
@@ -53,4 +59,4 @@
 
 };
 
-GOVUK.analyticsSetup(window)
+GOVUK.analyticsSetup(window);
