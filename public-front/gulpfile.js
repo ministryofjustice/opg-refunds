@@ -44,7 +44,8 @@ const applicationModules = [
   `${paths.src}/js/app/scroll-to-hash.js`,
   `${paths.src}/js/app/print-link.js`,
   `${paths.src}/js/app/single-use.js`,
-  `${paths.src}/js/app/application.js`
+  `${paths.src}/js/app/cookie-functions.js`,
+  `${paths.src}/js/app/application.js`,
 ];
 
 // Analytics JavaScript files
