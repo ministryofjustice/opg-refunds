@@ -1,8 +1,3 @@
-# common
-
-
-
-
 # front secrets
 data "aws_secretsmanager_secret" "opg_refunds_public_front_session_encryption_key" {
   name = "${local.account_name}/opg_refunds_public_front_session_encryption_key"
