@@ -37,6 +37,9 @@ export OPG_REFUNDS_DB_MERIS_PORT=5432
 export POSTGRES_USER=root
 export PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id development/postgres_password | jq -r .'SecretString')
 
+# Set cloud9 IP for ingress
+export CLOUD9_IP=$(ip route get 1 | awk '{print $NF;exit}')
+
 
 
 
