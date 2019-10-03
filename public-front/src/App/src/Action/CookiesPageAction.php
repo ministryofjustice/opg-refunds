@@ -28,7 +28,7 @@ class CookiesPageAction extends AbstractAction
             $cookiePolicy = json_decode($cookies[self::COOKIE_POLICY_NAME], true);
 
             $form->get('usage-cookies')
-                ->setValue($cookiePolicy['usage'] ? 'yes' : 'no');
+                ->setValue($cookiePolicy['usage'] === "true" ? 'yes' : 'no');
         }
 
         $response =  new HtmlResponse($this->getTemplateRenderer()->render('app::cookies-page', [
