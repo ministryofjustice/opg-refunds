@@ -23,7 +23,3 @@ connect to a database
 ```
 psql -h caseworker-81-lpa3376.cluster-c4i63kewcgwk.eu-west-1.rds.amazonaws.com -U root postgres
 ```
-
-<!-- git clone --single-branch --branch  LPA-3334-ecs-move  https://github.com/ministryofjustice/opg-refunds.git -->
-
-81-lpa3376

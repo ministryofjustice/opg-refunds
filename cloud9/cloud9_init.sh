@@ -23,7 +23,7 @@ export TF_WORKSPACE=$1
 curl -sfSO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
 echo "${TF_SHA256SUM} terraform_${TF_VERSION}_linux_amd64.zip" > SHA256SUMS
 sha256sum -c --status SHA256SUMS
-sudo unzip terraform_${TF_VERSION}_linux_amd64.zip -d /bin
+sudo unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d /bin
 terraform -version
 
 # set db env vars
