@@ -4,7 +4,7 @@
     window.GOVUK = window.GOVUK || {}
 
     var CookieConsent = function() {
-        if (!this.isInCookiesPage() && !this.isInIframe() && 'true' !== window.GOVUK.cookie('seen_cookie_message')) {
+        if (!this.isInCookiesPage() && !this.isInIframe() && "true" !== window.GOVUK.cookie('seen_cookie_message')) {
             this.displayCookieMessage(true);
             window.GOVUK.cookie('cookie_policy') || window.GOVUK.setDefaultConsentCookie()
         }
@@ -26,7 +26,7 @@
 
     CookieConsent.prototype.enableAllCookies = function(evt) {
         window.GOVUK.approveAllCookieTypes();
-        window.GOVUK.cookie('seen_cookie_message', true);
+        window.GOVUK.cookie('seen_cookie_message', "true");
         this.displayCookieMessage(false);
 
         // enable analytics and fire off a pageview
