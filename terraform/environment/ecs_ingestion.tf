@@ -19,6 +19,7 @@ resource "aws_ecs_service" "ingestion" {
   }
 
   depends_on = [aws_rds_cluster.applications, aws_rds_cluster.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
+  tags       = local.default_tags
 }
 
 //----------------------------------

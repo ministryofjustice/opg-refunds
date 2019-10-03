@@ -20,6 +20,7 @@ resource "aws_ecs_service" "caseworker_api" {
   service_registries {
     registry_arn = aws_service_discovery_service.caseworker_api.arn
   }
+  tags = local.default_tags
 }
 
 //-----------------------------------------------
