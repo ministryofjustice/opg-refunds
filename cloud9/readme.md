@@ -12,9 +12,10 @@ cloud9/cloud9_init.sh
 
 add cloud9 ingress rules for databases.
 ```
+export CLOUD9_IP=$(ip route get 1 | awk '{print $NF;exit}')
 cd terraform/cloud9_ingress
 terraform init
-terraform apply
+terraform apply -var cloud9_ip=$CLOUD9_IP
 ```
 
 connect to a database

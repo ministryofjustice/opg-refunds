@@ -1,5 +1,10 @@
-data "aws_vpc" "default" {
-  default = true
+variable "cloud9_ip" {
+  description = "IP address for CircleCI docker remote"
+  default     = ""
+}
+
+locals {
+  local_ip_cidr = "${chomp(var.cloud9_ip)}/32"
 }
 
 data "aws_security_group" "caseworker_rds_cluster_client" {
@@ -17,7 +22,7 @@ resource "aws_security_group_rule" "caseworker_rds_cloud9_in" {
   from_port         = 5432
   to_port           = 5432
   security_group_id = aws_security_group.caseworker_rds_cluster_client.id
-  cidr_blocks       = [data.aws_vpc.default.cidr_block]
+  cidr_blocks       = [local.local_ip_cidr]
 }
 resource "aws_security_group_rule" "applications_rds_cloud9_in" {
   count             = local.account.allow_ingress_modification ? 1 : 0
@@ -26,5 +31,5 @@ resource "aws_security_group_rule" "applications_rds_cloud9_in" {
   from_port         = 5432
   to_port           = 5432
   security_group_id = aws_security_group.applications_rds_cluster_client.id
-  cidr_blocks       = [data.aws_vpc.default.cidr_block]
+  cidr_blocks       = [local.local_ip_cidr]
 }
