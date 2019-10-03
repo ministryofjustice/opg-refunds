@@ -489,7 +489,7 @@ orbs:
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
                   ENV_NAME=<<parameters.workspace>>
-                  cd ~/project/terraform/account_ingress
+                  cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
                   export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                   echo $TF_WORKSPACE
@@ -504,7 +504,7 @@ orbs:
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
                   ENV_NAME=<<parameters.workspace>>
-                  cd ~/project/terraform/account_ingress
+                  cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
                   export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                   echo $TF_WORKSPACE
