@@ -23,3 +23,10 @@ connect to a database
 ```
 psql -h caseworker-81-lpa3376.cluster-c4i63kewcgwk.eu-west-1.rds.amazonaws.com -U root postgres
 ```
+
+when finished, remove the security group rules
+```
+cd terraform/cloud9_ingress
+terraform init
+terraform destroy
+```
