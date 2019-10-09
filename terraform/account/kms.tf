@@ -30,10 +30,3 @@ resource "aws_kms_alias" "bank_encrypt_decrypt" {
   name          = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
   target_key_id = "${aws_kms_key.bank_encrypt_decrypt.key_id}"
 }
-
-locals {
-  timestampday = formatdate("YYYYMMDD", timestamp())
-  timestamp    = formatdate("YYYYMMDDhhmmss", timestamp())
-}
-
-
