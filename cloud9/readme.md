@@ -13,7 +13,6 @@ note the use of `. cloud9/`. This sources the file so that environment variables
 
 add cloud9 ingress rules for databases.
 ```
-
 cd terraform/cloud9_ingress
 terraform init
 terraform apply -var cloud9_ip=$CLOUD9_IP
