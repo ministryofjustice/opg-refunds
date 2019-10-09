@@ -26,17 +26,6 @@ resource "aws_s3_bucket_public_access_block" "cloudfront_logs" {
   block_public_policy = true
 }
 
-
-
-# resource "aws_route53_record" "cloudfront_public_front" {
-#   zone_id = data.aws_route53_zone.opg_service_justice_gov_uk.zone_id
-#   name    = local.cloudfront_domain
-#   type    = "CNAME"
-#   ttl     = "300"
-#   records = [aws_cloudfront_distribution.public_front.domain_name]
-# }
-
-
 resource "aws_cloudfront_distribution" "public_front" {
   count = local.account.has_cloudfront_distribution ? 1 : 0
   origin {
