@@ -41,3 +41,4 @@ export PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id development/
 
 # Set cloud9 IP for ingress
 export CLOUD9_IP=$(ip route get 1 | awk '{print $NF;exit}')
+
