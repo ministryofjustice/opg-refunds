@@ -56,6 +56,7 @@ resource "aws_security_group" "caseworker_front_loadbalancer" {
 }
 
 resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
+  count             = local.environment == "production" ? 0 : 1
   type              = "ingress"
   from_port         = 443
   to_port           = 443
@@ -64,15 +65,6 @@ resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
   security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 
-resource "aws_security_group_rule" "caseworker_front_loadbalancer_cloudfront_ingress" {
-  count             = local.account.has_cloudfront_distribution ? 1 : 0
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = data.aws_ip_ranges.cloudfront.cidr_blocks
-  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
-}
 resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress_production" {
   count             = local.environment == "production" ? 1 : 0
   type              = "ingress"
