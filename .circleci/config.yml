@@ -8,20 +8,32 @@ workflows:
           name: public_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
+          filters:
+            branches:
+              ignore: master
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
+          filters:
+            branches:
+              ignore: master
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
+          filters:
+            branches:
+              ignore: master
       - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
           name: ingestion_seeding_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
+          filters:
+            branches:
+              ignore: master
 
       # Terraform Validation
       - infrastructure_and_deployment/lint_and_validate_terraform:
@@ -97,7 +109,39 @@ workflows:
           filters:
             branches:
               ignore: master
-
+  path-to-live:
+    jobs:
+      # Docker Build
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: public_front_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/public_front
+          service_path: public-front
+          filters:
+            branches:
+              only: master
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: caseworker_front_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_front
+          service_path: caseworker-front
+          filters:
+            branches:
+              only: master
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: caseworker_api_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+          filters:
+            branches:
+              only: master
+      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
+          name: ingestion_seeding_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+          filters:
+            branches:
+              only: master
       # Preproduction Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: preprod_account_apply_terraform
@@ -110,10 +154,10 @@ workflows:
           requires:
             [
               preprod_account_apply_terraform,
-              public_front_docker_build,
-              caseworker_front_docker_build,
-              caseworker_api_docker_build,
-              ingestion_seeding_docker_build,
+              public_front_docker_build_path_to_live,
+              caseworker_front_docker_build_path_to_live,
+              caseworker_api_docker_build_path_to_live,
+              ingestion_seeding_docker_build_path_to_live,
             ]
           workspace: preproduction
           filters:
@@ -125,14 +169,14 @@ workflows:
           requires: [preprod_environment_apply_terraform]
           filters:
             branches:
-              ignore: master
+              only: master
       - infrastructure_and_deployment/run_healthcheck_test:
           name: preprod_run_healthcheck_test
           workspace: preproduction
           requires: [preprod_seed_environment_databases]
           filters:
             branches:
-              ignore: master
+              only: master
 
       # Production Deployment
       - infrastructure_and_deployment/apply_account_terraform:
@@ -155,7 +199,7 @@ workflows:
           requires: [prod_environment_apply_terraform]
           filters:
             branches:
-              ignore: master
+              only: master
       - slack_notify_production_release:
           name: post_production_release_message
           requires:
