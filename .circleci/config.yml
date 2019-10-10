@@ -8,63 +8,53 @@ workflows:
           name: public_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
           name: ingestion_seeding_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
 
       # Terraform Validation
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: lint_and_validate_terraform
           account_workspace: development
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_preproduction_terraform
           account_workspace: preproduction
           environment_workspace: preproduction
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_production_terraform
           account_workspace: production
           environment_workspace: production
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
 
       # Development Deploy
       - infrastructure_and_deployment/apply_account_terraform:
           name: dev_account_apply_terraform
           workspace: development
           requires: [lint_and_validate_terraform]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/apply_environment_terraform:
           name: dev_environment_apply_terraform
           requires:
@@ -75,40 +65,34 @@ workflows:
               caseworker_api_docker_build,
               ingestion_seeding_docker_build,
             ]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/seed_environment_databases:
           name: dev_seed_environment_databases
           requires: [dev_environment_apply_terraform]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/run_healthcheck_test:
           name: dev_run_healthcheck_test
           requires: [dev_seed_environment_databases]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - slack_notify_domain:
           name: post_environment_domains
           requires: [dev_run_healthcheck_test]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - hold-for-destruction:
           name: hold_env_for_destruction
           type: approval
           requires: [post_environment_domains]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/destroy_dev_environment:
           name: dev_destroy_environment
           requires: [hold_env_for_destruction]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
   path-to-live:
     jobs:
       # Docker Build
@@ -116,39 +100,33 @@ workflows:
           name: public_front_docker_build_path_to_live
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_front_docker_build_path_to_live
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_api_docker_build_path_to_live
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
           name: ingestion_seeding_docker_build_path_to_live
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       # Preproduction Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: preprod_account_apply_terraform
           workspace: preproduction
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
       - infrastructure_and_deployment/apply_environment_terraform:
           name: preprod_environment_apply_terraform
           requires:
@@ -160,53 +138,44 @@ workflows:
               ingestion_seeding_docker_build_path_to_live,
             ]
           workspace: preproduction
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - infrastructure_and_deployment/seed_environment_databases:
           name: preprod_seed_environment_databases
           workspace: preproduction
           requires: [preprod_environment_apply_terraform]
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - infrastructure_and_deployment/run_healthcheck_test:
           name: preprod_run_healthcheck_test
           workspace: preproduction
           requires: [preprod_seed_environment_databases]
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
 
       # Production Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
           requires: [preprod_run_healthcheck_test]
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - infrastructure_and_deployment/apply_environment_terraform:
           name: prod_environment_apply_terraform
           requires: [prod_account_apply_terraform]
           workspace: production
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - infrastructure_and_deployment/run_healthcheck_test:
           name: prod_run_healthcheck_test
           workspace: production
           requires: [prod_environment_apply_terraform]
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
+
       - slack_notify_production_release:
           name: post_production_release_message
           requires:
             [prod_account_apply_terraform, prod_environment_apply_terraform]
-          filters:
-            branches:
-              only: master
+          filters: { branches: { only: [master] } }
 
 orbs:
   slack: circleci/slack@3.3.0
