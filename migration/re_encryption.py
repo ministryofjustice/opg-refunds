@@ -9,21 +9,30 @@ import pg8000
 class ReEncrypter:
     aws_account_id = ''
     aws_iam_session = ''
-    old_pg_client = ''
+    old_pg_client_applications = ''
+    old_pg_client_cases = ''
     aws_ecs_cluster = ''
 
     def __init__(self):
         # TODO: read env var for host and default to localhost
         # TODO: pull password from secrets manager and default
-        self.old_pg_client = self.pg_connect(
+        self.old_pg_client_applications = self.pg_connect(
             user="admin",
             host='localhost',
             port=5432,
             database="applications",
             password="admin",
             tcp_keepalive=True)
-        self.pg_get_version(self.old_pg_client)
-        self.list_records(self.old_pg_client, "application")
+        self.old_pg_client_cases = self.pg_connect(
+            user="admin",
+            host='localhost',
+            port=5432,
+            database="cases",
+            password="admin",
+            tcp_keepalive=True)
+
+        self.count_records()
+        self.close_db_conections()
 
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
@@ -41,18 +50,11 @@ class ReEncrypter:
             print("an error...")
             print(error)
 
-    def pg_get_version(self, conn):
-        cur = conn.cursor()
-        print('PostgreSQL database version:')
-        cur.execute('SELECT version()')
-        db_version = cur.fetchone()
-        print(db_version)
-
     def pg_count_records_in_table(self, conn, table):
         cur = conn.cursor()
-        print('Records in database:')
-        cur.execute('COUNT (*), FROM {}'.format(table))
-        record_count = cur.fetchall()
+        print('Records in database {}:'.format(table))
+        cur.execute('SELECT COUNT (*) FROM {}'.format(table))
+        record_count = cur.fetchone()
         print(record_count)
 
     def pg_close(self, conn):
@@ -60,10 +62,21 @@ class ReEncrypter:
             conn.close()
             print('Database connection closed.')
 
+    def count_records(self):
+        print("count records in each table...")
+        self.pg_count_records_in_table(
+            self.old_pg_client_applications, "application")
+        self.pg_count_records_in_table(self.old_pg_client_cases, "sirius")
+        self.pg_count_records_in_table(self.old_pg_client_cases, "meris")
+        self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
+
     def list_records(self, client, table):
         print("all_records...")
         self.pg_count_records_in_table(client, table)
-        self.pg_close(client)
+
+    def close_db_conections(self):
+        self.pg_close(self.old_pg_client_applications)
+        self.pg_close(self.old_pg_client_cases)
 
     def get_record_from_old_database(self, database_name, record_id):
         print("record")
