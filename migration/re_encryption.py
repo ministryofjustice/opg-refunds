@@ -4,8 +4,6 @@ import argparse
 import json
 import os
 import pg8000
-import pprint
-pp = pprint.PrettyPrinter(width=41, compact=True)
 
 
 class ReEncrypter:
@@ -18,13 +16,15 @@ class ReEncrypter:
     def __init__(self):
         # TODO: pull password from secrets manager and default
         applications = {}
-        applications['host'] = os.getenv('APPLICATIONS_HOST', 'localhost')
-        applications['user'] = self.set_env('APPLICATIONS_USER')
-        applications['password'] = self.set_env('APPLICATIONS_PASSWORD')
+        applications['host'] = os.getenv(
+            'OPG_REFUNDS_DB_CASEWORKER_HOSTNAME', 'localhost')
+        applications['user'] = self.set_env('POSTGRES_USER')
+        applications['password'] = self.set_env('PGPASSWORD')
         cases = {}
-        cases['host'] = os.getenv('CASES_HOST', 'localhost')
-        cases['user'] = self.set_env('CASES_USER')
-        cases['password'] = self.set_env('CASES_PASSWORD')
+        cases['host'] = os.getenv(
+            'OPG_REFUNDS_DB_CASEWORKER_HOSTNAME', 'localhost')
+        cases['user'] = self.set_env('POSTGRES_USER')
+        cases['password'] = self.set_env('PGPASSWORD')
 
         self.old_pg_client_applications = self.pg_connect(
             user=applications['user'],
@@ -119,8 +119,8 @@ def main():
     work = ReEncrypter()
 
     new_key = 12345
-    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "sirius", 100):
-        print(record[0])
+    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "sirius", 10):
+        print(record)
     #     old_key = work.identify_key(record)
     #     key_arn = work.get_kms_key(old_key)
     #     decrypted_record = work.decrypt_record(record, key_arn)

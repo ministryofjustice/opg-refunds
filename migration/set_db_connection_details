@@ -1,0 +1,5 @@
+export ENV_NAME=$(echo "$TF_WORKSPACE" | awk '{print tolower($0)}')
+export OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME=$(aws rds describe-db-clusters --db-cluster-identifier applications-$ENV_NAME | jq -r .'DBClusters'[0].'Endpoint')
+export OPG_REFUNDS_DB_CASEWORKER_HOSTNAME=$(aws rds describe-db-clusters --db-cluster-identifier caseworker-$ENV_NAME | jq -r .'DBClusters'[0].'Endpoint')
+export POSTGRES_USER=root
+export PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id development/postgres_password | jq -r .'SecretString')
