@@ -16,22 +16,41 @@ class ReEncrypter:
     aws_ecs_cluster = ''
 
     def __init__(self):
-        # TODO: read env var for host and default to localhost
         # TODO: pull password from secrets manager and default
+        applications_host = os.getenv('APPLICATIONS_HOST', 'localhost')
+        applications_user = self.set_env('APPLICATIONS_USER')
+        applications_password = self.set_env('APPLICATIONS_PASSWORD')
+
+        cases_host = os.getenv('CASES_HOST', 'localhost')
+        cases_user = self.set_env('CASES_USER')
+        cases_password = self.set_env('CASES_PASSWORD')
+
         self.old_pg_client_applications = self.pg_connect(
-            user="admin",
-            host='localhost',
+            user=applications_user,
+            host=applications_host,
             port=5432,
             database="applications",
-            password="admin",
+            password=applications_password,
             tcp_keepalive=True)
         self.old_pg_client_cases = self.pg_connect(
-            user="admin",
-            host='localhost',
+            user=cases_user,
+            host=cases_host,
             port=5432,
             database="cases",
-            password="admin",
+            password=cases_password,
             tcp_keepalive=True)
+
+    def set_env(self, env_var):
+        if env_var not in os.environ:
+            print('{} must be set'.format(env_var))
+            exit(1)
+        env_var_returned = os.getenv(env_var, '')
+
+        if env_var_returned == '':
+            print('{} must have a value'.format(env_var))
+            exit(1)
+
+        return env_var_returned
 
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
