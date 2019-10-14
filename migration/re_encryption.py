@@ -13,34 +13,32 @@ class ReEncrypter:
     aws_ecs_cluster = ''
 
     def __init__(self):
-        database = None
-        host = None
         # TODO: read env var for host and default to localhost
         # TODO: pull password from secrets manager and default
-        pg_parameters = {"user": "user",
-                                 "host": host,
-                                 "port": 5432,
-                                 "database": database,
-                                 "password": "password",
-                                 "ssl": None,
-                                 "timeout": None,
-                                 "tcp_keepalive": True}
+        self.old_pg_client = self.pg_connect(
+            user="admin",
+            host='localhost',
+            port=5432,
+            database="applications",
+            password="admin",
+            tcp_keepalive=True)
+        self.pg_get_version(self.old_pg_client)
+        self.list_records(self.old_pg_client, "application")
 
-        database = "applications"
-        host = "localhost"
-        self.old_pg_client = pg_connect(pg_parameters)
-
-        # database = "caseworker"
-        # host = "localhost"
-        # self.old_pg_client = pg_connect(pg_parameters)
-
-    def pg_connect(self, parameters):
+    def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
         try:
             print('Connecting to the PostgreSQL database...')
-            conn = pg8000.connect(parameters)
+            conn = pg8000.connect(
+                user=user,
+                host=host,
+                port=port,
+                database=database,
+                password=password,
+                tcp_keepalive=tcp_keepalive)
             return conn
-        except (Exception, pg8000.DatabaseError) as error:
+        except (Exception, pg8000.Error) as error:
+            print("an error...")
             print(error)
 
     def pg_get_version(self, conn):
@@ -50,15 +48,22 @@ class ReEncrypter:
         db_version = cur.fetchone()
         print(db_version)
 
+    def pg_count_records_in_table(self, conn, table):
+        cur = conn.cursor()
+        print('Records in database:')
+        cur.execute('COUNT (*), FROM {}'.format(table))
+        record_count = cur.fetchall()
+        print(record_count)
+
     def pg_close(self, conn):
         if conn is not None:
             conn.close()
             print('Database connection closed.')
 
-    def list_records(self, database_name, table):
-        print("all_records")
-        self.pg_get_version(self.old_pg_client)
-        self.pg_close(self.old_pg_client)
+    def list_records(self, client, table):
+        print("all_records...")
+        self.pg_count_records_in_table(client, table)
+        self.pg_close(client)
 
     def get_record_from_old_database(self, database_name, record_id):
         print("record")
@@ -82,7 +87,7 @@ class ReEncrypter:
 def main():
     # encryption migration, row by row
     work = ReEncrypter()
-    work.list_records("applications_old", "cases")
+    # work.list_records("applications_old", "cases")
 
     # new_key = 12345
     # for record in work.list_records("database_name", "table"):
