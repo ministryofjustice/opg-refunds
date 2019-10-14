@@ -4,6 +4,8 @@ import argparse
 import json
 import os
 import pg8000
+import pprint
+pp = pprint.PrettyPrinter(width=41, compact=True)
 
 
 class ReEncrypter:
@@ -31,9 +33,6 @@ class ReEncrypter:
             password="admin",
             tcp_keepalive=True)
 
-        self.count_records()
-        self.close_db_conections()
-
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
         try:
@@ -57,6 +56,12 @@ class ReEncrypter:
         record_count = cur.fetchone()
         print(record_count)
 
+    def pg_select_records_in_table(self, conn, table, limit):
+        cur = conn.cursor()
+        cur.execute('SELECT * FROM {0} LIMIT {1}'.format(table, limit))
+        record_select = cur.fetchall()
+        return record_select
+
     def pg_close(self, conn):
         if conn is not None:
             conn.close()
@@ -66,20 +71,14 @@ class ReEncrypter:
         print("count records in each table...")
         self.pg_count_records_in_table(
             self.old_pg_client_applications, "application")
+
         self.pg_count_records_in_table(self.old_pg_client_cases, "sirius")
         self.pg_count_records_in_table(self.old_pg_client_cases, "meris")
         self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
 
-    def list_records(self, client, table):
-        print("all_records...")
-        self.pg_count_records_in_table(client, table)
-
     def close_db_conections(self):
         self.pg_close(self.old_pg_client_applications)
         self.pg_close(self.old_pg_client_cases)
-
-    def get_record_from_old_database(self, database_name, record_id):
-        print("record")
 
     def identify_key(self, record):
         print("key")
@@ -100,11 +99,10 @@ class ReEncrypter:
 def main():
     # encryption migration, row by row
     work = ReEncrypter()
-    # work.list_records("applications_old", "cases")
 
-    # new_key = 12345
-    # for record in work.list_records("database_name", "table"):
-    #     work.get_record_from_old_database("applications_old", record)
+    new_key = 12345
+    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "sirius", 100):
+        print(record[0])
     #     old_key = work.identify_key(record)
     #     key_arn = work.get_kms_key(old_key)
     #     decrypted_record = work.decrypt_record(record, key_arn)
@@ -113,6 +111,8 @@ def main():
     #     new_key_arn = work.get_kms_key(new_key)
     #     encrypted_record = work.encrypt_record(decrypted_record, new_key_arn)
     #     work.post_record_to_new_database("applications_new", encrypted_record)
+
+    work.close_db_conections()
 
 
 if __name__ == "__main__":
