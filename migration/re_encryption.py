@@ -17,27 +17,28 @@ class ReEncrypter:
 
     def __init__(self):
         # TODO: pull password from secrets manager and default
-        applications_host = os.getenv('APPLICATIONS_HOST', 'localhost')
-        applications_user = self.set_env('APPLICATIONS_USER')
-        applications_password = self.set_env('APPLICATIONS_PASSWORD')
-
-        cases_host = os.getenv('CASES_HOST', 'localhost')
-        cases_user = self.set_env('CASES_USER')
-        cases_password = self.set_env('CASES_PASSWORD')
+        applications = {}
+        applications['host'] = os.getenv('APPLICATIONS_HOST', 'localhost')
+        applications['user'] = self.set_env('APPLICATIONS_USER')
+        applications['password'] = self.set_env('APPLICATIONS_PASSWORD')
+        cases = {}
+        cases['host'] = os.getenv('CASES_HOST', 'localhost')
+        cases['user'] = self.set_env('CASES_USER')
+        cases['password'] = self.set_env('CASES_PASSWORD')
 
         self.old_pg_client_applications = self.pg_connect(
-            user=applications_user,
-            host=applications_host,
+            user=applications['user'],
+            host=applications['host'],
             port=5432,
             database="applications",
-            password=applications_password,
+            password=applications['password'],
             tcp_keepalive=True)
         self.old_pg_client_cases = self.pg_connect(
-            user=cases_user,
-            host=cases_host,
+            user=cases['user'],
+            host=cases['host'],
             port=5432,
             database="cases",
-            password=cases_password,
+            password=cases['password'],
             tcp_keepalive=True)
 
     def set_env(self, env_var):
@@ -45,11 +46,9 @@ class ReEncrypter:
             print('{} must be set'.format(env_var))
             exit(1)
         env_var_returned = os.getenv(env_var, '')
-
         if env_var_returned == '':
             print('{} must have a value'.format(env_var))
             exit(1)
-
         return env_var_returned
 
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
