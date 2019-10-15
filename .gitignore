@@ -6,5 +6,6 @@ venv
 .circleci/stash.yml
 terraform/**/.terraform
 terraform/**/notes
+migration/notes
 **_secrets_cli
 **vendor
