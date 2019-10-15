@@ -1,3 +1,5 @@
 boto3
 requests
 pg8000
+base64
+cryptography
