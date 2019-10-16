@@ -43,8 +43,8 @@ class ReEncrypter:
             "OPG_REFUNDS_DB_CASES_NAME"
         ]
 
-        # path = "api.env"
-        path = "/etc/docker-compose/caseworker-api/api.env"
+        path = "api.env"
+        # path = "/etc/docker-compose/caseworker-api/api.env"
         with open(path, "r") as f:
             for x in f:
                 if x in ['\n', '\r\n']:
@@ -128,22 +128,17 @@ class ReEncrypter:
         :return None if error
         """
         # Decrypt the data key
-        kms_client = boto3.client('kms')
+        kms_client = boto3.client('kms',
+                                  region_name='eu-west-1')
         print("client created")
-        response = kms_client.decrypt(CiphertextBlob=encrypted_data)
-        plaintext = response['Plaintext']
+        decoded_encrypted_data = base64.b64decode(encrypted_data)
+        response = kms_client.decrypt(CiphertextBlob=decoded_encrypted_data)
+        plaintext = response['Plaintext'].decode('utf-8')
         key_id = response['KeyId']
+        print(key_id)
 
         # Return plaintext base64-encoded binary data key
         return plaintext
-
-    def decrypt_data(self, encrypted):
-        bd64 = base64.b64decode(encrypted)
-        print(bd64)
-        decrypted_data = self.decrypt_data_key(bd64)
-        print(decrypted_data)
-        account_details = base64.b64decode(decrypted_data)
-        return account_details
 
     def get_kms_key(self, key):
         print("key_arn")
@@ -168,11 +163,12 @@ def main():
     work = ReEncrypter()
 
     # new_key = 12345
-    # for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
-    #     encryptd_data = record[5]['account']['details']
-    #     print(encryptd_data)
-    #     decrypted_record = work.decrypt_data(encryptd_data)
-    #     print(decrypted_record)
+    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
+        if 'account' in record[5]:
+            print(json.dumps(record[5]['account'], sort_keys=True, indent=4))
+            encrypted_data = record[5]['account']['details']
+            decrypted_record = work.return_account_details(encrypted_data)
+            print(decrypted_record)
     #     key_arn = work.get_kms_key(old_key)
     #     decrypted_record = work.decrypt_record(record, key_arn)
     #     print(decrypted_record)
