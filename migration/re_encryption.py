@@ -8,6 +8,7 @@ import os
 import pg8000
 import logging
 from botocore.exceptions import ClientError
+from pprint import pprint
 
 
 class ReEncrypter:
@@ -108,14 +109,20 @@ class ReEncrypter:
         """
         # Decrypt the data key
         kms_client = boto3.client('kms')
+        print("client created")
         response = kms_client.decrypt(CiphertextBlob=data_key_encrypted)
+        print(response)
 
         # Return plaintext base64-encoded binary data key
-        return base64.b64encode((response['Plaintext']))
+        return response
 
-    def identify_key(self, record):
-        key = self.decrypt_data_key(record)
-        print(key)
+    def identify_key(self, encrypted):
+        bd64 = base64.b64decode(encrypted)
+        print(bd64)
+        decrypted_data = self.decrypt_data_key(bd64)
+        print(decrypted_data)
+        account_details = base64.b64decode(decrypted_data)
+        return account_details
 
     def get_kms_key(self, key):
         print("key_arn")
@@ -134,16 +141,17 @@ NUM_BYTES_FOR_LEN = 4
 
 
 def main():
-    logging.basicConfig(level=logging.DEBUG,
-                        format='%(levelname)s: %(asctime)s: %(message)s')
+    # logging.basicConfig(level=logging.DEBUG,
+    #                     format='%(levelname)s: %(asctime)s: %(message)s')
     # encryption migration, row by row
     work = ReEncrypter()
 
     new_key = 12345
     for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
-        details = record[5]['account']['details']
-        print(details)
-        old_key = work.identify_key(details)
+        encryptd_data = record[5]['account']['details']
+        print(encryptd_data)
+        decrypted_record = work.identify_key(encryptd_data)
+        print(decrypted_record)
         #     key_arn = work.get_kms_key(old_key)
         #     decrypted_record = work.decrypt_record(record, key_arn)
         #     print(decrypted_record)
