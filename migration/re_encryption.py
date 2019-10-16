@@ -51,13 +51,12 @@ class ReEncrypter:
                     continue
                 env_var = x.split("=", 1)
                 a = env_var[0]
-                cases[a] = env_var[1]
+                cases[a] = env_var[1].strip('\n')
 
         for x in env_vars:
             if x not in cases:
                 print("required env var not found")
                 exit(1)
-        print(cases)
 
         self.old_pg_client_cases = self.pg_connect(
             user=cases['OPG_REFUNDS_DB_CASES_FULL_USERNAME'],
@@ -79,6 +78,7 @@ class ReEncrypter:
 
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
+        print(user, host, port, database, password, tcp_keepalive)
         try:
             print('Connecting to the PostgreSQL database...')
             conn = pg8000.connect(
