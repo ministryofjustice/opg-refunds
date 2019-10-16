@@ -18,6 +18,8 @@ class ReEncrypter:
     aws_kms_client_new = ''
     old_pg_client_applications = ''
     old_pg_client_cases = ''
+    new_kms_key_id = ''
+    aws_kms_client = ''
 
     def __init__(self):
         # applications = {}
@@ -34,17 +36,35 @@ class ReEncrypter:
         #     tcp_keepalive=True)
 
         cases = {}
-        cases['host'] = os.getenv(
-            'OPG_REFUNDS_DB_CASEWORKER_HOSTNAME', 'localhost')
-        cases['user'] = self.set_env('POSTGRES_USER')
-        cases['password'] = self.set_env('PGPASSWORD')
+        env_vars = [
+            "OPG_REFUNDS_DB_CASES_FULL_PASSWORD",
+            "OPG_REFUNDS_DB_CASES_FULL_USERNAME",
+            "OPG_REFUNDS_DB_CASES_HOSTNAME",
+            "OPG_REFUNDS_DB_CASES_NAME"
+        ]
+
+        # path = "api.env"
+        path = "/etc/docker-compose/caseworker-api/api.env"
+        with open(path, "r") as f:
+            for x in f:
+                if x in ['\n', '\r\n']:
+                    continue
+                env_var = x.split("=", 1)
+                a = env_var[0]
+                cases[a] = env_var[1]
+
+        for x in env_vars:
+            if x not in cases:
+                print("required env var not found")
+                exit(1)
+        print(cases)
 
         self.old_pg_client_cases = self.pg_connect(
-            user=cases['user'],
-            host=cases['host'],
+            user=cases['OPG_REFUNDS_DB_CASES_FULL_USERNAME'],
+            host=cases['OPG_REFUNDS_DB_CASES_HOSTNAME'],
             port=5432,
-            database="cases",
-            password=cases['password'],
+            database=cases['OPG_REFUNDS_DB_CASES_NAME'],
+            password=cases['OPG_REFUNDS_DB_CASES_FULL_PASSWORD'],
             tcp_keepalive=True)
 
     def set_env(self, env_var):
@@ -100,7 +120,7 @@ class ReEncrypter:
         self.pg_count_records_in_table(self.old_pg_client_cases, "meris")
         self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
 
-    def decrypt_data_key(self, data_key_encrypted):
+    def decrypt_data(self, encrypted_data):
         """Decrypt an encrypted data key
 
         :param data_key_encrypted: Encrypted ciphertext data key.
@@ -110,13 +130,14 @@ class ReEncrypter:
         # Decrypt the data key
         kms_client = boto3.client('kms')
         print("client created")
-        response = kms_client.decrypt(CiphertextBlob=data_key_encrypted)
-        print(response)
+        response = kms_client.decrypt(CiphertextBlob=encrypted_data)
+        plaintext = response['Plaintext']
+        key_id = response['KeyId']
 
         # Return plaintext base64-encoded binary data key
-        return response
+        return plaintext
 
-    def identify_key(self, encrypted):
+    def decrypt_data(self, encrypted):
         bd64 = base64.b64decode(encrypted)
         print(bd64)
         decrypted_data = self.decrypt_data_key(bd64)
@@ -146,19 +167,19 @@ def main():
     # encryption migration, row by row
     work = ReEncrypter()
 
-    new_key = 12345
-    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
-        encryptd_data = record[5]['account']['details']
-        print(encryptd_data)
-        decrypted_record = work.identify_key(encryptd_data)
-        print(decrypted_record)
-        #     key_arn = work.get_kms_key(old_key)
-        #     decrypted_record = work.decrypt_record(record, key_arn)
-        #     print(decrypted_record)
+    # new_key = 12345
+    # for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
+    #     encryptd_data = record[5]['account']['details']
+    #     print(encryptd_data)
+    #     decrypted_record = work.decrypt_data(encryptd_data)
+    #     print(decrypted_record)
+    #     key_arn = work.get_kms_key(old_key)
+    #     decrypted_record = work.decrypt_record(record, key_arn)
+    #     print(decrypted_record)
 
-        #     new_key_arn = work.get_kms_key(new_key)
-        #     encrypted_record = work.encrypt_record(decrypted_record, new_key_arn)
-        #     work.post_record_to_new_database("applications_new", encrypted_record)
+    #     new_key_arn = work.get_kms_key(new_key)
+    #     encrypted_record = work.encrypt_record(decrypted_record, new_key_arn)
+    #     work.post_record_to_new_database("applications_new", encrypted_record)
 
     # work.pg_close(work.old_pg_client_applications)
     work.pg_close(work.old_pg_client_cases)
