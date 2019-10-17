@@ -11,7 +11,6 @@ resource "aws_ecs_service" "caseworker_api" {
   network_configuration {
     security_groups = [
       aws_security_group.caseworker_api_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
       aws_security_group.caseworker_rds_cluster_client.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
@@ -21,6 +20,7 @@ resource "aws_ecs_service" "caseworker_api" {
   service_registries {
     registry_arn = aws_service_discovery_service.caseworker_api.arn
   }
+  tags = local.default_tags
 }
 
 //-----------------------------------------------
@@ -54,7 +54,8 @@ locals {
 // The caseworker_api service's Security Groups
 
 resource "aws_security_group" "caseworker_api_ecs_service" {
-  name_prefix = "${terraform.workspace}-caseworker_api-ecs-service"
+  name_prefix = "${local.environment}-caseworker_api-ecs-service"
+  description = "caseworker api access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -86,7 +87,7 @@ resource "aws_security_group_rule" "caseworker_api_ecs_service_egress" {
 // caseworker_api ECS Service Task level config
 
 resource "aws_ecs_task_definition" "caseworker_api" {
-  family                   = "${terraform.workspace}-caseworker_api"
+  family                   = "${local.environment}-caseworker_api"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = 2048
@@ -105,6 +106,11 @@ resource "aws_iam_role" "caseworker_api_task_role" {
   name               = "${local.environment}-caseworker_api-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
   tags               = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "caseworker_api_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
+  role       = aws_iam_role.caseworker_api_task_role.id
 }
 
 resource "aws_iam_role_policy" "caseworker_api_permissions_role" {
@@ -206,7 +212,8 @@ locals {
       { "name" : "OPG_REFUNDS_SSCL_ENTITY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_entity.name}" },
       { "name" : "OPG_REFUNDS_SSCL_COST_CENTRE", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_cost_centre.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ACCOUNT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_account.name}" },
-      { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" }
+      { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" },
+      { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" }
 
     ],
     "environment": [

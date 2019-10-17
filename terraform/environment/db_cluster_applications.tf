@@ -41,16 +41,16 @@ resource "aws_db_subnet_group" "applications_rds_cluster" {
 
 
 resource "aws_security_group" "applications_rds_cluster_client" {
-  name                   = "applications-rds-cluster-client-${local.environment}"
-  description            = "rds access for ${local.environment}"
+  name                   = "${local.environment}-applications-rds-cluster-client"
+  description            = "client access to applications db cluster"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
   tags                   = local.default_tags
 }
 
 resource "aws_security_group" "applications_rds_cluster" {
-  name                   = "rds-cluster-applications-${local.environment}"
-  description            = "api rds access"
+  name                   = "${local.environment}-applications-rds-cluster"
+  description            = "applications db cluster access"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
   tags                   = local.default_tags

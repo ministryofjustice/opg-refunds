@@ -24,6 +24,7 @@ resource "aws_ecs_service" "public_front" {
   }
 
   depends_on = [aws_rds_cluster.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
+  tags       = local.default_tags
 }
 
 //----------------------------------
@@ -31,6 +32,7 @@ resource "aws_ecs_service" "public_front" {
 
 resource "aws_security_group" "public_front_ecs_service" {
   name_prefix = "${local.environment}-public-front-ecs-service"
+  description = "public front ecs access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -77,6 +79,11 @@ resource "aws_iam_role" "public_front_task_role" {
   name               = "${local.environment}-public-front-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
   tags               = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "public_front_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
+  role       = aws_iam_role.public_front_task_role.id
 }
 
 resource "aws_iam_role_policy" "public_front_permissions_role" {
@@ -214,6 +221,8 @@ locals {
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID", "value": "UA-105655306-1" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOVID", "value": "UA-145652997-1" },
       { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "testing" }
     ]
   }

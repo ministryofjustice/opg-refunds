@@ -18,7 +18,8 @@ resource "aws_ecs_service" "ingestion" {
     assign_public_ip = false
   }
 
-  depends_on = [aws_rds_cluster.applications, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_rds_cluster.applications, aws_rds_cluster.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
+  tags       = local.default_tags
 }
 
 //----------------------------------
@@ -26,6 +27,7 @@ resource "aws_ecs_service" "ingestion" {
 
 resource "aws_security_group" "ingestion_ecs_service" {
   name_prefix = "${local.environment}-ingestion-ecs-service"
+  description = "ingestion access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -63,6 +65,11 @@ resource "aws_iam_role" "ingestion_task_role" {
   name               = "${local.environment}-ingestion-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
   tags               = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "ingestion_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
+  role       = aws_iam_role.ingestion_task_role.id
 }
 
 resource "aws_iam_role_policy" "ingestion_permissions_role" {
@@ -143,7 +150,7 @@ locals {
         "options": {
             "awslogs-group": "${data.aws_cloudwatch_log_group.lpa_refunds.name}",
             "awslogs-region": "eu-west-1",
-            "awslogs-stream-prefix": "ingestion-app.online-lpa"
+            "awslogs-stream-prefix": "ingestion-app.lpa-refunds"
         }
     },
     "secrets": [

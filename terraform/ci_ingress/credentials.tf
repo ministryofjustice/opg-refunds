@@ -1,3 +1,7 @@
+terraform {
+  backend "local" {}
+}
+
 provider "aws" {
   region = "eu-west-1"
 
@@ -8,11 +12,11 @@ provider "aws" {
 }
 
 variable "default_role" {
-  default = "ci"
+  default = "opg-refunds-ci"
 }
 
 variable "management_role" {
-  default = "ci"
+  default = "opg-refunds-ci"
 }
 
 provider "aws" {

@@ -11,7 +11,7 @@ resource "aws_ecs_service" "caseworker_front" {
   network_configuration {
     security_groups = [
       aws_security_group.caseworker_front_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
+      aws_security_group.caseworker_api_ecs_service.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false
@@ -24,6 +24,7 @@ resource "aws_ecs_service" "caseworker_front" {
   }
 
   depends_on = [aws_rds_cluster.applications, aws_lb.caseworker_front, aws_iam_role.caseworker_front_task_role, aws_iam_role.execution_role]
+  tags       = local.default_tags
 }
 
 //----------------------------------
@@ -31,6 +32,7 @@ resource "aws_ecs_service" "caseworker_front" {
 
 resource "aws_security_group" "caseworker_front_ecs_service" {
   name_prefix = "${local.environment}-caseworker-front-ecs-service"
+  description = "caseworker front access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -77,6 +79,11 @@ resource "aws_iam_role" "caseworker_front_task_role" {
   name               = "${local.environment}-caseworker-front-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
   tags               = local.default_tags
+}
+
+resource "aws_iam_role_policy_attachment" "caseworker_front_vpc_endpoint_access" {
+  policy_arn = data.aws_iam_policy.restrict_to_vpc_endpoints.arn
+  role       = aws_iam_role.caseworker_front_task_role.id
 }
 
 resource "aws_iam_role_policy" "caseworker_front_permissions_role" {

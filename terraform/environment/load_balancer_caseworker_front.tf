@@ -50,7 +50,7 @@ resource "aws_lb_listener" "caseworker_front_loadbalancer" {
 
 resource "aws_security_group" "caseworker_front_loadbalancer" {
   name        = "${local.environment}-caseworker-front-loadbalancer"
-  description = "Allow inbound traffic"
+  description = "caseworker front load balancer access"
   vpc_id      = data.aws_vpc.default.id
   tags        = local.default_tags
 }
@@ -60,26 +60,7 @@ resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = module.whitelist.moj_sites
-  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
-}
-
-resource "aws_security_group_rule" "caseworker_front_loadbalancer_cloudfront_ingress" {
-  count             = local.account.has_cloudfront_distribution ? 1 : 0
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = data.aws_ip_ranges.cloudfront.cidr_blocks
-  security_group_id = aws_security_group.caseworker_front_loadbalancer.id
-}
-resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress_production" {
-  count             = local.environment == "production" ? 1 : 0
-  type              = "ingress"
-  from_port         = 443
-  to_port           = 443
-  protocol          = "tcp"
-  cidr_blocks       = ["0.0.0.0/0"]
+  cidr_blocks       = local.environment == "production" ? ["0.0.0.0/0"] : module.whitelist.moj_sites
   security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 

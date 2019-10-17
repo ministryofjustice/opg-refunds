@@ -43,7 +43,7 @@ locals {
 
   optional_tags = {
     environment-name       = local.environment
-    infrastructure-support = "OPG LPA Product Team: opgteam+online-lpa@digital.justice.gov.uk"
+    infrastructure-support = "OPG LPA Product Team: opgteam+lpa-refunds@digital.justice.gov.uk"
     runbook                = "https://github.com/ministryofjustice/opg-webops-runbooks/tree/master/LPA"
     source-code            = "https://github.com/ministryofjustice/opg-lpa"
   }

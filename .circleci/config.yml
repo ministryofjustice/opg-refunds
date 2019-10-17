@@ -3,47 +3,57 @@ version: 2.1
 workflows:
   pr-build-and-test:
     jobs:
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+      # Docker Build
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: public_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/public_front
           service_path: public-front
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+          filters: { branches: { ignore: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_front_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_front
           service_path: caseworker-front
-      - build_containers_and_push_to_ecr/checkout_docker_build_push_web-app:
+          filters: { branches: { ignore: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: caseworker_api_docker_build
           ecr_repository_name_prefix: lpa-refunds/caseworker_api
           service_path: caseworker-api
           build_composer_container: true
+          filters: { branches: { ignore: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
+          name: ingestion_seeding_docker_build
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+          filters: { branches: { ignore: [master] } }
+
+      # Terraform Validation
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: lint_and_validate_terraform
           account_workspace: development
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_preproduction_terraform
           account_workspace: preproduction
           environment_workspace: preproduction
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/lint_and_validate_terraform:
           name: validate_production_terraform
           account_workspace: production
           environment_workspace: production
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
 
+      # Development Deploy
       - infrastructure_and_deployment/apply_account_terraform:
           name: dev_account_apply_terraform
           workspace: development
           requires: [lint_and_validate_terraform]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
           name: dev_environment_apply_terraform
@@ -53,70 +63,119 @@ workflows:
               public_front_docker_build,
               caseworker_front_docker_build,
               caseworker_api_docker_build,
+              ingestion_seeding_docker_build,
             ]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
+      - infrastructure_and_deployment/seed_environment_databases:
+          name: dev_seed_environment_databases
+          requires: [dev_environment_apply_terraform]
+          filters: { branches: { ignore: [master] } }
+
+      - infrastructure_and_deployment/run_healthcheck_test:
+          name: dev_run_healthcheck_test
+          requires: [dev_seed_environment_databases]
+          filters: { branches: { ignore: [master] } }
 
       - slack_notify_domain:
           name: post_environment_domains
-          requires: [dev_environment_apply_terraform]
-          filters:
-            branches:
-              ignore: master
+          requires: [dev_run_healthcheck_test]
+          filters: { branches: { ignore: [master] } }
+
       - hold-for-destruction:
           name: hold_env_for_destruction
           type: approval
           requires: [post_environment_domains]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
+
       - infrastructure_and_deployment/destroy_dev_environment:
           name: dev_destroy_environment
           requires: [hold_env_for_destruction]
-          filters:
-            branches:
-              ignore: master
+          filters: { branches: { ignore: [master] } }
 
+  path-to-live:
+    jobs:
+      # Docker Build
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: public_front_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/public_front
+          service_path: public-front
+          filters: { branches: { only: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: caseworker_front_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_front
+          service_path: caseworker-front
+          filters: { branches: { only: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_web-app:
+          name: caseworker_api_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+          filters: { branches: { only: [master] } }
+
+      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
+          name: ingestion_seeding_docker_build_path_to_live
+          ecr_repository_name_prefix: lpa-refunds/caseworker_api
+          service_path: caseworker-api
+          build_composer_container: true
+          filters: { branches: { only: [master] } }
+
+      # Preproduction Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: preprod_account_apply_terraform
           workspace: preproduction
-          filters:
-            branches:
-              only: master
-
+          filters: { branches: { only: [master] } }
       - infrastructure_and_deployment/apply_environment_terraform:
           name: preprod_environment_apply_terraform
           requires:
             [
               preprod_account_apply_terraform,
-              public_front_docker_build,
-              caseworker_front_docker_build,
-              caseworker_api_docker_build,
+              public_front_docker_build_path_to_live,
+              caseworker_front_docker_build_path_to_live,
+              caseworker_api_docker_build_path_to_live,
+              ingestion_seeding_docker_build_path_to_live,
             ]
-          filters:
-            branches:
-              only: master
+          workspace: preproduction
+          filters: { branches: { only: [master] } }
 
+      - infrastructure_and_deployment/seed_environment_databases:
+          name: preprod_seed_environment_databases
+          workspace: preproduction
+          requires: [preprod_environment_apply_terraform]
+          filters: { branches: { only: [master] } }
+
+      - infrastructure_and_deployment/run_healthcheck_test:
+          name: preprod_run_healthcheck_test
+          workspace: preproduction
+          requires: [preprod_seed_environment_databases]
+          filters: { branches: { only: [master] } }
+
+      # Production Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
-          requires: [preprod_account_apply_terraform]
-          filters:
-            branches:
-              only: master
+          requires: [preprod_run_healthcheck_test]
+          filters: { branches: { only: [master] } }
+
       - infrastructure_and_deployment/apply_environment_terraform:
           name: prod_environment_apply_terraform
           requires: [prod_account_apply_terraform]
-          filters:
-            branches:
-              only: master
+          workspace: production
+          filters: { branches: { only: [master] } }
+
+      - infrastructure_and_deployment/run_healthcheck_test:
+          name: prod_run_healthcheck_test
+          workspace: production
+          requires: [prod_environment_apply_terraform]
+          filters: { branches: { only: [master] } }
+
       - slack_notify_production_release:
           name: post_production_release_message
-          requires: [prod_account_apply_terraform]
-          filters:
-            branches:
-              only: master
+          requires:
+            [prod_account_apply_terraform, prod_environment_apply_terraform]
+          filters: { branches: { only: [master] } }
 
 orbs:
   slack: circleci/slack@3.3.0
@@ -142,7 +201,7 @@ orbs:
         docker:
           - image: circleci/python
     jobs:
-      checkout_docker_build_push_web-app:
+      docker_build_push_web-app:
         executor: python
         parameters:
           ecr_url:
@@ -182,14 +241,6 @@ orbs:
               name: Build app container
               command: |
                 docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
-          - run:
-              name: Build caseworker-api-ingestion container
-              command: |
-                if [ << parameters.service_path >> == "caseworker-api" ]; then
-                  docker build -f << parameters.service_path >>/docker/ingestion/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion .
-                else
-                  echo "skipped"
-                fi
           - ecr_login
           - run:
               name: Push web container
@@ -217,22 +268,68 @@ orbs:
                   # Else, push branch tag only
                   docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:$CIRCLE_BRANCH-$SHORT_HASH
                 fi
+      docker_build_push_ingestion_seeding:
+        executor: python
+        parameters:
+          ecr_url:
+            type: string
+            default: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
+          ecr_repository_name_prefix:
+            type: string
+            description: The ecr repo name up to _app, _web or _ingestion. These will be added by the job.
+          service_path:
+            type: string
+          build_composer_container:
+            type: boolean
+            default: false
+        steps:
+          - checkout
+          - install_aws_cli
+          - setup_remote_docker:
+              version: 18.06.0-ce
+              docker_layer_caching: false
+          - run:
+              name: checkout ecs branch for builds
+              command: |
+                git checkout LPA-3334-ecs-move
+          - run:
+              name: Build caseworker-api-composer container
+              command: |
+                docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
+          - run:
+              name: Build caseworker-api-ingestion container
+              command: |
+                docker build -f << parameters.service_path >>/docker/ingestion/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion .
+          - run:
+              name: Build caseworker-api-seeding container
+              command: |
+                docker build -f << parameters.service_path >>/docker/seeding/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding .
+          - ecr_login
           - run:
               name: Push caseworker-api-ingestion container
               command: |
-                if [ << parameters.service_path >> == "caseworker-api" ]; then
-                  export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
-                  if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                    # If master, push branch tag and latest
-                    docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:latest
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion
-                  else
-                    # Else, push branch tag only
-                    docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
-                  fi
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion
                 else
-                  echo "skipped"
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:$CIRCLE_BRANCH-$SHORT_HASH
+                fi
+          - run:
+              name: Push caseworker-api-seeding container
+              command: |
+                export SHORT_HASH=${CIRCLE_SHA1:0:7} >> $BASH_ENV
+                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH
+                if [ "${CIRCLE_BRANCH}" == "master" ]; then
+                  # If master, push branch tag and latest
+                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:latest
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding
+                else
+                  # Else, push branch tag only
+                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:$CIRCLE_BRANCH-$SHORT_HASH
                 fi
   infrastructure_and_deployment:
     commands:
@@ -246,18 +343,20 @@ orbs:
           - run:
               name: Install Terraform
               command: |
-                export TERRAFORM_VERSION=0.12.8
-                export TERRAFORM_SHA256SUM=babb4a30b399fb6fc87a6aa7435371721310c2e2102a95a763ef2c979ab06ce2
+                export TERRAFORM_VERSION=0.12.9
+                export TERRAFORM_SHA256SUM=69712c6216cc09b7eca514b9fb137d4b1fead76559c66f338b4185e1c347ace5
+                echo $TERRAFORM_VERSION
+                echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
                 echo "${TERRAFORM_SHA256SUM}  terraform_${TERRAFORM_VERSION}_linux_amd64.zip" > terraform_${TERRAFORM_VERSION}_SHA256SUMS
                 sha256sum -c --status terraform_${TERRAFORM_VERSION}_SHA256SUMS
                 sudo unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip -d /bin
-                rm -f terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                terraform -version
     executors:
       python:
         docker: [image: circleci/python]
       terraform:
-        docker: [image: hashicorp/terraform:0.12.8]
+        docker: [image: hashicorp/terraform:0.12.9]
     jobs:
       #----------------------------------------------------
       # Terraform
@@ -345,6 +444,35 @@ orbs:
               root: /tmp
               paths:
                 - environment_pipeline_tasks_config.json
+      seed_environment_databases:
+        #
+        # Puts data into the refunds caseworker database for testing
+        #
+        executor: python
+        parameters:
+          workspace:
+            description: Terraform workspace name
+            type: string
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        steps:
+          - checkout
+          - attach_workspace:
+              at: /tmp
+          - run:
+              name: Install python dependencies
+              command: |
+                pip install -r ~/project/pipeline_scripts/requirements.txt --user
+          - install_terraform
+          - run:
+              name: Wait for new tasks in services to be running
+              command: |
+                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                echo $TF_WORKSPACE              
+                python ~/project/pipeline_scripts/ecs_monitor.py
+          - run:
+              name: Run seeding ecs task
+              command: |
+                python ~/project/pipeline_scripts/ecs_start_seeding_task.py
       run_healthcheck_test:
         #
         # Checks the health check is returning 200
@@ -375,7 +503,7 @@ orbs:
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
                   ENV_NAME=<<parameters.workspace>>
-                  cd ~/project/terraform/account_ingress
+                  cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
                   export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                   echo $TF_WORKSPACE
@@ -390,7 +518,7 @@ orbs:
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
                   ENV_NAME=<<parameters.workspace>>
-                  cd ~/project/terraform/account_ingress
+                  cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
                   export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                   echo $TF_WORKSPACE
@@ -417,7 +545,7 @@ orbs:
                 export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                 echo $TF_WORKSPACE
                 if [ "${CIRCLE_BRANCH}" != "master" ]; then
-                  cd ~/project/terraform/terraform_environment
+                  cd ~/project/terraform/environment
                   terraform init -lock-timeout=300s
                   export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
                   echo $TF_WORKSPACE

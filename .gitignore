@@ -7,4 +7,4 @@ venv
 terraform/**/.terraform
 terraform/**/notes
 **_secrets_cli
-
+**vendor
