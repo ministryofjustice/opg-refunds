@@ -8,4 +8,4 @@ CREATE TABLE IF NOT EXISTS finance (
   CONSTRAINT finance_pkey PRIMARY KEY (case_number, sequence_number)
 );
 
-GRANT SELECT ON finance TO cases_full;
+GRANT SELECT ON finance TO :app_user;
