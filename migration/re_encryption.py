@@ -43,8 +43,8 @@ class ReEncrypter:
             "OPG_REFUNDS_DB_CASES_NAME"
         ]
 
-        path = "api.env"
-        # path = "/etc/docker-compose/caseworker-api/api.env"
+        # path = "api.env"
+        path = "/etc/docker-compose/caseworker-api/api.env"
         with open(path, "r") as f:
             for x in f:
                 if x in ['\n', '\r\n']:
@@ -165,9 +165,8 @@ def main():
     # new_key = 12345
     for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
         if 'account' in record[5]:
-            print(json.dumps(record[5]['account'], sort_keys=True, indent=4))
             encrypted_data = record[5]['account']['details']
-            decrypted_record = work.return_account_details(encrypted_data)
+            decrypted_record = work.decrypt_data(encrypted_data)
             print(decrypted_record)
     #     key_arn = work.get_kms_key(old_key)
     #     decrypted_record = work.decrypt_record(record, key_arn)
