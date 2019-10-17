@@ -332,4 +332,16 @@ services:
       PHP_IDE_CONFIG: serverName=caseworker-api-ingestion
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
 
+  caseworker-api-seeding:
+    container_name: caseworker-api-seeding
+    image: caseworker-api-seeding
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/seeding/Dockerfile
+    depends_on:
+      - caseworker-api-composer
+      - postgres
+    env_file:
+      - ./postgres/local.env
+
   # We mount the same code as caseworker-api-app locally, so no need for a separate composer service.
