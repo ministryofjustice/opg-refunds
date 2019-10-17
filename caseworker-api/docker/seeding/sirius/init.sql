@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS sirius (
 );
 
 CREATE INDEX IF NOT EXISTS donor_dob_sirius ON sirius((data->>'donor-dob'));
+
+GRANT SELECT ON sirius TO cases_full;

@@ -8,3 +8,5 @@ CREATE TABLE IF NOT EXISTS meris (
 );
 
 CREATE INDEX IF NOT EXISTS donor_dob_meris ON meris((data->>'donor-dob'));
+
+GRANT SELECT ON meris TO cases_full;
