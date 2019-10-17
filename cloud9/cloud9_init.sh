@@ -14,8 +14,8 @@ sudo yum remove php* -y
 sudo yum install php73 php73-pdo php73-pgsql postgresql jq -y
 
 # install terraform
-export TF_VERSION=0.12.9
-export TF_SHA256SUM=69712c6216cc09b7eca514b9fb137d4b1fead76559c66f338b4185e1c347ace5
+export TF_VERSION=0.12.10
+export TF_SHA256SUM=2215208822f1a183fb57e24289de417c9b3157affbe8a5e520b768edbcb420b4
 export TF_VAR_default_role=operator
 export TF_VAR_management_role=operator
 export TF_CLI_ARGS_init="-upgrade=true  -reconfigure"
