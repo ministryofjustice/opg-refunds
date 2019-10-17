@@ -7,3 +7,5 @@ CREATE TABLE IF NOT EXISTS finance (
   received  date   NOT NULL,
   CONSTRAINT finance_pkey PRIMARY KEY (case_number, sequence_number)
 );
+
+GRANT SELECT ON finance TO cases_full;
