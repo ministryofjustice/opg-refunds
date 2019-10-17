@@ -20,8 +20,11 @@ data "aws_iam_policy_document" "bank_encrypt_decrypt" {
     ]
 
     principals {
-      type        = "AWS"
-      identifiers = ["arn:aws:iam::${local.account.account_id}:root"]
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${local.account.account_id}:root",
+        "arn:aws:iam::${local.account.old_refunds_account_id}:root",
+      ]
     }
   }
 }
