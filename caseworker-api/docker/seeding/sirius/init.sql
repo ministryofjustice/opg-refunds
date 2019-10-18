@@ -1,3 +1,5 @@
+\set DATABASE_FULL_USERNAME `echo ${OPG_REFUNDS_DB_CASES_FULL_USERNAME}`
+
 \c cases
 
 CREATE TABLE IF NOT EXISTS sirius (
@@ -8,4 +10,4 @@ CREATE TABLE IF NOT EXISTS sirius (
 
 CREATE INDEX IF NOT EXISTS donor_dob_sirius ON sirius((data->>'donor-dob'));
 
-GRANT SELECT ON sirius TO :app_user;
+GRANT SELECT ON sirius TO :DATABASE_FULL_USERNAME;
