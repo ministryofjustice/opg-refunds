@@ -1,3 +1,5 @@
+\set DATABASE_FULL_USERNAME `echo ${OPG_REFUNDS_DB_CASES_FULL_USERNAME}`
+
 \c cases
 
 CREATE TABLE IF NOT EXISTS finance (
@@ -8,4 +10,4 @@ CREATE TABLE IF NOT EXISTS finance (
   CONSTRAINT finance_pkey PRIMARY KEY (case_number, sequence_number)
 );
 
-GRANT SELECT ON finance TO :app_user;
+GRANT SELECT ON finance TO :DATABASE_FULL_USERNAME;
