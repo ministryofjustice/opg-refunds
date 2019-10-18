@@ -49,4 +49,3 @@ Packages can be removed with:
 ```bash
 docker-compose run <service>-composer composer remove author/package
 ```
-
