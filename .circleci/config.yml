@@ -222,10 +222,6 @@ orbs:
               version: 18.06.0-ce
               docker_layer_caching: false
           - run:
-              name: checkout ecs branch for builds
-              command: |
-                git checkout LPA-3334-ecs-move
-          - run:
               name: Build caseworker-api-composer container
               command: |
                 if [ << parameters.build_composer_container >> = true ]; then
@@ -288,10 +284,6 @@ orbs:
           - setup_remote_docker:
               version: 18.06.0-ce
               docker_layer_caching: false
-          - run:
-              name: checkout ecs branch for builds
-              command: |
-                git checkout LPA-3334-ecs-move
           - run:
               name: Build caseworker-api-composer container
               command: |
@@ -467,7 +459,7 @@ orbs:
               name: Wait for new tasks in services to be running
               command: |
                 export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
-                echo $TF_WORKSPACE              
+                echo $TF_WORKSPACE
                 python ~/project/pipeline_scripts/ecs_monitor.py
           - run:
               name: Run seeding ecs task
@@ -496,7 +488,7 @@ orbs:
               name: Wait for new tasks in services to be running
               command: |
                 export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
-                echo $TF_WORKSPACE              
+                echo $TF_WORKSPACE
                 python ~/project/pipeline_scripts/ecs_monitor.py
           - run:
               name: Add CircleCI ingress to environment
