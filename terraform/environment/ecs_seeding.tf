@@ -137,6 +137,7 @@ locals {
       { "name" : "OPG_REFUNDS_DB_MERIS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_PORT", "value": "5432" },
+      { "name" : "OPG_REFUNDS_DB_CASES_FULL_USERNAME", "value": "cases_full" },
       { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" }
     ]
   }
