@@ -159,7 +159,6 @@ class ReEncrypter:
             if 'account' in record[5]:
                 encrypted_data = record[5]['account']['details']
                 decrypted_record = self.decrypt_data(encrypted_data)
-        self.pg_close(self.old_pg_client_cases)
         totalkeys = self.count_unique_kms_keys()
         if totalkeys < 2:
             print("Only 1 key in use: ", self.unique_aws_kms_keys)
@@ -184,10 +183,11 @@ def main():
     work = ReEncrypter()
 
     records = work.pg_select_records_in_table(
-        work.old_pg_client_cases, "claim", 10)
+        work.old_pg_client_cases, "claim", 100)
     work.check_key_status(records)
-    work.update_database(records)
+    # work.update_database(records)
     work.check_key_status(records)
+    work.pg_close(work.old_pg_client_cases)
 
 
 if __name__ == "__main__":
