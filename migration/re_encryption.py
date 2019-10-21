@@ -79,7 +79,6 @@ class ReEncrypter:
 
     def pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
-        print(user, host, port, database, password, tcp_keepalive)
         try:
             print('Connecting to the PostgreSQL database...')
             conn = pg8000.connect(
@@ -122,31 +121,23 @@ class ReEncrypter:
         self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
 
     def decrypt_data(self, encrypted_data):
-        """Decrypt an encrypted data key
-
-        :param data_key_encrypted: Encrypted ciphertext data key.
-        :return Plaintext base64-encoded binary data key as binary string
-        :return None if error
-        """
-        # Decrypt the data key
         kms_client = boto3.client('kms',
                                   region_name='eu-west-1')
         decoded_encrypted_data = base64.b64decode(encrypted_data)
         response = kms_client.decrypt(CiphertextBlob=decoded_encrypted_data)
         self.get_kms_key(response)
-        # Return plaintext base64-encoded binary data key
         plaintext = response['Plaintext'].decode('utf-8')
-        print(plaintext)
+        if LOGGING_OUTPUT:
+            print(plaintext)
         return plaintext
 
     def get_kms_key(self, response):
         key_id = response['KeyId']
-        print(key_id)
+        if LOGGING_OUTPUT:
+            print(key_id)
         if key_id not in self.unique_aws_kms_keys:
             self.unique_aws_kms_keys.append(key_id)
         return key_id
-        print(self.unique_aws_kms_keys)
-        print(len(self.unique_aws_kms_keys))
 
     def count_unique_kms_keys(self):
         return len(self.unique_aws_kms_keys)
@@ -159,6 +150,7 @@ class ReEncrypter:
 
 
 NUM_BYTES_FOR_LEN = 4
+LOGGING_OUTPUT = False
 
 
 def main():
