@@ -20,6 +20,7 @@ class ReEncrypter:
     old_pg_client_cases = ''
     new_kms_key_id = ''
     aws_kms_client = ''
+    unique_aws_kms_keys = []
 
     def __init__(self):
         # applications = {}
@@ -130,23 +131,27 @@ class ReEncrypter:
         # Decrypt the data key
         kms_client = boto3.client('kms',
                                   region_name='eu-west-1')
-        print("client created")
         decoded_encrypted_data = base64.b64decode(encrypted_data)
         response = kms_client.decrypt(CiphertextBlob=decoded_encrypted_data)
-        plaintext = response['Plaintext'].decode('utf-8')
-        key_id = response['KeyId']
-        print(key_id)
-
+        self.get_kms_key(response)
         # Return plaintext base64-encoded binary data key
+        plaintext = response['Plaintext'].decode('utf-8')
+        print(plaintext)
         return plaintext
 
-    def get_kms_key(self, key):
-        print("key_arn")
+    def get_kms_key(self, response):
+        key_id = response['KeyId']
+        print(key_id)
+        if key_id not in self.unique_aws_kms_keys:
+            self.unique_aws_kms_keys.append(key_id)
+        return key_id
+        print(self.unique_aws_kms_keys)
+        print(len(self.unique_aws_kms_keys))
 
-    def decrypt_record(self, record, key_arn):
-        print("decrypted_record")
+    def count_unique_kms_keys(self):
+        return len(self.unique_aws_kms_keys)
 
-    def encrypt_record(self, decrypted_record, key_arn):
+    def re_encrypt_record(self, record, key_arn):
         print("encrypted_record")
 
     def post_record_to_new_database(self, database_name, encrypted_record):
@@ -157,8 +162,6 @@ NUM_BYTES_FOR_LEN = 4
 
 
 def main():
-    # logging.basicConfig(level=logging.DEBUG,
-    #                     format='%(levelname)s: %(asctime)s: %(message)s')
     # encryption migration, row by row
     work = ReEncrypter()
 
@@ -167,7 +170,8 @@ def main():
         if 'account' in record[5]:
             encrypted_data = record[5]['account']['details']
             decrypted_record = work.decrypt_data(encrypted_data)
-            print(decrypted_record)
+            # print(decrypted_record)
+
     #     key_arn = work.get_kms_key(old_key)
     #     decrypted_record = work.decrypt_record(record, key_arn)
     #     print(decrypted_record)
@@ -175,7 +179,11 @@ def main():
     #     new_key_arn = work.get_kms_key(new_key)
     #     encrypted_record = work.encrypt_record(decrypted_record, new_key_arn)
     #     work.post_record_to_new_database("applications_new", encrypted_record)
-
+    totalkeys = work.count_unique_kms_keys()
+    if totalkeys < 2:
+        print("Only 1 key in use: ", work.unique_aws_kms_keys)
+    else:
+        print(totalkeys, " keys in use; \n", work.unique_aws_kms_keys)
     # work.pg_close(work.old_pg_client_applications)
     work.pg_close(work.old_pg_client_cases)
 
