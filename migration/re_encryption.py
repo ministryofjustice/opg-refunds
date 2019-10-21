@@ -14,8 +14,7 @@ from pprint import pprint
 class ReEncrypter:
     aws_account_id = ''
     aws_iam_session = ''
-    aws_kms_client_old = ''
-    aws_kms_client_new = ''
+    aws_kms_client = ''
     old_pg_client_applications = ''
     old_pg_client_cases = ''
     new_kms_key_id = ''
@@ -66,6 +65,10 @@ class ReEncrypter:
             database=cases['OPG_REFUNDS_DB_CASES_NAME'],
             password=cases['OPG_REFUNDS_DB_CASES_FULL_PASSWORD'],
             tcp_keepalive=True)
+
+        self.aws_kms_client = boto3.client('kms',
+                                           region_name='eu-west-1')
+        self.new_kms_key_id = 'arn:aws:kms:us-west-2:111122223333:key/0987dcba-09fe-87dc-65ba-ab0987654321'
 
     def set_env(self, env_var):
         if env_var not in os.environ:
@@ -121,10 +124,9 @@ class ReEncrypter:
         self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
 
     def decrypt_data(self, encrypted_data):
-        kms_client = boto3.client('kms',
-                                  region_name='eu-west-1')
         decoded_encrypted_data = base64.b64decode(encrypted_data)
-        response = kms_client.decrypt(CiphertextBlob=decoded_encrypted_data)
+        response = self.aws_kms_client.decrypt(
+            CiphertextBlob=decoded_encrypted_data)
         self.get_kms_key(response)
         plaintext = response['Plaintext'].decode('utf-8')
         if LOGGING_OUTPUT:
@@ -142,11 +144,35 @@ class ReEncrypter:
     def count_unique_kms_keys(self):
         return len(self.unique_aws_kms_keys)
 
-    def re_encrypt_record(self, record, key_arn):
-        print("encrypted_record")
+    def re_encrypt_with_cross_account_kms_key(self, encrypted_data):
+        decoded_encrypted_data = base64.b64decode(encrypted_data)
+        response = self.aws_kms_client.re_encrypt(
+            CiphertextBlob=decoded_encrypted_data,
+            DestinationKeyId=self.new_kms_key_id
+        )
+        encoded_encrypted_data = base64.b64encode(response['CiphertextBlob'])
+        return encoded_encrypted_data
 
-    def post_record_to_new_database(self, database_name, encrypted_record):
-        print("status")
+    def check_key_status(self, records):
+        self.unique_aws_kms_keys = []
+        for record in records:
+            if 'account' in record[5]:
+                encrypted_data = record[5]['account']['details']
+                decrypted_record = self.decrypt_data(encrypted_data)
+        self.pg_close(self.old_pg_client_cases)
+        totalkeys = self.count_unique_kms_keys()
+        if totalkeys < 2:
+            print("Only 1 key in use: ", self.unique_aws_kms_keys)
+        else:
+            print(totalkeys, " keys in use; \n", self.unique_aws_kms_keys)
+        return totalkeys
+
+    def update_database(self, records):
+        for record in records:
+            if 'account' in record[5]:
+                encrypted_data = record[5]['account']['details']
+                re_encrypted_data = self.re_encrypt_with_cross_account_kms_key(
+                    encrypted_data)
 
 
 NUM_BYTES_FOR_LEN = 4
@@ -157,27 +183,11 @@ def main():
     # encryption migration, row by row
     work = ReEncrypter()
 
-    # new_key = 12345
-    for record in work.pg_select_records_in_table(work.old_pg_client_cases, "claim", 10):
-        if 'account' in record[5]:
-            encrypted_data = record[5]['account']['details']
-            decrypted_record = work.decrypt_data(encrypted_data)
-            # print(decrypted_record)
-
-    #     key_arn = work.get_kms_key(old_key)
-    #     decrypted_record = work.decrypt_record(record, key_arn)
-    #     print(decrypted_record)
-
-    #     new_key_arn = work.get_kms_key(new_key)
-    #     encrypted_record = work.encrypt_record(decrypted_record, new_key_arn)
-    #     work.post_record_to_new_database("applications_new", encrypted_record)
-    totalkeys = work.count_unique_kms_keys()
-    if totalkeys < 2:
-        print("Only 1 key in use: ", work.unique_aws_kms_keys)
-    else:
-        print(totalkeys, " keys in use; \n", work.unique_aws_kms_keys)
-    # work.pg_close(work.old_pg_client_applications)
-    work.pg_close(work.old_pg_client_cases)
+    records = work.pg_select_records_in_table(
+        work.old_pg_client_cases, "claim", 10)
+    work.check_key_status(records)
+    work.update_database(records)
+    work.check_key_status(records)
 
 
 if __name__ == "__main__":
