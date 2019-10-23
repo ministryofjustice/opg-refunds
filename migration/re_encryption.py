@@ -68,7 +68,13 @@ class ReEncrypter:
 
         self.aws_kms_client = boto3.client('kms',
                                            region_name='eu-west-1')
-        self.new_kms_key_id = 'arn:aws:kms:us-west-2:111122223333:key/0987dcba-09fe-87dc-65ba-ab0987654321'
+
+        self.new_kms_key_id = 'arn:aws:kms:eu-west-1:936779158973:key/bf7e1724-1cad-42d5-b1f1-79e996efa63d'
+
+    def check_cross_account_key_access(self):
+        response = self.aws_kms_client.describe_key(
+            KeyId=self.new_kms_key_id)
+        print(response)
 
     def set_env(self, env_var):
         if env_var not in os.environ:
@@ -151,6 +157,7 @@ class ReEncrypter:
             DestinationKeyId=self.new_kms_key_id
         )
         encoded_encrypted_data = base64.b64encode(response['CiphertextBlob'])
+        print("reencrypted ", encoded_encrypted_data)
         return encoded_encrypted_data
 
     def check_key_status(self, records):
@@ -181,11 +188,11 @@ LOGGING_OUTPUT = False
 def main():
     # encryption migration, row by row
     work = ReEncrypter()
-
+    work.check_cross_account_key_access()
     records = work.pg_select_records_in_table(
         work.old_pg_client_cases, "claim", 100)
     work.check_key_status(records)
-    # work.update_database(records)
+    work.update_database(records)
     work.check_key_status(records)
     work.pg_close(work.old_pg_client_cases)
 
