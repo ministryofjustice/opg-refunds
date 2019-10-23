@@ -111,9 +111,25 @@ class ReEncrypter:
 
     def pg_select_records_in_table(self, conn, table, limit):
         cur = conn.cursor()
-        cur.execute('SELECT * FROM {0} LIMIT {1}'.format(table, limit))
+        cur.execute(
+            'SELECT * FROM {0} ORDER BY created_datetime DESC LIMIT {1}'.format(table, limit))
         record_select = cur.fetchall()
         return record_select
+
+    def make_update_sql_statement(self, record_id, encrypted_data):
+        update_statement = "UPDATE claim SET json_data="
+        update_statement += "jsonb_set(json_data, '{{account}}', json_data -> 'account' || '{{\"details\": \"{0}\"}}') ".format(
+            encrypted_data)
+        update_statement += "WHERE id={0}".format(record_id)
+        return update_statement
+
+    def pg_update_record_in_table(self, conn, record_id, encrypted_data):
+        cur = conn.cursor()
+        update_statment = self.make_update_sql_statement(
+            record_id=record_id, encrypted_data=encrypted_data)
+        # print(update_statment)
+        response = cur.execute(update_statment)
+        print("UPDATE RECORD for {0}: {1}".format(record_id, response))
 
     def pg_close(self, conn):
         if conn is not None:
@@ -157,12 +173,13 @@ class ReEncrypter:
             DestinationKeyId=self.new_kms_key_id
         )
         encoded_encrypted_data = base64.b64encode(response['CiphertextBlob'])
-        print("reencrypted ", encoded_encrypted_data)
+        # print("reencrypted ", encoded_encrypted_data)
         return encoded_encrypted_data
 
     def check_key_status(self, records):
         self.unique_aws_kms_keys = []
         for record in records:
+            exit
             if 'account' in record[5]:
                 encrypted_data = record[5]['account']['details']
                 decrypted_record = self.decrypt_data(encrypted_data)
@@ -176,9 +193,14 @@ class ReEncrypter:
     def update_database(self, records):
         for record in records:
             if 'account' in record[5]:
+                record_id = record[0]
                 encrypted_data = record[5]['account']['details']
                 re_encrypted_data = self.re_encrypt_with_cross_account_kms_key(
                     encrypted_data)
+                self.pg_update_record_in_table(
+                    conn=self.old_pg_client_cases,
+                    record_id=record_id,
+                    encrypted_data=encrypted_data)
 
 
 NUM_BYTES_FOR_LEN = 4
@@ -188,11 +210,12 @@ LOGGING_OUTPUT = False
 def main():
     # encryption migration, row by row
     work = ReEncrypter()
-    work.check_cross_account_key_access()
     records = work.pg_select_records_in_table(
         work.old_pg_client_cases, "claim", 100)
     work.check_key_status(records)
     work.update_database(records)
+    records = work.pg_select_records_in_table(
+        work.old_pg_client_cases, "claim", 100)
     work.check_key_status(records)
     work.pg_close(work.old_pg_client_cases)
 
