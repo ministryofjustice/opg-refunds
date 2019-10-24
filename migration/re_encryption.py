@@ -22,19 +22,6 @@ class ReEncrypter:
     unique_aws_kms_keys = []
 
     def __init__(self):
-        # applications = {}
-        # applications['host'] = os.getenv(
-        #     'OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME', 'localhost')
-        # applications['user'] = self.set_env('POSTGRES_USER')
-        # applications['password'] = self.set_env('PGPASSWORD')
-        # self.old_pg_client_applications = self.pg_connect(
-        #     user=applications['user'],
-        #     host=applications['host'],
-        #     port=5432,
-        #     database="applications",
-        #     password=applications['password'],
-        #     tcp_keepalive=True)
-
         cases = {}
         env_vars = [
             "OPG_REFUNDS_DB_CASES_FULL_PASSWORD",
@@ -42,8 +29,6 @@ class ReEncrypter:
             "OPG_REFUNDS_DB_CASES_HOSTNAME",
             "OPG_REFUNDS_DB_CASES_NAME"
         ]
-
-        # path = "api.env"
         path = "/etc/docker-compose/caseworker-api/api.env"
         with open(path, "r") as f:
             for x in f:
@@ -120,14 +105,14 @@ class ReEncrypter:
         update_statement = "UPDATE claim SET json_data="
         update_statement += "jsonb_set(json_data, '{{account}}', json_data -> 'account' || '{{\"details\": \"{0}\"}}') ".format(
             encrypted_data)
-        update_statement += "WHERE id={0}".format(record_id)
+        update_statement += "WHERE id={0};".format(record_id)
         return update_statement
 
     def pg_update_record_in_table(self, conn, record_id, encrypted_data):
         cur = conn.cursor()
         update_statment = self.make_update_sql_statement(
             record_id=record_id, encrypted_data=encrypted_data)
-        # print(update_statment)
+        print(update_statment)
         response = cur.execute(update_statment)
         print("UPDATE RECORD for {0}: {1}".format(record_id, response))
 
@@ -173,7 +158,8 @@ class ReEncrypter:
             DestinationKeyId=self.new_kms_key_id
         )
         encoded_encrypted_data = base64.b64encode(response['CiphertextBlob'])
-        # print("reencrypted ", encoded_encrypted_data)
+        if LOGGING_OUTPUT:
+            print("reencrypted ", encoded_encrypted_data)
         return encoded_encrypted_data
 
     def check_key_status(self, records):
@@ -205,6 +191,8 @@ class ReEncrypter:
 
 NUM_BYTES_FOR_LEN = 4
 LOGGING_OUTPUT = False
+
+# TODO: Decrypt must handle failures, print exception and continue
 
 
 def main():
