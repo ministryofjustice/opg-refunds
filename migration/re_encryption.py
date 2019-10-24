@@ -54,6 +54,9 @@ class ReEncrypter:
         self.aws_kms_client = boto3.client('kms',
                                            region_name='eu-west-1')
 
+        # TODO: Add the key ARN to the caseworker api instances pillar data so
+        # we can be sure we're pulling the right one to use on each environment
+        # self.new_kms_key_id = cases['OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS']
         self.new_kms_key_id = 'arn:aws:kms:eu-west-1:936779158973:key/bf7e1724-1cad-42d5-b1f1-79e996efa63d'
 
     def check_cross_account_key_access(self):
@@ -108,8 +111,13 @@ class ReEncrypter:
             record_id=record_id, encrypted_data=encrypted_data)
         if LOGGING_OUTPUT:
             print(update_statment)
-        cur.execute(update_statment)
-        conn.commit()
+        try:
+            cur.execute(update_statment)
+            conn.commit()
+        except (Exception, pg8000.Error) as error:
+            print("an error...")
+            print(error, "\n", update_statment)
+            pass
         if LOGGING_OUTPUT:
             record_update = cur.fetchall()
             print(record_update)
