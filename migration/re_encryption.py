@@ -87,27 +87,31 @@ class ReEncrypter:
             print("an error...")
             print(error)
 
-    def pg_select_records_in_table(self, conn, table, limit):
+    def pg_select_records_in_table(self, conn):
         cur = conn.cursor()
         cur.execute(
-            'SELECT * FROM {0} ORDER BY created_datetime DESC LIMIT {1}'.format(table, limit))
+            'SELECT * FROM claim ORDER BY created_datetime;')
         record_select = cur.fetchall()
         return record_select
 
     def __make_update_sql_statement(self, record_id, encrypted_data):
         update_statement = "UPDATE claim SET json_data="
         update_statement += "jsonb_set(json_data, '{{account}}', json_data -> 'account' || '{{\"details\": \"{0}\"}}') ".format(
-            encrypted_data)
-        update_statement += "WHERE id={0};".format(record_id)
+            encrypted_data.decode('utf-8'))
+        update_statement += "WHERE id={0} RETURNING id,json_data->'account'->'details';".format(
+            record_id)
         return update_statement
 
     def __pg_update_record_in_table(self, conn, record_id, encrypted_data):
         cur = conn.cursor()
         update_statment = self.__make_update_sql_statement(
             record_id=record_id, encrypted_data=encrypted_data)
-        print(update_statment)
-        response = cur.execute(update_statment)
-        print("UPDATE RECORD for {0}: {1}".format(record_id, response))
+        if LOGGING_OUTPUT:
+            print(update_statment)
+        cur.execute(update_statment)
+        if LOGGING_OUTPUT:
+            record_update = cur.fetchall()
+            print(record_update)
 
     def pg_close(self, conn):
         if conn is not None:
@@ -132,7 +136,8 @@ class ReEncrypter:
         )
         encoded_encrypted_data = base64.b64encode(response['CiphertextBlob'])
         if LOGGING_OUTPUT:
-            print("reencrypted ", encoded_encrypted_data)
+            print("re-encrypted ", encoded_encrypted_data)
+
         return encoded_encrypted_data
 
     def check_key_status(self, records):
@@ -141,25 +146,30 @@ class ReEncrypter:
             if 'account' in record[5]:
                 encrypted_data = record[5]['account']['details']
                 text, key_id = self.__decrypt_data(encrypted_data)
-                unique_aws_kms_keys[key_id] = True
+                if key_id in unique_aws_kms_keys:
+                    unique_aws_kms_keys[key_id].append(record[0])
+                else:
+                    unique_aws_kms_keys[key_id] = [record[0]]
 
-        if len(unique_aws_kms_keys) < 2:
-            print("Only 1 key in use: ", unique_aws_kms_keys)
-        else:
-            print(len(unique_aws_kms_keys),
-                  " keys in use; \n", unique_aws_kms_keys)
+        for key, value in unique_aws_kms_keys.items():
+            print(key, len(value), value)
 
     def update_database(self, records):
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
                 encrypted_data = record[5]['account']['details']
+                if LOGGING_OUTPUT:
+                    print("  --", record_id, "--", encrypted_data)
                 re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
                     encrypted_data)
+                if LOGGING_OUTPUT:
+                    print("\n  --", re_encrypted_data)
                 self.__pg_update_record_in_table(
                     conn=self.old_pg_client_cases,
                     record_id=record_id,
-                    encrypted_data=encrypted_data)
+                    encrypted_data=re_encrypted_data)
+        print("end of update...")
 
 
 NUM_BYTES_FOR_LEN = 4
@@ -171,12 +181,13 @@ LOGGING_OUTPUT = False
 def main():
     # encryption migration, row by row
     work = ReEncrypter()
-    records = work.pg_select_records_in_table(
-        work.old_pg_client_cases, "claim", 100)
+
+    records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
+
     work.update_database(records)
-    records = work.pg_select_records_in_table(
-        work.old_pg_client_cases, "claim", 100)
+
+    records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
     work.pg_close(work.old_pg_client_cases)
 
