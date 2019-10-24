@@ -109,6 +109,7 @@ class ReEncrypter:
         if LOGGING_OUTPUT:
             print(update_statment)
         cur.execute(update_statment)
+        conn.commit()
         if LOGGING_OUTPUT:
             record_update = cur.fetchall()
             print(record_update)
