@@ -43,7 +43,7 @@ class ReEncrypter:
                 print("required env var not found")
                 exit(1)
 
-        self.old_pg_client_cases = self.pg_connect(
+        self.old_pg_client_cases = self.__pg_connect(
             user=cases['OPG_REFUNDS_DB_CASES_FULL_USERNAME'],
             host=cases['OPG_REFUNDS_DB_CASES_HOSTNAME'],
             port=5432,
@@ -71,7 +71,7 @@ class ReEncrypter:
             exit(1)
         return env_var_returned
 
-    def pg_connect(self, user, host, port, database, password, tcp_keepalive):
+    def __pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
         try:
             print('Connecting to the PostgreSQL database...')
@@ -87,13 +87,6 @@ class ReEncrypter:
             print("an error...")
             print(error)
 
-    def pg_count_records_in_table(self, conn, table):
-        cur = conn.cursor()
-        print('Records in database {}:'.format(table))
-        cur.execute('SELECT COUNT (*) FROM {}'.format(table))
-        record_count = cur.fetchone()
-        print(record_count)
-
     def pg_select_records_in_table(self, conn, table, limit):
         cur = conn.cursor()
         cur.execute(
@@ -101,16 +94,16 @@ class ReEncrypter:
         record_select = cur.fetchall()
         return record_select
 
-    def make_update_sql_statement(self, record_id, encrypted_data):
+    def __make_update_sql_statement(self, record_id, encrypted_data):
         update_statement = "UPDATE claim SET json_data="
         update_statement += "jsonb_set(json_data, '{{account}}', json_data -> 'account' || '{{\"details\": \"{0}\"}}') ".format(
             encrypted_data)
         update_statement += "WHERE id={0};".format(record_id)
         return update_statement
 
-    def pg_update_record_in_table(self, conn, record_id, encrypted_data):
+    def __pg_update_record_in_table(self, conn, record_id, encrypted_data):
         cur = conn.cursor()
-        update_statment = self.make_update_sql_statement(
+        update_statment = self.__make_update_sql_statement(
             record_id=record_id, encrypted_data=encrypted_data)
         print(update_statment)
         response = cur.execute(update_statment)
@@ -121,37 +114,17 @@ class ReEncrypter:
             conn.close()
             print('Database connection closed.')
 
-    def count_records(self):
-        print("count records in each table...")
-        self.pg_count_records_in_table(
-            self.old_pg_client_applications, "application")
-
-        self.pg_count_records_in_table(self.old_pg_client_cases, "sirius")
-        self.pg_count_records_in_table(self.old_pg_client_cases, "meris")
-        self.pg_count_records_in_table(self.old_pg_client_cases, "finance")
-
-    def decrypt_data(self, encrypted_data):
+    def __decrypt_data(self, encrypted_data):
         decoded_encrypted_data = base64.b64decode(encrypted_data)
         response = self.aws_kms_client.decrypt(
             CiphertextBlob=decoded_encrypted_data)
-        self.get_kms_key(response)
         plaintext = response['Plaintext'].decode('utf-8')
-        if LOGGING_OUTPUT:
-            print(plaintext)
-        return plaintext
-
-    def get_kms_key(self, response):
         key_id = response['KeyId']
         if LOGGING_OUTPUT:
-            print(key_id)
-        if key_id not in self.unique_aws_kms_keys:
-            self.unique_aws_kms_keys.append(key_id)
-        return key_id
+            print(plaintext)
+        return plaintext, key_id
 
-    def count_unique_kms_keys(self):
-        return len(self.unique_aws_kms_keys)
-
-    def re_encrypt_with_cross_account_kms_key(self, encrypted_data):
+    def __re_encrypt_with_cross_account_kms_key(self, encrypted_data):
         decoded_encrypted_data = base64.b64decode(encrypted_data)
         response = self.aws_kms_client.re_encrypt(
             CiphertextBlob=decoded_encrypted_data,
@@ -163,27 +136,27 @@ class ReEncrypter:
         return encoded_encrypted_data
 
     def check_key_status(self, records):
-        self.unique_aws_kms_keys = []
+        unique_aws_kms_keys = {}
         for record in records:
-            exit
             if 'account' in record[5]:
                 encrypted_data = record[5]['account']['details']
-                decrypted_record = self.decrypt_data(encrypted_data)
-        totalkeys = self.count_unique_kms_keys()
-        if totalkeys < 2:
-            print("Only 1 key in use: ", self.unique_aws_kms_keys)
+                text, key_id = self.__decrypt_data(encrypted_data)
+                unique_aws_kms_keys[key_id] = True
+
+        if len(unique_aws_kms_keys) < 2:
+            print("Only 1 key in use: ", unique_aws_kms_keys)
         else:
-            print(totalkeys, " keys in use; \n", self.unique_aws_kms_keys)
-        return totalkeys
+            print(len(unique_aws_kms_keys),
+                  " keys in use; \n", unique_aws_kms_keys)
 
     def update_database(self, records):
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
                 encrypted_data = record[5]['account']['details']
-                re_encrypted_data = self.re_encrypt_with_cross_account_kms_key(
+                re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
                     encrypted_data)
-                self.pg_update_record_in_table(
+                self.__pg_update_record_in_table(
                     conn=self.old_pg_client_cases,
                     record_id=record_id,
                     encrypted_data=encrypted_data)
