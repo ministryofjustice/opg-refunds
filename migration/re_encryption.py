@@ -14,8 +14,10 @@ class ReEncrypter:
     aws_kms_client = ''
     old_pg_client_cases = ''
     new_kms_key_id = ''
+    testing_mode = ''
 
-    def __init__(self, kms_key_arn):
+    def __init__(self, kms_key_arn, test):
+        self.testing_mode = test
         cases = {}
         env_vars = [
             "OPG_REFUNDS_DB_CASES_FULL_PASSWORD",
@@ -48,7 +50,7 @@ class ReEncrypter:
         self.aws_kms_client = boto3.client('kms',
                                            region_name='eu-west-1')
 
-        self.new_kms_key_id = kms_key_arn
+        self.new_kms_key_id = kms_key_arn[0]
 
     def __pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
@@ -89,7 +91,8 @@ class ReEncrypter:
             print(update_statment)
         try:
             cur.execute(update_statment)
-            conn.commit()
+            if not self.testing_mode:
+                conn.commit()
         except (Exception, pg8000.Error) as error:
             print("an error...")
             print(error, "\n", update_statment)
@@ -137,7 +140,7 @@ class ReEncrypter:
                     unique_aws_kms_keys[key_id] = [record[0]]
 
         for key, value in unique_aws_kms_keys.items():
-            print(key, len(value), value)
+            print(key, len(value), "\n", value)
 
     def update_database(self, records):
         for record in records:
@@ -166,18 +169,24 @@ def main():
         description="Re-encrypt records in a database using a new KMS key.")
 
     parser.add_argument("kms_key_arn",
-                        nargs='1',
+                        nargs=1,
                         type=str,
                         help="KMS key ARN")
 
+    parser.add_argument('--test',
+                        action='store_true',
+                        default=False,
+                        dest='test',
+                        help='Test script by not committing updates')
+
     args = parser.parse_args()
     # encryption migration, row by row
-    work = ReEncrypter(args.kms_key_arn)
+    work = ReEncrypter(args.kms_key_arn, args.test)
 
     records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
 
-    work.update_database(records)
+    work.update_database(records=records)
 
     records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
