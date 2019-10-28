@@ -137,12 +137,18 @@ class ReEncrypter:
         unique_aws_kms_keys = {}
         for record in records:
             if 'account' in record[5]:
+                record_id = record[0]
                 encrypted_data = record[5]['account']['details']
-                text, key_id = self.__decrypt_data(encrypted_data)
-                if key_id in unique_aws_kms_keys:
-                    unique_aws_kms_keys[key_id].append(record[0])
-                else:
-                    unique_aws_kms_keys[key_id] = [record[0]]
+                try:
+                    text, key_id = self.__decrypt_data(encrypted_data)
+                    if key_id in unique_aws_kms_keys:
+                        unique_aws_kms_keys[key_id].append(record_id)
+                    else:
+                        unique_aws_kms_keys[key_id] = [record_id]
+                except:
+                    print("Failed to re-encrypt record! \n",
+                          record_id, "\n", encrypted_data)
+                    pass
 
         for key, value in unique_aws_kms_keys.items():
             print(key, len(value), "\n", value)
