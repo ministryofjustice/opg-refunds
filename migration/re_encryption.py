@@ -146,7 +146,7 @@ class ReEncrypter:
                     else:
                         unique_aws_kms_keys[key_id] = [record_id]
                 except:
-                    print("Failed to re-encrypt record! \n",
+                    print("Failed to Decrypt record! \n",
                           record_id, "\n", encrypted_data)
                     pass
 
@@ -165,7 +165,7 @@ class ReEncrypter:
                     re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
                         encrypted_data)
                 except:
-                    print("Failed to re-encrypt record! \n",
+                    print("Failed to ReEncrypt record! \n",
                           record_id, "\n", encrypted_data)
                     pass
 
