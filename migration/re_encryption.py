@@ -75,7 +75,7 @@ class ReEncrypter:
         print("Selecting all records...")
         cur = conn.cursor()
         cur.execute(
-            'SELECT * FROM claim ORDER BY created_datetime;')
+            "SELECT * FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime;")
         record_select = cur.fetchall()
         return record_select
 
@@ -155,8 +155,14 @@ class ReEncrypter:
                 encrypted_data = record[5]['account']['details']
                 if LOGGING_OUTPUT:
                     print("  --", record_id, "--", encrypted_data)
-                re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
-                    encrypted_data)
+                try:
+                    re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
+                        encrypted_data)
+                except:
+                    print("Failed to re-encrypt record! \n",
+                          record_id, "\n", encrypted_data)
+                    pass
+
                 if LOGGING_OUTPUT:
                     print("\n  --", re_encrypted_data)
                 self.__pg_update_record_in_table(
