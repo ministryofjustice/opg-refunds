@@ -138,6 +138,7 @@ class ReEncrypter:
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
+                print("Checking record {0} ...".format(record_id))
                 encrypted_data = record[5]['account']['details']
                 try:
                     text, key_id = self.__decrypt_data(encrypted_data)
@@ -158,24 +159,25 @@ class ReEncrypter:
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
+                print("ReEncrypting record {0} ...".format(record_id))
                 encrypted_data = record[5]['account']['details']
                 if LOGGING_OUTPUT:
                     print("  --", record_id, "--", encrypted_data)
                 try:
                     re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
                         encrypted_data)
+                    if LOGGING_OUTPUT:
+                        print("\n  --", re_encrypted_data)
+                    self.__pg_update_record_in_table(
+                        conn=self.old_pg_client_cases,
+                        record_id=record_id,
+                        encrypted_data=re_encrypted_data)
                 except:
                     print("Failed to ReEncrypt record! \n",
                           record_id, "\n", encrypted_data)
                     pass
 
-                if LOGGING_OUTPUT:
-                    print("\n  --", re_encrypted_data)
-                self.__pg_update_record_in_table(
-                    conn=self.old_pg_client_cases,
-                    record_id=record_id,
-                    encrypted_data=re_encrypted_data)
-        print("end of update...")
+        print("End of update...")
 
 
 NUM_BYTES_FOR_LEN = 4
