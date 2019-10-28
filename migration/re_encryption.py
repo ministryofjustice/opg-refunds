@@ -8,6 +8,7 @@ import os
 import pg8000
 import logging
 from botocore.exceptions import ClientError
+import datetime
 
 
 class ReEncrypter:
@@ -138,7 +139,8 @@ class ReEncrypter:
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
-                print("Checking record {0} ...".format(record_id))
+                if LOGGING_OUTPUT:
+                    print("Checking record {0} ...".format(record_id))
                 encrypted_data = record[5]['account']['details']
                 try:
                     text, key_id = self.__decrypt_data(encrypted_data)
@@ -159,7 +161,8 @@ class ReEncrypter:
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
-                print("ReEncrypting record {0} ...".format(record_id))
+                if LOGGING_OUTPUT:
+                    print("ReEncrypting record {0} ...".format(record_id))
                 encrypted_data = record[5]['account']['details']
                 if LOGGING_OUTPUT:
                     print("  --", record_id, "--", encrypted_data)
@@ -185,6 +188,9 @@ LOGGING_OUTPUT = False
 
 
 def main():
+    start_time = datetime.datetime.now()
+    print("Started: ", str(start_time))
+
     parser = argparse.ArgumentParser(
         description="Re-encrypt records in a database using a new KMS key.")
 
@@ -211,6 +217,10 @@ def main():
     records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
     work.pg_close(work.old_pg_client_cases)
+
+    end_time = datetime.datetime.now()
+
+    print("Started: ", str(start_time), "\n Ended:", str(end_time))
 
 
 if __name__ == "__main__":
