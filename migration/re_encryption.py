@@ -40,6 +40,7 @@ class ReEncrypter:
             if x not in cases:
                 print("required env var not found")
                 exit(1)
+        print(cases)
 
         self.old_pg_client_cases = self.__pg_connect(
             user=cases['OPG_REFUNDS_DB_CASES_FULL_USERNAME'],
@@ -65,12 +66,14 @@ class ReEncrypter:
                 database=database,
                 password=password,
                 tcp_keepalive=tcp_keepalive)
+            print('Connected to the PostgreSQL database ', database)
             return conn
         except (Exception, pg8000.Error) as error:
             print("an error...")
             print(error)
 
     def pg_select_records_in_table(self, conn):
+        print("Selecting all records...")
         cur = conn.cursor()
         cur.execute(
             'SELECT * FROM claim ORDER BY created_datetime;')
@@ -131,6 +134,7 @@ class ReEncrypter:
         return encoded_encrypted_data
 
     def check_key_status(self, records):
+        print("Checking Key Status...")
         unique_aws_kms_keys = {}
         for record in records:
             if 'account' in record[5]:
@@ -145,6 +149,7 @@ class ReEncrypter:
             print(key, len(value), "\n", value)
 
     def update_database(self, records):
+        print("Updating Records...")
         for record in records:
             if 'account' in record[5]:
                 record_id = record[0]
