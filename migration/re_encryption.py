@@ -134,7 +134,7 @@ class ReEncrypter:
         return encoded_encrypted_data
 
     def check_key_status(self, records):
-        print("Extracting encrypted data...")
+        print("Checking KMS Key usage...")
         unique_aws_kms_keys = {}
         interval = 0
         for record in records:
