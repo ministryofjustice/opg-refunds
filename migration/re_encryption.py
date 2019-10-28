@@ -18,6 +18,8 @@ class ReEncrypter:
 
     def __init__(self, kms_key_arn, test):
         self.testing_mode = test
+        if self.testing_mode:
+            print("TEST MODE: Changes not comitted!")
         cases = {}
         env_vars = [
             "OPG_REFUNDS_DB_CASES_FULL_PASSWORD",
