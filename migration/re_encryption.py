@@ -8,20 +8,14 @@ import os
 import pg8000
 import logging
 from botocore.exceptions import ClientError
-from pprint import pprint
 
 
 class ReEncrypter:
-    aws_account_id = ''
-    aws_iam_session = ''
     aws_kms_client = ''
-    old_pg_client_applications = ''
     old_pg_client_cases = ''
     new_kms_key_id = ''
-    aws_kms_client = ''
-    unique_aws_kms_keys = []
 
-    def __init__(self):
+    def __init__(self, kms_key_arn):
         cases = {}
         env_vars = [
             "OPG_REFUNDS_DB_CASES_FULL_PASSWORD",
@@ -54,10 +48,7 @@ class ReEncrypter:
         self.aws_kms_client = boto3.client('kms',
                                            region_name='eu-west-1')
 
-        # TODO: Add the key ARN to the caseworker api instances pillar data so
-        # we can be sure we're pulling the right one to use on each environment
-        # self.new_kms_key_id = cases['OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS']
-        self.new_kms_key_id = 'arn:aws:kms:eu-west-1:936779158973:key/bf7e1724-1cad-42d5-b1f1-79e996efa63d'
+        self.new_kms_key_id = kms_key_arn
 
     def check_cross_account_key_access(self):
         response = self.aws_kms_client.describe_key(
@@ -188,8 +179,17 @@ LOGGING_OUTPUT = False
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description="Re-encrypt records in a database using a new KMS key.")
+
+    parser.add_argument("kms_key_arn",
+                        nargs='1',
+                        type=str,
+                        help="KMS key ARN")
+
+    args = parser.parse_args()
     # encryption migration, row by row
-    work = ReEncrypter()
+    work = ReEncrypter(args.kms_key_arn)
 
     records = work.pg_select_records_in_table(work.old_pg_client_cases)
     work.check_key_status(records)
