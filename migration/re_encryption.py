@@ -76,7 +76,7 @@ class ReEncrypter:
         print("Selecting all records...")
         cur = conn.cursor()
         cur.execute(
-            "SELECT id, json_data->'account'->'details' as encrypted FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime LIMIT 5000;")
+            "SELECT id, json_data->'account'->'details' as encrypted FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime;")
         record_select = cur.fetchall()
         return record_select
 
@@ -134,7 +134,7 @@ class ReEncrypter:
         return encoded_encrypted_data
 
     def check_key_status(self, records):
-        print("Checking Key Status...")
+        print("Extracting encrypted data...")
         unique_aws_kms_keys = {}
         interval = 0
         for record in records:
@@ -155,6 +155,7 @@ class ReEncrypter:
                       record_id)
                 pass
             interval += 1
+        print("Record: ", interval)
 
         print("Keys in use...")
         for key, value in unique_aws_kms_keys.items():
@@ -184,6 +185,7 @@ class ReEncrypter:
                       record_id)
                 pass
             interval += 1
+        print("Record: ", interval)
 
         print("End of update...")
 
