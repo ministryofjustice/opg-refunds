@@ -76,8 +76,7 @@ class ReEncrypter:
         print("Selecting all records...")
         cur = conn.cursor()
         cur.execute(
-            "SELECT id, json_data->'account'->'details' as encrypted FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime LIMIT 100;")
-        # "SELECT * FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime LIMIT 100;")
+            "SELECT id, json_data->'account'->'details' as encrypted FROM claim WHERE json_data->'account'->'details' IS NOT NULL ORDER BY created_datetime LIMIT 5000;")
         record_select = cur.fetchall()
         return record_select
 
@@ -116,7 +115,6 @@ class ReEncrypter:
         decoded_encrypted_data = base64.b64decode(encrypted_data)
         response = self.aws_kms_client.decrypt(
             CiphertextBlob=decoded_encrypted_data)
-        print(response)
         plaintext = response['Plaintext'].decode('utf-8')
         key_id = response['KeyId']
         if LOGGING_OUTPUT:
@@ -138,32 +136,16 @@ class ReEncrypter:
     def check_key_status(self, records):
         print("Checking Key Status...")
         unique_aws_kms_keys = {}
-        # for record in records:
-        #     record_id = record[0]
-        #     encrypted_data = record[5]['account']['details']
-        #     print(record_id, encrypted_data)
-        #     if LOGGING_OUTPUT:
-        #         print("Checking record {0} ...".format(record_id))
-        #     try:
-        #         text, key_id = self.__decrypt_data(encrypted_data)
-        #         print(text, key_id)
-        #         if key_id in unique_aws_kms_keys:
-        #             unique_aws_kms_keys[key_id].append(record_id)
-        #         else:
-        #             unique_aws_kms_keys[key_id] = [record_id]
-        #     except:
-        #         print("Failed to Decrypt record! \n",
-        #               record_id)
-        #         pass
+        interval = 0
         for record in records:
+            if interval % 500 == 0:
+                print("Record: ", interval)
             record_id = record[0]
             encrypted_data = record[1]
-            print(record_id, encrypted_data)
             if LOGGING_OUTPUT:
                 print("Checking record {0} ...".format(record_id))
             try:
                 text, key_id = self.__decrypt_data(encrypted_data)
-                print(text, key_id)
                 if key_id in unique_aws_kms_keys:
                     unique_aws_kms_keys[key_id].append(record_id)
                 else:
@@ -172,6 +154,7 @@ class ReEncrypter:
                 print("Failed to Decrypt record! \n",
                       record_id)
                 pass
+            interval += 1
 
         print("Keys in use...")
         for key, value in unique_aws_kms_keys.items():
@@ -179,31 +162,12 @@ class ReEncrypter:
 
     def update_database(self, records):
         print("Updating Records...")
-        # for record in records:
-        #     if 'account' in record[5]:
-        #         record_id = record[0]
-        #         if LOGGING_OUTPUT:
-        #             print("ReEncrypting record {0} ...".format(record_id))
-        #         encrypted_data = record[5]['account']['details']
-        #         if LOGGING_OUTPUT:
-        #             print("  --", record_id, "--", encrypted_data)
-        #         try:
-        #             re_encrypted_data = self.__re_encrypt_with_cross_account_kms_key(
-        #                 encrypted_data)
-        #             if LOGGING_OUTPUT:
-        #                 print("\n  --", re_encrypted_data)
-        #             self.__pg_update_record_in_table(
-        #                 conn=self.old_pg_client_cases,
-        #                 record_id=record_id,
-        #                 encrypted_data=re_encrypted_data)
-        #         except:
-        #             print("Failed to ReEncrypt record! \n",
-        #                   record_id)
-        #             pass
+        interval = 0
         for record in records:
+            if interval % 500 == 0:
+                print("Record: ", interval)
             record_id = record[0]
             encrypted_data = record[1]
-            print(record_id, encrypted_data)
             if LOGGING_OUTPUT:
                 print("ReEncrypting record {0} ...".format(record_id))
             try:
@@ -219,6 +183,7 @@ class ReEncrypter:
                 print("Failed to ReEncrypt record! \n",
                       record_id)
                 pass
+            interval += 1
 
         print("End of update...")
 
@@ -260,7 +225,7 @@ def main():
 
     end_time = datetime.datetime.now()
 
-    print("Started: ", str(start_time), "\n Ended:", str(end_time))
+    print("Started: ", str(start_time), "\nEnded:", str(end_time))
 
 
 if __name__ == "__main__":
