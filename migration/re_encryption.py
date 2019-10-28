@@ -50,21 +50,6 @@ class ReEncrypter:
 
         self.new_kms_key_id = kms_key_arn
 
-    def check_cross_account_key_access(self):
-        response = self.aws_kms_client.describe_key(
-            KeyId=self.new_kms_key_id)
-        print(response)
-
-    def set_env(self, env_var):
-        if env_var not in os.environ:
-            print('{} must be set'.format(env_var))
-            exit(1)
-        env_var_returned = os.getenv(env_var, '')
-        if env_var_returned == '':
-            print('{} must have a value'.format(env_var))
-            exit(1)
-        return env_var_returned
-
     def __pg_connect(self, user, host, port, database, password, tcp_keepalive):
         conn = None
         try:
@@ -174,8 +159,6 @@ class ReEncrypter:
 
 NUM_BYTES_FOR_LEN = 4
 LOGGING_OUTPUT = False
-
-# TODO: Decrypt must handle failures, print exception and continue
 
 
 def main():
