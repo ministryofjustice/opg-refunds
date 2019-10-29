@@ -22,17 +22,6 @@ resource "aws_db_instance" "applications" {
   skip_final_snapshot        = true
   deletion_protection        = local.account.database_deletion_protection
   tags                       = local.default_tags
-  enabled_cloudwatch_logs_exports = [
-    "alert",
-    "audit",
-    "error",
-    "general",
-    "listener",
-    "slowquery",
-    "trace",
-    "postgresql",
-    "upgrade",
-  ]
 }
 
 resource "aws_db_subnet_group" "applications_rds_instance" {
