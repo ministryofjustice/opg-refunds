@@ -23,7 +23,7 @@ resource "aws_ecs_service" "public_front" {
     container_port   = 80
   }
 
-  depends_on = [aws_rds_instanc.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_db_instance.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
   tags       = local.default_tags
 }
 
