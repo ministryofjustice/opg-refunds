@@ -1,10 +1,9 @@
 resource "aws_db_instance" "caseworker" {
   identifier                 = lower("caseworker-${local.environment}")
   name                       = "caseworker"
-  allocated_storage          = 10
+  allocated_storage          = 20
   max_allocated_storage      = 100
   storage_type               = "gp2"
-  iops                       = 20
   storage_encrypted          = true
   engine                     = "postgres"
   engine_version             = "9.6.11"
