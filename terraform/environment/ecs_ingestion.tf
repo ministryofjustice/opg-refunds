@@ -18,7 +18,7 @@ resource "aws_ecs_service" "ingestion" {
     assign_public_ip = false
   }
 
-  depends_on = [aws_rds_cluster.applications, aws_rds_cluster.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_rds_instance.applications, aws_rds_instance.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
   tags       = local.default_tags
 }
 
@@ -172,28 +172,28 @@ locals {
     ],
     "environment": [
       { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
-      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_instance.applications.address}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME", "value": "applications_full" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_MIGRATION_USERNAME", "value": "applications_migration" },
-      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_CASES_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_CASES_NAME", "value": "cases" },
       { "name" : "OPG_REFUNDS_DB_CASES_FULL_USERNAME", "value": "cases_full" },
       { "name" : "OPG_REFUNDS_DB_CASES_MIGRATION_USERNAME", "value": "cases_migration" },
-      { "name" : "OPG_REFUNDS_DB_SIRIUS_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_SIRIUS_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_SIRIUS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_SIRIUS_NAME", "value": "sirius" },
       { "name" : "OPG_REFUNDS_DB_SIRIUS_FULL_USERNAME", "value": "sirius_full" },
       { "name" : "OPG_REFUNDS_DB_SIRIUS_MIGRATION_USERNAME", "value": "sirius_migration" },
-      { "name" : "OPG_REFUNDS_DB_MERIS_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_MERIS_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_MERIS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_MERIS_NAME", "value": "meris" },
       { "name" : "OPG_REFUNDS_DB_MERIS_FULL_USERNAME", "value": "meris_full" },
       { "name" : "OPG_REFUNDS_DB_MERIS_MIGRATION_USERNAME", "value": "meris_migration" },
-      { "name" : "OPG_REFUNDS_DB_FINANCE_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_FINANCE_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_NAME", "value": "finance" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_FULL_USERNAME", "value": "finance_full" },

@@ -217,12 +217,12 @@ locals {
 
     ],
     "environment": [
-      { "name" : "POSTGRES_USER", "value": "${aws_rds_cluster.applications.master_username}" },
-      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" },
+      { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_db_instance.applications.address}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME", "value": "applications_full" },
-      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_CASES_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_CASES_NAME", "value": "cases" },
       { "name" : "OPG_REFUNDS_DB_CASES_FULL_USERNAME", "value": "cases_full" }

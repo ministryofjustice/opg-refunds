@@ -129,13 +129,13 @@ locals {
     ],
     "environment": [
       { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
-      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_CASES_PORT", "value": "5432" },
-      { "name" : "OPG_REFUNDS_DB_SIRIUS_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_SIRIUS_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_SIRIUS_PORT", "value": "5432" },
-      { "name" : "OPG_REFUNDS_DB_MERIS_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_MERIS_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_MERIS_PORT", "value": "5432" },
-      { "name" : "OPG_REFUNDS_DB_FINANCE_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
+      { "name" : "OPG_REFUNDS_DB_FINANCE_HOSTNAME", "value": "${aws_db_instance.caseworker.address}" },
       { "name" : "OPG_REFUNDS_DB_FINANCE_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.cronlock.name}" }
     ]
