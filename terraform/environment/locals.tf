@@ -18,7 +18,7 @@ variable "accounts" {
       caseworker_front_certificate_domain_name = string
       caseworker_front_dns                     = string
       aurora_serverless_auto_pause             = bool
-      aurora_serverless_deletion_protection    = bool
+      database_deletion_protection             = bool
       has_cloudfront_distribution              = bool
     })
   )
