@@ -3,8 +3,8 @@ resource "aws_db_instance" "applications" {
   name                       = "applications"
   allocated_storage          = 10
   max_allocated_storage      = 100
-  storage_type               = "io1"
-  iops                       = 1000
+  storage_type               = "gp2"
+  iops                       = 20
   storage_encrypted          = true
   engine                     = "postgres"
   engine_version             = "9.6.11"
@@ -37,7 +37,7 @@ resource "aws_db_instance" "applications" {
 }
 
 resource "aws_db_subnet_group" "applications_rds_instance" {
-  name       = "applications-instance-${local.environment}"
+  name       = "applications-db-instance-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
