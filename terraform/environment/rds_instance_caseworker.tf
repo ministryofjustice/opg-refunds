@@ -37,7 +37,7 @@ resource "aws_db_instance" "caseworker" {
 }
 
 resource "aws_db_subnet_group" "caseworker_rds_instance" {
-  name       = "caseworker-${local.environment}"
+  name       = "caseworker-db-instance-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags

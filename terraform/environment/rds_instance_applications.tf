@@ -37,7 +37,7 @@ resource "aws_db_instance" "applications" {
 }
 
 resource "aws_db_subnet_group" "applications_rds_instance" {
-  name       = "applications-${local.environment}"
+  name       = "applications-instance-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags

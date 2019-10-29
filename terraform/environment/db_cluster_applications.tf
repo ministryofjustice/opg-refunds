@@ -33,7 +33,7 @@ resource "aws_rds_cluster" "applications" {
 }
 
 resource "aws_db_subnet_group" "applications_rds_cluster" {
-  name       = "applications-${local.environment}"
+  name       = "applications-db-cluster-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags

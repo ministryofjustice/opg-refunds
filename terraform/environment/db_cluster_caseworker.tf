@@ -33,7 +33,7 @@ resource "aws_rds_cluster" "caseworker" {
 }
 
 resource "aws_db_subnet_group" "caseworker_rds_cluster" {
-  name       = "caseworker-${local.environment}"
+  name       = "caseworker-db-cluster-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
