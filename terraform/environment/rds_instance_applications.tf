@@ -2,6 +2,7 @@ resource "aws_db_instance" "applications" {
   identifier                 = lower("applications-${local.environment}")
   name                       = "applications"
   allocated_storage          = 10
+  max_allocated_storage      = 100
   storage_type               = "io1"
   iops                       = 1000
   storage_encrypted          = true
@@ -13,7 +14,7 @@ resource "aws_db_instance" "applications" {
   password                   = data.aws_secretsmanager_secret_version.postgres_password.secret_string
   parameter_group_name       = aws_db_parameter_group.postgres-db-params.name
   option_group_name          = "default:postgres-9-6"
-  vpc_security_group_ids     = [aws_security_group.applications_rds_instance.id]
+  vpc_security_group_ids     = [aws_security_group.applications_rds_instance.id, aws_security_group.applications_rds_instance_client.id]
   db_subnet_group_name       = aws_db_subnet_group.applications_rds_instance.name
   multi_az                   = true
   auto_minor_version_upgrade = true
@@ -35,38 +36,12 @@ resource "aws_db_instance" "applications" {
   ]
 }
 
-resource "aws_db_parameter_group" "postgres-db-params" {
-  name        = lower("postgres-db-params-${local.environment}")
-  description = "default postgres rds parameter group"
-  family      = "postgres9.6"
-
-  parameter {
-    name         = "log_min_duration_statement"
-    value        = "500"
-    apply_method = "immediate"
-  }
-
-  parameter {
-    name         = "log_statement"
-    value        = "none"
-    apply_method = "pending-reboot"
-  }
-
-  parameter {
-    name         = "rds.log_retention_period"
-    value        = "1440"
-    apply_method = "immediate"
-  }
-}
-
-
 resource "aws_db_subnet_group" "applications_rds_instance" {
   name       = "applications-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
   tags = local.default_tags
 }
-
 
 resource "aws_security_group" "applications_rds_instance_client" {
   name                   = "${local.environment}-applications-rds-instance-client"
