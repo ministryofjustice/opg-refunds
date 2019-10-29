@@ -21,7 +21,7 @@ resource "aws_db_instance" "caseworker" {
   maintenance_window         = "sun:01:00-sun:01:30"
   backup_retention_period    = 14
   skip_final_snapshot        = true
-  deletion_protection        = false #set a value in the terraform.tfvars
+  deletion_protection        = local.account.database_deletion_protection
   tags                       = local.default_tags
   enabled_cloudwatch_logs_exports = [
     "alert",

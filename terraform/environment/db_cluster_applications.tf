@@ -15,7 +15,7 @@ resource "aws_rds_cluster" "applications" {
   master_username = local.rds_master_username
   master_password = data.aws_secretsmanager_secret_version.postgres_password.secret_string
 
-  deletion_protection             = local.account.aurora_serverless_deletion_protection
+  deletion_protection             = local.account.database_deletion_protection
   enabled_cloudwatch_logs_exports = []
   backup_retention_period         = 7
   preferred_backup_window         = "00:14-00:44"
