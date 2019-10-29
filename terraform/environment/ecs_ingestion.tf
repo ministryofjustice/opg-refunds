@@ -172,7 +172,7 @@ locals {
     ],
     "environment": [
       { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
-      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_instance.applications.address}" },
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_db_instance.applications.address}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
