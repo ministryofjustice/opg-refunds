@@ -11,8 +11,6 @@ resource "aws_ecs_service" "ingestion" {
   network_configuration {
     security_groups = [
       aws_security_group.ingestion_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
-      aws_security_group.caseworker_rds_cluster_client.id,
       aws_security_group.applications_rds_instance_client.id,
       aws_security_group.caseworker_rds_instance_client.id,
     ]
