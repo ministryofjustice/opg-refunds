@@ -162,7 +162,7 @@ workflows:
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
-          requires: [preprod_run_healthcheck_test]
+          requires: [hold_env_for_uat_preprod]
           filters: { branches: { only: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
