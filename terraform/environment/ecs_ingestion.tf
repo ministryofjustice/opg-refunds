@@ -13,6 +13,8 @@ resource "aws_ecs_service" "ingestion" {
       aws_security_group.ingestion_ecs_service.id,
       aws_security_group.applications_rds_cluster_client.id,
       aws_security_group.caseworker_rds_cluster_client.id,
+      aws_security_group.applications_rds_instance_client.id,
+      aws_security_group.caseworker_rds_instance_client.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false

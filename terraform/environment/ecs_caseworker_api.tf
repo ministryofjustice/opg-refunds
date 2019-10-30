@@ -12,6 +12,7 @@ resource "aws_ecs_service" "caseworker_api" {
     security_groups = [
       aws_security_group.caseworker_api_ecs_service.id,
       aws_security_group.caseworker_rds_cluster_client.id,
+      aws_security_group.caseworker_rds_instance_client.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false
