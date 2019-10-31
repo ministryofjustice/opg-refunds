@@ -15,6 +15,7 @@ variable "default_role" {
 
 provider "aws" {
   region = "eu-west-1"
+  # moj-refunds-development
 
   assume_role {
     role_arn     = "arn:aws:iam::936779158973:role/${var.default_role}"
@@ -25,6 +26,7 @@ provider "aws" {
 provider "aws" {
   alias  = "eu_central_1"
   region = "eu-central-1"
+  # moj-refunds-development
 
   assume_role {
     role_arn     = "arn:aws:iam::936779158973:role/${var.default_role}"
