@@ -1,7 +1,3 @@
-data "aws_route53_zone" "claim-power-of-attorney-refund_service_gov_uk" {
-  name = "lastingpowerofattorney.service.gov.uk"
-}
-
 resource "aws_route53_record" "certificate_validation_maintenance_cloudfront_dn" {
   name    = aws_acm_certificate.certificate_maintenance_cloudfront.domain_validation_options.0.resource_record_name
   type    = aws_acm_certificate.certificate_maintenance_cloudfront.domain_validation_options.0.resource_record_type
