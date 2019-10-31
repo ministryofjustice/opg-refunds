@@ -39,6 +39,17 @@ provider "aws" {
 }
 
 provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+  # moj-refunds-development
+
+  assume_role {
+    role_arn     = "arn:aws:iam::936779158973:role/${var.default_role}"
+    session_name = "terraform-session"
+  }
+}
+
+provider "aws" {
   alias  = "old_refunds_production"
   region = "eu-west-1"
   # old-refunds-production
