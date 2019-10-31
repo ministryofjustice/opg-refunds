@@ -11,7 +11,6 @@ resource "aws_ecs_service" "public_front" {
   network_configuration {
     security_groups = [
       aws_security_group.public_front_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
       aws_security_group.applications_rds_instance_client.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
