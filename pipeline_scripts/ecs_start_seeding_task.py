@@ -47,7 +47,7 @@ class ECSMonitor:
         self.get_seeding_task_definition()
         self.get_subnet_id()
 
-        self.db_client_security_group = self.get_security_group_id('{}-caseworker-rds-cluster-client'.format(
+        self.db_client_security_group = self.get_security_group_id('{}-caseworker-rds-instance-client'.format(
             self.environment))
         self.seeding_security_group = self.get_security_group_id('{}-seeding-ecs-service'.format(
             self.environment))

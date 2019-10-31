@@ -11,7 +11,7 @@ resource "aws_ecs_service" "public_front" {
   network_configuration {
     security_groups = [
       aws_security_group.public_front_ecs_service.id,
-      aws_security_group.applications_rds_cluster_client.id,
+      aws_security_group.applications_rds_instance_client.id,
     ]
     subnets          = data.aws_subnet_ids.private.ids
     assign_public_ip = false
@@ -23,7 +23,7 @@ resource "aws_ecs_service" "public_front" {
     container_port   = 80
   }
 
-  depends_on = [aws_rds_cluster.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
+  depends_on = [aws_db_instance.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
   tags       = local.default_tags
 }
 
@@ -216,7 +216,7 @@ locals {
       { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" },
       { "name" : "OPG_DOCKER_TAG", "value": "${var.container_version}"},
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" }, 
-      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" }, 
+      { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_db_instance.applications.address}" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_PORT", "value": "5432" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" }, 
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },

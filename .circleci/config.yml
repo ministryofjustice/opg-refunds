@@ -152,11 +152,17 @@ workflows:
           requires: [preprod_seed_environment_databases]
           filters: { branches: { only: [master] } }
 
+      - hold-for-uat:
+          name: hold_env_for_uat_preprod
+          type: approval
+          requires: [preprod_run_healthcheck_test]
+          filters: { branches: { only: [master] } }
+
       # Production Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
-          requires: [preprod_run_healthcheck_test]
+          requires: [hold_env_for_uat_preprod]
           filters: { branches: { only: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
