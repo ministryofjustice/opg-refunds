@@ -47,7 +47,7 @@ class ECSMonitor:
         self.get_seeding_task_definition()
         self.get_subnet_id()
 
-        self.db_client_security_group = self.get_security_group_id('{}-caseworker-rds-instance-client'.format(
+        self.db_client_security_group = self.get_security_group_id('{}-caseworker-rds-cluster-client'.format(
             self.environment))
         self.seeding_security_group = self.get_security_group_id('{}-seeding-ecs-service'.format(
             self.environment))
@@ -201,7 +201,7 @@ class ECSMonitor:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Start the seeding task for the lpa refunds caseworkr database")
+        description="Start the seeding task for the lpa refunds caseworker database")
 
     parser.add_argument("config_file_path", nargs='?', default="/tmp/environment_pipeline_tasks_config.json", type=str,
                         help="Path to config file produced by terraform")
