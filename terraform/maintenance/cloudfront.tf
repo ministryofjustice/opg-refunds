@@ -1,5 +1,5 @@
 locals {
-  s3_origin_id = "S3-claim-power-of-attorney-refund.service.gov.uk"
+  s3_origin_id = "s3-claim-power-of-attorney-refund.service.gov.uk"
 }
 
 resource "aws_cloudfront_distribution" "maintenance" {
