@@ -25,6 +25,15 @@ resource "aws_route53_record" "cv_maintenance_cloudfront_san_maintenance" {
   ttl      = 300
 }
 
+resource "aws_route53_record" "cv_maintenance_cloudfront_new_production_internal_public_front" {
+  provider = aws.management
+  name     = aws_acm_certificate.maintenance_cloudfront.domain_validation_options.3.resource_record_name
+  type     = aws_acm_certificate.maintenance_cloudfront.domain_validation_options.3.resource_record_type
+  zone_id  = data.aws_route53_zone.opg_service_justice_gov_uk.id
+  records  = [aws_acm_certificate.maintenance_cloudfront.domain_validation_options.3.resource_record_value]
+  ttl      = 300
+}
+
 resource "aws_acm_certificate_validation" "maintenance_cloudfront" {
   provider        = aws.us_east_1
   certificate_arn = aws_acm_certificate.maintenance_cloudfront.arn
@@ -32,6 +41,7 @@ resource "aws_acm_certificate_validation" "maintenance_cloudfront" {
     aws_route53_record.certificate_validation_maintenance_cloudfront_dn.fqdn,
     aws_route53_record.certificate_validation_maintenance_cloudfront_san_www.fqdn,
     aws_route53_record.cv_maintenance_cloudfront_san_maintenance.fqdn,
+    aws_route53_record.cv_maintenance_cloudfront_new_production_internal_public_front.fqdn,
   ]
 
 }
@@ -39,7 +49,7 @@ resource "aws_acm_certificate_validation" "maintenance_cloudfront" {
 resource "aws_acm_certificate" "maintenance_cloudfront" {
   provider                  = aws.us_east_1
   domain_name               = "claim-power-of-attorney-refund.service.gov.uk"
-  subject_alternative_names = ["www.claim-power-of-attorney-refund.service.gov.uk", "maintenance.claim-power-of-attorney-refund.service.gov.uk"]
+  subject_alternative_names = ["www.claim-power-of-attorney-refund.service.gov.uk", "maintenance.claim-power-of-attorney-refund.service.gov.uk", "public-front.refunds.opg.service.justice.gov.uk"]
   validation_method         = "DNS"
   options {
     certificate_transparency_logging_preference = "ENABLED"

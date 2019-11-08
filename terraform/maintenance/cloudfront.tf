@@ -19,6 +19,7 @@ resource "aws_cloudfront_distribution" "maintenance" {
     # "claim-power-of-attorney-refund.service.gov.uk.s3-website.eu-central-1.amazonaws.com",
     # "www.claim-power-of-attorney-refund.service.gov.uk",
     "maintenance.claim-power-of-attorney-refund.service.gov.uk",
+    # "public-front.refunds.opg.service.justice.gov.uk",
   ]
   custom_error_response {
     error_caching_min_ttl = 300
@@ -68,4 +69,7 @@ resource "aws_cloudfront_distribution" "maintenance" {
     minimum_protocol_version       = "TLSv1.1_2016"
     ssl_support_method             = "sni-only"
   }
+  depends_on = [aws_acm_certificate_validation.maintenance_cloudfront]
 }
+
+

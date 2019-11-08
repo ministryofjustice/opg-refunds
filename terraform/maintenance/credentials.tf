@@ -70,3 +70,14 @@ provider "aws" {
     session_name = "terraform-session"
   }
 }
+
+provider "aws" {
+  alias  = "management"
+  region = "eu-west-1"
+  # new-refunds-production
+
+  assume_role {
+    role_arn     = "arn:aws:iam::311462405659:role/${var.default_role}"
+    session_name = "terraform-session"
+  }
+}

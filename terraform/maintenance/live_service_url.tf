@@ -89,3 +89,38 @@ output "caseworker_refunds_opg_digital" {
 }
 
 
+# Testing
+data "aws_route53_zone" "opg_service_justice_gov_uk" {
+  provider = aws.management
+  name     = "opg.service.justice.gov.uk"
+}
+
+resource "aws_route53_record" "new_production_public_front" {
+  provider = aws.management
+  zone_id  = "${data.aws_route53_zone.opg_service_justice_gov_uk.zone_id}"
+  name     = "public-front.refunds.opg.service.justice.gov.uk"
+  type     = "A"
+
+  alias {
+    evaluate_target_health = false
+    # point to old production
+    # name    = data.aws_elb.old_production_caseworker_front.dns_name
+    # zone_id = data.aws_elb.old_production_caseworker_front.zone_id
+    # point front to maintenance
+    # name    = aws_cloudfront_distribution.maintenance.domain_name
+    # zone_id = aws_cloudfront_distribution.maintenance.hosted_zone_id
+    # point to new production
+    name    = data.aws_lb.new_production_public_front.dns_name
+    zone_id = data.aws_lb.new_production_public_front.zone_id
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+output "new_production_public_front" {
+  value = aws_route53_record.caseworker_refunds_opg_digital
+}
+
+
