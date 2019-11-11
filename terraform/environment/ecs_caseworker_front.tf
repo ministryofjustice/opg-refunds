@@ -23,8 +23,7 @@ resource "aws_ecs_service" "caseworker_front" {
     container_port   = 80
   }
 
-  depends_on = [aws_db_instance.applications, aws_lb.caseworker_front, aws_iam_role.caseworker_front_task_role, aws_iam_role.execution_role]
-  tags       = local.default_tags
+  tags = local.default_tags
 }
 
 //----------------------------------
@@ -209,8 +208,8 @@ locals {
       { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" }
   ],
     "environment": [
-      { "name" : "OPG_LPA_STACK_NAME", "value": "${local.environment}" }, 
-      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" }, 
+      { "name" : "OPG_LPA_STACK_NAME", "value": "${local.environment}" },
+      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" },
       { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "testing" },
       { "name" : "OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_caseworker_front.name}" },
       { "name" : "API_URL", "value": "http://${local.caseworker_api_service_fqdn}" },
