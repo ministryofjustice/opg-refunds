@@ -119,8 +119,8 @@ resource "aws_route53_record" "new_production_public_front" {
   }
 }
 
-output "new_production_public_front" {
-  value = aws_route53_record.caseworker_refunds_opg_digital
-}
+# output "new_production_public_front" {
+#   value = aws_route53_record.caseworker_refunds_opg_digital
+# }
 
 
