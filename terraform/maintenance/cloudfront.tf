@@ -19,7 +19,6 @@ resource "aws_cloudfront_distribution" "maintenance" {
     "claim-power-of-attorney-refund.service.gov.uk.s3-website.eu-central-1.amazonaws.com",
     "www.claim-power-of-attorney-refund.service.gov.uk",
     "maintenance.claim-power-of-attorney-refund.service.gov.uk",
-    "public-front.refunds.opg.service.justice.gov.uk",
   ]
   custom_error_response {
     error_caching_min_ttl = 300
