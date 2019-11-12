@@ -7,12 +7,12 @@ locals {
   local_ip_cidr = "${chomp(var.cloud9_ip)}/32"
 }
 
-data "aws_security_group" "caseworker_rds_instance_client" {
-  name = "${local.environment}-caseworker-rds-instance-client"
+data "aws_security_group" "caseworker_rds_cluster" {
+  name = "${local.environment}-caseworker-rds-cluster"
 }
 
-data "aws_security_group" "applications_rds_instance_client" {
-  name = "${local.environment}-applications-rds-instance-client"
+data "aws_security_group" "applications_rds_cluster" {
+  name = "${local.environment}-applications-rds-cluster"
 }
 
 resource "aws_security_group_rule" "caseworker_rds_cloud9_in" {
@@ -22,7 +22,7 @@ resource "aws_security_group_rule" "caseworker_rds_cloud9_in" {
   protocol          = "tcp"
   from_port         = 5432
   to_port           = 5432
-  security_group_id = data.aws_security_group.caseworker_rds_instance_client.id
+  security_group_id = data.aws_security_group.caseworker_rds_cluster.id
   cidr_blocks       = [local.local_ip_cidr]
 }
 resource "aws_security_group_rule" "applications_rds_cloud9_in" {
@@ -32,6 +32,6 @@ resource "aws_security_group_rule" "applications_rds_cloud9_in" {
   protocol          = "tcp"
   from_port         = 5432
   to_port           = 5432
-  security_group_id = data.aws_security_group.applications_rds_instance_client.id
+  security_group_id = data.aws_security_group.applications_rds_cluster.id
   cidr_blocks       = [local.local_ip_cidr]
 }
