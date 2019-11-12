@@ -28,6 +28,7 @@ terraform -version
 
 # set db env vars
 export ENV_NAME=$(echo "$TF_WORKSPACE" | awk '{print tolower($0)}')
+export AWS_DEFAULT_REGION=eu-west-1
 export OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME=$(aws rds describe-db-clusters --db-cluster-identifier applications-$ENV_NAME | jq -r .'DBClusters'[0].'Endpoint')
 export OPG_REFUNDS_DB_APPLICATIONS_PORT=5432
 export CASES_DB_ENDPOINT=$(aws rds describe-db-clusters --db-cluster-identifier caseworker-$ENV_NAME | jq -r .'DBClusters'[0].'Endpoint')
