@@ -2,7 +2,7 @@
 
 clone the lpa-refunds repository
 ```
-git clone --single-branch --branch  LPA-3376  https://github.com/ministryofjustice/opg-refunds.git
+git clone --single-branch --branch LPA-3461-s3-bucket-sql-data  https://github.com/ministryofjustice/opg-refunds.git
 ```
 
 run the cloud9 init script.
@@ -20,7 +20,8 @@ terraform apply -var cloud9_ip=$CLOUD9_IP
 
 connect to a database
 ```
-psql -h caseworker-81-lpa3376.cluster-c4i63kewcgwk.eu-west-1.rds.amazonaws.com -U root postgres
+psql -h $OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME -U root applications
+psql -h $CASES_DB_ENDPOINT -U root cases
 ```
 
 when finished, remove the security group rules
