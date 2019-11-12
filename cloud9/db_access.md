@@ -7,7 +7,7 @@ git clone --single-branch --branch  LPA-3376  https://github.com/ministryofjusti
 
 run the cloud9 init script.
 ```
-. cloud9/cloud9_init.sh
+. cloud9/cloud9_init.sh <workspace>
 ```
 note the use of `. cloud9/`. This sources the file so that environment variables are set.
 
