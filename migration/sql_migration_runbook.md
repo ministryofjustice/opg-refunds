@@ -33,7 +33,7 @@ cd /mnt
 ```bash
 sudo yum update
 sudo yum install git
-sudo git clone --single-branch --branch LPA-3461-s3-bucket-sql-data  https://github.com/ministryofjustice/opg-refunds.git
+sudo git clone  https://github.com/ministryofjustice/opg-refunds.git
 ```
 
 # check db access
