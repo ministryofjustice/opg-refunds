@@ -22,9 +22,11 @@ group init-db-cases
   ingestion -> caseworker_cluster: create sirius database
   ingestion -> caseworker_cluster: create meris database
   ingestion -> caseworker_cluster: create finance database
-  seeding -> caseworker_cluster: create sirius table
-  seeding -> caseworker_cluster: create meris table
-  seeding -> caseworker_cluster: create finance table
+  ingestion -> caseworker_cluster: create sirius table
+  ingestion -> caseworker_cluster: create meris table
+  ingestion -> caseworker_cluster: create finance table
+  ingestion -> caseworker_cluster: run doctrine migrations on cases db
+  ingestion -> caseworker_cluster: run doctrine migrations on sirius db
 end
 
 group db-seeding
