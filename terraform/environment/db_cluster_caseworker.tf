@@ -26,7 +26,7 @@ resource "aws_rds_cluster" "caseworker" {
 
 resource "aws_rds_cluster_instance" "caseworker_cluster_instances" {
   count              = 1
-  identifier         = "caseworker-${count.index}"
+  identifier         = "caseworker-${local.environment}-${count.index}"
   cluster_identifier = aws_rds_cluster.caseworker.id
   instance_class     = "db.r4.large"
   engine             = aws_rds_cluster.caseworker.engine

@@ -26,7 +26,7 @@ resource "aws_rds_cluster" "applications" {
 
 resource "aws_rds_cluster_instance" "applications_cluster_instances" {
   count              = 1
-  identifier         = "applications-${count.index}"
+  identifier         = "applications-${local.environment}-${count.index}"
   cluster_identifier = aws_rds_cluster.applications.id
   instance_class     = "db.r4.large"
   engine             = aws_rds_cluster.applications.engine
