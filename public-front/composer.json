@@ -10,7 +10,8 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git"
+            "url": "git@github.com:ministryofjustice/opg-refunds-logger.git",
+            "no-api": true
         }
     ],
     "require": {
@@ -20,7 +21,8 @@
         "dflydev/fig-cookies": "^1.0",
         "guzzlehttp/guzzle": "^6.2",
         "http-interop/http-middleware": "^0.4.1",
-        "ministryofjustice/opg-refunds-logger": "^3.0",
+        "ministryofjustice/opg-refunds-logger": "dev-ecs",
+        "paragonie/halite": "^4.5",
         "php-http/guzzle6-adapter": "^1.1",
         "roave/security-advisories": "dev-master",
         "spomky-labs/base64url": "^1.0",

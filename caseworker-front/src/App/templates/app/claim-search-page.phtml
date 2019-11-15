@@ -46,7 +46,7 @@ $this->layout('layout::default', ['title' => 'Search claims']) ?>
             </form>
         <?php } ?>
 
-        <?php if (count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
+        <?php if (!is_null($claimSummaryPage->getClaimSummaries()) && count($claimSummaryPage->getClaimSummaries()) > 0) { ?>
 
             <p>
                 <?php if ($this->isSearchParametersSet($searchParameters)) { ?>

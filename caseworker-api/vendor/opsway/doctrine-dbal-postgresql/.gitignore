@@ -1,8 +1,0 @@
-.settings/
-bin/
-vendor/
-build/
-.idea/
-.buildpath
-.project
-composer.lock

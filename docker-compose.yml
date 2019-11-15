@@ -1,60 +1,41 @@
 version: '2'
 
 services:
-  router:
-    image: registry.service.opg.digital/opg-nginx-router-1604:0.0.318
-    links:
-      - front
-      - caseworker
-      - api
-      - maintenance
+#  router:
+#    image: registry.service.opg.digital/opg-nginx-router-1604:0.0.318
+#    links:
+#      - front
+#      - caseworker
+#      - api
+#      - maintenance
 
-  maintenance:
-    build: ../opg-refunds-maintenance
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-maintenance
-    volumes:
-      - ../opg-refunds-maintenance:/app
+  # ---------------------------
+  # Local Services
 
-  front:
-    build: ./public-front
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-public-front
-    volumes:
-      - ./public-front:/app
-    links:
+  local-config:
+    container_name: refunds-local-config
+    build:
+      context: .
+      dockerfile: local-config/Dockerfile
+    depends_on:
+      - dynamodb
       - postgres
-      - dynamodb
-      - kms
-
-  caseworker:
-    build: ./caseworker-front
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-    volumes:
-      - ./caseworker-front:/app
-    links:
-      - dynamodb
-      - kms
-
-  api:
-    build: ./caseworker-api
-    # Currently the registry has no images so we have to build locally
-    # image: registry.service.opg.digital/opguk/lpa-refunds-caseworker-front
-    volumes:
-      - ./caseworker-api:/app
-    links:
-      - postgres
-      - dynamodb
+    environment:
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+      AWS_ENDPOINT_DYNAMODB: dynamodb:8000
 
   postgres:
-    image: postgres:9.6.2
-    volumes:
-      - ./postgres/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    image: postgres:10.7
+    env_file:
+      - ./postgres/local.env
+    ports:
+      - 5432:5432
 
   dynamodb:
-    image: forty8bit/dynamodb-local
-    command: ["-sharedDb"]
+    image: amazon/dynamodb-local
+    ports:
+      - 8000:8000
 
   kms:
     image: nsmithuk/local-kms:2
@@ -62,6 +43,305 @@ services:
       - ./local-kms:/init
     environment:
       REGION: eu-west-1
+    ports:
+      - 8001:8080
 
-  sns:
-    build: ./local-sns
+  # ---------------------------
+  # Front
+
+  public-web:
+    container_name: public-front-web
+    image: public-front-web
+    depends_on:
+      - public-app
+    volumes:
+      - ./public-front/public:/web
+    build:
+      context: ./
+      dockerfile: public-front/docker/web/Dockerfile
+    environment:
+      APP_HOST: public-app
+      APP_PORT: 9000
+      NGINX_LOG_LEVEL: warn
+
+  public-app:
+    container_name: public-front-app
+    image: public-front-app
+    build:
+      context: ./
+      dockerfile: public-front/docker/app/Dockerfile
+    volumes:
+      - ./public-front:/app
+#    depends_on:
+#      - dynamodb
+#      - localstack
+#      - local-config
+    environment:
+      OPG_LPA_STACK_NAME: 'local'
+      OPG_LPA_STACK_ENVIRONMENT: 'dev'
+
+      OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE: 'Sessions'
+
+      OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_APPLICATIONS_PORT: '5432'
+      OPG_REFUNDS_DB_APPLICATIONS_NAME: 'applications'
+      OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME: 'applications'
+      OPG_REFUNDS_DB_APPLICATIONS_WRITE_PASSWORD: 'applications'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_BANK_HASH_SALT: '00000000000000000000000000000000'
+      OPG_REFUNDS_PUBLIC_FRONT_BETA_LINK_SIGNATURE_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+      OPG_REFUNDS_AD_LINK_SIGNATURE_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+
+      OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_ENDPOINT: 'http://kms:8080'
+      OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS: 'alias/dev-local-testing'
+
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_ENDPOINT: http://dynamodb:8000
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=public-front-app
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  public-composer:
+    image: composer
+    volumes:
+      - ./public-front:/app
+    command:
+      - install
+      - --prefer-dist
+      - --no-suggest
+      - --no-interaction
+      - --no-scripts
+      - --optimize-autoloader
+
+  public-ssl:
+    container_name: public-front-ssl
+    image: fsouza/docker-ssl-proxy
+    depends_on:
+      - public-web
+    ports:
+      - 9001:443
+    volumes:
+      - ./local-ssl/certs:/etc/nginx/certs
+    environment:
+      DOMAIN: 'localhost'
+      TARGET_HOST_HEADER: 'localhost:9001'
+      SSL_PORT: '443'
+      TARGET_HOST: 'public-web'
+      TARGET_PORT: '80'
+
+
+  # ---------------------------
+  # Caseworker Front
+
+  caseworker-front-web:
+    container_name: caseworker-front-web
+    image: caseworker-front-web
+    depends_on:
+      - caseworker-front-app
+    volumes:
+      - ./caseworker-front/public:/web
+    build:
+      context: ./
+      dockerfile: caseworker-front/docker/web/Dockerfile
+    environment:
+      APP_HOST: caseworker-front-app
+      APP_PORT: 9000
+      NGINX_LOG_LEVEL: warn
+
+  caseworker-front-app:
+    container_name: caseworker-front-app
+    image: caseworker-front-app
+    build:
+      context: ./
+      dockerfile: caseworker-front/docker/app/Dockerfile
+    volumes:
+      - ./caseworker-front:/app
+    #    depends_on:
+    #      - dynamodb
+    #      - localstack
+    #      - local-config
+    environment:
+      API_URL: 'http://caseworker-api-web'
+      OPG_REFUNDS_PUBLIC_FRONT_HOSTNAME: 'localhost:9001'
+      OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_TABLE: 'CaseworkerSessions'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_AD_LINK_SIGNATURE_KEY: '0000000000000000000000000000000000000000000000000000000000000000'
+
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_ENDPOINT: http://dynamodb:8000
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=caseworker-front-app
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  caseworker-front-composer:
+    image: composer
+    volumes:
+      - ./caseworker-front:/app
+    command:
+      - install
+      - --prefer-dist
+      - --no-suggest
+      - --no-interaction
+      - --no-scripts
+      - --optimize-autoloader
+
+  caseworker-front-ssl:
+    container_name: caseworker-front-ssl
+    image: fsouza/docker-ssl-proxy
+    depends_on:
+      - caseworker-front-web
+    ports:
+      - 9002:443
+    volumes:
+      - ./local-ssl/certs:/etc/nginx/certs
+    environment:
+      DOMAIN: 'localhost'
+      TARGET_HOST_HEADER: 'localhost:9002'
+      SSL_PORT: '443'
+      TARGET_HOST: 'caseworker-front-web'
+      TARGET_PORT: '80'
+
+  # ---------------------------
+  # Caseworker API
+
+  caseworker-api-web:
+    container_name: caseworker-api-web
+    image: caseworker-api-web
+    ports:
+      - 9003:80
+    depends_on:
+      - caseworker-api-app
+    volumes:
+      - ./caseworker-api/public:/web
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/web/Dockerfile
+    environment:
+      APP_HOST: caseworker-api-app
+      APP_PORT: 9000
+      NGINX_LOG_LEVEL: warn
+
+  caseworker-api-app:
+    container_name: caseworker-api-app
+    image: caseworker-api-app
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/app/Dockerfile
+    volumes:
+      - ./caseworker-api:/app
+    depends_on:
+      - caseworker-api-composer
+    #      - dynamodb
+    #      - localstack
+    #      - local-config
+    environment:
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      OPG_REFUNDS_CASEWORKER_API_KMS_ENDPOINT: 'http://kms:8080'
+
+      OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_APPLICATIONS_PORT: '5432'
+      OPG_REFUNDS_DB_APPLICATIONS_NAME: 'applications'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME: 'applications_full'
+      OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD: 'applications_full'
+
+      OPG_REFUNDS_DB_CASES_HOSTNAME: 'postgres'
+      OPG_REFUNDS_DB_CASES_PORT: '5432'
+      OPG_REFUNDS_DB_CASES_NAME: 'cases'
+      OPG_REFUNDS_DB_CASES_FULL_USERNAME: 'cases_full'
+      OPG_REFUNDS_DB_CASES_FULL_PASSWORD: 'cases_full'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_SSCL_ENTITY: '0123'
+      OPG_REFUNDS_SSCL_COST_CENTRE: '99999999'
+      OPG_REFUNDS_SSCL_ACCOUNT: '123450000'
+      OPG_REFUNDS_SSCL_ANALYSIS: '12345678'
+
+      # Testing values, deliberately committed.
+      OPG_REFUNDS_BANK_HASH_SALT: '00000000000000000000000000000000'
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=caseworker-api-app
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  caseworker-api-composer:
+    image: caseworker-api-composer
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/composer/Dockerfile
+    volumes:
+      - ./caseworker-api:/app
+    command:
+      - install
+      - --prefer-dist
+      - --no-suggest
+      - --no-interaction
+      - --no-scripts
+      - --optimize-autoloader
+
+  # ---------------------------
+  # Ingestion
+
+  caseworker-api-ingestion:
+    container_name: caseworker-api-ingestion
+    image: caseworker-api-ingestion
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/ingestion/Dockerfile
+    volumes:
+      - ./caseworker-api:/app
+    depends_on:
+      - caseworker-api-composer
+      - dynamodb
+      - local-config
+      - postgres
+    env_file:
+      - ./postgres/local.env
+    environment:
+      # Local only
+      AWS_ACCESS_KEY_ID: '-'
+      AWS_SECRET_ACCESS_KEY: '-'
+
+      # Fake account, deliberately committed.
+      OPG_REFUNDS_CASEWORKER_ADMIN_NAME: 'Admin User 01'
+      OPG_REFUNDS_CASEWORKER_ADMIN_USERNAME: 'smtuser01@publicguardian.gov.uk'
+      OPG_REFUNDS_CASEWORKER_ADMIN_PASSWORD: 'pass1234'
+
+      OPG_REFUNDS_CASEWORKER_INGESTION_ENABLED: 'true'
+
+      OPG_REFUNDS_CRONLOCK_DYNAMODB_TABLE: 'Locks'
+      OPG_REFUNDS_DYNAMODB_ENDPOINT: http://dynamodb:8000
+
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+      #ENABLE_XDEBUG: 'true'
+      PHP_IDE_CONFIG: serverName=caseworker-api-ingestion
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
+
+  caseworker-api-seeding:
+    container_name: caseworker-api-seeding
+    image: caseworker-api-seeding
+    build:
+      context: ./
+      dockerfile: caseworker-api/docker/seeding/Dockerfile
+    depends_on:
+      - caseworker-api-composer
+      - postgres
+    env_file:
+      - ./postgres/local.env
+
+  # We mount the same code as caseworker-api-app locally, so no need for a separate composer service.
