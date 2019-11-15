@@ -1,34 +1,35 @@
 @startuml
+!pragma teoz true
 skinparam RoundCorner 15
 skinparam ParticipantBackgroundColor white
 
 title Refunds Service Migration Plan
 group service migration
 
-  source -> source: setup ec2 instance for sql data export
-  target -> target: setup ec2 instance for sql data load
-  target -> target: empty databases
-  target -> target: apply dev notify key
-	source -> maintenance: update public_front dns
-  source -> target: update caseworker dns
-  source -> source: set all asg to 0
-  source -> source: export sql data
-  source -> target: transfer sql data via S3
-  target -> target: load sql data
-  source -> source: stop databases
+  source -> source : setup ec2 instance for sql data export
+  target -> target : setup ec2 instance for sql data load
+  target -> target : empty databases
+  target -> target : apply dev notify key
+	source -> maintenance : update public_front dns
+  source -> target : update caseworker dns
+  source -> source : set all asg to 0
+  source -> source : export sql data
+  source -> target : transfer sql data via S3
+  target -> target : load sql data
+  source -> source : stop databases
 end
 group uat
-  target -> target: testing
+  target -> target : testing
   group pass
-    maintenance -> target: update public_front dns
-    target -> target: apply environment notify key
+    maintenance -> target : update public_front dns
+    target -> target : apply environment notify key
 	end
 else
   group fail
-    maintenance -> source: update public_front dns
-    target -> source: update caseworker dns
-    source -> source: set all asg to 2
-    source -> source: start databases
+    maintenance -> source : update public_front dns
+    target -> source : update caseworker dns
+    source -> source : set all asg to 2
+    source -> source : start databases
   end
 end
 
