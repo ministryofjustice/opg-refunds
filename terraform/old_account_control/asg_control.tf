@@ -1,7 +1,3 @@
-# tf import aws_autoscaling_group.public_front front-qa
-# tf import aws_autoscaling_group.caseworker_front caseworker-front-qa
-# tf import aws_autoscaling_group.caseworker_api caseworker-api-qa
-
 variable "stack" {
   description = "name of stack"
 }
@@ -35,7 +31,7 @@ locals {
 }
 
 resource "aws_autoscaling_group" "public_front" {
-  provider         = aws.old_refunds_development
+  provider         = aws.old_refunds_production
   name             = "front-${var.stack}"
   max_size         = 2
   min_size         = local.desired.public_front
@@ -44,7 +40,7 @@ resource "aws_autoscaling_group" "public_front" {
 }
 
 resource "aws_autoscaling_group" "caseworker_front" {
-  provider         = aws.old_refunds_development
+  provider         = aws.old_refunds_production
   name             = "caseworker-front-${var.stack}"
   max_size         = 2
   min_size         = local.desired.caseworker
@@ -53,7 +49,7 @@ resource "aws_autoscaling_group" "caseworker_front" {
 }
 
 resource "aws_autoscaling_group" "caseworker_api" {
-  provider         = aws.old_refunds_development
+  provider         = aws.old_refunds_production
   name             = "caseworker-api-${var.stack}"
   max_size         = 2
   min_size         = local.desired.caseworker
