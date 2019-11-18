@@ -5,9 +5,9 @@
 ### Import ASG resources to manage
 
 ```bash
-tf import aws_autoscaling_group.public_front front-preprod
-tf import aws_autoscaling_group.caseworker_front caseworker-front-preprod
-tf import aws_autoscaling_group.caseworker_api caseworker-api-preprod
+tf import aws_autoscaling_group.public_front front-<STACK_NAME>
+tf import aws_autoscaling_group.caseworker_front caseworker-front-<STACK_NAME>
+tf import aws_autoscaling_group.caseworker_api caseworker-api-<STACK_NAME>
 ```
 
 ### Take down stack
