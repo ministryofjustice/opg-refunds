@@ -48,6 +48,30 @@ resource "aws_lb_listener" "public_front_loadbalancer" {
   }
 }
 
+resource "aws_lb_listener_rule" "public_front_maintenance" {
+  listener_arn = aws_lb_listener.public_front_loadbalancer.arn
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = file("${path.module}/maintenance/maintenance.html")
+      status_code  = "503"
+    }
+  }
+
+  condition {
+    field  = "path-pattern"
+    values = ["/maintenance"]
+  }
+
+  # condition {
+  #   field  = "host-header"
+  #   values = [aws_route53_record.public_front.fqdn]
+  # }
+}
+
 resource "aws_security_group" "public_front_loadbalancer" {
   name        = "${local.environment}-public-front-loadbalancer"
   description = "public front load balancer access"
