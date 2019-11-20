@@ -48,6 +48,50 @@ resource "aws_lb_listener" "public_front_loadbalancer" {
   }
 }
 
+resource "aws_ssm_parameter" "maintenance_switch" {
+  name            = "${local.environment}_enable_maintenance"
+  type            = "String"
+  value           = "false"
+  description     = "values of either 'true' or 'false' only"
+  allowed_pattern = "^(true|false)"
+  overwrite       = true
+  lifecycle {
+    ignore_changes = ["value"]
+  }
+}
+
+
+locals {
+  path_pattern = {
+    field  = "path-pattern"
+    values = ["/maintenance"]
+  }
+  host_pattern = {
+    field  = "host-header"
+    values = [local.public_front_fqdn]
+  }
+  rule_condition    = aws_ssm_parameter.maintenance_switch.value ? local.host_pattern : local.path_pattern
+  public_front_fqdn = local.account.put_claim_fqdn_into_maintenance ? aws_route53_record.public_front.fqdn : aws_route53_record.public_front.fqdn
+}
+resource "aws_lb_listener_rule" "public_front_maintenance" {
+  listener_arn = aws_lb_listener.public_front_loadbalancer.arn
+
+  action {
+    type = "fixed-response"
+
+    fixed_response {
+      content_type = "text/html"
+      message_body = file("${path.module}/maintenance/maintenance.html")
+      status_code  = "503"
+    }
+  }
+
+  condition {
+    field  = local.rule_condition.field
+    values = local.rule_condition.values
+  }
+}
+
 resource "aws_security_group" "public_front_loadbalancer" {
   name        = "${local.environment}-public-front-loadbalancer"
   description = "public front load balancer access"
