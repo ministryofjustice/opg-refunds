@@ -35,7 +35,7 @@ Optionally, you can deploy a specific image tag even while in maintenance mode
 aws-vault exec identity -- terraform apply -var container_version=LPA-3470-2e3228e
 ```
 
-Image tags can be obtained from ECR in the maintenance account
+Image tags can be obtained from ECR in the management account.
 
 The execution of the CircleCI pipeline will not change the maintenance mode state until maintenance mode is turned off.
 
