@@ -20,6 +20,7 @@ variable "accounts" {
       aurora_serverless_auto_pause             = bool
       database_deletion_protection             = bool
       has_cloudfront_distribution              = bool
+      put_claim_fqdn_into_maintenace           = bool
     })
   )
 }
