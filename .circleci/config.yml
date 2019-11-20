@@ -58,7 +58,7 @@ workflows:
       - infrastructure_and_deployment/apply_account_terraform:
           name: dev_account_apply_terraform
           workspace: development
-          requires: [lint_and_validate_terraform, maintenance_docker_build]
+          requires: [lint_and_validate_terraform]
           filters: { branches: { ignore: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
