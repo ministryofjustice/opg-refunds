@@ -429,6 +429,7 @@ orbs:
               name: Validate Account Terraform
               command: |
                 cd ~/project/terraform/account
+                ls -al
                 terraform init -lock-timeout=300s
                 export TF_WORKSPACE=<<parameters.account_workspace>>
                 echo $TF_WORKSPACE
@@ -440,6 +441,7 @@ orbs:
                 export SHORT_HASH=${CIRCLE_SHA1:0:7}
                 echo $SHORT_HASH
                 cd ~/project/terraform/environment
+                ls -al
                 terraform init -lock-timeout=300s
                 export TF_WORKSPACE=${ENV_NAME:0:13}
                 echo $TF_WORKSPACE
@@ -477,6 +479,7 @@ orbs:
             description: Terraform workspace name
             type: string
             default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_]/}"
+        # working_directory: ~/project/terraform/environment
         steps:
           - checkout
           - run:
