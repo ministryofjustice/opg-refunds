@@ -48,6 +48,33 @@ resource "aws_lb_listener" "public_front_loadbalancer" {
   }
 }
 
+resource "aws_ssm_parameter" "maintenance_switch" {
+  name            = "${local.environment}_enable_maintenance"
+  type            = "String"
+  value           = "false"
+  description     = "values of either 'true' or 'false' only"
+  allowed_pattern = "^(true|false)"
+  overwrite       = true
+  lifecycle {
+    ignore_changes = [
+      "value",
+    ]
+  }
+}
+
+
+locals {
+  path_pattern = {
+    field  = "path-pattern"
+    values = ["/maintenance"]
+  }
+  host_pattern = {
+    field  = "host-header"
+    values = [local.public_front_fqdn_to_bypass_in_maintenance]
+  }
+  rule_condition                             = aws_ssm_parameter.maintenance_switch.value == "true" ? local.host_pattern : local.path_pattern
+  public_front_fqdn_to_bypass_in_maintenance = local.environment == "production" ? aws_route53_record.public_front.fqdn : aws_route53_record.public_front.fqdn
+}
 resource "aws_lb_listener_rule" "public_front_maintenance" {
   listener_arn = aws_lb_listener.public_front_loadbalancer.arn
 
@@ -62,14 +89,9 @@ resource "aws_lb_listener_rule" "public_front_maintenance" {
   }
 
   condition {
-    field  = "path-pattern"
-    values = ["/maintenance"]
+    field  = local.rule_condition.field
+    values = local.rule_condition.values
   }
-
-  # condition {
-  #   field  = "host-header"
-  #   values = [aws_route53_record.public_front.fqdn]
-  # }
 }
 
 resource "aws_security_group" "public_front_loadbalancer" {
