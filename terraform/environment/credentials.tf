@@ -12,10 +12,6 @@ terraform {
 variable "default_role" {
   default = "opg-refunds-ci"
 }
-variable "management_role" {
-  default = "opg-refunds-ci"
-}
-
 
 provider "aws" {
   region = "eu-west-1"
@@ -42,7 +38,7 @@ provider "aws" {
   alias  = "management"
 
   assume_role {
-    role_arn     = "arn:aws:iam::311462405659:role/${var.management_role}"
+    role_arn     = "arn:aws:iam::311462405659:role/${var.default_role}"
     session_name = "terraform-session"
   }
 }
