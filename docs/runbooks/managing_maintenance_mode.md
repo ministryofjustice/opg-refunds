@@ -49,4 +49,4 @@ Instructions are the same as above, with these differences
 In the System Manager Parameters page, the parameter is `<ENVIRONMENT-NAME>_enable_maintenance`, where `<ENVIRONMENT-NAME>` is the name of the environment you want to put into maintenance.
 
 From your machine when setting the workspace
-`TF_WORKSPACE` should be the name of the workspace the environment live in
+`TF_WORKSPACE` should be the name of the workspace the environment lives in
