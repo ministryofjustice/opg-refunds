@@ -22,6 +22,9 @@ resource "aws_rds_cluster" "applications" {
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
   skip_final_snapshot             = true
   tags                            = local.default_tags
+  lifecycle = {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_rds_cluster_instance" "applications_cluster_instances" {
