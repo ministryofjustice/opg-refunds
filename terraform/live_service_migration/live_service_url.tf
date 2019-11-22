@@ -36,6 +36,27 @@ resource "aws_route53_record" "claim-power-of-attorney-refund_service_gov_uk" {
   }
 }
 
+resource "aws_route53_record" "www_claim-power-of-attorney-refund_service_gov_uk" {
+  provider = aws.old_refunds_production
+  zone_id  = "${data.aws_route53_zone.claim-power-of-attorney-refund_service_gov_uk.zone_id}"
+  name     = "www.claim-power-of-attorney-refund.service.gov.uk"
+  type     = "A"
+
+  alias {
+    evaluate_target_health = false
+    # point to old production cloudfront distribution
+    name    = local.public_front_cloudfront_distribution_domain_name
+    zone_id = local.public_front_cloudfront_distribution_zone_id
+    # point to new production
+    # name                   = data.aws_lb.new_production_public_front.dns_name
+    # zone_id                = data.aws_lb.new_production_public_front.zone_id
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 output "live_service_url" {
   value = aws_route53_record.claim-power-of-attorney-refund_service_gov_uk
 }
