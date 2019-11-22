@@ -1,0 +1,38 @@
+@startuml
+!define AWSPuml https://raw.githubusercontent.com/awslabs/aws-icons-for-plantuml/master/dist
+!include AWSPuml/AWSCommon.puml
+!include AWSPuml/Database/Aurora.puml
+!include AWSPuml/Compute/ECSService.puml
+!include AWSPuml/Database/Database.puml
+!include AWSPuml/Database/DynamoDBTable.puml
+' !include AWSPuml/AWSSimplified.puml
+
+
+skinparam RoundCorner 15
+skinparam ParticipantBackgroundColor white
+
+title Refunds Database Setup
+
+ECSServiceParticipant(ingestion, Ingestion,)
+AuroraParticipant(caseworker_cluster, "Caseworker",,) 
+ECSServiceParticipant(seeding, Seeding,)
+
+group init-db-cases
+  ingestion -> caseworker_cluster: create cases database
+  ingestion -> caseworker_cluster: create sirius database
+  ingestion -> caseworker_cluster: create meris database
+  ingestion -> caseworker_cluster: create finance database
+  ingestion -> caseworker_cluster: create sirius table
+  ingestion -> caseworker_cluster: create meris table
+  ingestion -> caseworker_cluster: create finance table
+  ingestion -> caseworker_cluster: run doctrine migrations on cases db
+  ingestion -> caseworker_cluster: run doctrine migrations on sirius db
+end
+
+group db-seeding
+  seeding -> caseworker_cluster: seed sirius test fixture data in sirius table
+  seeding -> caseworker_cluster: seed meris test fixture data in meris table
+  seeding -> caseworker_cluster: seed finance test fixture data in meris table
+end
+
+@enduml

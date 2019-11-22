@@ -18,7 +18,7 @@ while : ; do
 
     if [ $retval -eq 0 ]; then
         # Acquired lock
-
+        # Create Databases and Configure Users
         psql -h ${OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME} -p ${OPG_REFUNDS_DB_APPLICATIONS_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-db-applications.sql
         psql -h ${OPG_REFUNDS_DB_CASES_HOSTNAME} -p ${OPG_REFUNDS_DB_CASES_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-db-cases.sql
         psql -h ${OPG_REFUNDS_DB_FINANCE_HOSTNAME} -p ${OPG_REFUNDS_DB_FINANCE_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-db-finance.sql
@@ -27,6 +27,11 @@ while : ; do
 
         /app/scripts/doctrine-migrations.sh Cases 'migrations:migrate --no-interaction -vvv'
         /app/scripts/doctrine-migrations.sh Sirius 'migrations:migrate --no-interaction -vvv'
+
+        # Create Tables
+        psql -h ${OPG_REFUNDS_DB_FINANCE_HOSTNAME} -p ${OPG_REFUNDS_DB_FINANCE_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-tables-finance.sql
+        psql -h ${OPG_REFUNDS_DB_MERIS_HOSTNAME} -p ${OPG_REFUNDS_DB_MERIS_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-tables-meris.sql
+        psql -h ${OPG_REFUNDS_DB_SIRIUS_HOSTNAME} -p ${OPG_REFUNDS_DB_SIRIUS_PORT} -U ${POSTGRES_USER} -d postgres -f /app/scripts/init-tables-sirius.sql
         break
     elif [ $retval -eq 1 ]; then
         # Lock not acquired
