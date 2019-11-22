@@ -22,11 +22,14 @@ resource "aws_rds_cluster" "caseworker" {
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
   skip_final_snapshot             = true
   tags                            = local.default_tags
+  lifecycle {
+    ignore_changes = [engine_version]
+  }
 }
 
 resource "aws_rds_cluster_instance" "caseworker_cluster_instances" {
   count              = 1
-  identifier         = "caseworker-${count.index}"
+  identifier         = "caseworker-${local.environment}-${count.index}"
   cluster_identifier = aws_rds_cluster.caseworker.id
   instance_class     = "db.r4.large"
   engine             = aws_rds_cluster.caseworker.engine
