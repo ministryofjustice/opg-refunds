@@ -5,7 +5,7 @@ data "aws_route53_zone" "opg_service_justice_gov_uk" {
 
 resource "aws_service_discovery_private_dns_namespace" "internal" {
   name = "${local.environment}-internal"
-  vpc  = "${data.aws_vpc.default.id}"
+  vpc  = data.aws_vpc.default.id
 }
 
 //-------------------------------------------------------------
@@ -13,14 +13,14 @@ resource "aws_service_discovery_private_dns_namespace" "internal" {
 
 resource "aws_route53_record" "public_front" {
   provider = "aws.management"
-  zone_id  = "${data.aws_route53_zone.opg_service_justice_gov_uk.zone_id}"
+  zone_id  = data.aws_route53_zone.opg_service_justice_gov_uk.zone_id
   name     = "${local.dns_namespace_env}${local.account.public_front_dns}"
   type     = "A"
 
   alias {
     evaluate_target_health = false
-    name                   = "${aws_lb.public_front.dns_name}"
-    zone_id                = "${aws_lb.public_front.zone_id}"
+    name                   = aws_lb.public_front.dns_name
+    zone_id                = aws_lb.public_front.zone_id
   }
 
   lifecycle {
