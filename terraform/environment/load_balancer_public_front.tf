@@ -60,7 +60,7 @@ resource "aws_ssm_parameter" "maintenance_switch" {
   }
 }
 
-
+# maintenance site switching
 locals {
   path_pattern = {
     field  = "path-pattern"
