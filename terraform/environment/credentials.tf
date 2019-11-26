@@ -13,6 +13,10 @@ variable "default_role" {
   default = "opg-refunds-ci"
 }
 
+variable "old_account_default_role" {
+  default = "ci"
+}
+
 provider "aws" {
   region = "eu-west-1"
 
