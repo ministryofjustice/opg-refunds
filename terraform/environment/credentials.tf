@@ -14,7 +14,7 @@ variable "default_role" {
 }
 
 variable "old_account_default_role" {
-  default = "ci"
+  default = "opg-refunds-ci"
 }
 
 provider "aws" {
