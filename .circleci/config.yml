@@ -579,7 +579,7 @@ jobs:
           title: "LPA Refunds Development Environment Ready"
           color: "#1cb0ba"
           message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN \npublic-facing urls: \nhttps://$CLAIM_SERVICE_GOV_UK/start \nhttps://$CASEWORKER_REFUNDS_OPG_DIGITAL"
-          footer: "Commit Message: $COMMIT_MESSAGE"
+          footer: "$CIRCLE_BRANCH - Commit Message: $COMMIT_MESSAGE"
   slack_notify_production_release:
     docker:
       - image: circleci/python
