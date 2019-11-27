@@ -575,7 +575,7 @@ jobs:
             echo 'export COMMIT_MESSAGE=\"$(git log --format=oneline -n 1 $CIRCLE_SHA1)\"' >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
-          message: "Commit Message: $COMMIT_MESSAGE \nUser: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN \npublic facing urls: \nhttps://$CLAIM_SERVICE_GOV_UK/start \nhttps://$CASEWORKER_REFUNDS_OPG_DIGITAL"
+          message: "Commit Message: $COMMIT_MESSAGE \nUser: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN"
   slack_notify_production_release:
     docker:
       - image: circleci/python
