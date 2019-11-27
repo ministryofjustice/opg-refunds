@@ -68,11 +68,11 @@ locals {
   }
   host_pattern = {
     field  = "host-header"
-    values = [local.public_front_fqdn]
+    values = [aws_route53_record.claim-power-of-attorney-refund_service_gov_uk.fqdn]
   }
-  rule_condition    = aws_ssm_parameter.maintenance_switch.value ? local.host_pattern : local.path_pattern
-  public_front_fqdn = local.account.put_claim_fqdn_into_maintenance ? aws_route53_record.public_front.fqdn : aws_route53_record.public_front.fqdn
+  rule_condition = aws_ssm_parameter.maintenance_switch.value ? local.host_pattern : local.path_pattern
 }
+
 resource "aws_lb_listener_rule" "public_front_maintenance" {
   listener_arn = aws_lb_listener.public_front_loadbalancer.arn
 
