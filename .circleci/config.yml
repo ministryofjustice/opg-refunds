@@ -568,11 +568,7 @@ jobs:
       - run:
           name: Get URLs
           command: |
-            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CLAIM_SERVICE_GOV_UK="$(jq -r .claim_service_gov_uk_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_REFUNDS_OPG_DIGITAL="$(jq -r .caseworker_refunds_opg_digital_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export COMMIT_MESSAGE="$(git log -1 --pretty=%B)"' >> $BASH_ENV
+            ~/project/.circleci/set_slack_env_vars.sh >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
           color: "#1cb0ba"
@@ -588,11 +584,7 @@ jobs:
       - run:
           name: Get URLs
           command: |
-            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CLAIM_SERVICE_GOV_UK="$(jq -r .claim_service_gov_uk_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_REFUNDS_OPG_DIGITAL="$(jq -r .caseworker_refunds_opg_digital_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export COMMIT_MESSAGE="$(git log -1 --pretty=%B)"' >> $BASH_ENV
+            ~/project/.circleci/set_slack_env_vars.sh >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Production Release Successful"
           mentions: "UAQQ2PY86"
