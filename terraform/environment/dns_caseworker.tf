@@ -24,7 +24,8 @@ locals {
       zone_id = data.aws_elb.old_production_caseworker_front.zone_id
     }
   }
-  caseworker_url_dns_target = local.account == "production" ? local.caseworker_url_dns_target_production : local.caseworker_url_dns_target_dev_preprod
+  #this condition is failing to select the correct set of load balancers
+  caseworker_url_dns_target = local.account_name == "production" ? local.caseworker_url_dns_target_production : local.caseworker_url_dns_target_dev_preprod
 }
 
 resource "aws_route53_record" "caseworker_refunds_opg_digital" {
