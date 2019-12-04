@@ -579,6 +579,7 @@ jobs:
             ~/project/.circleci/set_slack_env_vars.sh >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Production Release Successful"
+          color: "#1cb0ba"
           mentions: "UAQQ2PY86"
           message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN"
           footer: "$CIRCLE_BRANCH - Commit Message: $COMMIT_MESSAGE"
