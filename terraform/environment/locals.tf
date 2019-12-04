@@ -21,6 +21,7 @@ variable "accounts" {
       database_deletion_protection             = bool
       has_cloudfront_distribution              = bool
       put_claim_fqdn_into_maintenance          = bool
+      prefix_enabled                           = bool
     })
   )
 }
@@ -31,7 +32,8 @@ locals {
   account_name = lookup(var.account_mapping, terraform.workspace, "development")
   account      = var.accounts[local.account_name]
   environment  = lower(terraform.workspace)
-  dns_prefix   = local.account_name == "production" ? "" : "${local.environment}."
+  dns_prefix   = local.account.prefix_enabled ? "${local.environment}." : ""
+  # dns_prefix   = local.account_name == "production" ? "" : "${local.environment}."
 
   rds_master_username = "root"
 
