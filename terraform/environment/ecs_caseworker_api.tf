@@ -137,12 +137,12 @@ data "aws_iam_policy_document" "caseworker_api_permissions_role" {
 
 
 data "aws_ecr_repository" "caseworker_api_web" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "lpa-refunds/caseworker_api_web"
 }
 
 data "aws_ecr_repository" "caseworker_api_app" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "lpa-refunds/caseworker_api_app"
 }
 
