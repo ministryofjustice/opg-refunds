@@ -33,7 +33,6 @@ locals {
   account      = var.accounts[local.account_name]
   environment  = lower(terraform.workspace)
   dns_prefix   = local.account.prefix_enabled ? "${local.environment}." : ""
-  # dns_prefix   = local.account_name == "production" ? "" : "${local.environment}."
 
   rds_master_username = "root"
 
