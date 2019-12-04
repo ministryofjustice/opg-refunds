@@ -31,7 +31,7 @@ locals {
 resource "aws_route53_record" "claim-power-of-attorney-refund_service_gov_uk" {
   provider = aws.old_refunds_production
   zone_id  = data.aws_route53_zone.claim-power-of-attorney-refund_service_gov_uk.zone_id
-  name     = "${local.dns_namespace_env}claim-power-of-attorney-refund.service.gov.uk"
+  name     = "${local.dns_prefix}claim-power-of-attorney-refund.service.gov.uk"
   type     = "A"
 
   alias {
@@ -48,7 +48,7 @@ resource "aws_route53_record" "claim-power-of-attorney-refund_service_gov_uk" {
 resource "aws_route53_record" "www_claim-power-of-attorney-refund_service_gov_uk" {
   provider = aws.old_refunds_production
   zone_id  = data.aws_route53_zone.claim-power-of-attorney-refund_service_gov_uk.zone_id
-  name     = "www.${local.dns_namespace_env}claim-power-of-attorney-refund.service.gov.uk"
+  name     = "www.${local.dns_prefix}claim-power-of-attorney-refund.service.gov.uk"
   type     = "A"
 
   alias {
