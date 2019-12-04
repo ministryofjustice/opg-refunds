@@ -31,7 +31,7 @@ locals {
 resource "aws_route53_record" "caseworker_refunds_opg_digital" {
   provider = aws.old_refunds_production
   zone_id  = data.aws_route53_zone.refunds_opg_digital.zone_id
-  name     = "${local.dns_namespace_env}caseworker.refunds.opg.digital"
+  name     = "${local.dns_prefix}caseworker.refunds.opg.digital"
   type     = "A"
 
   alias {

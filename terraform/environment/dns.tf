@@ -14,7 +14,7 @@ resource "aws_service_discovery_private_dns_namespace" "internal" {
 resource "aws_route53_record" "public_front" {
   provider = aws.management
   zone_id  = data.aws_route53_zone.opg_service_justice_gov_uk.zone_id
-  name     = "${local.dns_namespace_env}${local.account.public_front_dns}"
+  name     = "${local.dns_prefix}${local.account.public_front_dns}"
   type     = "A"
 
   alias {
@@ -34,7 +34,7 @@ resource "aws_route53_record" "public_front" {
 resource "aws_route53_record" "caseworker_front" {
   provider = aws.management
   zone_id  = data.aws_route53_zone.opg_service_justice_gov_uk.zone_id
-  name     = "${local.dns_namespace_env}${local.account.caseworker_front_dns}"
+  name     = "${local.dns_prefix}${local.account.caseworker_front_dns}"
   type     = "A"
 
   alias {
