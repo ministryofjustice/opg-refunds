@@ -342,7 +342,7 @@ orbs:
               name: Install Terraform
               command: |
                 export TERRAFORM_VERSION=0.12.17
-                export TERRAFORM_SHA256SUM=63f765a3f83987b67b046a9c31acff1ec9ee618990d0eab4db34eca6c0d861ec
+                export TERRAFORM_SHA256SUM=8124c7dfe5036377de0637378ad32cf530477403c29ab1ccefbaa50a05d059c2
                 echo $TERRAFORM_VERSION
                 echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
