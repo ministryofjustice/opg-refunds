@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "caseworker_front" {
     unhealthy_threshold = 3
     matcher             = 200
   }
-  depends_on = ["aws_lb.caseworker_front"]
+  depends_on = [aws_lb.caseworker_front]
   tags       = local.default_tags
 }
 

@@ -13,7 +13,7 @@ resource "aws_lb_target_group" "public_front" {
     unhealthy_threshold = 3
     matcher             = 200
   }
-  depends_on = ["aws_lb.public_front"]
+  depends_on = [aws_lb.public_front]
   tags       = local.default_tags
 }
 
@@ -56,7 +56,7 @@ resource "aws_ssm_parameter" "maintenance_switch" {
   allowed_pattern = "^(true|false)"
   overwrite       = true
   lifecycle {
-    ignore_changes = ["value"]
+    ignore_changes = [value]
   }
 }
 
