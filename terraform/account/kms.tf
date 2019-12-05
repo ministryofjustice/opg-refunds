@@ -31,5 +31,5 @@ data "aws_iam_policy_document" "bank_encrypt_decrypt" {
 
 resource "aws_kms_alias" "bank_encrypt_decrypt" {
   name          = "alias/lpa-refunds-${local.account_name}-bank-encrypt-decrypt"
-  target_key_id = "${aws_kms_key.bank_encrypt_decrypt.key_id}"
+  target_key_id = aws_kms_key.bank_encrypt_decrypt.key_id
 }
