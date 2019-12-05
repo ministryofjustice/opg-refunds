@@ -21,13 +21,16 @@ data "aws_subnet_ids" "public" {
 data "aws_s3_bucket" "access_log" {
   bucket = "lpa-refunds-${local.account_name}-lb-access-logs"
 }
-
+locals {
+  refunds_opg_service_justice_gov_uk_name = trimsuffix(data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name, ".")
+}
 data "aws_acm_certificate" "certificate_public_front" {
-  domain = "*.public-front.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
+  domain = "public-front.${local.refunds_opg_service_justice_gov_uk_name}"
 }
 
 data "aws_acm_certificate" "certificate_caseworker_front" {
-  domain = "*.caseworker.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
+  domain = "caseworker.${local.refunds_opg_service_justice_gov_uk_name}"
+  # domain = "caseworker.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
 }
 
 module "whitelist" {
