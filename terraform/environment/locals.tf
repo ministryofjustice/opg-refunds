@@ -1,6 +1,6 @@
 # variables for terraform.tfvars.json
 variable "account_mapping" {
-  type = "map"
+  type = map
 }
 
 variable "container_version" {
@@ -11,16 +11,12 @@ variable "container_version" {
 variable "accounts" {
   type = map(
     object({
-      account_id                               = string
-      is_production                            = bool
-      public_front_certificate_domain_name     = string
-      public_front_dns                         = string
-      caseworker_front_certificate_domain_name = string
-      caseworker_front_dns                     = string
-      aurora_serverless_auto_pause             = bool
-      database_deletion_protection             = bool
-      has_cloudfront_distribution              = bool
-      put_claim_fqdn_into_maintenance          = bool
+      account_id                   = string
+      is_production                = bool
+      aurora_serverless_auto_pause = bool
+      database_deletion_protection = bool
+      has_cloudfront_distribution  = bool
+      prefix_enabled               = bool
     })
   )
 }
@@ -28,10 +24,10 @@ variable "accounts" {
 locals {
   opg_project = "lpa refunds"
 
-  account_name      = lookup(var.account_mapping, terraform.workspace, "development")
-  account           = var.accounts[local.account_name]
-  environment       = lower(terraform.workspace)
-  dns_namespace_env = local.account_name != "development" ? "" : "${local.environment}."
+  account_name = lookup(var.account_mapping, terraform.workspace, "development")
+  account      = var.accounts[local.account_name]
+  environment  = lower(terraform.workspace)
+  dns_prefix   = local.account.prefix_enabled ? "${local.environment}." : ""
 
   rds_master_username = "root"
 

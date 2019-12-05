@@ -1,19 +1,15 @@
 # variables for terraform.tfvars.json
 variable "account_mapping" {
-  type = "map"
+  type = map
 }
 
 variable "accounts" {
   type = map(
     object({
-      account_id                               = string
-      is_production                            = bool
-      has_cloudfront_distribution              = bool
-      public_front_certificate_domain_name     = string
-      caseworker_front_certificate_domain_name = string
-      public_front_dns                         = string
-      caseworker_front_dns                     = string
-      old_refunds_account_id                   = string
+      account_id                  = string
+      is_production               = bool
+      has_cloudfront_distribution = bool
+      old_refunds_account_id      = string
     })
   )
 }

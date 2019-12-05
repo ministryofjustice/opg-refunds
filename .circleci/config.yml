@@ -349,8 +349,8 @@ orbs:
           - run:
               name: Install Terraform
               command: |
-                export TERRAFORM_VERSION=0.12.13
-                export TERRAFORM_SHA256SUM=63f765a3f83987b67b046a9c31acff1ec9ee618990d0eab4db34eca6c0d861ec
+                export TERRAFORM_VERSION=0.12.17
+                export TERRAFORM_SHA256SUM=8124c7dfe5036377de0637378ad32cf530477403c29ab1ccefbaa50a05d059c2
                 echo $TERRAFORM_VERSION
                 echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -362,7 +362,7 @@ orbs:
       python:
         docker: [image: circleci/python]
       terraform:
-        docker: [image: hashicorp/terraform:0.12.13]
+        docker: [image: hashicorp/terraform:0.12.17]
     jobs:
       #----------------------------------------------------
       # Terraform
@@ -568,11 +568,12 @@ jobs:
       - run:
           name: Get URLs
           command: |
-            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+            ~/project/.circleci/set_slack_env_vars.sh >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
-          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN"
+          color: "#1cb0ba"
+          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN \npublic-facing urls: \nhttps://$CLAIM_SERVICE_GOV_UK/start \nhttps://$CASEWORKER_REFUNDS_OPG_DIGITAL"
+          footer: "$CIRCLE_BRANCH - Commit Message: $COMMIT_MESSAGE"
   slack_notify_production_release:
     docker:
       - image: circleci/python
@@ -583,9 +584,11 @@ jobs:
       - run:
           name: Get URLs
           command: |
-            echo 'export FRONT_DOMAIN="$(jq -r .public_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
-            echo 'export CASEWORKER_DOMAIN="$(jq -r .caseworker_front_fqdn /tmp/environment_pipeline_tasks_config.json)"' >> $BASH_ENV
+            ~/project/.circleci/set_slack_env_vars.sh >> $BASH_ENV
       - slack/notify:
           title: "LPA Refunds Production Release Successful"
+          color: "#1cb0ba"
+          mentions: "UAQQ2PY86"
           message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN"
+          footer: "$CIRCLE_BRANCH - Commit Message: $COMMIT_MESSAGE"
           webhook: ${PROD_RELEASE_SLACK_WEBHOOK}

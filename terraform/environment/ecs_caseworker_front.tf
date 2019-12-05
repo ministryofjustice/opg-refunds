@@ -135,12 +135,12 @@ data "aws_iam_policy_document" "caseworker_front_permissions_role" {
 }
 
 data "aws_ecr_repository" "lpa_refunds_caseworker_front_web" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "lpa-refunds/caseworker_front_web"
 }
 
 data "aws_ecr_repository" "lpa_refunds_caseworker_front_app" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "lpa-refunds/caseworker_front_app"
 }
 

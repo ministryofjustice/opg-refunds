@@ -20,7 +20,7 @@ resource "aws_security_group_rule" "seeding_ecs_service_egress" {
   to_port           = 0
   protocol          = "-1"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = "${aws_security_group.seeding_ecs_service.id}"
+  security_group_id = aws_security_group.seeding_ecs_service.id
 }
 
 //--------------------------------------
@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "seeding_permissions_role" {
 }
 
 data "aws_ecr_repository" "caseworker_api_seeding" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "lpa-refunds/caseworker_api_seeding"
 }
 
