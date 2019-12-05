@@ -1,5 +1,5 @@
 data "aws_route53_zone" "refunds_opg_service_justice_gov_uk" {
-  provider = "aws.management"
+  provider = aws.management
   name     = "refunds.opg.service.justice.gov.uk"
 }
 
