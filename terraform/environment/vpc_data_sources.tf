@@ -23,11 +23,11 @@ data "aws_s3_bucket" "access_log" {
 }
 
 data "aws_acm_certificate" "certificate_public_front" {
-  domain = local.account.public_front_certificate_domain_name
+  domain = "*.public-front.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
 }
 
 data "aws_acm_certificate" "certificate_caseworker_front" {
-  domain = local.account.caseworker_front_certificate_domain_name
+  domain = "*.caseworker.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
 }
 
 module "whitelist" {
