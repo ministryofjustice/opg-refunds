@@ -42,7 +42,7 @@ provider "aws" {
   alias  = "management"
 
   assume_role {
-    role_arn     = "arn:aws:iam::311462405659:role/${var.default_role}"
+    role_arn     = "arn:aws:iam::311462405659:role/${var.old_account_default_role}"
     session_name = "terraform-session"
   }
 }
