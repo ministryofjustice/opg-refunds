@@ -49,7 +49,7 @@ resource "aws_lb_listener" "caseworker_front_loadbalancer" {
 }
 
 resource "aws_lb_listener_certificate" "caseworker_refunds_opg_digital" {
-  listener_arn    = aws_lb_listener.public_front_loadbalancer.arn
+  listener_arn    = aws_lb_listener.caseworker_front_loadbalancer.arn
   certificate_arn = data.aws_acm_certificate.caseworker_refunds_opg_digital.arn
 }
 
