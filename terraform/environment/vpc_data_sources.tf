@@ -33,13 +33,11 @@ data "aws_acm_certificate" "certificate_caseworker_front" {
 }
 
 data "aws_acm_certificate" "claim_power_of_attorney_refund_service_gov_uk" {
-  provider = aws.old_refunds_production
-  domain   = "claim-power-of-attorney-refund.service.gov.uk"
+  domain = "*.claim-power-of-attorney-refund.service.gov.uk"
 }
 
 data "aws_acm_certificate" "caseworker_refunds_opg_digital" {
-  provider = aws.old_refunds_production
-  domain   = "caseworker.refunds.opg.digital"
+  domain = "caseworker.refunds.opg.digital"
 }
 
 module "whitelist" {
