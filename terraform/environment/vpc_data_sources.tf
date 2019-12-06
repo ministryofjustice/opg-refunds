@@ -30,7 +30,14 @@ data "aws_acm_certificate" "certificate_public_front" {
 
 data "aws_acm_certificate" "certificate_caseworker_front" {
   domain = "caseworker.${local.refunds_opg_service_justice_gov_uk_name}"
-  # domain = "caseworker.${data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name}"
+}
+
+data "aws_acm_certificate" "claim_power_of_attorney_refund_service_gov_uk" {
+  domain = "*.claim-power-of-attorney-refund.service.gov.uk"
+}
+
+data "aws_acm_certificate" "caseworker_refunds_opg_digital" {
+  domain = "caseworker.refunds.opg.digital"
 }
 
 module "whitelist" {

@@ -48,6 +48,11 @@ resource "aws_lb_listener" "caseworker_front_loadbalancer" {
   }
 }
 
+resource "aws_lb_listener_certificate" "caseworker_refunds_opg_digital" {
+  listener_arn    = aws_lb_listener.caseworker_front_loadbalancer.arn
+  certificate_arn = data.aws_acm_certificate.caseworker_refunds_opg_digital.arn
+}
+
 resource "aws_security_group" "caseworker_front_loadbalancer" {
   name        = "${local.environment}-caseworker-front-loadbalancer"
   description = "caseworker front load balancer access"
