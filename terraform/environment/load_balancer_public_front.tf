@@ -48,6 +48,11 @@ resource "aws_lb_listener" "public_front_loadbalancer" {
   }
 }
 
+resource "aws_lb_listener_certificate" "claim_power_of_attorney_refund_service_gov_uk" {
+  listener_arn    = aws_lb_listener.public_front_loadbalancer.arn
+  certificate_arn = data.aws_acm_certificate.claim_power_of_attorney_refund_service_gov_uk.arn
+}
+
 resource "aws_ssm_parameter" "maintenance_switch" {
   name            = "${local.environment}_enable_maintenance"
   type            = "String"
