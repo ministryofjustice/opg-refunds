@@ -33,7 +33,10 @@ data "aws_iam_policy_document" "cross_account_access" {
     ]
 
     principals {
-      identifiers = ["arn:aws:iam::574983609246:role/caseworker-api.production"]
+      identifiers = [
+        "arn:aws:iam::574983609246:role/caseworker-api.production",
+        "arn:aws:iam::574983609246:role/caseworker-api.preprod"
+      ]
 
       type = "AWS"
     }
