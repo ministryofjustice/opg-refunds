@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "cross_account_access" {
     effect = "Allow"
     actions = [
       "s3:PutObject",
-      "s3:PutObjectAcl"
+      "s3:PutObjectAcl",
     ]
 
     principals {
