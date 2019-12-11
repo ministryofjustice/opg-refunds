@@ -10,8 +10,6 @@ TRUNCATE TABLE public.verification;
 
 ALTER TABLE claim DROP CONSTRAINT IF EXISTS claim_pkey;
 ALTER TABLE doctrine_migration_versions DROP CONSTRAINT IF EXISTS doctrine_migration_versions_pkey;
-ALTER TABLE meris DROP CONSTRAINT IF EXISTS donor_dob_meris;
-ALTER TABLE sirius DROP CONSTRAINT IF EXISTS donor_dob_sirius;
 ALTER TABLE duplicate_claims DROP CONSTRAINT IF EXISTS duplicate_claims_pkey;
 ALTER TABLE note DROP CONSTRAINT IF EXISTS log_pkey;
 ALTER TABLE payment DROP CONSTRAINT IF EXISTS payment_pkey;
