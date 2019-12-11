@@ -11,7 +11,7 @@ SIRIUS_DB_PASS=
 # Applications DBs
 echo "applications"
 export PGPASSWORD=${APP_DB_PASS}
-pg_dump --data-only -h applications.preprod.internal -U refunds_master_full --file=applications_schema.sql applications
+pg_dump --data-only -h applications.preprod.internal -U refunds_master_full --file=/mnt/sql/applications_schema.sql applications
 
 #Caseworker DBs
 
@@ -46,15 +46,15 @@ dump_cmd='pg_dump --data-only -h caseworker.preprod.internal '
 
 export PGPASSWORD=${CASES_DB_PASS}
 echo "cases"
-$dump_cmd -U cases_full --file=cases_schema.sql cases
+$dump_cmd -U cases_full --file=/mnt/sql/cases_schema.sql cases
 echo "caseworker"
-$dump_cmd -U cases_full --file=caseworker_schema.sql caseworker
+$dump_cmd -U cases_full --file=/mnt/sql/caseworker_schema.sql caseworker
 echo "finance"
-$dump_cmd -U cases_full --file=finance_schema.sql finance
+$dump_cmd -U cases_full --file=/mnt/sql/finance_schema.sql finance
 echo "meris"
-$dump_cmd -U cases_full --file=meris_schema.sql meris
+$dump_cmd -U cases_full --file=/mnt/sql/meris_schema.sql meris
 
 
 export PGPASSWORD=${SIRIUS_DB_PASS}
 echo "sirius"
-$dump_cmd -U sirius_full --file=sirius_schema.sql sirius
+$dump_cmd -U sirius_full --file=/mnt/sql/sirius_schema.sql sirius
