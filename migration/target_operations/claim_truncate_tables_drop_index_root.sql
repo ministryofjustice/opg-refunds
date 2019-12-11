@@ -1,6 +1,6 @@
-TRUNCATE TABLE public.finance;
-TRUNCATE TABLE public.meris;
-TRUNCATE TABLE public.sirius;
+TRUNCATE TABLE public.finance CASCADE; 
+TRUNCATE TABLE public.meris CASCADE;
+TRUNCATE TABLE public.sirius CASCADE;
 
 -- ALTER TABLE public.meris DROP CONSTRAINT IF EXISTS donor_dob_meris;
 -- ALTER TABLE public.sirius DROP CONSTRAINT IF EXISTS donor_dob_sirius;

@@ -1,12 +1,12 @@
-TRUNCATE TABLE public.claim;
-TRUNCATE TABLE public.doctrine_migration_versions;
-TRUNCATE TABLE public.duplicate_claims;
-TRUNCATE TABLE public.note;
-TRUNCATE TABLE public.payment;
-TRUNCATE TABLE public.poa;
-TRUNCATE TABLE public.report;
-TRUNCATE TABLE public.user;
-TRUNCATE TABLE public.verification;
+TRUNCATE TABLE public.claim CASCADE;
+TRUNCATE TABLE public.doctrine_migration_versions CASCADE;
+TRUNCATE TABLE public.duplicate_claims CASCADE;
+TRUNCATE TABLE public.note CASCADE;
+TRUNCATE TABLE public.payment CASCADE;
+TRUNCATE TABLE public.poa CASCADE;
+TRUNCATE TABLE public.report CASCADE;
+TRUNCATE TABLE public.user CASCADE;
+TRUNCATE TABLE public.verification CASCADE;
 
 -- ALTER TABLE public.claim DROP CONSTRAINT IF EXISTS claim_pkey;
 -- ALTER TABLE public.doctrine_migration_versions DROP CONSTRAINT IF EXISTS doctrine_migration_versions_pkey;
