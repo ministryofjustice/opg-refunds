@@ -12,13 +12,13 @@ PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refun
 
 PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_cases_full_password | jq -r .'SecretString') pg_dump --data-only -h $CASES_DB_ENDPOINT -U cases_full --file=/mnt/sql/target_schema_cases.sql cases
 
-PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_caseworker_full_password | jq -r .'SecretString') pg_dump --data-only -h $CASEWORKER_DB_ENDPOINT -U caseworker_full --file=/mnt/sql/target_schema_caseworker.sql caseworker
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString')  pg_dump --data-only -h $CASES_DB_ENDPOINT -U root --file=/mnt/sql/target_schema_caseworker.sql caseworker
 
-PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_finance_full_password | jq -r .'SecretString') pg_dump --data-only -h $FINANCE_DB_ENDPOINT -U finance_full --file=/mnt/sql/target_schema_finance.sql finance
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_finance_full_password | jq -r .'SecretString') pg_dump --data-only -h $CASES_DB_ENDPOINT -U finance_full --file=/mnt/sql/target_schema_finance.sql finance
 
-PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_meris_full_password | jq -r .'SecretString') pg_dump --data-only -h $MERIS_DB_ENDPOINT -U meris_full --file=/mnt/sql/target_schema_meris.sql meris
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_meris_full_password | jq -r .'SecretString') pg_dump --data-only -h $CASES_DB_ENDPOINT -U meris_full --file=/mnt/sql/target_schema_meris.sql meris
 
-PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_sirius_full_password | jq -r .'SecretString') pg_dump --data-only -h $SIRIUS_DB_ENDPOINT -U sirius_full --file=/mnt/sql/target_schema_sirius.sql sirius
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_sirius_full_password | jq -r .'SecretString') pg_dump --data-only -h $CASES_DB_ENDPOINT -U sirius_full --file=/mnt/sql/target_schema_sirius.sql sirius
 
 aws s3 cp /mnt/sql/target_schema_applications.sql s3://lpa-refunds-$ENV_NAME-sql-migration/ --sse --acl bucket-owner-full-control
 aws s3 cp /mnt/sql/target_schema_cases.sql s3://lpa-refunds-$ENV_NAME-sql-migration/ --sse --acl bucket-owner-full-control
