@@ -1,2 +1,2 @@
-ALTER USER librarian WITH NOSUPERUSER;
-CREATE USER migration;
+ALTER USER migration WITH NOSUPERUSER;
+DROP USER migration;
