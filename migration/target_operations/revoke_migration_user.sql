@@ -1,0 +1,2 @@
+ALTER USER librarian WITH NOSUPERUSER;
+CREATE USER migration;
