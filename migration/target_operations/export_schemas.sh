@@ -20,14 +20,6 @@ PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refun
 
 PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_sirius_full_password | jq -r .'SecretString') pg_dump --data-only -h $SIRIUS_DB_ENDPOINT -U sirius_full --file=/mnt/sql/target_schema_sirius.sql sirius
 
-
-
-
-
-
-
-
-
 aws s3 cp /mnt/sql/target_schema_applications.sql s3://lpa-refunds-$ENV_NAME-sql-migration/ --sse --acl bucket-owner-full-control
 aws s3 cp /mnt/sql/target_schema_cases.sql s3://lpa-refunds-$ENV_NAME-sql-migration/ --sse --acl bucket-owner-full-control
 aws s3 cp /mnt/sql/target_schema_caseworker.sql s3://lpa-refunds-$ENV_NAME-sql-migration/ --sse --acl bucket-owner-full-control
