@@ -1,5 +1,3 @@
-
-# cases migration
 TRUNCATE TABLE claim;
 TRUNCATE TABLE doctrine_migration_versions;
 TRUNCATE TABLE duplicate_claims;
@@ -10,7 +8,6 @@ TRUNCATE TABLE report;
 TRUNCATE TABLE user;
 TRUNCATE TABLE verification;
 
-# cases migration
 DROP INDEX claim_pkey;
 DROP INDEX doctrine_migration_versions_pkey;
 DROP INDEX duplicate_claims_pkey;
