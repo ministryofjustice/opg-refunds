@@ -1,10 +1,7 @@
-
-# root
 TRUNCATE TABLE finance;
 TRUNCATE TABLE meris;
 TRUNCATE TABLE sirius;
 
-# root
 DROP INDEX donor_dob_meris;
 DROP INDEX donor_dob_sirius;
 DROP INDEX finance_pkey;
