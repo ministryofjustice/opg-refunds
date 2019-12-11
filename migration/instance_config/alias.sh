@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 alias l="ls -al"
 alias gco="git checkout"
 alias ga="git add"
