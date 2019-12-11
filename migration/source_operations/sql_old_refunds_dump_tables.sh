@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Find DB PASSWORDs and enter below
 # grep database_master_password opg-refund-deploy/ansible/production/env_vars.yml
