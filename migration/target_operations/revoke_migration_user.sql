@@ -1,2 +1,1 @@
-ALTER USER migration WITH NOSUPERUSER;
 DROP USER migration;
