@@ -11,7 +11,7 @@ SIRIUS_DB_PASS=
 # Applications DBs
 echo "applications"
 export PGPASSWORD=${APP_DB_PASS}
-pg_dump --schema-only -h applications.preprod.internal -U refunds_master_full --file=applications_schema.sql applications
+pg_dump --data-only -h applications.preprod.internal -U refunds_master_full --file=applications_schema.sql applications
 
 #Caseworker DBs
 
@@ -42,7 +42,7 @@ pg_dump --schema-only -h applications.preprod.internal -U refunds_master_full --
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full
 
 #dump_cmd='pg_dump --column-inserts --data-only -h caseworker.preprod.internal '
-dump_cmd='pg_dump --schema-only -h caseworker.preprod.internal '
+dump_cmd='pg_dump --data-only -h caseworker.preprod.internal '
 
 export PGPASSWORD=${CASES_DB_PASS}
 echo "cases"
