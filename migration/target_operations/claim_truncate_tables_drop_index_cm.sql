@@ -1,12 +1,12 @@
-TRUNCATE TABLE claim;
-TRUNCATE TABLE doctrine_migration_versions;
-TRUNCATE TABLE duplicate_claims;
-TRUNCATE TABLE note;
-TRUNCATE TABLE payment;
-TRUNCATE TABLE poa;
-TRUNCATE TABLE report;
-TRUNCATE TABLE user;
-TRUNCATE TABLE verification;
+TRUNCATE TABLE public.claim;
+TRUNCATE TABLE public.doctrine_migration_versions;
+TRUNCATE TABLE public.duplicate_claims;
+TRUNCATE TABLE public.note;
+TRUNCATE TABLE public.payment;
+TRUNCATE TABLE public.poa;
+TRUNCATE TABLE public.report;
+TRUNCATE TABLE public.user;
+TRUNCATE TABLE public.verification;
 
 DROP INDEX claim_pkey;
 DROP INDEX doctrine_migration_versions_pkey;

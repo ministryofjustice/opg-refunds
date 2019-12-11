@@ -1,6 +1,6 @@
-TRUNCATE TABLE finance;
-TRUNCATE TABLE meris;
-TRUNCATE TABLE sirius;
+TRUNCATE TABLE public.finance;
+TRUNCATE TABLE public.meris;
+TRUNCATE TABLE public.sirius;
 
 DROP INDEX donor_dob_meris;
 DROP INDEX donor_dob_sirius;
