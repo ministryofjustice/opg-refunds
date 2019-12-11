@@ -17,4 +17,4 @@ PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_
 # load
 # PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_cases_migration_password | jq -r .'SecretString') psql -v ON_ERROR_STOP=1 -h $CASES_DB_ENDPOINT -U cases_migration cases < /mnt/opg-refunds/migration/target_operations/cm_restore.sql
 
-PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_cases_full_password | jq -r .'SecretString') psql -v ON_ERROR_STOP=1 -h $CASES_DB_ENDPOINT -U cases_full cases < /mnt/opg-refunds/migration/target_operations/cf_restore.sql
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') psql -v ON_ERROR_STOP=1 -h $CASES_DB_ENDPOINT -U root cases < /mnt/opg-refunds/migration/target_operations/cf_restore.sql
