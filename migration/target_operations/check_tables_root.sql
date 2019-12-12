@@ -1,3 +1,3 @@
-SELECT * FROM public.finance LIMIT 10;
-SELECT * FROM public.meris LIMIT 10;
-SELECT * FROM public.sirius LIMIT 10;
+SELECT COUNT(*) FROM public.finance;
+SELECT COUNT(*) FROM public.meris;
+SELECT COUNT(*) FROM public.sirius;
