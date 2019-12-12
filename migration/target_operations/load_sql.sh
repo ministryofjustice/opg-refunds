@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-if [[ -z "${ENV_NAME}" ]]; then
+
+if [[ -z "$ENV_NAME" ]]; then
   echo "environment set as $ENV_NAME"
 else
   echo "ENV_NAME not set!"
