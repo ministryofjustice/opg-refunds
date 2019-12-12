@@ -1,6 +1,3 @@
-SELECT CONCAT ('finance');
-SELECT COUNT(*) FROM public.finance;
-SELECT CONCAT ('meris');
-SELECT COUNT(*) FROM public.meris;
-SELECT CONCAT ('sirius');
-SELECT COUNT(*) FROM public.sirius;
+SELECT 'finance', COUNT(*) FROM public.finance;
+SELECT 'meris', COUNT(*) FROM public.meris;
+SELECT 'sirius', COUNT(*) FROM public.sirius;
