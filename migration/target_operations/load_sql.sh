@@ -16,10 +16,12 @@ PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_
 
 # load
 PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=finance -h $CASES_DB_ENDPOINT -U root /mnt/sql/cases.tar
-# PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=meris  -h $CASES_DB_ENDPOINT -U root /mnt/sql/cases.tar
-# PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=sirius -h $CASES_DB_ENDPOINT -U root /mnt/sql/cases.tar
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=meris  -h $CASES_DB_ENDPOINT -U root /mnt/sql/cases.tar
+PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=sirius -h $CASES_DB_ENDPOINT -U root /mnt/sql/cases.tar
 
 # PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/opg_refunds_db_cases_migration_password | jq -r .'SecretString') pg_restore --data-only --exit-on-error --table=claim --table=doctrine_migration_versions --table=duplicate_claims --table=note --table=payment --table=poa --table=report --tabscle=user --table=verification -h $CASES_DB_ENDPOINT -U cases_migration /mnt/sql/cases.tar
+
+sleep 5
 
 # check
 PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $ENV_NAME/postgres_password | jq -r .'SecretString') psql -v ON_ERROR_STOP=1 -h $CASES_DB_ENDPOINT -U root cases < /mnt/opg-refunds/migration/target_operations/check_tables_root.sql
