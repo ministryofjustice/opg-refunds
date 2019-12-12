@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 if [[ -z "${ENV_NAME}" ]]; then
-  "environment set as $ENV_VAR"
+  echo "environment set as $ENV_NAME"
 else
-  "ENV_NAME not set!"
+  echo "ENV_NAME not set!"
   exit 1
 fi
 
