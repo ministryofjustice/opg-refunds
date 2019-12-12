@@ -2,10 +2,10 @@
 
 
 if [[ -z "$ENV_NAME" ]]; then
-  echo "environment set as $ENV_NAME"
-else
   echo "ENV_NAME not set!"
   exit 1
+else
+  echo "environment set as $ENV_NAME"
 fi
 
 CASES_DB_ENDPOINT=$(aws rds describe-db-clusters --db-cluster-identifier caseworker-${ENV_NAME} | jq -r .'DBClusters'[0].'Endpoint')
