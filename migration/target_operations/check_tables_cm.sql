@@ -1,9 +1,9 @@
-SELECT * FROM public.claim LIMIT 10;
-SELECT * FROM public.doctrine_migration_versions LIMIT 10;
-SELECT * FROM public.duplicate_claims LIMIT 10;
-SELECT * FROM public.note LIMIT 10;
-SELECT * FROM public.payment LIMIT 10;
-SELECT * FROM public.poa LIMIT 10;
-SELECT * FROM public.report LIMIT 10;
-SELECT * FROM public.user LIMIT 10;
-SELECT * FROM public.verification LIMIT 10;
+SELECT COUNT(*) FROM public.claim;
+SELECT COUNT(*) FROM public.doctrine_migration_versions;
+SELECT COUNT(*) FROM public.duplicate_claims;
+SELECT COUNT(*) FROM public.note;
+SELECT COUNT(*) FROM public.payment;
+SELECT COUNT(*) FROM public.poa;
+SELECT COUNT(*) FROM public.report;
+SELECT COUNT(*) FROM public.user;
+SELECT COUNT(*) FROM public.verification;
