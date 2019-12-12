@@ -1,9 +1,9 @@
-SELECT COUNT(*) FROM public.claim;
-SELECT COUNT(*) FROM public.doctrine_migration_versions;
-SELECT COUNT(*) FROM public.duplicate_claims;
-SELECT COUNT(*) FROM public.note;
-SELECT COUNT(*) FROM public.payment;
-SELECT COUNT(*) FROM public.poa;
-SELECT COUNT(*) FROM public.report;
-SELECT COUNT(*) FROM public.user;
-SELECT COUNT(*) FROM public.verification;
+SELECT 'claim', COUNT(*) FROM public.claim;
+SELECT 'doctrine_migration_versions', COUNT(*) FROM public.doctrine_migration_versions;
+SELECT 'duplicate_claims', COUNT(*) FROM public.duplicate_claims;
+SELECT 'note', COUNT(*) FROM public.note;
+SELECT 'payment', COUNT(*) FROM public.payment;
+SELECT 'poa', COUNT(*) FROM public.poa;
+SELECT 'report', COUNT(*) FROM public.report;
+SELECT 'user', COUNT(*) FROM public.user;
+SELECT 'verification', COUNT(*) FROM public.verification;
