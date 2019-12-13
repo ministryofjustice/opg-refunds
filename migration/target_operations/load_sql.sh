@@ -24,36 +24,36 @@ SIRIUS_MIGRATION_OPTS="-h ${CASEWORKER_DB_ENDPOINT} -U sirius_migration"
 
 PSQL="psql -v ON_ERROR_STOP=1"
 # truncate
-PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_cm.sql
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_root.sql
+# PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_cm.sql
+# PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_root.sql
 PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_truncate_tables_sm.sql
 
 # load cases
-PGPASSWORD=${ROOT_PASSWORD} pg_restore ${CASES_ROOT_OPTS} \
-    --dbname=cases \
-    --data-only \
-    --table=finance \
-    --table=meris \
-    --table=sirius \
-    --verbose \
-    --exit-on-error \
-    ${DATA_PATH}/cases.tar
+# PGPASSWORD=${ROOT_PASSWORD} pg_restore ${CASES_ROOT_OPTS} \
+#     --dbname=cases \
+#     --data-only \
+#     --table=finance \
+#     --table=meris \
+#     --table=sirius \
+#     --verbose \
+#     --exit-on-error \
+#     ${DATA_PATH}/cases.tar
 
-PGPASSWORD=${CASES_MIGRATION_PASSWORD} pg_restore ${CASES_MIGRATION_OPTS}  \
-    --dbname=cases \
-    --data-only \
-    --table=claim \
-    --table=doctrine_migration_versions \
-    --table=duplicate_claims \
-    --table=note \
-    --table=payment \
-    --table=poa \
-    --table=report \
-    --table=user \
-    --table=verification \
-    --verbose \
-    --exit-on-error \
-    ${DATA_PATH}/cases.tar
+# PGPASSWORD=${CASES_MIGRATION_PASSWORD} pg_restore ${CASES_MIGRATION_OPTS}  \
+#     --dbname=cases \
+#     --data-only \
+#     --table=claim \
+#     --table=doctrine_migration_versions \
+#     --table=duplicate_claims \
+#     --table=note \
+#     --table=payment \
+#     --table=poa \
+#     --table=report \
+#     --table=user \
+#     --table=verification \
+#     --verbose \
+#     --exit-on-error \
+#     ${DATA_PATH}/cases.tar
 
 PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} pg_restore ${SIRIUS_MIGRATION_OPTS}  \
     --dbname=sirius \
@@ -67,4 +67,4 @@ PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} pg_restore ${SIRIUS_MIGRATION_OPTS}  \
 # check cases
 PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_root.sql
 PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_cm.sql
-PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_check_tables_cm.sql
+PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_check_tables_sm.sql
