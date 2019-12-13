@@ -60,7 +60,6 @@ PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} pg_restore ${SIRIUS_MIGRATION_OPTS}  \
     --data-only \
     --table=doctrine_migration_versions \
     --table=poa \
-    --table=poa_id_seq \
     --verbose \
     --exit-on-error \
     ${DATA_PATH}/sirius.tar
