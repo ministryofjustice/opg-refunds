@@ -1,1 +1,1 @@
-SELECT 'applications', COUNT(*) FROM public.application;
+SELECT 'applications' AS 'applications tables', COUNT(*) FROM public.application;
