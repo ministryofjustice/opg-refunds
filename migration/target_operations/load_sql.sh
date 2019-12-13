@@ -29,7 +29,7 @@ PSQL="psql -v ON_ERROR_STOP=1"
 # PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_cm.sql
 # PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_root.sql
 # PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_truncate_tables_sm.sql
-PGPASSWORD=${APPLICATIONS_MIGRATION_PASSWORD} ${PSQL} ${APPLICATIONS_MIGRATION_OPTS} applications < ${SCRIPTS_PATH}/applications_truncate_tables_sm.sql
+PGPASSWORD=${APPLICATIONS_MIGRATION_PASSWORD} ${PSQL} ${APPLICATIONS_MIGRATION_OPTS} applications < ${SCRIPTS_PATH}/applications_truncate_tables_am.sql
 
 # load cases
 # PGPASSWORD=${ROOT_PASSWORD} pg_restore ${CASES_ROOT_OPTS} \
