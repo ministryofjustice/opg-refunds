@@ -9,4 +9,4 @@ terraform/**/notes
 migration/notes
 **_secrets_cli
 **vendor
-terraform/environment/.envrc
+**.envrc
