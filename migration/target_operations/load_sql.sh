@@ -17,16 +17,16 @@ DATA_PATH="/mnt/sql"
 ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/postgres_password | jq -r .'SecretString') 
 CASES_MIGRATION_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/opg_refunds_db_cases_migration_password | jq -r .'SecretString')
 
-ROOT_OPTS="-h ${CASES_DB_ENDPOINT} -U root"
+CASES_ROOT_OPTS="-h ${CASES_DB_ENDPOINT} -U root"
 CASES_MIGRATION_OPTS="-h ${CASES_DB_ENDPOINT} -U cases_migration"
 
 PSQL="psql -v ON_ERROR_STOP=1"
 # truncate cases
 PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_drop_index_cm.sql
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_drop_index_root.sql
+PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_drop_index_root.sql
 
 # load cases
-PGPASSWORD=${ROOT_PASSWORD} pg_restore ${ROOT_OPTS} \
+PGPASSWORD=${ROOT_PASSWORD} pg_restore ${CASES_ROOT_OPTS} \
     --dbname=cases \
     --data-only \
     --table=finance \
@@ -53,5 +53,5 @@ PGPASSWORD=${CASES_MIGRATION_PASSWORD} pg_restore ${CASES_MIGRATION_OPTS}  \
     ${DATA_PATH}/cases.tar
 
 # check cases
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${ROOT_OPTS} cases < ${SCRIPTS_PATH}/check_tables_root.sql
-PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/check_tables_cm.sql
+PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_root.sql
+PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_cm.sql
