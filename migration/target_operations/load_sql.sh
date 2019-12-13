@@ -24,9 +24,9 @@ SIRIUS_MIGRATION_OPTS="-h ${CASEWORKER_DB_ENDPOINT} -U sirius_migration"
 
 PSQL="psql -v ON_ERROR_STOP=1"
 # truncate
-PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_drop_index_cm.sql
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_drop_index_root.sql
-PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_truncate_tables_drop_index_sm.sql
+PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_cm.sql
+PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_root.sql
+PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_truncate_tables_sm.sql
 
 # load cases
 PGPASSWORD=${ROOT_PASSWORD} pg_restore ${CASES_ROOT_OPTS} \
