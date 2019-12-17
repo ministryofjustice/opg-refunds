@@ -20,7 +20,7 @@ APPLICATIONS_MIGRATION_OPTS="-h ${APPLICATIONS_DB_ENDPOINT} -U refunds_master_fu
 PSQL="psql -v ON_ERROR_STOP=1"
 
 # check cases
-PGPASSWORD=${CASES_DB_PASS} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_root.sql
-PGPASSWORD=${CASES_DB_PASS} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_check_tables_cm.sql
-PGPASSWORD=${SIRIUS_DB_PASS} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_check_tables_sm.sql
-PGPASSWORD=${APP_DB_PASS} ${PSQL} ${APPLICATIONS_MIGRATION_OPTS} applications < ${SCRIPTS_PATH}/applications_check_tables_am.sql
+PGPASSWORD=${CASES_DB_PASS} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_list_sequences_root.sql
+PGPASSWORD=${CASES_DB_PASS} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_list_sequences_cm.sql
+PGPASSWORD=${SIRIUS_DB_PASS} ${PSQL} ${SIRIUS_MIGRATION_OPTS} sirius < ${SCRIPTS_PATH}/sirius_list_sequences_sm.sql
+PGPASSWORD=${APP_DB_PASS} ${PSQL} ${APPLICATIONS_MIGRATION_OPTS} applications < ${SCRIPTS_PATH}/applications_list_sequences_am.sql
