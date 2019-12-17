@@ -11,7 +11,7 @@ fi
 CASEWORKER_DB_ENDPOINT=$(aws rds describe-db-clusters --db-cluster-identifier caseworker-${ENV_NAME} | jq -r .'DBClusters'[0].'Endpoint')
 APPLICATIONS_DB_ENDPOINT=$(aws rds describe-db-clusters --db-cluster-identifier applications-${ENV_NAME} | jq -r .'DBClusters'[0].'Endpoint')
 
-SCRIPTS_PATH="/mnt/opg-refunds/migration/target_operations"
+SCRIPTS_PATH="/mnt/opg-refunds/migration/sql_scripts"
 DATA_PATH="/mnt/sql"
 
 ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/postgres_password | jq -r .'SecretString') 
