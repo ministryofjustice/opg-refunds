@@ -27,4 +27,4 @@ APPLICATIONS_MIGRATION_OPTS="-h ${APPLICATIONS_DB_ENDPOINT} -U applications_migr
 PSQL="psql -v ON_ERROR_STOP=1"
 
 # check cases
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_alter_sequence_root.sql
+PGPASSWORD=${CASES_MIGRATION_PASSWORD} ${PSQL} ${CASES_MIGRATION_OPTS} cases < ${SCRIPTS_PATH}/cases_alter_sequence.sql
