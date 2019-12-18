@@ -58,8 +58,6 @@ PGPASSWORD=${CASES_MIGRATION_PASSWORD} pg_restore ${CASES_MIGRATION_OPTS}  \
     --exit-on-error \
     ${DATA_PATH}/cases.tar
     
-PGPASSWORD=${ROOT_PASSWORD} ${PSQL} ${CASES_ROOT_OPTS} cases < ${SCRIPTS_PATH}/cases_truncate_tables_root.sql
-
 PGPASSWORD=${SIRIUS_MIGRATION_PASSWORD} pg_restore ${SIRIUS_MIGRATION_OPTS}  \
     --dbname=sirius \
     --data-only \
