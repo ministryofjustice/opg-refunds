@@ -7,8 +7,8 @@ APP_DB_PASS=
 CASES_DB_PASS=
 # grep caseworker_logical_dbs -a6 opg-refund-deploy/ansible/production/env_vars.yml | grep sirius -a2 -b1| grep full_password
 SIRIUS_DB_PASS=
-CASEWORKER_DB_ENDPOINT="caseworker.preprod.internal"
-APPLICATIONS_DB_ENDPOINT="applications.preprod.internal"
+CASEWORKER_DB_ENDPOINT="caseworker.production.internal"
+APPLICATIONS_DB_ENDPOINT="applications.production.internal"
 
 SCRIPTS_PATH="/mnt/opg-refunds/migration/sql_scripts"
 DATA_PATH="/mnt/sql"

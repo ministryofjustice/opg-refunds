@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-export ENV_NAME=preproduction
+export ENV_NAME=production
 export AWS_DEFAULT_REGION=eu-west-1
 export OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME=$(aws rds describe-db-clusters --db-cluster-identifier applications-$ENV_NAME | jq -r .'DBClusters'[0].'Endpoint')
 export OPG_REFUNDS_DB_APPLICATIONS_PORT=5432
