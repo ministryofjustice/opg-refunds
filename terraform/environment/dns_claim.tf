@@ -10,13 +10,6 @@ locals {
       zone_id = aws_lb.public_front.zone_id
     }
   }
-
-  claim_url_dns_target_production = {
-    alias = {
-      name    = local.public_front_cloudfront_distribution_domain_name
-      zone_id = local.public_front_cloudfront_distribution_zone_id
-    }
-  }
 }
 
 
