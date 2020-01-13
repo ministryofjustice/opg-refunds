@@ -20,8 +20,6 @@ locals {
       zone_id = local.public_front_cloudfront_distribution_zone_id
     }
   }
-  #this condition is failing to select the correct set of load balancers
-  # claim_url_dns_target = local.account_name == "production" ? local.claim_url_dns_target_production : local.claim_url_dns_target_dev_preprod
 }
 
 
