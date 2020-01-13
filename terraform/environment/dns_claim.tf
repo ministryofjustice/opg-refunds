@@ -4,9 +4,6 @@ data "aws_route53_zone" "claim-power-of-attorney-refund_service_gov_uk" {
 }
 
 locals {
-  public_front_cloudfront_distribution_domain_name = "d3pm2jfxjwrqjc.cloudfront.net"
-  public_front_cloudfront_distribution_zone_id     = "Z2FDTNDATAQYW2"
-
   claim_url_dns_target = {
     alias = {
       name    = aws_lb.public_front.dns_name
