@@ -17,9 +17,16 @@ locals {
     caseworker   = 0
   }
   desired = var.state_up ? local.up_state : local.down_state
-  lifecycle = {
+}
+
+resource "aws_autoscaling_group" "public_front" {
+  provider         = aws.old_refunds_production
+  name             = "front-${var.stack}"
+  max_size         = local.desired.public_front
+  min_size         = 0
+  desired_capacity = local.desired.public_front
+  lifecycle {
     ignore_changes = [
-      max_size,
       force_delete,
       tag,
       health_check_grace_period,
@@ -30,29 +37,38 @@ locals {
   }
 }
 
-resource "aws_autoscaling_group" "public_front" {
-  provider         = aws.old_refunds_production
-  name             = "front-${var.stack}"
-  max_size         = 2
-  min_size         = local.desired.public_front
-  desired_capacity = local.desired.public_front
-  lifecycle        = local.lifecycle
-}
-
 resource "aws_autoscaling_group" "caseworker_front" {
   provider         = aws.old_refunds_production
   name             = "caseworker-front-${var.stack}"
-  max_size         = 2
-  min_size         = local.desired.caseworker
+  max_size         = local.desired.caseworker
+  min_size         = 0
   desired_capacity = local.desired.caseworker
-  lifecycle        = local.lifecycle
+  lifecycle {
+    ignore_changes = [
+      force_delete,
+      tag,
+      health_check_grace_period,
+      launch_configuration,
+      termination_policies,
+      wait_for_capacity_timeout,
+    ]
+  }
 }
 
 resource "aws_autoscaling_group" "caseworker_api" {
   provider         = aws.old_refunds_production
   name             = "caseworker-api-${var.stack}"
-  max_size         = 2
-  min_size         = local.desired.caseworker
+  max_size         = local.desired.caseworker
+  min_size         = 0
   desired_capacity = local.desired.caseworker
-  lifecycle        = local.lifecycle
+  lifecycle {
+    ignore_changes = [
+      force_delete,
+      tag,
+      health_check_grace_period,
+      launch_configuration,
+      termination_policies,
+      wait_for_capacity_timeout,
+    ]
+  }
 }

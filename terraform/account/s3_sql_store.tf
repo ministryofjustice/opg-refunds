@@ -29,11 +29,14 @@ data "aws_iam_policy_document" "cross_account_access" {
     effect = "Allow"
     actions = [
       "s3:PutObject",
-      "s3:PutObjectAcl"
+      "s3:PutObjectAcl",
     ]
 
     principals {
-      identifiers = ["arn:aws:iam::574983609246:role/caseworker-api.production"]
+      identifiers = [
+        "arn:aws:iam::574983609246:role/caseworker-api.production",
+        "arn:aws:iam::574983609246:role/caseworker-api.preprod"
+      ]
 
       type = "AWS"
     }

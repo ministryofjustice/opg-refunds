@@ -1,5 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+mkdir -p /mnt/sql
 # Find DB PASSWORDs and enter below
 # grep database_master_password opg-refund-deploy/ansible/production/env_vars.yml
 APP_DB_PASS=
@@ -11,7 +12,7 @@ SIRIUS_DB_PASS=
 # Applications DBs
 echo "applications"
 export PGPASSWORD=${APP_DB_PASS}
-pg_dump --data-only -h applications.preprod.internal -U refunds_master_full applications > applications.sql
+pg_dump --data-only -h applications.production.internal -U refunds_master_full --format=t --format=t --file=/mnt/sql/applications.tar applications
 
 #Caseworker DBs
 
@@ -41,19 +42,20 @@ pg_dump --data-only -h applications.preprod.internal -U refunds_master_full appl
 # template1  | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =c/refunds_caseworker_full                         +
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full
 
-#dump_cmd='pg_dump --column-inserts --data-only -h caseworker.preprod.internal '
-dump_cmd='pg_dump --data-only -h caseworker.preprod.internal '
+#dump_cmd='pg_dump --column-inserts --data-only -h caseworker.production.internal '
+dump_cmd='pg_dump --data-only -h caseworker.production.internal '
+
 export PGPASSWORD=${CASES_DB_PASS}
 echo "cases"
-$dump_cmd -U cases_full cases> cases.sql 
+$dump_cmd -U cases_full --format=t --file=/mnt/sql/cases.tar cases
 echo "caseworker"
-$dump_cmd -U cases_full caseworker > caseworker.sql 
+$dump_cmd -U cases_full --format=t --file=/mnt/sql/caseworker.tar caseworker
 echo "finance"
-$dump_cmd -U cases_full finance    > finance.sql 
+$dump_cmd -U cases_full --format=t --file=/mnt/sql/finance.tar finance
 echo "meris"
-$dump_cmd -U cases_full meris      > meris.sql 
+$dump_cmd -U cases_full --format=t --file=/mnt/sql/meris.tar meris
 
 
 export PGPASSWORD=${SIRIUS_DB_PASS}
 echo "sirius"
-$dump_cmd -U sirius_full sirius     > sirius.sql 
+$dump_cmd -U sirius_full --format=t --file=/mnt/sql/sirius.tar sirius

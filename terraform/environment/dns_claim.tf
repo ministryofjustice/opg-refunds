@@ -4,24 +4,12 @@ data "aws_route53_zone" "claim-power-of-attorney-refund_service_gov_uk" {
 }
 
 locals {
-  public_front_cloudfront_distribution_domain_name = "d3pm2jfxjwrqjc.cloudfront.net"
-  public_front_cloudfront_distribution_zone_id     = "Z2FDTNDATAQYW2"
-
-  claim_url_dns_target_dev_preprod = {
+  claim_url_dns_target = {
     alias = {
       name    = aws_lb.public_front.dns_name
       zone_id = aws_lb.public_front.zone_id
     }
   }
-
-  claim_url_dns_target_production = {
-    alias = {
-      name    = local.public_front_cloudfront_distribution_domain_name
-      zone_id = local.public_front_cloudfront_distribution_zone_id
-    }
-  }
-  #this condition is failing to select the correct set of load balancers
-  claim_url_dns_target = local.account_name == "production" ? local.claim_url_dns_target_production : local.claim_url_dns_target_dev_preprod
 }
 
 
