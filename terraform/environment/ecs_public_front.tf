@@ -25,6 +25,9 @@ resource "aws_ecs_service" "public_front" {
 
   depends_on = [aws_rds_cluster.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
   tags       = local.default_tags
+  lifecycle {
+    ignore_changes = ["desired_count"]
+  }
 }
 
 //----------------------------------

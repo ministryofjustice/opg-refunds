@@ -55,20 +55,20 @@ resource "aws_appautoscaling_target" "public_front" {
   service_namespace  = "ecs"
 }
 
-resource "aws_appautoscaling_policy" "track_metric" {
-  name               = "${local.environment}-tracked-metric"
+resource "aws_appautoscaling_policy" "cpu_track_metric" {
+  name               = "${local.environment}-public-front-cpu-target-tracking"
   policy_type        = "TargetTrackingScaling"
   resource_id        = aws_appautoscaling_target.public_front.resource_id
   scalable_dimension = aws_appautoscaling_target.public_front.scalable_dimension
   service_namespace  = aws_appautoscaling_target.public_front.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value       = "50"
+    target_value       = "1"
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
 
     predefined_metric_specification {
-      predefined_metric_type = 0
+      predefined_metric_type = "CpuUtilized"
     }
   }
 }
