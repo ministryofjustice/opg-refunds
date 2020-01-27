@@ -73,4 +73,20 @@ resource "aws_appautoscaling_policy" "cpu_track_metric" {
   }
 }
 
-# CloudWatch
+resource "aws_appautoscaling_policy" "memory_track_metric" {
+  name               = "${local.environment}-public-front-memory-target-tracking"
+  policy_type        = "TargetTrackingScaling"
+  resource_id        = aws_appautoscaling_target.public_front.resource_id
+  scalable_dimension = aws_appautoscaling_target.public_front.scalable_dimension
+  service_namespace  = aws_appautoscaling_target.public_front.service_namespace
+
+  target_tracking_scaling_policy_configuration {
+    target_value       = "10"
+    scale_in_cooldown  = 60
+    scale_out_cooldown = 60
+
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageMemoryUtilization"
+    }
+  }
+}
