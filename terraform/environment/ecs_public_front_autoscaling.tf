@@ -63,7 +63,7 @@ resource "aws_appautoscaling_policy" "cpu_track_metric" {
   service_namespace  = aws_appautoscaling_target.public_front.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value       = "1"
+    target_value       = "80"
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
 
@@ -81,7 +81,7 @@ resource "aws_appautoscaling_policy" "memory_track_metric" {
   service_namespace  = aws_appautoscaling_target.public_front.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value       = "10"
+    target_value       = "80"
     scale_in_cooldown  = 60
     scale_out_cooldown = 60
 
