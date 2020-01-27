@@ -68,7 +68,7 @@ resource "aws_appautoscaling_policy" "cpu_track_metric" {
     scale_out_cooldown = 60
 
     predefined_metric_specification {
-      predefined_metric_type = "CpuUtilized"
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }
   }
 }
