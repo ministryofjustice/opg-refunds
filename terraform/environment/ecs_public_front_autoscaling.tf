@@ -1,6 +1,6 @@
 # IAM
 resource "aws_iam_role" "public_front_autoscaling" {
-  name               = "${local.environment}-public-front-task-role"
+  name               = "${local.environment}-public-front-autoscaling-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
   tags               = local.default_tags
 }
