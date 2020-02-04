@@ -1,7 +1,7 @@
 ## Purpose
 _Briefly describe the purpose of the change, and/or link to the JIRA ticket for context_
 
-Fixes [LPA-####](https://opgtransform.atlassian.net/browse/LPA-####)
+Fixes LPA-####
 
 ## Approach
 
