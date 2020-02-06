@@ -23,6 +23,10 @@ resource "aws_ecs_service" "public_front" {
     container_port   = 80
   }
 
+  lifecycle {
+    ignore_changes = [desired_count]
+  }
+
   depends_on = [aws_rds_cluster.applications, aws_lb.public_front, aws_iam_role.public_front_task_role, aws_iam_role.execution_role]
   tags       = local.default_tags
 }
@@ -64,8 +68,8 @@ resource "aws_ecs_task_definition" "public_front" {
   family                   = "${local.environment}-public-front"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 2048
-  memory                   = 4096
+  cpu                      = 256
+  memory                   = 512
   container_definitions    = "[${local.public_front_web}, ${local.public_front_app}]"
   task_role_arn            = aws_iam_role.public_front_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn

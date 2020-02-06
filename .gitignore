@@ -10,3 +10,5 @@ migration/notes
 **_secrets_cli
 **vendor
 **.envrc
+tests/load_testing/geckodriver.log
+**__pycache__
