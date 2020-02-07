@@ -59,3 +59,7 @@ data "aws_kms_alias" "bank_encrypt_decrypt" {
 data "aws_iam_policy" "restrict_to_vpc_endpoints" {
   arn = "arn:aws:iam::${local.account.account_id}:policy/restrict-to-vpc-endpoints"
 }
+
+data "aws_iam_role" "ecs_autoscaling_service_role" {
+  name = "AWSServiceRoleForApplicationAutoScaling_ECSService"
+}
