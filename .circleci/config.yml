@@ -228,10 +228,6 @@ orbs:
               version: 18.06.0-ce
               docker_layer_caching: false
           - run:
-              name: checkout ecs branch for builds
-              command: |
-                git checkout LPA-3334-ecs-move
-          - run:
               name: Build caseworker-api-composer container
               command: |
                 if [ << parameters.build_composer_container >> = true ]; then
@@ -294,10 +290,6 @@ orbs:
           - setup_remote_docker:
               version: 18.06.0-ce
               docker_layer_caching: false
-          - run:
-              name: checkout ecs branch for builds
-              command: |
-                git checkout LPA-3334-ecs-move
           - run:
               name: Build caseworker-api-composer container
               command: |

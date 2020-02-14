@@ -13,7 +13,7 @@ use App\Service\Session\SessionManager;
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigResponseCookies;
 
-use Zend\Math\BigInteger\BigInteger;
+use ParagonIE\ConstantTime;
 
 use DateTime;
 
@@ -119,10 +119,6 @@ class SessionMiddleware implements ServerMiddlewareInterface
      */
     private function generateSessionId() : string
     {
-        return BigInteger::factory('bcmath')->baseConvert(
-            bin2hex(random_bytes(64)),
-            16,
-            62
-        );
+        return ConstantTime\Base64UrlSafe::encode(random_bytes(64));
     }
 }
