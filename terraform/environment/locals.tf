@@ -20,6 +20,7 @@ variable "accounts" {
       public_front_autoscaling_maximum             = number
       public_front_autoscaling_metric_track_cpu    = number
       public_front_autoscaling_metric_track_memory = number
+      opg_refunds_stack_type                       = string
     })
   )
 }

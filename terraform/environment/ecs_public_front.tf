@@ -217,7 +217,7 @@ locals {
   ],
     "environment": [
       { "name" : "OPG_LPA_STACK_NAME", "value": "${local.environment}" },
-      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" },
+      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "${local.environment}" },
       { "name" : "OPG_DOCKER_TAG", "value": "${var.container_version}"},
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_public_front.name}" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME", "value": "${aws_rds_cluster.applications.endpoint}" },
@@ -227,7 +227,7 @@ locals {
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" },
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID", "value": "UA-105655306-1" },
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOVID", "value": "UA-145652997-1" },
-      { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "testing" }
+      { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "${local.account.opg_refunds_stack_type}" }
     ]
   }
   EOF

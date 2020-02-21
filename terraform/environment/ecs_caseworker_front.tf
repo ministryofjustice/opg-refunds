@@ -209,8 +209,8 @@ locals {
   ],
     "environment": [
       { "name" : "OPG_LPA_STACK_NAME", "value": "${local.environment}" },
-      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "dev" },
-      { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "testing" },
+      { "name" : "OPG_LPA_STACK_ENVIRONMENT", "value": "${local.environment}" },
+      { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "${local.account.opg_refunds_stack_type}" },
       { "name" : "OPG_REFUNDS_CASEWORKER_FRONT_SESSION_DYNAMODB_TABLE", "value": "${aws_dynamodb_table.sessions_caseworker_front.name}" },
       { "name" : "API_URL", "value": "http://${local.caseworker_api_service_fqdn}" },
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_HOSTNAME", "value": "${aws_route53_record.public_front.fqdn}" }
