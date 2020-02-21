@@ -8,7 +8,7 @@ do
         exit 0
     fi
 done
- 
+
 # install php dependencies
 sudo yum remove php* -y
 sudo yum install php73 php73-pdo php73-pgsql postgresql jq -y
@@ -43,4 +43,3 @@ export PGPASSWORD=$(aws secretsmanager get-secret-value --secret-id $TF_WORKSPAC
 
 # Set cloud9 IP for ingress
 export CLOUD9_IP=$(ip route get 1 | awk '{print $NF;exit}')
-

@@ -14,7 +14,7 @@ APPLICATIONS_DB_ENDPOINT=$(aws rds describe-db-clusters --db-cluster-identifier 
 SCRIPTS_PATH="/mnt/opg-refunds/migration/sql_scripts"
 DATA_PATH="/mnt/sql"
 
-ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/postgres_password | jq -r .'SecretString') 
+ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/postgres_password | jq -r .'SecretString')
 CASES_MIGRATION_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/opg_refunds_db_cases_migration_password | jq -r .'SecretString')
 SIRIUS_MIGRATION_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/opg_refunds_db_sirius_migration_password | jq -r .'SecretString')
 APPLICATIONS_MIGRATION_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ENV_NAME}/opg_refunds_db_applications_migration_password | jq -r .'SecretString')

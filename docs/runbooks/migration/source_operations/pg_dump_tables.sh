@@ -16,13 +16,13 @@ pg_dump --data-only -h applications.production.internal -U refunds_master_full -
 
 #Caseworker DBs
 
-#     Name    |          Owner          | Encoding |   Collate   |    Ctype    |                  Access privileges                  
+#     Name    |          Owner          | Encoding |   Collate   |    Ctype    |                  Access privileges
 # ------------+-------------------------+----------+-------------+-------------+-----------------------------------------------------
 # cases      | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/refunds_caseworker_full                        +
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full+
 #            |                         |          |             |             | cases_full=c/refunds_caseworker_full               +
 #            |                         |          |             |             | cases_migration=CTc/refunds_caseworker_full
-# caseworker | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+# caseworker | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
 # finance    | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/refunds_caseworker_full                        +
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full+
 #            |                         |          |             |             | finance_full=c/refunds_caseworker_full             +
@@ -31,7 +31,7 @@ pg_dump --data-only -h applications.production.internal -U refunds_master_full -
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full+
 #            |                         |          |             |             | meris_full=c/refunds_caseworker_full               +
 #            |                         |          |             |             | meris_migration=CTc/refunds_caseworker_full
-# postgres   | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | 
+# postgres   | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 |
 # rdsadmin   | rdsadmin                | UTF8     | en_US.UTF-8 | en_US.UTF-8 | rdsadmin=CTc/rdsadmin
 # sirius     | refunds_caseworker_full | UTF8     | en_US.UTF-8 | en_US.UTF-8 | =Tc/refunds_caseworker_full                        +
 #            |                         |          |             |             | refunds_caseworker_full=CTc/refunds_caseworker_full+
