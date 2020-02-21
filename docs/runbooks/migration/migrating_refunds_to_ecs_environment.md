@@ -137,7 +137,7 @@ sudo pip3 install awscli --upgrade --user
 
 ```bash
 chmod 600 ~/Downloads/refunds-migration-target-instance.pem
-ssh-add ~/Downloads/refunds-migration-target-instance.pem  
+ssh-add ~/Downloads/refunds-migration-target-instance.pem
 ```
 
 ---
