@@ -34,9 +34,11 @@ function add_rds_sgs() {
   local caseworker_rds_client_sg
   local CURRENT_SG_IDS=()
 
+  echo "getting current sg names and instance id..."
   current_sg_names=$(curl -s http://169.254.169.254/latest/meta-data/security-groups)
   instance_id=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
 
+  echo "getting app rds sg id..."
   applications_rds_client_sg=$(
     aws ec2 describe-security-groups \
     --filters Name=group-name,Values="${environment_name}-applications-rds-cluster-client" \
@@ -44,6 +46,7 @@ function add_rds_sgs() {
     --output text
   )
 
+  echo "getting caseworker rds sg id..."
   caseworker_rds_client_sg=$(
     aws ec2 describe-security-groups \
     --filters Name=group-name,Values="${environment_name}-caseworker-rds-cluster-client" \
@@ -52,10 +55,11 @@ function add_rds_sgs() {
   )
 
   # if [[ $current_sg_names =~ "${environment_name}-caseworker-rds-cluster-client" ] || [ $current_sg_names =~ "${environment_name}-applications-rds-cluster-client" ]]; then
-  #   echo "Security Groups already attached"
+  #   echo "Security Groups already attached..."
   #   return
   # fi
 
+  echo "getting current (cloud9) sg id..."
   current_sg_id=$(
     aws ec2 describe-security-groups \
     --filters Name=group-name,Values=$current_sg_names \
@@ -63,6 +67,7 @@ function add_rds_sgs() {
     --output text
   )
 
+  echo "modifying cloud9..."
   aws ec2 modify-instance-attribute --groups "${current_sg_id}" "${caseworker_rds_client_sg}" "${applications_rds_client_sg}" --instance-id ${instance_id}
 }
 
