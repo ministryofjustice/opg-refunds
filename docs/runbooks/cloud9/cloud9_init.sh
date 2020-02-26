@@ -54,10 +54,10 @@ function add_rds_sgs() {
     --output text
   )
 
-  # if [[ $current_sg_names =~ "${environment_name}-caseworker-rds-cluster-client" ] || [ $current_sg_names =~ "${environment_name}-applications-rds-cluster-client" ]]; then
-  #   echo "Security Groups already attached..."
-  #   return
-  # fi
+  if [[ $current_sg_names =~ "${environment_name}-caseworker-rds-cluster-client" ] && [ $current_sg_names =~ "${environment_name}-applications-rds-cluster-client" ]]; then
+    echo "Security Groups already attached..."
+    return
+  fi
 
   echo "getting current (cloud9) sg id..."
   current_sg_id=$(
@@ -87,18 +87,7 @@ function setup_info() {
   echo "------------------------------------------------------------------------------------"
   echo "Caseworker PostgreSQL Instance set to $CASEWORKER_HOST"
   echo "------------------------------------------------------------------------------------"
-  echo "Use \$ELASTIC to curl"
-  echo "------------------------------------------------------------------------------------"
   echo ""
 }
-
-# for arg in "$@"
-# do
-#     if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
-#     then
-#         echo "Set up cloud9 environment with some tools. takes an environment name as an argument"
-#         exit 0
-#     fi
-# done
 
 main ${1:?}
