@@ -15,13 +15,13 @@ function install_tools() {
 function infer_account() {
   case "${1:?}" in
   'preproduction')
-  export ACCOUNT="Preproduction"
+  export ACCOUNT="${1:?}"
   ;;
   'production')
-  export ACCOUNT="Production"
+  export ACCOUNT="${1:?}"
   ;;
   *)
-  export ACCOUNT="Development"
+  export ACCOUNT="development"
   ;;
   esac
 }
