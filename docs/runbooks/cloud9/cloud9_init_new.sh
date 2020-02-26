@@ -39,14 +39,14 @@ function add_rds_sgs() {
 
   applications_rds_client_sg=$(
     aws ec2 describe-security-groups \
-    --filters Name=tag:Name,Values="${environment_name}-applications-rds-cluster-client" \
+    --filters Name=group-name,Values="${environment_name}-applications-rds-cluster-client" \
     --query "SecurityGroups[0].GroupId" \
     --output text
   )
 
   caseworker_rds_client_sg=$(
     aws ec2 describe-security-groups \
-    --filters Name=tag:Name,Values="${environment_name}-caseworker-rds-cluster-client" \
+    --filters Name=group-name,Values="${environment_name}-caseworker-rds-cluster-client" \
     --query "SecurityGroups[0].GroupId" \
     --output text
   )
