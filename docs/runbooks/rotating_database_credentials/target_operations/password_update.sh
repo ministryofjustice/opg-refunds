@@ -39,7 +39,7 @@ function setup() {
       ACCOUNT="development"
       ;;
   esac
-  if [ -z $APPLICATIONS_HOST] || [ -z $CASEWORKER_HOST] || [ -z $CASEWORKER_HOST]
+  if [ -z $APPLICATIONS_HOST ] || [ -z $CASEWORKER_HOST ]
   then
     echo "PGHOST cannot be set"
     exit
