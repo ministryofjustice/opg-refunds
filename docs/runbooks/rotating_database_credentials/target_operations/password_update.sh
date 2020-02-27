@@ -75,7 +75,7 @@ function redeploy_ecs_services() {
   aws ecs update-service --cluster ${ENVIRONMENT}-lpa-refunds --force-new-deployment --service caseworker-front
 }
 
-while getopts d:c:u: option
+while getopts e:d:c:u: option
 do
 case "${option}"
 in
