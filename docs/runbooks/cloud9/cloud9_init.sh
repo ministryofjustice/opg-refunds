@@ -4,7 +4,7 @@ function main() {
   infer_account ${1:?}
   add_rds_sgs ${1:?}
   postgresql ${1:?}
-  setup_info
+  setup_info ${1:?}
 }
 
 
