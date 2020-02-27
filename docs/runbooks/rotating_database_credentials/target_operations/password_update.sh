@@ -30,24 +30,29 @@ function print_variables() {
 function setup() {
   case "${ENVIRONMENT}" in
     'preproduction')
-      ACCOUNT="${1:?}"
+      ACCOUNT="${ENVIRONMENT}"
       ;;
     'production')
-      ACCOUNT="${1:?}"
+      ACCOUNT="${ENVIRONMENT}"
       ;;
     *)
       ACCOUNT="development"
       ;;
   esac
-
-  case $DB_NAME in
-    'applications')
-      PGHOST=${APPLICATIONS_HOST}
-      ;;
-    *)
-      PGHOST=${CASEWORKER_HOST}
-      ;;
-  esac
+  if [ -z $APPLICATIONS_HOST] || [ -z $CASEWORKER_HOST] || [ -z $CASEWORKER_HOST]
+  then
+    echo "PGHOST cannot be set"
+    exit
+  else
+    case $DB_NAME in
+      'applications')
+        PGHOST=${APPLICATIONS_HOST}
+        ;;
+      *)
+        PGHOST=${CASEWORKER_HOST}
+        ;;
+    esac
+  fi
 }
 
 function generate_new_password() {
@@ -76,56 +81,45 @@ function redeploy_ecs_services() {
 }
 
 function parse_args() {
-for arg in "$@"
-do
-    case $arg in
-        -e|--environment)
-        ENVIRONMENT="${arg#*=}"
-        shift # Remove --cache= from processing
-        ;;
-        -d|--database)
-        DB_NAME="${arg#*=}"
-        shift # Remove --cache= from processing
-        ;;
-        -c|--credential)
-        DB_CREDENTIAL="${arg#*=}"
-        shift # Remove --cache= from processing
-        ;;
-        -u|--username)
-        DB_USERNAME="${arg#*=}"
-        shift # Remove --cache= from processing
-        ;;
-    esac
-done
+  for arg in "$@"
+  do
+      case $arg in
+          -e|--environment)
+          ENVIRONMENT="$2"
+          shift
+          shift
+          ;;
+          -d|--database)
+          DB_NAME="$2"
+          shift
+          shift
+          ;;
+          -c|--credential)
+          DB_CREDENTIAL="$2"
+          shift
+          shift
+          ;;
+          -u|--username)
+          DB_USERNAME="$2"
+          shift
+          ;;
+          -t|--test)
+          TEST=True
+          shift
+          ;;
+      esac
+  done
+}
 
+function run() {
+  if [ $TEST = True ]
+  then
+    test_run
+  else
+    echo "run"
+  fi
+}
+
+TEST=False
 parse_args $@
-
-echo "ENVIRONMENT: $ENVIRONMENT"
-echo "DB_NAME: $DB_NAME"
-echo "DB_CREDENTIAL: $DB_CREDENTIAL"
-echo "DB_USERNAME: $DB_USERNAME"
-echo "ACCOUNT: $ACCOUNT"
-echo "PGHOST: $PGHOST"
-echo "PUT_SECRET_OPTS: $PUT_SECRET_OPTS"
-
-# while getopts e:d:c:u: option
-# do
-# case "${option}"
-# in
-# -e|--environment) ENVIRONMENT=${OPTARG};;
-# -d|--database) DB_NAME=${OPTARG};;
-# -c|--credential) DB_CREDENTIAL=${OPTARG};;
-# -u|--username) DB_USERNAME=${OPTARG};;
-# # t) TEST=${OPTARG};;
-# # h) echo "USAGE: source password_update.sh -e <ENVIRONMENT> -d <DATABASE> -c <CREDENTIAL_TO_BE_UPDATED> -u <USERNAME> -t true"
-# esac
-# done
-
-
-
-# if [ $TEST == 'true' ]
-# then
-test_run
-# else
-# run
-# fi
+run
