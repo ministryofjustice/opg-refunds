@@ -85,9 +85,9 @@ function setup_info() {
   echo "------------------------------------------------------------------------------------"
   echo "Connected to ${1:?} in the $ACCOUNT account"
   echo "------------------------------------------------------------------------------------"
-  echo "Applications - psql -h $APPLICATIONS_HOST postgres"
+  echo "Applications - psql -h \$APPLICATIONS_HOST postgres"
   echo "------------------------------------------------------------------------------------"
-  echo "Caseworker - psql -h $CASEWORKER_HOST postgres"
+  echo "Caseworker - psql -h \$CASEWORKER_HOST postgres"
   echo "------------------------------------------------------------------------------------"
   echo ""
 }
