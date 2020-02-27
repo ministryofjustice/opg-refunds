@@ -54,10 +54,10 @@ function add_rds_sgs() {
     --output text
   )
 
-  if [[ $current_sg_names =~ "${environment_name}-caseworker-rds-cluster-client" ] && [ $current_sg_names =~ "${environment_name}-applications-rds-cluster-client" ]]; then
-    echo "Security Groups already attached..."
-    return
-  fi
+  # if [[ $current_sg_names =~ "${environment_name}-caseworker-rds-cluster-client" ] || [ $current_sg_names =~ "${environment_name}-applications-rds-cluster-client" ]]; then
+  #   echo "Security Groups already attached..."
+  #   return
+  # fi
 
   echo "getting current (cloud9) sg id..."
   current_sg_id=$(
