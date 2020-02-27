@@ -88,6 +88,14 @@ u) DB_USERNAME=${OPTARG};;
 esac
 done
 
+echo "ENVIRONMENT: $ENVIRONMENT"
+echo "DB_NAME: $DB_NAME"
+echo "DB_CREDENTIAL: $DB_CREDENTIAL"
+echo "DB_USERNAME: $DB_USERNAME"
+echo "ACCOUNT: $ACCOUNT"
+echo "PGHOST: $PGHOST"
+echo "PUT_SECRET_OPTS: $PUT_SECRET_OPTS"
+
 
 # if [ $TEST == 'true' ]
 # then
