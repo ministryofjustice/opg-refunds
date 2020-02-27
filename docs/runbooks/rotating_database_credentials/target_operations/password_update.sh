@@ -63,7 +63,7 @@ function update_secret() {
   echo "putting new password..."
   aws secretsmanager put-secret-value \
   --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password \
-  --secret-string $(generate_new_password) $PUT_SECRET_OPTS
+  --secret-string "$(generate_new_password)" $PUT_SECRET_OPTS
 }
 
 function db_passwords_update() {
