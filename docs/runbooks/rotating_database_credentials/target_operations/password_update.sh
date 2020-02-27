@@ -49,6 +49,7 @@ function update_secret() {
   aws secretsmanager put-secret-value \
   --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password \
   --secret-string $(generate_new_password) $PUT_SECRET_OPTS
+}
 
 function db_passwords_update() {
   echo "updating password in db..."
@@ -72,15 +73,15 @@ e) ENVIRONMENT=${OPTARG};;
 d) DB_NAME=${OPTARG};;
 c) DB_CREDENTIAL=${OPTARG};;
 u) DB_USERNAME=${OPTARG};;
-t) TEST=${OPTARG};;
-h) echo "USAGE: password_update.sh -e <ENVIRONMENT> -d <DATABASE> -c <CREDENTIAL_TO_BE_UPDATED> -u <USERNAME> -t true"
+# t) TEST=${OPTARG};;
+# h) echo "USAGE: source password_update.sh -e <ENVIRONMENT> -d <DATABASE> -c <CREDENTIAL_TO_BE_UPDATED> -u <USERNAME> -t true"
 esac
 done
 
 
-if [ $TEST == 'true' ]
-then
+# if [ $TEST == 'true' ]
+# then
 test_run
-else
-run
-fi
+# else
+# run
+# fi
