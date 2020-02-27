@@ -83,9 +83,11 @@ function postgresql() {
 function setup_info() {
   echo ""
   echo "------------------------------------------------------------------------------------"
-  echo "Applications PostgreSQL Instance set to $APPLICATIONS_HOST"
+  echo "Connected to ${1:?} in the $ACCOUNT account"
   echo "------------------------------------------------------------------------------------"
-  echo "Caseworker PostgreSQL Instance set to $CASEWORKER_HOST"
+  echo "Applications - psql -h $APPLICATIONS_HOST postgres"
+  echo "------------------------------------------------------------------------------------"
+  echo "Caseworker - psql -h $CASEWORKER_HOST postgres"
   echo "------------------------------------------------------------------------------------"
   echo ""
 }
