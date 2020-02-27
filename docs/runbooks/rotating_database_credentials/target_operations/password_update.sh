@@ -10,11 +10,21 @@ function run() {
 
 function test_run() {
   setup
-  printenv
   PUT_SECRET_OPTS='--generate-cli-skeleton'
+  print_variables
   update_secret
   echo "updating password in db..."
   echo "redeploying services..."
+}
+
+function print_variables() {
+  echo "ENVIRONMENT: $ENVIRONMENT"
+  echo "DB_NAME: $DB_NAME"
+  echo "DB_CREDENTIAL: $DB_CREDENTIAL"
+  echo "DB_USERNAME: $DB_USERNAME"
+  echo "ACCOUNT: $ACCOUNT"
+  echo "PGHOST: $PGHOST"
+  echo "PUT_SECRET_OPTS: $PUT_SECRET_OPTS"
 }
 
 function setup() {
