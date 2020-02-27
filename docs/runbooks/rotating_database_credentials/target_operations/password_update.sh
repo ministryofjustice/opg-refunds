@@ -75,18 +75,30 @@ function redeploy_ecs_services() {
   aws ecs update-service --cluster ${ENVIRONMENT}-lpa-refunds --force-new-deployment --service caseworker-front
 }
 
-while getopts e:d:c:u: option
+function parse_args() {
+for arg in "$@"
 do
-case "${option}"
-in
-e) ENVIRONMENT=${OPTARG};;
-d) DB_NAME=${OPTARG};;
-c) DB_CREDENTIAL=${OPTARG};;
-u) DB_USERNAME=${OPTARG};;
-# t) TEST=${OPTARG};;
-# h) echo "USAGE: source password_update.sh -e <ENVIRONMENT> -d <DATABASE> -c <CREDENTIAL_TO_BE_UPDATED> -u <USERNAME> -t true"
-esac
+    case $arg in
+        -e|--environment)
+        ENVIRONMENT="${arg#*=}"
+        shift # Remove --cache= from processing
+        ;;
+        -d|--database)
+        DB_NAME="${arg#*=}"
+        shift # Remove --cache= from processing
+        ;;
+        -c|--credential)
+        DB_CREDENTIAL="${arg#*=}"
+        shift # Remove --cache= from processing
+        ;;
+        -u|--username)
+        DB_USERNAME="${arg#*=}"
+        shift # Remove --cache= from processing
+        ;;
+    esac
 done
+
+parse_args $@
 
 echo "ENVIRONMENT: $ENVIRONMENT"
 echo "DB_NAME: $DB_NAME"
@@ -95,6 +107,20 @@ echo "DB_USERNAME: $DB_USERNAME"
 echo "ACCOUNT: $ACCOUNT"
 echo "PGHOST: $PGHOST"
 echo "PUT_SECRET_OPTS: $PUT_SECRET_OPTS"
+
+# while getopts e:d:c:u: option
+# do
+# case "${option}"
+# in
+# -e|--environment) ENVIRONMENT=${OPTARG};;
+# -d|--database) DB_NAME=${OPTARG};;
+# -c|--credential) DB_CREDENTIAL=${OPTARG};;
+# -u|--username) DB_USERNAME=${OPTARG};;
+# # t) TEST=${OPTARG};;
+# # h) echo "USAGE: source password_update.sh -e <ENVIRONMENT> -d <DATABASE> -c <CREDENTIAL_TO_BE_UPDATED> -u <USERNAME> -t true"
+# esac
+# done
+
 
 
 # if [ $TEST == 'true' ]
