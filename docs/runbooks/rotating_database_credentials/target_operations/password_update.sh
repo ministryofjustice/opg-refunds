@@ -68,8 +68,9 @@ function update_secret() {
 
 function db_passwords_update() {
   echo "updating password in db..."
-  DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password | jq -r .'SecretString')
-  psql -v ON_ERROR_STOP=1 $DB_NAME < ../sql_scripts/password_update.sql
+  export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password | jq -r .'SecretString')
+  export ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/postgres_password | jq -r .'SecretString')
+  PGPASSWORD=${ROOT_PASSWORD} psql -v ON_ERROR_STOP=1 -d $DB_NAME < sql_scripts/password_update.sql
 }
 
 function redeploy_ecs_services() {
