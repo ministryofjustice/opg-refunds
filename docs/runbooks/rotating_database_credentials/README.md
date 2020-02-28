@@ -17,11 +17,7 @@ Go to the rotating_database_credentials path and execute the script.
 
 ``` bash
 cd ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials
-./target_operations/password_update.sh \
-  --environment preproduction \
-  --database applications \
-  --crdential applications_write \
-  --username applications
+./target_operations/password_update.sh --environment preproduction --database applications --credential applications_write --username applications
 ```
 
 You can perform a dry run with `--test true`
