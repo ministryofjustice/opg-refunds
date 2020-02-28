@@ -29,15 +29,15 @@ function print_variables() {
 
 function setup() {
   case "${ENVIRONMENT}" in
-    'preproduction')
-      ACCOUNT="${ENVIRONMENT}"
-      ;;
-    'production')
-      ACCOUNT="${ENVIRONMENT}"
-      ;;
-    *)
-      ACCOUNT="development"
-      ;;
+      'preproduction')
+        ACCOUNT="${ENVIRONMENT}"
+        ;;
+      'production')
+        ACCOUNT="${ENVIRONMENT}"
+        ;;
+      *)
+        ACCOUNT="development"
+        ;;
   esac
   if [ -z $APPLICATIONS_HOST ] || [ -z $CASEWORKER_HOST ]
   then
@@ -111,15 +111,15 @@ function parse_args() {
   done
 }
 
-function run() {
+function start() {
   if [ $TEST = True ]
   then
     test_run
   else
-    echo "run"
+    run
   fi
 }
 
 TEST=False
 parse_args $@
-run
+start
