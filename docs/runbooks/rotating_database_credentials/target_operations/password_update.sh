@@ -5,7 +5,7 @@ function run() {
   PUT_SECRET_OPTS=''
   update_secret
   db_passwords_update
-  redeploy_ecs_services
+  # redeploy_ecs_services
 }
 
 function test_run() {
@@ -18,13 +18,13 @@ function test_run() {
 }
 
 function print_variables() {
-  echo "ENVIRONMENT: $ENVIRONMENT"
-  echo "DB_NAME: $DB_NAME"
-  echo "DB_CREDENTIAL: $DB_CREDENTIAL"
-  echo "DB_USERNAME: $DB_USERNAME"
-  echo "ACCOUNT: $ACCOUNT"
-  echo "PGHOST: $PGHOST"
-  echo "PUT_SECRET_OPTS: $PUT_SECRET_OPTS"
+  echo "ENVIRONMENT: ${ENVIRONMENT}"
+  echo "DB_NAME: ${DB_NAME}"
+  echo "DB_CREDENTIAL: ${DB_CREDENTIAL}"
+  echo "DB_USERNAME: ${DB_USERNAME}"
+  echo "ACCOUNT: ${ACCOUNT}"
+  echo "PGHOST: ${PGHOST}"
+  echo "PUT_SECRET_OPTS: ${PUT_SECRET_OPTS}"
 }
 
 function setup() {
@@ -63,14 +63,15 @@ function update_secret() {
   echo "putting new password..."
   aws secretsmanager put-secret-value \
   --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password \
-  --secret-string "$(generate_new_password)" $PUT_SECRET_OPTS
+  --secret-string "$(generate_new_password)" ${PUT_SECRET_OPTS}
 }
 
 function db_passwords_update() {
   echo "updating password in db..."
   export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password | jq -r .'SecretString')
+  export DB_USERNAME=${DB_USERNAME}
   export ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/postgres_password | jq -r .'SecretString')
-  PGPASSWORD=${ROOT_PASSWORD} psql -v ON_ERROR_STOP=1 -d $DB_NAME < sql_scripts/password_update.sql
+  PGPASSWORD=${ROOT_PASSWORD} psql -v ON_ERROR_STOP=1 -d ${DB_NAME} < sql_scripts/password_update.sql
 }
 
 function redeploy_ecs_services() {
