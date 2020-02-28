@@ -5,7 +5,7 @@ function run() {
   PUT_SECRET_OPTS=''
   update_secret
   db_passwords_update
-  # redeploy_ecs_services
+  redeploy_ecs_services
 }
 
 function test_run() {
