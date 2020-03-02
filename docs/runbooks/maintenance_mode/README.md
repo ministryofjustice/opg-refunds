@@ -20,7 +20,7 @@ Set maintenance_mode to True to turn maintenance on
 cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 ./manage_maintenance.sh \
   --environment preproduction \
-  --maintenace_mode True
+  --maintenace_mode
 ```
 
 Set maintenance_mode to False to turn maintenance off
@@ -28,6 +28,5 @@ Set maintenance_mode to False to turn maintenance off
 ``` bash
 cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 ./manage_maintenance.sh \
-  --environment preproduction \
-  --maintenace_mode False
+  --environment preproduction
 ```
