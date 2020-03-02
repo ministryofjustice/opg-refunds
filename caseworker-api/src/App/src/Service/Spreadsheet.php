@@ -452,7 +452,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
         //Gets an array of historic refund dates
         $historicRefundDates = $this->getAllHistoricRefundDates();
 
-        $this->getLogger()->debug('1. Historic Refund Dates are :' . $this->$historicRefundDates);
+        $this->getLogger()->debug('1. Historic Refund Dates are :' . print_r($this->$historicRefundDates));
 
 
         $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
