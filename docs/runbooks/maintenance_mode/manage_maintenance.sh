@@ -2,11 +2,13 @@
 
 function enable_maintenance() {
   aws ssm put-parameter --name "${ENVIRONMENT}_enable_maintenance" --type "String" --value "true" --overwrite
+  terraform workspace select ${ENVIRONMENT}
   terraform apply --target aws_lb_listener_rule.public_front_maintenance --auto-approve
 }
 
 function disable_maintenance() {
   aws ssm put-parameter --name "${ENVIRONMENT}_enable_maintenance" --type "String" --value "false" --overwrite
+  terraform workspace select ${ENVIRONMENT}
   terraform apply --target aws_lb_listener_rule.public_front_maintenance --auto-approve
 }
 
