@@ -72,7 +72,7 @@ function db_passwords_update() {
   export DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_${DB_CREDENTIAL}_password | jq -r .'SecretString')
   export DB_USERNAME=${DB_USERNAME}
   export ROOT_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/postgres_password | jq -r .'SecretString')
-  PGPASSWORD=${ROOT_PASSWORD} psql -v ON_ERROR_STOP=1 -d ${DB_NAME} < ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials/sql_scripts/password_update.sql
+  PGPASSWORD=${ROOT_PASSWORD} psql -v ON_ERROR_STOP=1 -h ${PGHOST} -d ${DB_NAME} < ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials/sql_scripts/password_update.sql
 }
 
 function redeploy_ecs_services() {

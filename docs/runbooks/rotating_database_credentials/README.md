@@ -25,3 +25,34 @@ cd ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials
 ```
 
 You can perform a dry run with `--test true`
+
+
+### Example rotation procedure
+
+``` bash
+# Commands to replace a database credential
+
+git clone https://github.com/ministryofjustice/opg-refunds.git
+cd ~/environment/opg-refunds/
+git checkout LPA-3561
+
+. ~/environment/opg-refunds/docs/runbooks/cloud9/cloud9_init.sh preproduction
+
+~/environment/opg-refunds/docs/runbooks/maintenance_mode/manage_maintenance.sh \
+  --environment preproduction \
+  --maintenace_mode
+
+time ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials/target_operations/password_update.sh \
+  --environment preproduction \
+  --database applications \
+  --credential applications_write \
+  --username applications
+
+
+echo "Here we're doing some manual testing of refunds..."
+sleep 20
+
+~/environment/opg-refunds/docs/runbooks/maintenance_mode/manage_maintenance.sh \
+  --environment preproduction \
+  --disable_maintenace_mode
+  ```
