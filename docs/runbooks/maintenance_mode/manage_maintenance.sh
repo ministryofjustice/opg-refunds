@@ -38,6 +38,10 @@ function parse_args() {
           MAINTENACE_MODE=True
           shift
           ;;
+          -d|--disable_maintenace_mode)
+          MAINTENACE_MODE=False
+          shift
+          ;;
       esac
   done
 }
