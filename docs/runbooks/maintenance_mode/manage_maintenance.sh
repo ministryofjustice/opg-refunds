@@ -1,25 +1,28 @@
 #!/usr/bin/env bash
 
-function configure_terraform() {
-  export TF_VAR_default_role=${C9_USER}
-  export TF_VAR_old_account_default_role=${C9_USER}
-  export TF_CLI_ARGS_init="-backend-config=role_arn=arn:aws:iam::311462405659:role/${C9_USER} -upgrade=true  -reconfigure"
+function get_alb_rule_arn() {
+  ALB_ARN=$(aws elbv2 describe-load-balancers --names  ${ENVIRONMENT}-public-front | jq -r .[][]."LoadBalancerArn")
+  LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn $LB_ARN | jq -r '.[][]  | select(.Protocol == "HTTPS") | .ListenerArn')
+  RULE_ARN=$(aws elbv2 describe-rules --listener-arn $LISTENER_ARN | jq -r '.[][]  | select(.Priority == "1") | .RuleArn')
+  if [${ENVIRONMENT} = production]
+  then
+    DNS_PREFIX=""
+  else
+    DNS_PREFIX="${ENVIRONMENT}."
 }
 
 function enable_maintenance() {
   aws ssm put-parameter --name "${ENVIRONMENT}_enable_maintenance" --type "String" --value "true" --overwrite
-  cd ~/environment/opg-refunds/terraform/environment/
-  terraform init
-  terraform workspace select ${ENVIRONMENT}
-  terraform apply --target aws_lb_listener_rule.public_front_maintenance --auto-approve
+  aws elbv2 modify-rule \
+  --rule-arn $RULE_ARN \
+  --conditions Field=host-header,Values='${DNS_PREFIX}claim-power-of-attorney-refund.service.gov.uk'
 }
 
 function disable_maintenance() {
   aws ssm put-parameter --name "${ENVIRONMENT}_enable_maintenance" --type "String" --value "false" --overwrite
-  cd ~/environment/opg-refunds/terraform/environment/
-  terraform init
-  terraform workspace select ${ENVIRONMENT}
-  terraform apply --target aws_lb_listener_rule.public_front_maintenance --auto-approve
+  aws elbv2 modify-rule \
+  --rule-arn $RULE_ARN \
+  --conditions Field=path-pattern,Values='/maintenance'
 }
 
 function parse_args() {
@@ -50,5 +53,5 @@ function start() {
 
 MAINTENACE_MODE=False
 parse_args $@
-configure_terraform
+get_alb_rule_arn
 start
