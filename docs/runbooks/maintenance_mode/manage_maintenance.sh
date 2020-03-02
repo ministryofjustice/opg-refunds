@@ -43,7 +43,7 @@ function parse_args() {
 }
 
 function start() {
-  if [ $MAINTENACE_MODE = True ]
+  if [ $MAINTENACE_MODE = "True" ]
   then
     enable_maintenance
   else
