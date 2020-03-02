@@ -6,6 +6,7 @@ function run() {
   update_secret
   db_passwords_update
   redeploy_ecs_services
+  wait_for_ecs_services
 }
 
 function test_run() {
@@ -80,6 +81,16 @@ function redeploy_ecs_services() {
   aws ecs update-service --cluster ${ENVIRONMENT}-lpa-refunds --force-new-deployment --service ingestion
   aws ecs update-service --cluster ${ENVIRONMENT}-lpa-refunds --force-new-deployment --service caseworker_api
   aws ecs update-service --cluster ${ENVIRONMENT}-lpa-refunds --force-new-deployment --service caseworker-front
+}
+
+function wait_for_ecs_services() {
+  echo "waiting for services to finish redeploying..."
+  aws ecs wait services-stable \
+    --cluster ${ENVIRONMENT}-lpa-refunds \
+    --services caseworker_api \
+                public-front \
+                ingestion \
+                caseworker-front
 }
 
 function parse_args() {
