@@ -2,13 +2,14 @@
 
 function get_alb_rule_arn() {
   ALB_ARN=$(aws elbv2 describe-load-balancers --names  ${ENVIRONMENT}-public-front | jq -r .[][]."LoadBalancerArn")
-  LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn $LB_ARN | jq -r '.[][]  | select(.Protocol == "HTTPS") | .ListenerArn')
-  RULE_ARN=$(aws elbv2 describe-rules --listener-arn $LISTENER_ARN | jq -r '.[][]  | select(.Priority == "1") | .RuleArn')
+  LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn ${LB_ARN} | jq -r '.[][]  | select(.Protocol == "HTTPS") | .ListenerArn')
+  RULE_ARN=$(aws elbv2 describe-rules --listener-arn ${LISTENER_ARN} | jq -r '.[][]  | select(.Priority == "1") | .RuleArn')
   if [${ENVIRONMENT} = production]
   then
     DNS_PREFIX=""
   else
     DNS_PREFIX="${ENVIRONMENT}."
+  fi
 }
 
 function enable_maintenance() {
