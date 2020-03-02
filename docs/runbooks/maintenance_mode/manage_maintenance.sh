@@ -57,7 +57,5 @@ function start() {
 
 MAINTENACE_MODE=False
 parse_args $@
-echo $ENVIRONMENT
-echo $MAINTENACE_MODE
 get_alb_rule_arn
 start
