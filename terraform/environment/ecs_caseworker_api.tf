@@ -225,8 +225,8 @@ locals {
       { "name" : "OPG_REFUNDS_DB_CASES_HOSTNAME", "value": "${aws_rds_cluster.caseworker.endpoint}" },
       { "name" : "OPG_REFUNDS_DB_CASES_PORT", "value": "5432" },
       { "name" : "OPG_REFUNDS_DB_CASES_NAME", "value": "cases" },
-      { "name" : "OPG_REFUNDS_DB_CASES_FULL_USERNAME", "value": "cases_full" }
-      { "name" : "OPG_REFUNDS_DELETE_AFTER_HISTORICAL_REFUND_DATES", "value": "${local.account.opg_refunds_delete_after_historical_refund_dates}"}
+      { "name" : "OPG_REFUNDS_DB_CASES_FULL_USERNAME", "value": "cases_full" },
+      { "name" : "OPG_REFUNDS_DELETE_AFTER_HISTORICAL_REFUND_DATES", "value": "${local.account.days_to_wait_before_expiry}"}
     ]
     }
   EOF

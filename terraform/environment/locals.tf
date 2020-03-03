@@ -11,17 +11,17 @@ variable "container_version" {
 variable "accounts" {
   type = map(
     object({
-      account_id                                       = string
-      is_production                                    = bool
-      aurora_serverless_auto_pause                     = bool
-      database_deletion_protection                     = bool
-      has_cloudfront_distribution                      = bool
-      prefix_enabled                                   = bool
-      public_front_autoscaling_maximum                 = number
-      public_front_autoscaling_metric_track_cpu        = number
-      public_front_autoscaling_metric_track_memory     = number
-      opg_refunds_stack_type                           = string
-      opg_refunds_delete_after_historical_refund_dates = number
+      account_id                                   = string
+      is_production                                = bool
+      aurora_serverless_auto_pause                 = bool
+      database_deletion_protection                 = bool
+      has_cloudfront_distribution                  = bool
+      prefix_enabled                               = bool
+      public_front_autoscaling_maximum             = number
+      public_front_autoscaling_metric_track_cpu    = number
+      public_front_autoscaling_metric_track_memory = number
+      opg_refunds_stack_type                       = string
+      days_to_wait_before_expiry                   = number
 
     })
   )
