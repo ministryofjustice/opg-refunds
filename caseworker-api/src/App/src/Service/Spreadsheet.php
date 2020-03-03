@@ -449,20 +449,13 @@ class Spreadsheet implements Initializer\LogSupportInterface
 
     private function clearBankDetails()
     {
-        //Gets an array of historic refund dates
         $historicRefundDates = $this->getAllHistoricRefundDates();
 
-        $this->getLogger()->debug('1. Historic Refund Dates are :' . print_r($this->$historicRefundDates));
-
-
         $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
-        $this->getLogger()->debug('2. The deleteAfterHistoricalRefundDates variable is :' . $this->$deleteAfterHistoricalRefundDates);
-
         if (count($historicRefundDates) >= $deleteAfterHistoricalRefundDates) {
             $start = microtime(true);
 
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
-            $this->getLogger()->debug('3. The deleteAfterHistoricalRefundDate variable is :' . $this->$deleteAfterHistoricalRefundDate);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 'UPDATE claim SET json_data = json_data #- \'{account,details}\' WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
