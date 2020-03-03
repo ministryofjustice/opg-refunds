@@ -214,8 +214,6 @@ class Spreadsheet implements Initializer\LogSupportInterface
         }
 
         $this->getLogger()->debug('Historic refund dates retrieved in ' . $this->getElapsedTimeInMs($start) . 'ms');
-
-        //returns an array of historic refund dates
         return $historicRefundDates;
     }
 
