@@ -3,6 +3,9 @@ import boto3
 import argparse
 import json
 import os
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
 
 
 class ECSMonitor:
@@ -55,6 +58,7 @@ class ECSMonitor:
     def read_parameters_from_file(self, config_file):
         with open(config_file) as json_file:
             parameters = json.load(json_file)
+            pp.pprint(parameters)
             self.aws_account_id = parameters['account_id']
             self.aws_ecs_cluster = parameters['cluster_name']
             self.environment = parameters['environment']
