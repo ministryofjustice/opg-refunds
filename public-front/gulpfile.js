@@ -32,7 +32,7 @@ const govukTemplateImages = `${paths.modules}/govuk_frontend_toolkit/images/**/*
 
 // Vendor JavaScript files
 const vendorModules = [
-  `${paths.modules}/govuk_template_jinja/assets/javascripts/govuk-template.js`,
+  //`${paths.modules}/govuk_template_jinja/assets/javascripts/govuk-template.js`,
   `${paths.modules}/jquery/dist/jquery.min.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/show-hide-content.js`,
   `${paths.modules}/govuk_frontend_toolkit/javascripts/govuk/details.polyfill.js`
@@ -44,7 +44,9 @@ const applicationModules = [
   `${paths.src}/js/app/scroll-to-hash.js`,
   `${paths.src}/js/app/print-link.js`,
   `${paths.src}/js/app/single-use.js`,
-  `${paths.src}/js/app/application.js`
+  `${paths.src}/js/app/cookie-functions.js`,
+  `${paths.src}/js/app/cookie-consent.js`,
+  `${paths.src}/js/app/application.js`,
 ];
 
 // Analytics JavaScript files

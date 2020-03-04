@@ -17,4 +17,6 @@ $(document).ready(function () {
   new GOVUK.Print('.print')
 
   new GOVUK.SingleUse('.js-single-use')
+
+  new GOVUK.CookieConsent()
 })
