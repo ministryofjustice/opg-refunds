@@ -40,7 +40,7 @@ git checkout LPA-3561
 
 ~/environment/opg-refunds/docs/runbooks/maintenance_mode/manage_maintenance.sh \
   --environment preproduction \
-  --maintenace_mode
+  --maintenance_mode
 
 time ~/environment/opg-refunds/docs/runbooks/rotating_database_credentials/target_operations/password_update.sh \
   --environment preproduction \
@@ -54,5 +54,5 @@ sleep 20
 
 ~/environment/opg-refunds/docs/runbooks/maintenance_mode/manage_maintenance.sh \
   --environment preproduction \
-  --disable_maintenace_mode
+  --disable_maintenance_mode
   ```

@@ -34,12 +34,12 @@ function parse_args() {
           shift
           shift
           ;;
-          -m|--maintenace_mode)
-          MAINTENACE_MODE=True
+          -m|--maintenance_mode)
+          MAINTENANCE_MODE=True
           shift
           ;;
-          -d|--disable_maintenace_mode)
-          MAINTENACE_MODE=False
+          -d|--disable_maintenance_mode)
+          MAINTENANCE_MODE=False
           shift
           ;;
       esac
@@ -47,7 +47,7 @@ function parse_args() {
 }
 
 function start() {
-  if [ $MAINTENACE_MODE = "True" ]
+  if [ $MAINTENANCE_MODE = "True" ]
   then
     enable_maintenance
   else
@@ -55,7 +55,7 @@ function start() {
   fi
 }
 
-MAINTENACE_MODE=False
+MAINTENAnCE_MODE=False
 parse_args $@
 get_alb_rule_arn
 start
