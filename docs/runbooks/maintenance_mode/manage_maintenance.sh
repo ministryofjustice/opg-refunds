@@ -55,7 +55,7 @@ function start() {
   fi
 }
 
-MAINTENAnCE_MODE=False
+MAINTENANCE_MODE=False
 parse_args $@
 get_alb_rule_arn
 start
