@@ -449,11 +449,16 @@ class Spreadsheet implements Initializer\LogSupportInterface
     {
         $historicRefundDates = $this->getAllHistoricRefundDates();
 
+        $this->getLogger()->notice('1. Historic Refund Dates retrieved are :' .implode("','",$this->$historicRefundDates)."'");
+
         $deleteAfterHistoricalRefundDates = $this->spreadsheetConfig['delete_after_historical_refund_dates'];
+        $this->getLogger()->notice('2. The deleteAfterHistoricalRefundDates variable is :' . $this->$deleteAfterHistoricalRefundDates);
+
         if (count($historicRefundDates) >= $deleteAfterHistoricalRefundDates) {
             $start = microtime(true);
 
             $deleteAfterHistoricalRefundDate = new DateTime($historicRefundDates[$deleteAfterHistoricalRefundDates - 1]);
+            $this->getLogger()->notice('3. The deleteAfterHistoricalRefundDate - last date in array is :' . $this->$deleteAfterHistoricalRefundDate);
 
             $statement = $this->entityManager->getConnection()->executeQuery(
                 'UPDATE claim SET json_data = json_data #- \'{account,details}\' WHERE id IN (SELECT c.id FROM claim c LEFT OUTER JOIN payment p ON c.id = p.claim_id WHERE (c.json_data->\'account\'->\'details\') IS NOT NULL AND ((status = \'rejected\' AND finished_datetime < :date) OR p.added_datetime < :date))',
@@ -466,7 +471,7 @@ class Spreadsheet implements Initializer\LogSupportInterface
             $this->getLogger()->debug('Bank details deleted in ' . $this->getElapsedTimeInMs($start) . 'ms');
 
             if ($updateCount > 0) {
-                $this->getLogger()->notice("Bank details for $updateCount claim(s) were deleted");
+                $this->getLogger()->notice("Bank details for $updateCount claim(s) were deleted from date" .$deleteAfterHistoricalRefundDate->format('Y-m-d'));
             }
 
             $start = microtime(true);
