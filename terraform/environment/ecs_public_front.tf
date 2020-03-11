@@ -225,8 +225,8 @@ locals {
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_NAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_DB_APPLICATIONS_WRITE_USERNAME", "value": "applications" },
       { "name" : "OPG_REFUNDS_PUBLIC_FRONT_KMS_ENCRYPT_KEY_ALIAS", "value": "${data.aws_kms_alias.bank_encrypt_decrypt.name}" },
-      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID", "value": "UA-105655306-1" },
-      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOVID", "value": "UA-145652997-1" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID", "value": "${local.account.opg_refunds_google_analytics_tracking_id}" },
+      { "name" : "OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOV_ID", "value": "${local.account.opg_refunds_google_analytics_tracking_gov_id}" },
       { "name" : "OPG_REFUNDS_STACK_TYPE", "value": "${local.account.opg_refunds_stack_type}" }
     ]
   }

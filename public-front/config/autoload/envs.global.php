@@ -17,7 +17,7 @@ return [
     'analytics' => [
         'google' => [
             'id' => getenv('OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_ID') ?: null,
-            'govId' => getenv('OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOVID') ?: null,
+            'govId' => getenv('OPG_REFUNDS_PUBLIC_FRONT_GOOGLE_ANALYTICS_TRACKING_GOV_ID') ?: null,
         ],
     ],
 
@@ -55,7 +55,7 @@ return [
         ],
 
     ],
-    
+
     'security' => [
 
         'kms' => [
