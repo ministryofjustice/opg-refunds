@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\Digits as ZendDigits;
+use Laminas\Validator\Digits as ZendDigits;
 
 class Digits extends ZendDigits
 {

@@ -1,7 +1,7 @@
 <?php
 namespace App\Filter;
 
-use Zend\Filter;
+use Laminas\Filter;
 
 /**
  * Standard filters that should be applied ot most text inputs.

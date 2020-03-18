@@ -2,7 +2,7 @@
 namespace App\Action;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 use App\Form\WhenFeesPaid;
 
 class WhenFeesPaidAction extends AbstractAction
@@ -13,7 +13,7 @@ class WhenFeesPaidAction extends AbstractAction
 
         $form = new WhenFeesPaid();
 
-        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
+        $matchedRoute = $request->getAttribute('Mezzio\Router\RouteResult')->getMatchedRouteName();
 
         if ($matchedRoute === 'eligibility.when.answer') {
             $form->setData($request->getQueryParams());

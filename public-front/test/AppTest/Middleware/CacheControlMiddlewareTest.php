@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 
 use Prophecy\Argument;
 
-use Zend\Expressive\Router\RouteResult;
-use Zend\Diactoros\Response as RealResponse;
+use Mezzio\Router\RouteResult;
+use Laminas\Diactoros\Response as RealResponse;
 
 use App\Middleware\CacheControlMiddleware;
 

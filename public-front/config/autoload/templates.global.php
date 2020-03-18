@@ -1,9 +1,9 @@
 <?php
 
 use League\Plates\Engine as PlatesEngine;
-use Zend\Expressive\Plates\PlatesEngineFactory;
-use Zend\Expressive\Plates\PlatesRendererFactory;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Plates\PlatesEngineFactory;
+use Mezzio\Plates\PlatesRendererFactory;
+use Mezzio\Template\TemplateRendererInterface;
 
 return [
     'dependencies' => [

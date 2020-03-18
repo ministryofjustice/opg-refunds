@@ -5,7 +5,7 @@ use App\Service\Session\Session;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 class SessionFinishedAction extends AbstractAction
 {

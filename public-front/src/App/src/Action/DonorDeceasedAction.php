@@ -3,7 +3,7 @@ namespace App\Action;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 use App\Form;
 use App\Service\Refund\FlowController;
@@ -13,7 +13,7 @@ class DonorDeceasedAction extends AbstractAction
 
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface
     {
-        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
+        $matchedRoute = $request->getAttribute('Mezzio\Router\RouteResult')->getMatchedRouteName();
 
         if ($matchedRoute === 'eligibility.donor.deceased') {
             return new Response\HtmlResponse(

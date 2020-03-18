@@ -23,15 +23,15 @@ declare(strict_types=1);
  * $app->route(
  *     '/contact',
  *     App\Action\ContactAction::class,
- *     Zend\Expressive\Router\Route::HTTP_METHOD_ANY,
+ *     Mezzio\Router\Route::HTTP_METHOD_ANY,
  *     'contact'
  * );
  */
 
 //Assisted digital entry point
 return function (
-    \Zend\Expressive\Application $app,
-    \Zend\Expressive\MiddlewareFactory $factory,
+    \Mezzio\Application $app,
+    \Mezzio\MiddlewareFactory $factory,
     \Psr\Container\ContainerInterface $container
 ) : void {
 $app->get('/assisted-digital/{token}', App\Action\AssistedDigitalAction::class, 'ad');

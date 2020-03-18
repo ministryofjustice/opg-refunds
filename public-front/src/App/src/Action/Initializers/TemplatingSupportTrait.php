@@ -3,7 +3,7 @@
 namespace App\Action\Initializers;
 
 use UnexpectedValueException;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Getter and Setter, implementing the TemplatingSupportInterface.

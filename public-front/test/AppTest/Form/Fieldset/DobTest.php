@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use DateTime;
 use DateInterval;
 
-use Zend\Form\Form as ZendForm;
-use Zend\InputFilter\InputFilter;
+use Laminas\Form\Form as LaminasForm;
+use Laminas\InputFilter\InputFilter;
 
 use App\Form\Fieldset\Dob;
 
@@ -18,9 +18,9 @@ class DobTest extends TestCase
      * Returns a Dob instance, wrapped ina Form, so it can be validated.
      * Sets up the fieldset as per App\Form\ActorDetails
      */
-    private function getDobWrappedInForm() : ZendForm
+    private function getDobWrappedInForm() : LaminasForm
     {
-        $form = new ZendForm;
+        $form = new LaminasForm;
 
         $inputFilter = new InputFilter;
         $form->setInputFilter($inputFilter);

@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\Between as ZendBetween;
+use Laminas\Validator\Between as ZendBetween;
 
 class Between extends ZendBetween
 {

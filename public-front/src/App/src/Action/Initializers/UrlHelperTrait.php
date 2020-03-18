@@ -3,7 +3,7 @@
 namespace App\Action\Initializers;
 
 use UnexpectedValueException;
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Getter and Setter, implementing the UrlHelperInterface.

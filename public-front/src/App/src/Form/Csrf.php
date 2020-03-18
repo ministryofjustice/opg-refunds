@@ -1,7 +1,7 @@
 <?php
 namespace App\Form;
 
-use Zend\InputFilter\InputFilter;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Generic form for when only a CSRF field is required.

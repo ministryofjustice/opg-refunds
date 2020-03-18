@@ -2,7 +2,7 @@
 namespace App\Service\Refund\Data;
 
 use Aws\Kms\KmsClient;
-use Zend\Crypt\PublicKey\Rsa as RsaCipher;
+use Laminas\Crypt\PublicKey\Rsa as RsaCipher;
 
 class BankDetailsHandler
 {

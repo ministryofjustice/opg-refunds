@@ -5,7 +5,7 @@ use PHPUnit\Framework\TestCase;
 
 use App\Service\Refund\ProcessApplication;
 
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 use Alphagov\Notifications\Client as NotifyClient;
 use App\Service\Refund\Data\DataHandlerInterface;
 

@@ -4,7 +4,7 @@ namespace AppTest\Validator;
 use Prophecy\Argument;
 use PHPUnit\Framework\TestCase;
 
-use Zend\Validator\ValidatorInterface;
+use Laminas\Validator\ValidatorInterface;
 
 use App\Validator\AllowEmptyValidatorWrapper;
 

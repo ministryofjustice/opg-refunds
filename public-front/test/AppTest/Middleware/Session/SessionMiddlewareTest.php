@@ -8,8 +8,8 @@ use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
-use Zend\Expressive\Router\RouteResult;
-use Zend\Diactoros\Response as RealResponse;
+use Mezzio\Router\RouteResult;
+use Laminas\Diactoros\Response as RealResponse;
 
 use App\Service\Session\SessionManager;
 use App\Middleware\Session\SessionMiddleware;

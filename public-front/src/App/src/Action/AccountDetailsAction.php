@@ -5,7 +5,7 @@ use App\Form;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 use App\Service\Refund\FlowController;
 use App\Service\Refund\Data\BankDetailsHandler;

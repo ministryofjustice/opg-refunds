@@ -6,7 +6,7 @@ use App\Service\Refund\FlowController;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 class DonorDetailsAction extends AbstractAction
 {

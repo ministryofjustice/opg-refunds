@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\StringLength as ZendStringLength;
+use Laminas\Validator\StringLength as ZendStringLength;
 
 class StringLength extends ZendStringLength
 {

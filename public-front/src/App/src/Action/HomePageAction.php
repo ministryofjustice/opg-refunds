@@ -3,7 +3,7 @@ namespace App\Action;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 class HomePageAction extends AbstractAction
 {

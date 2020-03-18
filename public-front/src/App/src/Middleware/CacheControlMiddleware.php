@@ -31,7 +31,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
 
         $response = $delegate->handle($request);
 
-        $route = $request->getAttribute('Zend\Expressive\Router\RouteResult');
+        $route = $request->getAttribute('Mezzio\Router\RouteResult');
 
         if (is_null($route)) {
             // No app route matched, thus don't add caching
