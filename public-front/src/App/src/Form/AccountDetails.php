@@ -1,10 +1,10 @@
 <?php
 namespace App\Form;
 
-use Zend\Form\Element;
-use Zend\Filter;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
+use Laminas\Form\Element;
+use Laminas\Filter;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;

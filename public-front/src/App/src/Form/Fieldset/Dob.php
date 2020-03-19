@@ -3,12 +3,12 @@ namespace App\Form\Fieldset;
 
 use DateTime;
 
-use Zend\Form\Element;
-use Zend\InputFilter\Input;
-use Zend\Form\Fieldset;
-use Zend\InputFilter\InputFilter;
-use Zend\Validator\Callback;
-use Zend\Validator\ValidatorInterface;
+use Laminas\Form\Element;
+use Laminas\InputFilter\Input;
+use Laminas\Form\Fieldset;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\Callback;
+use Laminas\Validator\ValidatorInterface;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;

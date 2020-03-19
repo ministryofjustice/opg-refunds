@@ -3,8 +3,8 @@
 namespace App\Action\Initializers;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Laminas\ServiceManager\Initializer\InitializerInterface;
+use Mezzio\Template\TemplateRendererInterface;
 
 /**
  * Initialize Action middleware with support for rendering.

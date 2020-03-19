@@ -6,7 +6,7 @@ use App;
 use Throwable;
 
 use Psr\Http\Server\RequestHandlerInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Interop\Container\ContainerInterface;

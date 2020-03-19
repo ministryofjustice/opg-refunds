@@ -18,7 +18,7 @@ abstract class AbstractAction implements
     {
         $session = $request->getAttribute('session');
 
-        $matchedRoute = $request->getAttribute('Zend\Expressive\Router\RouteResult')->getMatchedRouteName();
+        $matchedRoute = $request->getAttribute('Mezzio\Router\RouteResult')->getMatchedRouteName();
 
         return FlowController::routeAccessible($matchedRoute, $session);
     }

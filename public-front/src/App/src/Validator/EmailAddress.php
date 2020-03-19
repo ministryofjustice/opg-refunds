@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\EmailAddress as ZendEmailAddress;
+use Laminas\Validator\EmailAddress as ZendEmailAddress;
 
 class EmailAddress extends ZendEmailAddress
 {

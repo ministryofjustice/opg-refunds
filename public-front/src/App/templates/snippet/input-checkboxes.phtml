@@ -6,7 +6,7 @@ $elementId = "id-{$formElement->getName()}";
 $hasErrors = !empty($formElement->getMessages());
 
 // Can there be multiple values
-$multiple = ( $formElement instanceof \Zend\Form\Element\MultiCheckbox );
+$multiple = ( $formElement instanceof \Laminas\Form\Element\MultiCheckbox );
 
 // Currently checked values
 $vales = $formElement->getValue() ?? array();

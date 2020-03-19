@@ -1,17 +1,17 @@
 <?php
 namespace App\Form;
 
-use Zend\Form\Form as ZendForm;
-use Zend\Form\FormInterface;
+use Laminas\Form\Form as LaminasForm;
+use Laminas\Form\FormInterface;
 
-use Zend\Form\Element;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
+use Laminas\Form\Element;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 
 use App\Validator;
-use Zend\Filter;
+use Laminas\Filter;
 
-class AbstractForm extends ZendForm
+class AbstractForm extends LaminasForm
 {
 
     protected function addCsrfElement(InputFilter $inputFilter)

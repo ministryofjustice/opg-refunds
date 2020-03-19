@@ -4,7 +4,7 @@ namespace App\Action;
 use DateTime;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 use Dflydev\FigCookies\SetCookie;
 use Dflydev\FigCookies\FigResponseCookies;

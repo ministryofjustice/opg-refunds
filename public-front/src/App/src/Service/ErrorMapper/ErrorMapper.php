@@ -1,7 +1,7 @@
 <?php
 namespace App\Service\ErrorMapper;
 
-use Zend\Stdlib\ArrayUtils;
+use Laminas\Stdlib\ArrayUtils;
 
 class ErrorMapper
 {

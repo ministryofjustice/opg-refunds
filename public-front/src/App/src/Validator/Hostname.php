@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\Hostname as ZendHostname;
+use Laminas\Validator\Hostname as ZendHostname;
 
 class Hostname extends ZendHostname
 {

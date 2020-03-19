@@ -3,7 +3,7 @@ namespace App\Service\Refund\AssistedDigital;
 
 use UnexpectedValueException;
 use Base64Url\Base64Url;
-use Zend\Crypt\Key\Derivation\Pbkdf2;
+use Laminas\Crypt\Key\Derivation\Pbkdf2;
 
 class LinkToken
 {

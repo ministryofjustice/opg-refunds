@@ -3,8 +3,8 @@
 namespace App\Action\Initializers;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
-use Zend\Expressive\Helper\UrlHelper;
+use Laminas\ServiceManager\Initializer\InitializerInterface;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Initialize Action middleware with support for the UrlHelper.
