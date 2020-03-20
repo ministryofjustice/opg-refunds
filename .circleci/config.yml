@@ -366,7 +366,7 @@ orbs:
           environment_workspace:
             description: Terraform workspace name
             type: string
-            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_%/]/}"
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH}"
         executor: terraform
         steps:
           - checkout
@@ -424,7 +424,7 @@ orbs:
           workspace:
             description: Terraform workspace name
             type: string
-            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_%/]/}"
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH}"
         steps:
           - checkout
           - run:
@@ -451,7 +451,7 @@ orbs:
           workspace:
             description: Terraform workspace name
             type: string
-            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_%/]/}"
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH}"
         steps:
           - checkout
           - attach_workspace:
@@ -480,7 +480,7 @@ orbs:
           workspace:
             description: Terraform workspace name
             type: string
-            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_%/]/}"
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH}"
         steps:
           - checkout
           - attach_workspace:
@@ -533,7 +533,7 @@ orbs:
           workspace:
             description: Terraform workspace name
             type: string
-            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH//[-_%/]/}"
+            default: "${CIRCLE_PULL_REQUEST##*/}-${CIRCLE_BRANCH}"
         steps:
           - checkout
           - run:
