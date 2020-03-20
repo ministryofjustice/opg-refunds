@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Laminas\Validator\Between as ZendBetween;
+use Laminas\Validator\Between as LaminasBetween;
 
-class Between extends ZendBetween
+class Between extends LaminasBetween
 {
 
     protected $messageTemplates = [

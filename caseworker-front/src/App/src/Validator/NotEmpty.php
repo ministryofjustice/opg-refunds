@@ -2,13 +2,13 @@
 
 namespace App\Validator;
 
-use Laminas\Validator\NotEmpty as ZendNotEmpty;
+use Laminas\Validator\NotEmpty as LaminasNotEmpty;
 
 /**
  * Class NotEmpty
  * @package App\Validator
  */
-class NotEmpty extends ZendNotEmpty
+class NotEmpty extends LaminasNotEmpty
 {
     /**
      * @var array
