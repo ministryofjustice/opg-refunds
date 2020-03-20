@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
-function name_tag() {
+name_tag()
+{
   branch=$1
   branch=${branch//-}
   branch=${branch//_}
