@@ -497,7 +497,7 @@ orbs:
                 if [ <<parameters.workspace>> != "production" ]; then
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                  export TF_WORKSPACE=$(bash ~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform apply -lock-timeout=300s -auto-approve
                 fi
@@ -511,7 +511,7 @@ orbs:
                 if [ <<parameters.workspace>> != "production" ]; then
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                  export TF_WORKSPACE=$(bash ~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
