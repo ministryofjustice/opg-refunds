@@ -8,5 +8,10 @@ function name_workspace() {
   workspace=$(echo $workspace | tr '[:upper:]' '[:lower:]')
   echo $workspace
 }
-
-echo $(name_workspace $1)
+workspace_name=$(name_workspace $1)
+  if [ -z "$workspace_name" ]
+    then
+          exit 1
+    else
+          echo $workspace_name
+    fi
