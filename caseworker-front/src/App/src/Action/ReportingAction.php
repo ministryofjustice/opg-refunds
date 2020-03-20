@@ -5,7 +5,7 @@ namespace App\Action;
 use App\Service\Reporting\Reporting as ReportingService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 /**
  * Class ReportingAction

@@ -10,8 +10,8 @@ use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Fig\Http\Message\RequestMethodInterface;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 /**
  * Class ClaimSearchAction

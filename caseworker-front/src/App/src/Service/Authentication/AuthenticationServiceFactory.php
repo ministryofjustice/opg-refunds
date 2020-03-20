@@ -3,7 +3,7 @@
 namespace App\Service\Authentication;
 
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
+use Laminas\Authentication\AuthenticationService;
 
 class AuthenticationServiceFactory
 {

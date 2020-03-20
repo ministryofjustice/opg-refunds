@@ -4,9 +4,9 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element\Textarea;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
+use Laminas\Form\Element\Textarea;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class Note

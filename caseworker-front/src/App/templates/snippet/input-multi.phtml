@@ -28,7 +28,7 @@ $value = $formElement->getValue();
 
             <div class="multiple-choice" <?php if (isset($option['dataTargetMarkup'])): ?>data-target="<?= "{$elementId}-{$name}-info" ?>"<?php endif ?>>
 
-                <?php if ($formElement instanceof \Zend\Form\Element\Radio) { ?>
+                <?php if ($formElement instanceof \Laminas\Form\Element\Radio) { ?>
                     <input
                         id="<?= "{$elementId}-{$name}" ?>"
                         type="radio"

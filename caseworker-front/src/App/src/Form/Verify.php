@@ -2,10 +2,10 @@
 
 namespace App\Form;
 
-use Zend\Form\Element\File;
-use Zend\InputFilter\FileInput;
-use Zend\InputFilter\InputFilter;
-use Zend\Validator\File\UploadFile;
+use Laminas\Form\Element\File;
+use Laminas\InputFilter\FileInput;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\File\UploadFile;
 
 /**
  * Class Verify

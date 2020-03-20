@@ -2,9 +2,9 @@
 
 namespace App\Service\Authentication;
 
-use Zend\Authentication\Result as ZendResult;
+use Laminas\Authentication\Result as LaminasResult;
 
-class Result extends ZendResult
+class Result extends LaminasResult
 {
     const FAILURE_ACCOUNT_LOCKED = -403;
 }

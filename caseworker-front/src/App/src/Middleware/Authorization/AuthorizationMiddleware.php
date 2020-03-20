@@ -8,12 +8,12 @@ use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Diactoros\Response\RedirectResponse;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Expressive\Router\RouteResult;
-use Zend\Permissions\Rbac\Rbac;
+use Laminas\Authentication\AuthenticationService;
+use Mezzio\Handler\NotFoundHandler;
+use Laminas\Diactoros\Response\RedirectResponse;
+use Mezzio\Helper\UrlHelper;
+use Mezzio\Router\RouteResult;
+use Laminas\Permissions\Rbac\Rbac;
 use Exception;
 
 /**
