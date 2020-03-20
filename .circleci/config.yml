@@ -378,18 +378,15 @@ orbs:
               command: |
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=<<parameters.account_workspace>>
+                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.account_workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform validate
           - run:
               name: Validate Environment Terraform
               command: |
-                ENV_NAME=<<parameters.environment_workspace>>
-                export SHORT_HASH=${CIRCLE_SHA1:0:7}
-                echo $SHORT_HASH
                 cd ~/project/terraform/environment
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=${ENV_NAME:0:13}
+                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.environment_workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform validate
 
@@ -411,7 +408,7 @@ orbs:
               command: |
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=<<parameters.workspace>>
+                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s --auto-approve
       apply_environment_terraform:
@@ -430,12 +427,10 @@ orbs:
           - run:
               name: Apply Environment Terraform
               command: |
-                ENV_NAME=<<parameters.workspace>>
-                export SHORT_HASH=${CIRCLE_SHA1:0:7}
-                echo $SHORT_HASH
                 cd ~/project/terraform/environment
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=${ENV_NAME:0:13}
+                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s -auto-approve -var container_version=${IMAGE_TAG}
           - persist_to_workspace:
@@ -460,12 +455,9 @@ orbs:
               name: Install python dependencies
               command: |
                 pip install -r ~/project/pipeline_scripts/requirements.txt --user
-          - install_terraform
           - run:
               name: Wait for new tasks in services to be running
               command: |
-                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
-                echo $TF_WORKSPACE
                 python ~/project/pipeline_scripts/ecs_monitor.py
           - run:
               name: Run seeding ecs task
@@ -493,17 +485,14 @@ orbs:
           - run:
               name: Wait for new tasks in services to be running
               command: |
-                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
-                echo $TF_WORKSPACE
                 python ~/project/pipeline_scripts/ecs_monitor.py
           - run:
               name: Add CircleCI ingress to environment
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
-                  ENV_NAME=<<parameters.workspace>>
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform apply -lock-timeout=300s -auto-approve
                 fi
@@ -515,10 +504,9 @@ orbs:
               name: Remove CircleCI ingress to environment
               command: |
                 if [ <<parameters.workspace>> != "production" ]; then
-                  ENV_NAME=<<parameters.workspace>>
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
@@ -539,13 +527,10 @@ orbs:
           - run:
               name: Destroy Development Environment
               command: |
-                ENV_NAME=<<parameters.workspace>>
-                export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
-                echo $TF_WORKSPACE
                 if [ "${CIRCLE_BRANCH}" != "master" ]; then
                   cd ~/project/terraform/environment
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=${ENV_NAME:0:13} >> $BASH_ENV
+                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
