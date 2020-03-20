@@ -247,7 +247,7 @@ orbs:
           - run:
               name: Push web container
               command: |
-                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export IMAGE_TAG=$(~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
                 docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:${IMAGE_TAG}
                 if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   # If master, push branch tag and latest
@@ -260,7 +260,7 @@ orbs:
           - run:
               name: Push app container
               command: |
-                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export IMAGE_TAG=$(~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
                 docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:${IMAGE_TAG}
                 if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   # If master, push branch tag and latest
@@ -306,7 +306,7 @@ orbs:
           - run:
               name: Push caseworker-api-ingestion container
               command: |
-                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export IMAGE_TAG=$(~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
                 docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:${IMAGE_TAG}
                 if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   # If master, push branch tag and latest
@@ -319,7 +319,7 @@ orbs:
           - run:
               name: Push caseworker-api-seeding container
               command: |
-                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export IMAGE_TAG=$(~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
                 docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:${IMAGE_TAG}
                 if [ "${CIRCLE_BRANCH}" == "master" ]; then
                   # If master, push branch tag and latest
@@ -378,7 +378,7 @@ orbs:
               command: |
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.account_workspace>>) >> $BASH_ENV
+                export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.account_workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform validate
           - run:
@@ -386,7 +386,7 @@ orbs:
               command: |
                 cd ~/project/terraform/environment
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.environment_workspace>>) >> $BASH_ENV
+                export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.environment_workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform validate
 
@@ -408,7 +408,7 @@ orbs:
               command: |
                 cd ~/project/terraform/account
                 terraform init -lock-timeout=300s
-                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s --auto-approve
       apply_environment_terraform:
@@ -429,8 +429,8 @@ orbs:
               command: |
                 cd ~/project/terraform/environment
                 terraform init -lock-timeout=300s
-                export IMAGE_TAG=$(pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
-                export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                export IMAGE_TAG=$(~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
+                export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
                 terraform apply -lock-timeout=300s -auto-approve -var container_version=${IMAGE_TAG}
           - persist_to_workspace:
@@ -492,7 +492,7 @@ orbs:
                 if [ <<parameters.workspace>> != "production" ]; then
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                  export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform apply -lock-timeout=300s -auto-approve
                 fi
@@ -506,7 +506,7 @@ orbs:
                 if [ <<parameters.workspace>> != "production" ]; then
                   cd ~/project/terraform/ci_ingress
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                  export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
@@ -530,7 +530,7 @@ orbs:
                 if [ "${CIRCLE_BRANCH}" != "master" ]; then
                   cd ~/project/terraform/environment
                   terraform init -lock-timeout=300s
-                  export TF_WORKSPACE=$(pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
+                  export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                   echo $TF_WORKSPACE
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
