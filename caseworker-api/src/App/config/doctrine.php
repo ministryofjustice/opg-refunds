@@ -5,7 +5,7 @@ return [
         'orm_cases' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_CASES_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_CASES_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_CASES_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_CASES_FULL_USERNAME") ?: "cases_full",
                 'password'    => getenv("OPG_REFUNDS_DB_CASES_FULL_PASSWORD") ?: "cases_full",
@@ -15,7 +15,7 @@ return [
         'orm_cases_migration' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_CASES_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_CASES_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_CASES_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_CASES_MIGRATION_USERNAME") ?: "cases_migration",
                 'password'    => getenv("OPG_REFUNDS_DB_CASES_MIGRATION_PASSWORD") ?: "cases_migration",
@@ -25,7 +25,7 @@ return [
         'orm_sirius' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_SIRIUS_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_SIRIUS_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_SIRIUS_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_SIRIUS_FULL_USERNAME") ?: "sirius_full",
                 'password'    => getenv("OPG_REFUNDS_DB_SIRIUS_FULL_PASSWORD") ?: "sirius_full",
@@ -35,7 +35,7 @@ return [
         'orm_sirius_migration' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_SIRIUS_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_SIRIUS_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_SIRIUS_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_SIRIUS_MIGRATION_USERNAME") ?: "sirius_migration",
                 'password'    => getenv("OPG_REFUNDS_DB_SIRIUS_MIGRATION_PASSWORD") ?: "sirius_migration",

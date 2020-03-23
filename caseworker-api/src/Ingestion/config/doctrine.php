@@ -5,7 +5,7 @@ return [
         'orm_applications' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_USERNAME") ?: "applications_full",
                 'password'    => getenv("OPG_REFUNDS_DB_APPLICATIONS_FULL_PASSWORD") ?: "applications_full",
@@ -15,7 +15,7 @@ return [
         'orm_applications_migration' => [
             'params' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOPgSql\Driver',
-                'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ?: "localhost",
+                'host'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_HOSTNAME") ?: "postgres",
                 'port'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_PORT") ?: 5432,
                 'user'        => getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATION_USERNAME") ?: "applications_migration",
                 'password'    => getenv("OPG_REFUNDS_DB_APPLICATIONS_MIGRATION_PASSWORD") ?: "applications_migration",
