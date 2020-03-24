@@ -5,7 +5,7 @@ namespace App\Action;
 use App\Service\Refund\Refund as RefundService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 /**
  * Class RefundAction

@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Zend\Authentication\AuthenticationService;
-use Zend\Session\SessionManager;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Session\SessionManager;
 
 /**
  * The configuration provider for the App module

@@ -4,7 +4,7 @@ namespace Api\Service\Initializers;
 
 use Api\Service\Client as ApiClient;
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
+use Laminas\ServiceManager\Initializer\InitializerInterface;
 
 /**
  * Initialize trait with the API client

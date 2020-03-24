@@ -5,7 +5,7 @@ namespace App\Service\Refund;
 use Api\Service\Initializers\ApiClientInterface;
 use Api\Service\Initializers\ApiClientTrait;
 use DateTime;
-use Zend\Diactoros\UploadedFile;
+use Laminas\Diactoros\UploadedFile;
 
 /**
  * Class Refund

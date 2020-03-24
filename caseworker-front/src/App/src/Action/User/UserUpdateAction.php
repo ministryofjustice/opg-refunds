@@ -6,7 +6,7 @@ use App\Form\User;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User as UserModel;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 
 /**
@@ -44,7 +44,7 @@ class UserUpdateAction extends AbstractUserAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function addAction(ServerRequestInterface $request)
@@ -81,7 +81,7 @@ class UserUpdateAction extends AbstractUserAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function editAction(ServerRequestInterface $request)

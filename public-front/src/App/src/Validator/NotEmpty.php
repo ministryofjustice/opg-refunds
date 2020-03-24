@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Laminas\Validator\NotEmpty as ZendNotEmpty;
+use Laminas\Validator\NotEmpty as LaminasNotEmpty;
 
-class NotEmpty extends ZendNotEmpty
+class NotEmpty extends LaminasNotEmpty
 {
 
     protected $messageTemplates = [

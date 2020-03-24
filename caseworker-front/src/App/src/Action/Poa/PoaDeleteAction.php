@@ -7,7 +7,7 @@ use App\Form\PoaDelete;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 use RuntimeException;
 
@@ -46,7 +46,7 @@ class PoaDeleteAction extends AbstractPoaAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @return \Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function deleteAction(ServerRequestInterface $request)

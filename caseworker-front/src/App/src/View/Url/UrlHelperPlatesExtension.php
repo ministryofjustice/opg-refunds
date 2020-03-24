@@ -4,7 +4,7 @@ namespace App\View\Url;
 
 use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 class UrlHelperPlatesExtension implements ExtensionInterface
 {

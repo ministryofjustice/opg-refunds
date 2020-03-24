@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\Digits as ZendDigits;
+use Laminas\Validator\Digits as LaminasDigits;
 
-class Digits extends ZendDigits
+class Digits extends LaminasDigits
 {
     protected $messageTemplates = [
         self::NOT_DIGITS   => "digits-required",

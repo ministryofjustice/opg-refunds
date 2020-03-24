@@ -5,7 +5,7 @@ namespace App\Action\User;
 use App\Form\AccountSetUp;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 
 /**
@@ -45,7 +45,7 @@ class UserAction extends AbstractUserAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function editAction(ServerRequestInterface $request)

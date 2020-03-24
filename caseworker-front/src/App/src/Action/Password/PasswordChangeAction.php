@@ -9,7 +9,7 @@ use App\Service\User\User as UserService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 
 /**
@@ -35,7 +35,7 @@ class PasswordChangeAction extends AbstractAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function handle(ServerRequestInterface $request) : \Psr\Http\Message\ResponseInterface

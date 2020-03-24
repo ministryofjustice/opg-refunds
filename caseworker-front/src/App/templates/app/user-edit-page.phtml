@@ -67,7 +67,7 @@ $this->addErrorMap([
                 <?php
                     $statusInput = $form->get('status');
 
-                    if ($statusInput instanceof \Zend\Form\Element\Hidden) {
+                    if ($statusInput instanceof \Laminas\Form\Element\Hidden) {
                         $this->insert('snippet::input-hidden', [
                             'formElement' => $statusInput,
                         ]);

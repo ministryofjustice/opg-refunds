@@ -2,7 +2,7 @@
 
 namespace App\Action\Initializers;
 
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Template\TemplateRendererInterface;
 use UnexpectedValueException;
 
 /**

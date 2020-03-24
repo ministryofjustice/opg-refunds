@@ -8,8 +8,8 @@ use App\Service\User\User as UserService;
 use Alphagov\Notifications\Client as NotifyClient;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Diactoros\Response;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Diactoros\Response;
 
 /**
  * Class SignInAction

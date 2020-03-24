@@ -1,7 +1,7 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\ValidatorInterface;
+use Laminas\Validator\ValidatorInterface;
 
 /**
  * Allows any Zend Validator to validate an empty value as valid.

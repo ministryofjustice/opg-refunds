@@ -6,8 +6,8 @@ use App\Form\Notify as NotifyForm;
 use App\Service\Notify\Notify as NotifyService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 /**
  * Class NotifyAction

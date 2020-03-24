@@ -2,8 +2,8 @@
 
 namespace App\Validator;
 
-use Zend\Form\ElementInterface;
-use Zend\Validator\AbstractValidator;
+use Laminas\Form\ElementInterface;
+use Laminas\Validator\AbstractValidator;
 
 class InvalidValueCombination extends AbstractValidator
 {

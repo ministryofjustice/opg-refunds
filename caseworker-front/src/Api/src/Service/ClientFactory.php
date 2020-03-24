@@ -4,8 +4,8 @@ namespace Api\Service;
 
 use Interop\Container\ContainerInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Zend\Authentication\Storage\Session;
-use Zend\Session\Container;
+use Laminas\Authentication\Storage\Session;
+use Laminas\Session\Container;
 
 /**
  * Class ClientFactory

@@ -3,11 +3,11 @@
 namespace App\Middleware\Authorization;
 
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Expressive\Helper\UrlHelper;
-use Zend\Permissions\Rbac\Rbac;
+use Laminas\Authentication\AuthenticationService;
+use Mezzio\Helper\UrlHelper;
+use Laminas\Permissions\Rbac\Rbac;
 use Exception;
-use Zend\Expressive\Handler\NotFoundHandler;
+use Mezzio\Handler\NotFoundHandler;
 
 /**
  * Class AuthorizationMiddlewareFactory

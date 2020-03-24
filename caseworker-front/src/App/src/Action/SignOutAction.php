@@ -4,8 +4,8 @@ namespace App\Action;
 
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Session\SessionManager;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Session\SessionManager;
 
 /**
  * Class SignOutAction

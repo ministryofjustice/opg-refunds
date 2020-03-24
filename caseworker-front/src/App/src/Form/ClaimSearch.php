@@ -7,10 +7,10 @@ use App\Validator;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\UserSummary as UserSummaryModel;
 use Opg\Refunds\Caseworker\DataModel\StatusFormatter;
-use Zend\Form\Element\Select;
-use Zend\Form\Element\Text;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
+use Laminas\Form\Element\Select;
+use Laminas\Form\Element\Text;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class ClaimSearch

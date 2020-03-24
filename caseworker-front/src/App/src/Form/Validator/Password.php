@@ -2,9 +2,9 @@
 
 namespace App\Form\Validator;
 
-use Zend\Validator\AbstractValidator;
-use Zend\Validator\Regex;
-use Zend\Validator\StringLength;
+use Laminas\Validator\AbstractValidator;
+use Laminas\Validator\Regex;
+use Laminas\Validator\StringLength;
 
 /**
  * Class Password

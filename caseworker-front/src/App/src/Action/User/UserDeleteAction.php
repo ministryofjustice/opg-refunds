@@ -6,7 +6,7 @@ use App\Form\UserDelete;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 
 /**
@@ -17,7 +17,7 @@ class UserDeleteAction extends AbstractUserAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request)
@@ -46,7 +46,7 @@ class UserDeleteAction extends AbstractUserAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @return \Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function deleteAction(ServerRequestInterface $request)

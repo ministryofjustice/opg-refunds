@@ -4,10 +4,10 @@ namespace App\Form;
 
 use App\Validator\NotEmpty;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\Form\Element\Password;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
-use Zend\Validator\Identical;
+use Laminas\Form\Element\Password;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Validator\Identical;
 
 /**
  * Form for setting a password

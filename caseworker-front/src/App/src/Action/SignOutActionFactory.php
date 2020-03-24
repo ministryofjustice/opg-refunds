@@ -3,8 +3,8 @@
 namespace App\Action;
 
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
-use Zend\Session\SessionManager;
+use Laminas\Authentication\AuthenticationService;
+use Laminas\Session\SessionManager;
 
 /**
  * Class SignOutActionFactory
