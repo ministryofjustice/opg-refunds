@@ -6,7 +6,7 @@ use App\Exception\InvalidInputException;
 use App\Service\User as UserService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 /**
  * Class UserAction

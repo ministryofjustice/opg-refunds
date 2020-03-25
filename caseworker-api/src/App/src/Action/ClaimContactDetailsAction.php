@@ -7,7 +7,7 @@ use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Applications\Contact as ContactDetailsModel;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 /**
  * Class ClaimContactDetailsAction

@@ -33,7 +33,7 @@ cli\line('Initialising ingestion daemon');
 $container = require __DIR__ . '/../../config/container.php';
 
 use Ingestion\Worker\IngestionWorker;
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 
 // Setup Logging
 

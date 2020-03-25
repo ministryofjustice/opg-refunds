@@ -8,7 +8,7 @@ use App\Entity\Sirius\Poa as SiriusPoa;
 use Doctrine\ORM\EntityManager;
 use Exception;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
