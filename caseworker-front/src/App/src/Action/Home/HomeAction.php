@@ -9,8 +9,8 @@ use App\Service\User\User as UserService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 /**
  * Class HomeAction

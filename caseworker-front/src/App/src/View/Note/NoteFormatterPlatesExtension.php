@@ -6,7 +6,7 @@ use League\Plates\Engine;
 use League\Plates\Extension\ExtensionInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Class NoteFormatterPlatesExtension

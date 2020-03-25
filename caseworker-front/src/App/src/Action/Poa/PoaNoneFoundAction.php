@@ -18,7 +18,7 @@ class PoaNoneFoundAction extends AbstractPoaAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @return \Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function editAction(ServerRequestInterface $request)

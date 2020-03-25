@@ -9,7 +9,7 @@ use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\IdentFormatter;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 use RuntimeException;
 
@@ -21,7 +21,7 @@ class ClaimDuplicateAction extends AbstractClaimAction
 {
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function indexAction(ServerRequestInterface $request)
@@ -47,7 +47,7 @@ class ClaimDuplicateAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      */
     public function addAction(ServerRequestInterface $request)
     {

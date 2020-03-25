@@ -4,7 +4,7 @@ namespace App\Action;
 
 use App\Service\User\User as UserService;
 use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
+use Laminas\Authentication\AuthenticationService;
 
 /**
  * Class SignInActionFactory

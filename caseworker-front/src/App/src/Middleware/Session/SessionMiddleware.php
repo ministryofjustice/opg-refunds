@@ -6,7 +6,7 @@ use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Server\MiddlewareInterface as ServerMiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Session\SessionManager;
+use Laminas\Session\SessionManager;
 
 /**
  * Adds support for sessions via the injected SessionManager.

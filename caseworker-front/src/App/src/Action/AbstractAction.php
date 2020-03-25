@@ -5,7 +5,7 @@ namespace App\Action;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
-use Zend\Diactoros\Response;
+use Laminas\Diactoros\Response;
 
 /**
  * Class AbstractAction

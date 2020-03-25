@@ -7,7 +7,7 @@ use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Plates\PlatesRenderer;
+use Mezzio\Plates\PlatesRenderer;
 use Exception;
 
 /**

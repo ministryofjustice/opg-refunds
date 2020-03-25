@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\StringLength as ZendStringLength;
+use Laminas\Validator\StringLength as LaminasStringLength;
 
-class StringLength extends ZendStringLength
+class StringLength extends LaminasStringLength
 {
 
     protected $messageTemplates = [

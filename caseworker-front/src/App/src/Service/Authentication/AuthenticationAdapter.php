@@ -5,8 +5,8 @@ namespace App\Service\Authentication;
 use Api\Exception\ApiException;
 use Api\Service\Client as ApiClient;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
-use Zend\Authentication\Adapter\AdapterInterface;
-use Zend\Session\SessionManager;
+use Laminas\Authentication\Adapter\AdapterInterface;
+use Laminas\Session\SessionManager;
 
 /**
  * Class AuthenticationAdapter

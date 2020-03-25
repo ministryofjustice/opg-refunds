@@ -8,7 +8,7 @@ use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\Psr7\Request;
 use Http\Client\HttpClient;
 use Psr\Http\Message\ResponseInterface;
-use Zend\Diactoros\UploadedFile;
+use Laminas\Diactoros\UploadedFile;
 
 /**
  * Class Client

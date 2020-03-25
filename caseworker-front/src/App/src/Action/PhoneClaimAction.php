@@ -5,8 +5,8 @@ namespace App\Action;
 use App\Form\PhoneClaim;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
-use Zend\Diactoros\Response\RedirectResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\RedirectResponse;
 
 use App\Service\User\User as UserService;
 use App\Service\AssistedDigital\LinkToken as LinkTokenGenerator;

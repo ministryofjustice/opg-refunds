@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-use Zend\Validator\Csrf as ZendCsrf;
+use Laminas\Validator\Csrf as LaminasCsrf;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
@@ -12,7 +12,7 @@ use UnexpectedValueException;
  *
  * @package App\Validator
  */
-class Csrf extends ZendCsrf
+class Csrf extends LaminasCsrf
 {
     /**
      * Set to null in order to force the user to manually set it

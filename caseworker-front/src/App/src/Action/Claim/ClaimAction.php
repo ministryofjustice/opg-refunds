@@ -11,7 +11,7 @@ use Opg\Refunds\Caseworker\DataModel\Cases\Note as NoteModel;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Slim\Flash\Messages;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 use Exception;
 use RuntimeException;
 
@@ -44,7 +44,7 @@ class ClaimAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return \Zend\Diactoros\Response\RedirectResponse
+     * @return \Laminas\Diactoros\Response\RedirectResponse
      * @throws Exception
      */
     public function addAction(ServerRequestInterface $request)
@@ -76,7 +76,7 @@ class ClaimAction extends AbstractClaimAction
 
     /**
      * @param ServerRequestInterface $request
-     * @return HtmlResponse|\Zend\Diactoros\Response\RedirectResponse
+     * @return HtmlResponse|\Laminas\Diactoros\Response\RedirectResponse
      */
     public function editAction(ServerRequestInterface $request)
     {

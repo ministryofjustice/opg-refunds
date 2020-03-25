@@ -2,7 +2,7 @@
 
 namespace App\Action\Initializers;
 
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Declares Action Middleware support for UrlHelper

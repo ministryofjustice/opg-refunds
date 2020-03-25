@@ -3,7 +3,7 @@
 namespace App\Middleware\Session;
 
 use Interop\Container\ContainerInterface;
-use Zend\Session\SessionManager;
+use Laminas\Session\SessionManager;
 
 /**
  * Class SessionMiddlewareFactory

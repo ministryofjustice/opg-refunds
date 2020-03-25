@@ -6,7 +6,7 @@ use App\Form\Verify as VerifyForm;
 use App\Service\Refund\Refund as RefundService;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\HtmlResponse;
+use Laminas\Diactoros\Response\HtmlResponse;
 
 /**
  * Class VerifyAction
@@ -46,7 +46,7 @@ class VerifyAction extends AbstractModelAction
     {
         $form = $this->getForm($request);
 
-        //Have to use $_FILES directly as Zend validation relies on the form data being in the files format rather than the Zend\Diactoros\UploadedFile provided by $request->getUploadedFiles()
+        //Have to use $_FILES directly as Zend validation relies on the form data being in the files format rather than the Laminas\Diactoros\UploadedFile provided by $request->getUploadedFiles()
         $post = array_merge_recursive(
             $request->getParsedBody(),
             $_FILES

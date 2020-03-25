@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\Hostname as ZendHostname;
+use Laminas\Validator\Hostname as LaminasHostname;
 
-class Hostname extends ZendHostname
+class Hostname extends LaminasHostname
 {
     protected $messageTemplates = [
         self::CANNOT_DECODE_PUNYCODE  => "hostname-invalid",

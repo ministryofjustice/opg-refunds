@@ -1,9 +1,9 @@
 <?php
 namespace App\Validator;
 
-use Zend\Validator\EmailAddress as ZendEmailAddress;
+use Laminas\Validator\EmailAddress as LaminasEmailAddress;
 
-class EmailAddress extends ZendEmailAddress
+class EmailAddress extends LaminasEmailAddress
 {
 
     protected $messageTemplates = [

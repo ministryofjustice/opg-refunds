@@ -4,11 +4,11 @@ namespace App\Form;
 
 use App\Validator;
 use App\Filter\StandardInput as StandardInputFilter;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
-use Zend\Form\Element\Text;
-use Zend\Filter;
-use Zend\Validator\Identical;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
+use Laminas\Form\Element\Text;
+use Laminas\Filter;
+use Laminas\Validator\Identical;
 
 /**
  * Form for resetting a password

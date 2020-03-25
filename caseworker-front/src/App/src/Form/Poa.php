@@ -8,13 +8,13 @@ use ArrayObject;
 use Opg\Refunds\Caseworker\DataModel\Cases\Claim as ClaimModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Poa as PoaModel;
 use Opg\Refunds\Caseworker\DataModel\Cases\Verification as VerificationModel;
-use Zend\Filter\StringTrim;
-use Zend\Form\Element\Checkbox;
-use Zend\Form\Element\Hidden;
-use Zend\Form\Element\Radio;
-use Zend\Form\Element\Text;
-use Zend\InputFilter\Input;
-use Zend\InputFilter\InputFilter;
+use Laminas\Filter\StringTrim;
+use Laminas\Form\Element\Checkbox;
+use Laminas\Form\Element\Hidden;
+use Laminas\Form\Element\Radio;
+use Laminas\Form\Element\Text;
+use Laminas\InputFilter\Input;
+use Laminas\InputFilter\InputFilter;
 
 /**
  * Class Poa

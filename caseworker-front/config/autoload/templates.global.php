@@ -1,7 +1,7 @@
 <?php
 
-use Zend\Expressive\Plates\PlatesRendererFactory;
-use Zend\Expressive\Template\TemplateRendererInterface;
+use Mezzio\Plates\PlatesRendererFactory;
+use Mezzio\Template\TemplateRendererInterface;
 
 return [
     'dependencies' => [

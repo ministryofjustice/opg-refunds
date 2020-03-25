@@ -4,7 +4,7 @@ namespace App\Service\Authentication;
 
 use Api\Service\Client as ApiClient;
 use Interop\Container\ContainerInterface;
-use Zend\Session\SessionManager;
+use Laminas\Session\SessionManager;
 
 /**
  * Class AuthenticationAdapterFactory

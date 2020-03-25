@@ -4,9 +4,9 @@ namespace App\Service\Session;
 
 use Aws\DynamoDb\DynamoDbClient;
 use Interop\Container\ContainerInterface;
-use Zend\Crypt\BlockCipher;
-use Zend\Session\Container;
-use Zend\Session\SessionManager;
+use Laminas\Crypt\BlockCipher;
+use Laminas\Session\Container;
+use Laminas\Session\SessionManager;
 use UnexpectedValueException;
 
 /**

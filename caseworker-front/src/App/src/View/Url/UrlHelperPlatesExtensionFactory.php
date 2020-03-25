@@ -3,7 +3,7 @@
 namespace App\View\Url;
 
 use Interop\Container\ContainerInterface;
-use Zend\Expressive\Helper\UrlHelper;
+use Mezzio\Helper\UrlHelper;
 
 /**
  * Class UrlHelperPlatesExtensionFactory
