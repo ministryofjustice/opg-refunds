@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e796fcfb-fc70-41b3-8a62-0b8ddb0a8e8b" name="Default Changelist" comment="" />
+    <list default="true" id="e796fcfb-fc70-41b3-8a62-0b8ddb0a8e8b" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -192,6 +194,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DatabaseDriversLRU" value="postgresql" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -204,7 +207,7 @@
     <property name="node.js.selected.package.standard" value="" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="settings.php.debug.servers" />
+    <property name="settings.editor.selected.configurable" value="reference.webide.settings.project.settings.php.debug" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -219,46 +222,11 @@
     </key>
   </component>
   <component name="RunManager" selected="PHPUnit.caseworker-front tests">
-    <configuration name="caseworker-api unit tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <CommandLine>
-        <PhpTestInterpreterSettings>
-          <option name="interpreterName" value="caseworker-api-app" />
-        </PhpTestInterpreterSettings>
-      </CommandLine>
-      <TestRunner configuration_file="$PROJECT_DIR$/caseworker-api/phpunit.xml.dist" scope="XML" use_alternative_configuration_file="true" />
-      <method v="2" />
-    </configuration>
-    <configuration name="caseworker-front tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <CommandLine>
-        <PhpTestInterpreterSettings>
-          <option name="interpreterName" value="caseworker-front-app" />
-        </PhpTestInterpreterSettings>
-      </CommandLine>
-      <TestRunner configuration_file="$PROJECT_DIR$/caseworker-front/phpunit.xml.dist" scope="XML" use_alternative_configuration_file="true" />
-      <method v="2" />
-    </configuration>
-    <configuration name="public-front unit tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
-      <CommandLine>
-        <PhpTestInterpreterSettings>
-          <option name="interpreterName" value="public-app" />
-        </PhpTestInterpreterSettings>
-      </CommandLine>
-      <TestRunner configuration_file="$PROJECT_DIR$/public-front/phpunit.xml.dist" scope="XML" use_alternative_configuration_file="true" />
-      <method v="2" />
-    </configuration>
-    <configuration name="opg refunds docker-compose" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
-      <deployment type="docker-compose.yml">
-        <settings>
-          <option name="sourceFilePath" value="docker-compose.yml" />
-        </settings>
-      </deployment>
-      <method v="2" />
-    </configuration>
     <list>
       <item itemvalue="Docker.opg refunds docker-compose" />
+      <item itemvalue="PHPUnit.caseworker-api unit tests" />
       <item itemvalue="PHPUnit.public-front unit tests" />
       <item itemvalue="PHPUnit.caseworker-front tests" />
-      <item itemvalue="PHPUnit.caseworker-api unit tests" />
     </list>
   </component>
   <component name="ServiceViewManager">
@@ -319,6 +287,7 @@
       <workItem from="1585214924679" duration="637000" />
       <workItem from="1585227808580" duration="837000" />
       <workItem from="1585230670833" duration="521000" />
+      <workItem from="1585237916173" duration="373000" />
     </task>
     <task id="LOCAL-00002" summary="initial stab at coveralls work. also ran npm audit for vulns">
       <created>1582817980367</created>
@@ -785,7 +754,7 @@
       <screen x="1700" y="-1057" width="1920" height="1057" />
     </state>
     <state x="2369" y="-906" key="#Unnamed/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.814@1700.-1057.1920.1057" timestamp="1585211206217" />
-    <state x="2076" y="-881" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585211798923">
+    <state x="2076" y="-881" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1585238288459">
       <screen x="1700" y="-1057" width="1920" height="1057" />
     </state>
     <state x="282" y="157" key="#com.intellij.execution.impl.EditConfigurationsDialog/-220.-1057.1920.1057/1700.-1057.1920.1057/0.23.1440.806@0.23.1440.806" timestamp="1584713207272" />
@@ -803,6 +772,7 @@
     <state x="182" y="-866" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877/-194.-1057.1920.977@-194.-1057.1920.977" timestamp="1582307776724" />
     <state x="282" y="159" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.23.1440.877/-224.-1057.1920.977@0.23.1440.877" timestamp="1582564956794" />
     <state x="2076" y="-881" key="#com.intellij.execution.impl.EditConfigurationsDialog/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.814@1700.-1057.1920.1057" timestamp="1585211798923" />
+    <state x="2076" y="-881" key="#com.intellij.execution.impl.EditConfigurationsDialog/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.821@1700.-1057.1920.1057" timestamp="1585238288459" />
     <state x="324" y="-882" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1584703855011">
       <screen x="-220" y="-1080" width="1920" height="1080" />
     </state>
@@ -1152,7 +1122,7 @@
     <state x="413" y="-909" key="RollbackChangesDialog/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.811@-220.-1057.1920.1057" timestamp="1584969120281" />
     <state x="2333" y="-909" key="RollbackChangesDialog/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.811@1700.-1057.1920.1057" timestamp="1584970481685" />
     <state x="2333" y="-909" key="RollbackChangesDialog/1700.-1057.1920.1057/-220.-1057.1920.977/0.23.1440.877@1700.-1057.1920.1057" timestamp="1584953567201" />
-    <state x="2000" y="-781" key="SettingsEditor" timestamp="1585143486470">
+    <state x="2000" y="-781" key="SettingsEditor" timestamp="1585237970424">
       <screen x="1700" y="-1057" width="1920" height="1057" />
     </state>
     <state x="2040" y="-1046" key="SettingsEditor/-220.-1057.1920.1057/1700.-1057.1920.1057/0.23.1440.811@1700.-1057.1920.1057" timestamp="1584451064254" />
@@ -1166,6 +1136,7 @@
     <state x="229" y="68" key="SettingsEditor/0.23.1440.812/-224.-1057.1920.1057@0.23.1440.812" timestamp="1582553675205" />
     <state x="255" y="32" key="SettingsEditor/0.23.1440.877/-224.-1057.1920.977@0.23.1440.877" timestamp="1582565075286" />
     <state x="2000" y="-781" key="SettingsEditor/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.811@-220.-1057.1920.1057" timestamp="1585143486470" />
+    <state x="2000" y="-781" key="SettingsEditor/1700.-1057.1920.1057/-220.-1057.1920.1057/0.23.1440.821@1700.-1057.1920.1057" timestamp="1585237970424" />
     <state x="2259" y="-854" key="SettingsEditor/1700.-1057.1920.988/-220.-1057.1920.1057/0.23.1440.877@1700.-1057.1920.988" timestamp="1585130729609" />
     <state width="500" height="400" key="SwitcherDM" timestamp="1584527528540">
       <screen x="1700" y="-1057" width="1920" height="977" />

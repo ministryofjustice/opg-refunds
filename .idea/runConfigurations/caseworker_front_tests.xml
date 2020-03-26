@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="caseworker-front tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+    <CommandLine>
+      <PhpTestInterpreterSettings>
+        <option name="interpreterName" value="caseworker-front-app" />
+      </PhpTestInterpreterSettings>
+    </CommandLine>
+    <TestRunner configuration_file="$PROJECT_DIR$/caseworker-front/phpunit.xml.dist" scope="XML" use_alternative_configuration_file="true" />
+    <method v="2" />
+  </configuration>
+</component>
