@@ -8,8 +8,8 @@ use App\Spreadsheet\SpreadsheetFileNameFormatter;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response;
-use Zend\Diactoros\Stream;
+use Laminas\Diactoros\Response;
+use Laminas\Diactoros\Stream;
 
 /**
  * Class ClaimSearchDownloadAction

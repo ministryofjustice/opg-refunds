@@ -6,7 +6,7 @@ use App\Service\Account as AccountService;
 use Mockery;
 use Mockery\Adapter\Phpunit\MockeryTestCase;
 use Mockery\MockInterface;
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 
 class AccountTest extends MockeryTestCase
 {

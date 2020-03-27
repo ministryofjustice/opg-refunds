@@ -3,7 +3,7 @@
 namespace Auth\Action\Initializers;
 
 use Interop\Container\ContainerInterface;
-use Zend\ServiceManager\Initializer\InitializerInterface;
+use Laminas\ServiceManager\Initializer\InitializerInterface;
 
 /**
  * Initialize Action middleware with the API client

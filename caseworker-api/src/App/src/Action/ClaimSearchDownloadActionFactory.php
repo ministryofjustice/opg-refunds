@@ -25,7 +25,7 @@ class ClaimSearchDownloadActionFactory
         $tempFolder = $config['spreadsheet']['temp_folder'];
 
         $spreadsheetGenerator = new PhpSpreadsheetGenerator($sourceFolder, $tempFolder);
-        $spreadsheetGenerator->setLogger($container->get(Zend\Log\Logger::class));
+        $spreadsheetGenerator->setLogger($container->get(Laminas\Log\Logger::class));
 
         return new ClaimSearchDownloadAction(
             $container->get(ClaimService::class),

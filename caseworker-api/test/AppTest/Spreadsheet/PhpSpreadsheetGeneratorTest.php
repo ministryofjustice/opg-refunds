@@ -23,7 +23,7 @@ use Opg\Refunds\Caseworker\DataModel\Common\Address;
 use Opg\Refunds\Caseworker\DataModel\Common\Name;
 use PhpOffice\PhpSpreadsheet\Reader\Xls as XlsReader;
 use PHPUnit\Framework\TestCase;
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 
 class PhpSpreadsheetGeneratorTest extends TestCase
 {
