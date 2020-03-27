@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="public-front unit tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+  <configuration default="false" name="public-front" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
     <CommandLine>
       <PhpTestInterpreterSettings>
         <option name="interpreterName" value="public-app" />

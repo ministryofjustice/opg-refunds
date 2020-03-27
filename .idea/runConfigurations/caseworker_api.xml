@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="caseworker-api unit tests" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
+  <configuration default="false" name="caseworker-api" type="PHPUnitRunConfigurationType" factoryName="PHPUnit">
     <CommandLine>
       <PhpTestInterpreterSettings>
         <option name="interpreterName" value="caseworker-api-app" />
