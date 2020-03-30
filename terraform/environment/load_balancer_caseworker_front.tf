@@ -70,7 +70,7 @@ resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
 }
 
 resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress_ithc" {
-  count             = local.environment != "production" ? 1 : 0
+  count             = local.environment == "preproduction" ? 1 : 0
   type              = "ingress"
   from_port         = 443
   to_port           = 443
