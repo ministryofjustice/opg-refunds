@@ -180,7 +180,7 @@ workflows:
       - slack_notify_production_release:
           name: post_production_release_message
           requires:
-            [prod_account_apply_terraform, prod_environment_apply_terraform]
+            [prod_account_apply_terraform, prod_environment_apply_terraform, prod_run_healthcheck_test]
           filters: { branches: { only: [master] } }
 
 orbs:
