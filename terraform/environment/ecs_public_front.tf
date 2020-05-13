@@ -173,7 +173,7 @@ locals {
         "options": {
             "awslogs-group": "${data.aws_cloudwatch_log_group.lpa_refunds.name}",
             "awslogs-region": "eu-west-1",
-            "awslogs-stream-prefix": "public-front-web.lpa-refunds"
+            "awslogs-stream-prefix": "${local.environment}.public-front-web.lpa-refunds"
         }
     },
     "environment": [
@@ -205,7 +205,7 @@ locals {
         "options": {
             "awslogs-group": "${data.aws_cloudwatch_log_group.lpa_refunds.name}",
             "awslogs-region": "eu-west-1",
-            "awslogs-stream-prefix": "public-front-app.lpa-refunds"
+            "awslogs-stream-prefix": "${local.environment}.public-front-app.lpa-refunds"
         }
     },
     "secrets": [
