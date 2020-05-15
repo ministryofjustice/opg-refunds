@@ -10,6 +10,7 @@ variable "accounts" {
       is_production               = bool
       has_cloudfront_distribution = bool
       old_refunds_account_id      = string
+      retention_in_days           = number
     })
   )
 }
