@@ -15,6 +15,7 @@ variable "accounts" {
       is_production                                = bool
       instance_backed_db_cluster                   = bool
       db_cluster_instance_count                    = number
+      db_backup_retention_period                   = number
       aurora_serverless_auto_pause                 = bool
       database_deletion_protection                 = bool
       has_cloudfront_distribution                  = bool
