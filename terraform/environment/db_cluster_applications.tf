@@ -4,6 +4,7 @@ resource "aws_rds_cluster" "applications" {
   db_subnet_group_name   = aws_db_subnet_group.applications_rds_cluster.name
 
   engine                          = "aurora-postgresql"
+  engine_mode                     = local.account.instance_backed_db_cluster ? "provisioned" : "serverless"
   engine_version                  = "9.6.12"
   db_cluster_parameter_group_name = "default.aurora-postgresql9.6"
   database_name                   = "applications"
@@ -28,7 +29,7 @@ resource "aws_rds_cluster" "applications" {
 }
 
 resource "aws_rds_cluster_instance" "applications_cluster_instances" {
-  count              = 1
+  count              = local.account.instance_backed_db_cluster ? local.account.db_cluster_instance_count : 0
   identifier         = "applications-${local.environment}-${count.index}"
   cluster_identifier = aws_rds_cluster.applications.id
   instance_class     = "db.r4.large"
@@ -42,7 +43,6 @@ resource "aws_db_subnet_group" "applications_rds_cluster" {
 
   tags = local.default_tags
 }
-
 
 resource "aws_security_group" "applications_rds_cluster_client" {
   name                   = "${local.environment}-applications-rds-cluster-client"
