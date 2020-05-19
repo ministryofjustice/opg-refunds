@@ -13,6 +13,8 @@ variable "accounts" {
     object({
       account_id                                   = string
       is_production                                = bool
+      instance_backed_db_cluster                   = bool
+      db_cluster_instance_count                    = number
       aurora_serverless_auto_pause                 = bool
       database_deletion_protection                 = bool
       has_cloudfront_distribution                  = bool
@@ -24,7 +26,6 @@ variable "accounts" {
       days_to_wait_before_expiry                   = number
       opg_refunds_google_analytics_tracking_id     = string
       opg_refunds_google_analytics_tracking_gov_id = string
-
     })
   )
 }
