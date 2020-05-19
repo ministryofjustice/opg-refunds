@@ -4,8 +4,9 @@ resource "aws_rds_cluster" "caseworker" {
   db_subnet_group_name   = aws_db_subnet_group.caseworker_rds_cluster.name
 
   engine                          = "aurora-postgresql"
-  engine_version                  = "9.6.12"
-  db_cluster_parameter_group_name = "default.aurora-postgresql9.6"
+  engine_mode                     = local.account.instance_backed_db_cluster ? "provisioned" : "serverless"
+  engine_version                  = "10.11"
+  db_cluster_parameter_group_name = "default.aurora-postgresql10"
   database_name                   = "caseworker"
 
   backtrack_window  = 0
@@ -17,7 +18,7 @@ resource "aws_rds_cluster" "caseworker" {
 
   deletion_protection             = local.account.database_deletion_protection
   enabled_cloudwatch_logs_exports = []
-  backup_retention_period         = 7
+  backup_retention_period         = local.account.db_backup_retention_period
   preferred_backup_window         = "00:14-00:44"
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
   skip_final_snapshot             = true
@@ -28,7 +29,7 @@ resource "aws_rds_cluster" "caseworker" {
 }
 
 resource "aws_rds_cluster_instance" "caseworker_cluster_instances" {
-  count              = 1
+  count              = local.account.instance_backed_db_cluster ? local.account.db_cluster_instance_count : 0
   identifier         = "caseworker-${local.environment}-${count.index}"
   cluster_identifier = aws_rds_cluster.caseworker.id
   instance_class     = "db.r4.large"
