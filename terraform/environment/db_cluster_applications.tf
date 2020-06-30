@@ -20,7 +20,7 @@ resource "aws_rds_cluster" "applications" {
   backup_retention_period         = 7
   preferred_backup_window         = "00:14-00:44"
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
-  skip_final_snapshot             = true
+  skip_final_snapshot             = local.account.skip_final_snapshot
   tags                            = local.default_tags
   lifecycle {
     ignore_changes = [engine_version]

@@ -15,6 +15,7 @@ variable "accounts" {
       is_production                                = bool
       aurora_serverless_auto_pause                 = bool
       database_deletion_protection                 = bool
+      skip_final_snapshot                          = bool
       has_cloudfront_distribution                  = bool
       prefix_enabled                               = bool
       public_front_autoscaling_maximum             = number
