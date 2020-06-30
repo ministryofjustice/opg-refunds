@@ -17,7 +17,7 @@ resource "aws_rds_cluster" "caseworker" {
 
   deletion_protection             = local.account.database_deletion_protection
   enabled_cloudwatch_logs_exports = []
-  backup_retention_period         = 7
+  backup_retention_period         = local.account.backup_retention_period
   preferred_backup_window         = "00:14-00:44"
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
   skip_final_snapshot             = local.account.skip_final_snapshot
