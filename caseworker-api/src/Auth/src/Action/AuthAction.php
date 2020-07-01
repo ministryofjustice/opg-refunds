@@ -7,7 +7,7 @@ use Auth\Exception\UnauthorizedException;
 use Auth\Service\Authentication;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 use Opg\Refunds\Log\Initializer;
 

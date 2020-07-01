@@ -6,7 +6,7 @@ use App\Exception\AbstractApiException;
 use Psr\Http\Server\RequestHandlerInterface as DelegateInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Diactoros\Response\JsonResponse;
+use Laminas\Diactoros\Response\JsonResponse;
 
 class ProblemDetailsMiddleware implements MiddlewareInterface
 {

@@ -4,7 +4,7 @@ namespace Auth\Middleware;
 
 use Auth\Service\Authentication as AuthenticationService;
 use Interop\Container\ContainerInterface;
-use Zend\Permissions\Rbac\Rbac;
+use Laminas\Permissions\Rbac\Rbac;
 use Exception;
 
 /**

@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 use App\Middleware;
 use Auth\Middleware as AuthMiddleware;
-use Zend\Expressive\Helper\BodyParams\BodyParamsMiddleware;
-use Zend\Expressive\Helper\ServerUrlMiddleware;
-use Zend\Expressive\Router\Middleware\DispatchMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware;
-use Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware;
-use Zend\Expressive\Router\Middleware\RouteMiddleware;
-use Zend\Expressive\Handler\NotFoundHandler;
-use Zend\Stratigility\Middleware\ErrorHandler;
+use Mezzio\Helper\BodyParams\BodyParamsMiddleware;
+use Mezzio\Helper\ServerUrlMiddleware;
+use Mezzio\Router\Middleware\DispatchMiddleware;
+use Mezzio\Router\Middleware\ImplicitHeadMiddleware;
+use Mezzio\Router\Middleware\ImplicitOptionsMiddleware;
+use Mezzio\Router\Middleware\RouteMiddleware;
+use Mezzio\Handler\NotFoundHandler;
+use Laminas\Stratigility\Middleware\ErrorHandler;
 
 /**
  * Setup middleware pipeline:
  */
 
-/** @var \Zend\Expressive\Application $app */
+/** @var \Mezzio\Application $app */
 
 // The error handler should be the first (most outer) middleware to catch
 // all Exceptions.
 return function (
-    \Zend\Expressive\Application $app,
-    \Zend\Expressive\MiddlewareFactory $factory,
+    \Mezzio\Application $app,
+    \Mezzio\MiddlewareFactory $factory,
     \Psr\Container\ContainerInterface $container
 ) : void {
 $app->pipe(ErrorHandler::class);
@@ -50,7 +50,7 @@ $app->pipe(ServerUrlMiddleware::class);
 $app->pipe(RouteMiddleware::class);
 $app->pipe(ImplicitHeadMiddleware::class);
 $app->pipe(ImplicitOptionsMiddleware::class);
-$app->pipe(\Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);
+$app->pipe(\Mezzio\Router\Middleware\MethodNotAllowedMiddleware::class);
 $app->pipe(BodyParamsMiddleware::class);
 
 //  Handle any API problem exception types

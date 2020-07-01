@@ -15,6 +15,8 @@ variable "accounts" {
       is_production                                = bool
       aurora_serverless_auto_pause                 = bool
       database_deletion_protection                 = bool
+      skip_final_snapshot                          = bool
+      backup_retention_period                      = number
       has_cloudfront_distribution                  = bool
       prefix_enabled                               = bool
       public_front_autoscaling_maximum             = number
@@ -48,9 +50,9 @@ locals {
 
   optional_tags = {
     environment-name       = local.environment
-    infrastructure-support = "OPG LPA Product Team: opgteam+lpa-refunds@digital.justice.gov.uk"
-    runbook                = "https://github.com/ministryofjustice/opg-webops-runbooks/tree/master/LPA"
-    source-code            = "https://github.com/ministryofjustice/opg-lpa"
+    infrastructure-support = "OPG LPA Product Team: opg-lpa-services@digital.justice.gov.uk"
+    runbook                = "https://github.com/ministryofjustice/opg-refunds/tree/master/docs/runbooks"
+    source-code            = "https://github.com/ministryofjustice/opg-refunds"
   }
 
   default_tags = merge(local.mandatory_moj_tags, local.optional_tags)

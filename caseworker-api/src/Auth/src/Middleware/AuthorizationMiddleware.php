@@ -12,8 +12,8 @@ use Psr\Http\Server\MiddlewareInterface as MiddlewareInterface;
 use Opg\Refunds\Caseworker\DataModel\Cases\User;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Zend\Expressive\Router\RouteResult;
-use Zend\Permissions\Rbac\Rbac;
+use Mezzio\Router\RouteResult;
+use Laminas\Permissions\Rbac\Rbac;
 use Exception;
 
 /**

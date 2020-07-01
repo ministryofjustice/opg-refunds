@@ -180,7 +180,7 @@ workflows:
       - slack_notify_production_release:
           name: post_production_release_message
           requires:
-            [prod_account_apply_terraform, prod_environment_apply_terraform]
+            [prod_account_apply_terraform, prod_environment_apply_terraform, prod_run_healthcheck_test]
           filters: { branches: { only: [master] } }
 
 orbs:
@@ -201,7 +201,7 @@ orbs:
                 export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq .Credentials.AccessKeyId | xargs)
                 export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq .Credentials.SecretAccessKey | xargs)
                 export AWS_SESSION_TOKEN=$(echo $temp_role | jq .Credentials.SessionToken | xargs)
-                eval $(aws ecr get-login --no-include-email --region=eu-west-1)
+                aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 311462405659.dkr.ecr.eu-west-1.amazonaws.com
     executors:
       python:
         docker:
@@ -345,8 +345,8 @@ orbs:
           - run:
               name: Install Terraform
               command: |
-                export TERRAFORM_VERSION=0.12.20
-                export TERRAFORM_SHA256SUM=46bd906f8cb9bbb871905ecb23ae7344af8017d214d735fbb6d6c8e0feb20ff3
+                export TERRAFORM_VERSION=0.12.28
+                export TERRAFORM_SHA256SUM=be99da1439a60942b8d23f63eba1ea05ff42160744116e84f46fc24f1a8011b6
                 echo $TERRAFORM_VERSION
                 echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -358,7 +358,7 @@ orbs:
       python:
         docker: [image: circleci/python]
       terraform:
-        docker: [image: hashicorp/terraform:0.12.20]
+        docker: [image: hashicorp/terraform:0.12.28]
     jobs:
       #----------------------------------------------------
       # Terraform

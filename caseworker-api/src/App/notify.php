@@ -29,7 +29,7 @@ cli\Colors::enable();
 $container = require __DIR__ . '/../../config/container.php';
 
 use App\Service\Notify;
-use Zend\Log\Logger;
+use Laminas\Log\Logger;
 
 // Setup Logging
 
