@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataSource name="postgres@localhost">
+  <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.17">
+    <root id="1">
+      <ServerVersion>10.7</ServerVersion>
+    </root>
+    <database id="2" parent="1" name="admin">
+      <ObjectId>16384</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <database id="3" parent="1" name="applications">
+      <ObjectId>16385</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <database id="4" parent="1" name="cases">
+      <ObjectId>16399</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <database id="5" parent="1" name="finance">
+      <ObjectId>16402</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <database id="6" parent="1" name="meris">
+      <ObjectId>16405</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <database id="7" parent="1" name="postgres">
+      <ObjectId>12994</ObjectId>
+      <Comment>default administrative connection database</Comment>
+      <Owner>admin</Owner>
+      <IntrospectionStateNumber>617</IntrospectionStateNumber>
+      <Current>1</Current>
+    </database>
+    <database id="8" parent="1" name="sirius">
+      <ObjectId>16408</ObjectId>
+      <Owner>admin</Owner>
+    </database>
+    <role id="9" parent="1" name="admin">
+      <ObjectId>10</ObjectId>
+      <SuperRole>1</SuperRole>
+      <CreateRole>1</CreateRole>
+      <CreateDb>1</CreateDb>
+      <CanLogin>1</CanLogin>
+      <Replication>1</Replication>
+      <BypassRls>1</BypassRls>
+    </role>
+    <role id="10" parent="1" name="applications">
+      <ObjectId>16396</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="11" parent="1" name="applications_full">
+      <ObjectId>16397</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="12" parent="1" name="applications_migration">
+      <ObjectId>16398</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="13" parent="1" name="cases_full">
+      <ObjectId>16400</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="14" parent="1" name="cases_migration">
+      <ObjectId>16401</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="15" parent="1" name="finance_full">
+      <ObjectId>16403</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="16" parent="1" name="finance_migration">
+      <ObjectId>16404</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="17" parent="1" name="meris_full">
+      <ObjectId>16406</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="18" parent="1" name="meris_migration">
+      <ObjectId>16407</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="19" parent="1" name="pg_monitor">
+      <ObjectId>3373</ObjectId>
+    </role>
+    <role id="20" parent="1" name="pg_read_all_settings">
+      <ObjectId>3374</ObjectId>
+    </role>
+    <role id="21" parent="1" name="pg_read_all_stats">
+      <ObjectId>3375</ObjectId>
+    </role>
+    <role id="22" parent="1" name="pg_signal_backend">
+      <ObjectId>4200</ObjectId>
+    </role>
+    <role id="23" parent="1" name="pg_stat_scan_tables">
+      <ObjectId>3377</ObjectId>
+    </role>
+    <role id="24" parent="1" name="sirius_full">
+      <ObjectId>16409</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <role id="25" parent="1" name="sirius_migration">
+      <ObjectId>16410</ObjectId>
+      <CanLogin>1</CanLogin>
+    </role>
+    <schema id="26" parent="7" name="information_schema">
+      <ObjectId>12703</ObjectId>
+      <StateNumber>354</StateNumber>
+      <Owner>admin</Owner>
+    </schema>
+    <schema id="27" parent="7" name="pg_catalog">
+      <ObjectId>11</ObjectId>
+      <Comment>system catalog schema</Comment>
+      <StateNumber>351</StateNumber>
+      <Owner>admin</Owner>
+    </schema>
+    <schema id="28" parent="7" name="public">
+      <ObjectId>2200</ObjectId>
+      <Comment>standard public schema</Comment>
+      <StateNumber>352</StateNumber>
+      <Owner>admin</Owner>
+      <IntrospectionStateNumber>618</IntrospectionStateNumber>
+      <Current>1</Current>
+    </schema>
+    <access-method id="29" parent="7" name="btree">
+      <ObjectId>403</ObjectId>
+      <Comment>b-tree index access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.bthandler</Handler>
+      <HandlerId>330</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <access-method id="30" parent="7" name="hash">
+      <ObjectId>405</ObjectId>
+      <Comment>hash index access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.hashhandler</Handler>
+      <HandlerId>331</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <access-method id="31" parent="7" name="gist">
+      <ObjectId>783</ObjectId>
+      <Comment>GiST index access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.gisthandler</Handler>
+      <HandlerId>332</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <access-method id="32" parent="7" name="gin">
+      <ObjectId>2742</ObjectId>
+      <Comment>GIN index access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.ginhandler</Handler>
+      <HandlerId>333</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <access-method id="33" parent="7" name="spgist">
+      <ObjectId>4000</ObjectId>
+      <Comment>SP-GiST index access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.spghandler</Handler>
+      <HandlerId>334</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <access-method id="34" parent="7" name="brin">
+      <ObjectId>3580</ObjectId>
+      <Comment>block range index (BRIN) access method</Comment>
+      <StateNumber>1</StateNumber>
+      <Handler>pg_catalog.brinhandler</Handler>
+      <HandlerId>335</HandlerId>
+      <Type>index</Type>
+    </access-method>
+    <extension id="35" parent="7" name="plpgsql">
+      <ObjectId>12980</ObjectId>
+      <Comment>PL/pgSQL procedural language</Comment>
+      <StateNumber>506</StateNumber>
+      <Version>1.0</Version>
+      <SchemaName>pg_catalog</SchemaName>
+      <SchemaId>11</SchemaId>
+    </extension>
+  </database-model>
+</dataSource>
