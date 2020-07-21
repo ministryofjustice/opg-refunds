@@ -56,15 +56,15 @@ locals {
   }
 
   public_component_tag = {
-    component             = "public-front"
+    component = "public-front"
   }
 
   caseworker_component_tag = {
-    component             = "caseworker"
+    component = "caseworker"
   }
 
   shared_component_tag = {
-    component             = "shared"
+    component = "shared"
   }
 
   default_tags = merge(local.mandatory_moj_tags, local.optional_tags)
