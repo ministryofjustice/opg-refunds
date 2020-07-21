@@ -27,7 +27,7 @@ resource "aws_acm_certificate" "certificate_public_front" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 //------------------------
@@ -54,7 +54,7 @@ resource "aws_acm_certificate" "certificate_caseworker_front" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 # claim-power-of-attorney-refund.service.gov.uk
