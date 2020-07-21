@@ -1,6 +1,6 @@
 resource "aws_ecs_cluster" "lpa_refunds" {
   name = "${local.environment}-lpa-refunds"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.shared_component_tag)
 }
 
 data "aws_cloudwatch_log_group" "lpa_refunds" {
@@ -10,7 +10,7 @@ data "aws_cloudwatch_log_group" "lpa_refunds" {
 resource "aws_iam_role" "execution_role" {
   name               = "${local.environment}-execution-role-ecs-cluster"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.shared_component_tag)
 }
 
 data "aws_iam_policy_document" "ecs_assume_policy" {
@@ -71,6 +71,3 @@ data "aws_iam_policy_document" "execution_role" {
     resources = ["*"]
   }
 }
-
-
-

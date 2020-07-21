@@ -34,5 +34,5 @@ resource "aws_dynamodb_table" "cronlock" {
     type = "S"
   }
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }

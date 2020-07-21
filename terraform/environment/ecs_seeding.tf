@@ -9,7 +9,7 @@ resource "aws_security_group" "seeding_ecs_service" {
   name_prefix = "${local.environment}-seeding-ecs-service"
   description = "seeding access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //----------------------------------
@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "seeding" {
   container_definitions    = "[${local.seeding_app}]"
   task_role_arn            = aws_iam_role.seeding_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
-  tags                     = local.default_tags
+  tags                     = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //----------------
@@ -44,7 +44,7 @@ resource "aws_ecs_task_definition" "seeding" {
 resource "aws_iam_role" "seeding_task_role" {
   name               = "${local.environment}-seeding-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_iam_role_policy_attachment" "seeding_vpc_endpoint_access" {

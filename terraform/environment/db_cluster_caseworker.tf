@@ -21,7 +21,7 @@ resource "aws_rds_cluster" "caseworker" {
   preferred_backup_window         = "00:14-00:44"
   preferred_maintenance_window    = "wed:22:26-wed:22:56"
   skip_final_snapshot             = local.account.skip_final_snapshot
-  tags                            = local.default_tags
+  tags                            = merge(local.default_tags, local.caseworker_component_tag)
   lifecycle {
     ignore_changes = [engine_version]
   }
@@ -40,7 +40,7 @@ resource "aws_db_subnet_group" "caseworker_rds_cluster" {
   name       = "caseworker-db-cluster-${local.environment}"
   subnet_ids = data.aws_subnet_ids.private.ids
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 
@@ -49,7 +49,7 @@ resource "aws_security_group" "caseworker_rds_cluster_client" {
   description            = "client access to caseworker db cluster"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
-  tags                   = local.default_tags
+  tags                   = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_security_group" "caseworker_rds_cluster" {
@@ -57,7 +57,7 @@ resource "aws_security_group" "caseworker_rds_cluster" {
   description            = "caseworker db cluster access"
   vpc_id                 = data.aws_vpc.default.id
   revoke_rules_on_delete = true
-  tags                   = local.default_tags
+  tags                   = merge(local.default_tags, local.caseworker_component_tag)
 
   lifecycle {
     create_before_destroy = true
