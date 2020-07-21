@@ -55,7 +55,7 @@ locals {
     source-code            = "https://github.com/ministryofjustice/opg-refunds"
   }
 
-  public_component_tag = {
+  public_front_component_tag = {
     component = "public-front"
   }
 

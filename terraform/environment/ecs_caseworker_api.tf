@@ -20,7 +20,7 @@ resource "aws_ecs_service" "caseworker_api" {
   service_registries {
     registry_arn = aws_service_discovery_service.caseworker_api.arn
   }
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //-----------------------------------------------
@@ -57,7 +57,7 @@ resource "aws_security_group" "caseworker_api_ecs_service" {
   name_prefix = "${local.environment}-caseworker_api-ecs-service"
   description = "caseworker api access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //----------------------------------
@@ -95,7 +95,7 @@ resource "aws_ecs_task_definition" "caseworker_api" {
   container_definitions    = "[${local.caseworker_api_web}, ${local.caseworker_api_app}]"
   task_role_arn            = aws_iam_role.caseworker_api_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
-  tags                     = local.default_tags
+  tags                     = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 
@@ -105,7 +105,7 @@ resource "aws_ecs_task_definition" "caseworker_api" {
 resource "aws_iam_role" "caseworker_api_task_role" {
   name               = "${local.environment}-caseworker_api-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_iam_role_policy_attachment" "caseworker_api_vpc_endpoint_access" {
