@@ -34,6 +34,7 @@ resource "aws_rds_cluster_instance" "applications_cluster_instances" {
   instance_class     = "db.r4.large"
   engine             = aws_rds_cluster.applications.engine
   engine_version     = aws_rds_cluster.applications.engine_version
+  tags               = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_db_subnet_group" "applications_rds_cluster" {

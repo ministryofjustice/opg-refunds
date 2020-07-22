@@ -34,6 +34,7 @@ resource "aws_rds_cluster_instance" "caseworker_cluster_instances" {
   instance_class     = "db.r4.large"
   engine             = aws_rds_cluster.caseworker.engine
   engine_version     = aws_rds_cluster.caseworker.engine_version
+  tags               = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_db_subnet_group" "caseworker_rds_cluster" {
