@@ -46,7 +46,6 @@ resource "aws_lb_listener" "caseworker_front_loadbalancer" {
     target_group_arn = aws_lb_target_group.caseworker_front.arn
     type             = "forward"
   }
-  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_lb_listener_certificate" "caseworker_refunds_opg_digital" {
