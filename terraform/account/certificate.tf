@@ -70,10 +70,7 @@ resource "aws_acm_certificate" "claim_power_of_attorney_refund_service_gov_uk" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = merge(
-    local.default_tags,
-    map("component", "public facing dns")
-  )
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_acm_certificate_validation" "claim_power_of_attorney_refund_service_gov_uk" {
@@ -103,10 +100,7 @@ resource "aws_acm_certificate" "caseworker_refunds_opg_digital" {
   lifecycle {
     create_before_destroy = true
   }
-  tags = merge(
-    local.default_tags,
-    map("component", "public facing dns")
-  )
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_acm_certificate_validation" "caseworker_refunds_opg_digital" {

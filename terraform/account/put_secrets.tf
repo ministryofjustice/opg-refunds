@@ -15,22 +15,22 @@ resource "aws_secretsmanager_secret" "opg_refunds_public_front_session_encryptio
 
 resource "aws_secretsmanager_secret" "opg_refunds_bank_hash_salt" {
   name = "${local.account_name}/opg_refunds_bank_hash_salt"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.shared_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_notify_api_key" {
   name = "${local.account_name}/opg_refunds_notify_api_key"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.shared_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_write_username" {
   name = "${local.account_name}/opg_refunds_db_applications_write_username"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_write_password" {
   name = "${local.account_name}/opg_refunds_db_applications_write_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_public_front_beta_link_signature_key" {
@@ -40,7 +40,7 @@ resource "aws_secretsmanager_secret" "opg_refunds_public_front_beta_link_signatu
 
 resource "aws_secretsmanager_secret" "opg_refunds_ad_link_signature_key" {
   name = "${local.account_name}/opg_refunds_ad_link_signature_key"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.shared_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_public_front_full_key_public" {
@@ -66,56 +66,56 @@ resource "aws_secretsmanager_secret" "opg_refunds_public_front_full_key_public_d
 # ingestion and db secrets
 resource "aws_secretsmanager_secret" "postgres_password" {
   name = "${local.account_name}/postgres_password"
-  tags = merge(local.default_tags, local.public_front_component_tag)
+  tags = merge(local.default_tags, local.shared_component_tag)
 }
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_full_password" {
   name = "${local.account_name}/opg_refunds_db_applications_full_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_applications_migration_password" {
   name = "${local.account_name}/opg_refunds_db_applications_migration_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_cases_full_password" {
   name = "${local.account_name}/opg_refunds_db_cases_full_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_cases_migration_password" {
   name = "${local.account_name}/opg_refunds_db_cases_migration_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_sirius_full_password" {
   name = "${local.account_name}/opg_refunds_db_sirius_full_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_sirius_migration_password" {
   name = "${local.account_name}/opg_refunds_db_sirius_migration_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_meris_full_password" {
   name = "${local.account_name}/opg_refunds_db_meris_full_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_meris_migration_password" {
   name = "${local.account_name}/opg_refunds_db_meris_migration_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_finance_full_password" {
   name = "${local.account_name}/opg_refunds_db_finance_full_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_db_finance_migration_password" {
   name = "${local.account_name}/opg_refunds_db_finance_migration_password"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_username" {
@@ -131,17 +131,17 @@ resource "aws_secretsmanager_secret" "opg_refunds_caseworker_admin_password" {
 # SSCL data
 resource "aws_secretsmanager_secret" "opg_refunds_sscl_entity" {
   name = "${local.account_name}/opg_refunds_sscl_entity"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 resource "aws_secretsmanager_secret" "opg_refunds_sscl_cost_centre" {
   name = "${local.account_name}/opg_refunds_sscl_cost_centre"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 resource "aws_secretsmanager_secret" "opg_refunds_sscl_account" {
   name = "${local.account_name}/opg_refunds_sscl_account"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 resource "aws_secretsmanager_secret" "opg_refunds_sscl_analysis" {
   name = "${local.account_name}/opg_refunds_sscl_analysis"
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
