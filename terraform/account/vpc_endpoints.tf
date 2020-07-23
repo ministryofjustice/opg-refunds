@@ -37,7 +37,8 @@ resource "aws_vpc_endpoint" "dynamodb" {
 
   tags = merge(
     local.default_tags,
-    map("Name", "DynamoDB Gateway")
+    map("Name", "DynamoDB Gateway"),
+    local.shared_component_tag
   )
 }
 
@@ -60,7 +61,8 @@ resource "aws_vpc_endpoint" "kms" {
 
   tags = merge(
     local.default_tags,
-    map("Name", "KMS Gateway")
+    map("Name", "KMS Gateway"),
+    local.shared_component_tag
   )
 }
 
@@ -75,5 +77,6 @@ resource "aws_security_group" "kms_vpc_endpoint" {
     cidr_blocks = aws_subnet.private.*.cidr_block
   }
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.shared_component_tag)
+
 }

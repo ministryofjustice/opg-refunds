@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "public_front" {
     matcher             = 200
   }
   depends_on = [aws_lb.public_front]
-  tags       = local.default_tags
+  tags       = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_lb" "public_front" {
@@ -22,7 +22,7 @@ resource "aws_lb" "public_front" {
   internal           = false
   load_balancer_type = "application"
   subnets            = data.aws_subnet_ids.public.ids
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.public_front_component_tag)
 
   security_groups = [
     aws_security_group.public_front_loadbalancer.id,
@@ -101,7 +101,7 @@ resource "aws_security_group" "public_front_loadbalancer" {
   name        = "${local.environment}-public-front-loadbalancer"
   description = "public front load balancer access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_security_group_rule" "public_front_loadbalancer_ingress" {

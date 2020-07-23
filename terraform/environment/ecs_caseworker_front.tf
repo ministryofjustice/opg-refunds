@@ -23,7 +23,7 @@ resource "aws_ecs_service" "caseworker_front" {
     container_port   = 80
   }
 
-  tags = local.default_tags
+  tags = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //----------------------------------
@@ -33,7 +33,7 @@ resource "aws_security_group" "caseworker_front_ecs_service" {
   name_prefix = "${local.environment}-caseworker-front-ecs-service"
   description = "caseworker front access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 // 80 in from the ELB
@@ -68,7 +68,7 @@ resource "aws_ecs_task_definition" "caseworker_front" {
   container_definitions    = "[${local.caseworker_front_web}, ${local.caseworker_front_app}]"
   task_role_arn            = aws_iam_role.caseworker_front_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
-  tags                     = local.default_tags
+  tags                     = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 //----------------
@@ -77,7 +77,7 @@ resource "aws_ecs_task_definition" "caseworker_front" {
 resource "aws_iam_role" "caseworker_front_task_role" {
   name               = "${local.environment}-caseworker-front-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_iam_role_policy_attachment" "caseworker_front_vpc_endpoint_access" {

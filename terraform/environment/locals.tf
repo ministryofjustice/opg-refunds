@@ -55,5 +55,17 @@ locals {
     source-code            = "https://github.com/ministryofjustice/opg-refunds"
   }
 
+  public_front_component_tag = {
+    component = "public-front"
+  }
+
+  caseworker_component_tag = {
+    component = "caseworker"
+  }
+
+  shared_component_tag = {
+    component = "shared"
+  }
+
   default_tags = merge(local.mandatory_moj_tags, local.optional_tags)
 }

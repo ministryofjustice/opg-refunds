@@ -14,7 +14,7 @@ resource "aws_lb_target_group" "caseworker_front" {
     matcher             = 200
   }
   depends_on = [aws_lb.caseworker_front]
-  tags       = local.default_tags
+  tags       = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_lb" "caseworker_front" {
@@ -22,7 +22,7 @@ resource "aws_lb" "caseworker_front" {
   internal           = false
   load_balancer_type = "application"
   subnets            = data.aws_subnet_ids.public.ids
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.caseworker_component_tag)
 
   security_groups = [
     aws_security_group.caseworker_front_loadbalancer.id,
@@ -57,7 +57,7 @@ resource "aws_security_group" "caseworker_front_loadbalancer" {
   name        = "${local.environment}-caseworker-front-loadbalancer"
   description = "caseworker front load balancer access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.caseworker_component_tag)
 }
 
 resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {

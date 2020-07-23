@@ -19,7 +19,7 @@ resource "aws_ecs_service" "ingestion" {
   }
 
   depends_on = [aws_rds_cluster.applications, aws_rds_cluster.caseworker, aws_iam_role.ingestion_task_role, aws_iam_role.execution_role]
-  tags       = local.default_tags
+  tags       = merge(local.default_tags, local.public_front_component_tag)
 }
 
 //----------------------------------
@@ -29,7 +29,7 @@ resource "aws_security_group" "ingestion_ecs_service" {
   name_prefix = "${local.environment}-ingestion-ecs-service"
   description = "ingestion access"
   vpc_id      = data.aws_vpc.default.id
-  tags        = local.default_tags
+  tags        = merge(local.default_tags, local.public_front_component_tag)
 }
 
 //----------------------------------
@@ -55,7 +55,7 @@ resource "aws_ecs_task_definition" "ingestion" {
   container_definitions    = "[${local.ingestion_app}]"
   task_role_arn            = aws_iam_role.ingestion_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
-  tags                     = local.default_tags
+  tags                     = merge(local.default_tags, local.public_front_component_tag)
 }
 
 //----------------
@@ -64,7 +64,7 @@ resource "aws_ecs_task_definition" "ingestion" {
 resource "aws_iam_role" "ingestion_task_role" {
   name               = "${local.environment}-ingestion-task-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_assume_policy.json
-  tags               = local.default_tags
+  tags               = merge(local.default_tags, local.public_front_component_tag)
 }
 
 resource "aws_iam_role_policy_attachment" "ingestion_vpc_endpoint_access" {
