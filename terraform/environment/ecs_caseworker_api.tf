@@ -2,11 +2,12 @@
 // caseworker_api ECS Service level config
 
 resource "aws_ecs_service" "caseworker_api" {
-  name            = "caseworker_api"
-  cluster         = aws_ecs_cluster.lpa_refunds.id
-  task_definition = aws_ecs_task_definition.caseworker_api.arn
-  desired_count   = 2
-  launch_type     = "FARGATE"
+  name             = "caseworker_api"
+  cluster          = aws_ecs_cluster.lpa_refunds.id
+  task_definition  = aws_ecs_task_definition.caseworker_api.arn
+  desired_count    = 2
+  launch_type      = "FARGATE"
+  platform_version = "1.3.0"
 
   network_configuration {
     security_groups = [

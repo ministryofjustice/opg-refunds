@@ -2,11 +2,12 @@
 // ingestion ECS Service level config
 
 resource "aws_ecs_service" "ingestion" {
-  name            = "ingestion"
-  cluster         = aws_ecs_cluster.lpa_refunds.id
-  task_definition = aws_ecs_task_definition.ingestion.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
+  name             = "ingestion"
+  cluster          = aws_ecs_cluster.lpa_refunds.id
+  task_definition  = aws_ecs_task_definition.ingestion.arn
+  desired_count    = 1
+  launch_type      = "FARGATE"
+  platform_version = "1.3.0"
 
   network_configuration {
     security_groups = [
