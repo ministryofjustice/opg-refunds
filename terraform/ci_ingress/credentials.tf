@@ -3,7 +3,8 @@ terraform {
 }
 
 provider "aws" {
-  region = "eu-west-1"
+  version = "2.70.0"
+  region  = "eu-west-1"
 
   assume_role {
     role_arn     = "arn:aws:iam::${local.account.account_id}:role/${var.default_role}"
@@ -20,8 +21,9 @@ variable "management_role" {
 }
 
 provider "aws" {
-  region = "eu-west-1"
-  alias  = "management"
+  version = "2.70.0"
+  region  = "eu-west-1"
+  alias   = "management"
 
   assume_role {
     role_arn     = "arn:aws:iam::311462405659:role/${var.management_role}"

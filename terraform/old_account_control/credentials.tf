@@ -14,7 +14,8 @@ variable "old_account_default_role" {
 }
 
 provider "aws" {
-  region = "eu-west-1"
+  version = "2.70.0"
+  region  = "eu-west-1"
   # old-refunds-development
 
   assume_role {
@@ -24,8 +25,9 @@ provider "aws" {
 }
 
 provider "aws" {
-  alias  = "old_refunds_production"
-  region = "eu-west-1"
+  version = "2.70.0"
+  alias   = "old_refunds_production"
+  region  = "eu-west-1"
   # old-refunds-production
 
   assume_role {

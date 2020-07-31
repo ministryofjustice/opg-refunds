@@ -2,11 +2,12 @@
 // front ECS Service level config
 
 resource "aws_ecs_service" "public_front" {
-  name            = "public-front"
-  cluster         = aws_ecs_cluster.lpa_refunds.id
-  task_definition = aws_ecs_task_definition.public_front.arn
-  desired_count   = 5
-  launch_type     = "FARGATE"
+  name             = "public-front"
+  cluster          = aws_ecs_cluster.lpa_refunds.id
+  task_definition  = aws_ecs_task_definition.public_front.arn
+  desired_count    = 5
+  launch_type      = "FARGATE"
+  platform_version = "1.3.0"
 
   network_configuration {
     security_groups = [
