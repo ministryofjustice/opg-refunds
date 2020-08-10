@@ -3,6 +3,10 @@ version: 2.1
 workflows:
   pr-build-and-test:
     jobs:
+      # Cancel running builds unless on master
+      - cancel_redundant_builds:
+          name: cancel_previous_jobs
+          filters: { branches: { ignore: [master] } }
       # Docker Build
       - build_containers_and_push_to_ecr/docker_build_push_web-app:
           name: public_front_docker_build
@@ -52,13 +56,14 @@ workflows:
       - infrastructure_and_deployment/apply_account_terraform:
           name: dev_account_apply_terraform
           workspace: development
-          requires: [lint_and_validate_terraform]
+          requires: [cancel_previous_jobs, lint_and_validate_terraform]
           filters: { branches: { ignore: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
           name: dev_environment_apply_terraform
           requires:
             [
+              cancel_previous_jobs,
               dev_account_apply_terraform,
               public_front_docker_build,
               caseworker_front_docker_build,
@@ -540,6 +545,22 @@ orbs:
                   terraform destroy -lock-timeout=300s -auto-approve
                 fi
 jobs:
+  cancel_redundant_builds:
+    docker:
+      - image: circleci/python
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: Cancel Redundant Builds
+          command: |
+            python pipeline_scripts/cancel_previous_jobs/cancel_redundant_builds.py \
+            --circle_project_username ${CIRCLE_PROJECT_USERNAME} \
+            --circle_project_reponame ${CIRCLE_PROJECT_REPONAME} \
+            --circle_branch ${CIRCLE_BRANCH} \
+            --circle_builds_token ${CIRCLECI_API_KEY} \
+            --terms_to_waitfor "dev_account_apply_terraform,dev_environment_apply_terraform"
+
   slack_notify_domain:
     docker:
       - image: circleci/python
