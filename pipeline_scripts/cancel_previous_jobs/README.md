@@ -2,6 +2,7 @@
 
 This script will cancel redundant builds when new ones are started. If jobs matching the `terms_to_waitfor` argument are running, the script will wait for them to end first, then cancel the build.
 
+
 ## Run script
 
 The script uses a CircleCI Personal API Token to authorise the requests against the API. Information about creating a token can be found at <https://circleci.com/docs/2.0/managing-api-tokens/>.
