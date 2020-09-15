@@ -1,0 +1,111 @@
+<?php
+$title = 'Accessibility Statement';
+$this->layout('layout::standard', [
+    'title' => $title,
+]);
+?>
+
+<p>People whose application to make a power of attorney was received by OPG from April 2013 to March 2017 are entitled to a partial refund of any application fees paid.</p>
+
+<p>By applying for a refund using this online service you agree to these terms of use and the <a href="https://www.gov.uk/help/terms-conditions" target="_blank">GOV.UK terms and conditions</a>. You also confirm that:</p>
+
+<ul class="list list-bullet">
+    <li>the information you've provided is correct, to the best of your knowledge</li>
+    <li>you are the 'donor' (the person who made a power of attorney), or are claiming the
+        refund on their behalf and for them (as their attorney, for example)
+    </li>
+    <li>the bank details you've given are the <?= ($isDonorDeceased == true) ? 'executor' : 'donor' ?>'s</li>
+</ul>
+
+<p>The refund is for the donor, even if someone else paid the fees at the time.</p>
+
+<div class="notice">
+    <p>
+        <i class="icon icon-important">
+            <span class="visually-hidden">Warning</span>
+        </i>
+        <strong class="bold-small">
+        You could be breaking the law if you deliberately give untrue or misleading information.
+        </strong>
+    </p>
+</div>
+
+
+<h2 class="heading-medium">When to apply another way</h2>
+
+<p>You will need to call the Refunds team instead of using this online service if:</p>
+
+<ul class="list list-bullet">
+    <li>the donor has a court-appointed deputy representing them</li>
+    <li>the donor has died but you want to claim the refund for the estate</li>
+    <li>you cannot give the donor's bank account number and sort code</li>
+</ul>
+
+
+<h2 class="heading-medium">Keeping your information safe</h2>
+
+<p>Any information you submit will be stored securely and used inline with our <a href="/privacy">privacy notice</a> and <a href="/cookies">cookie policy</a>.</p>
+
+<h3 class="heading-small" id="bank-details">Bank details</h3>
+
+<p>The bank account number and sort code given must be those of the donor. If you cannot provide the donor's details, contact the Refunds team.</p>
+
+<h3 class="heading-small">If we need more information</h3>
+
+<p>We might need to contact you for more information before we can confirm or pay a refund.
+We will use the email address or mobile number you give us. If we cannot contact you or get
+no response your refund claim could be cancelled.
+</p>
+
+<h3 class="heading-small">If something changes</h3>
+
+<p>Contact the Refunds team to tell us if anything changes after you've made a refund claim. For example, if:</p>
+
+<ul class="list list-bullet">
+    <li>your contact details change</li>
+    <li>the donor's bank details change</li>
+</ul>
+
+<p>You should also let us know if you think the information you gave was incorrect.</p>
+
+
+<h2 class="heading-medium">Refund amounts</h2>
+
+<p>Refunds apply to:</p>
+
+<ul class="list list-bullet">
+    <li>lasting powers of attorney (LPAs) for financial affairs, and for health and welfare</li>
+    <li>enduring powers of attorney (EPAs) - an earlier type of power of attorney</li>
+</ul>
+
+<?php $this->insert('snippet::refund-amounts');?>
+
+<h2 class="heading-medium">Rejections and appeals</h2>
+
+<p>A refund can only be paid if any original fees were paid from April 2013 to March 2017, inclusive.</p>
+
+<p>If your refund claim is rejected but you believe there has been a mistake, you can contact the Refunds
+    team to appeal the decision.
+</p>
+
+<h2 class="heading-medium">Your feedback</h2>
+
+<p>We welcome your views on this service and there is an
+    optional survey to take after you've submitted a refund claim.
+</p>
+
+<p>We also collect anonymous site-usage information. This helps us to
+    see how the service is used and how we can make it better.
+</p>
+
+<h2 class="heading-medium">Changes to these terms</h2>
+
+<p>We may occasionally update these terms of use. This might happen if there's a change in the law or to the way the service works.</p>
+
+<h2 class="heading-medium">If you suspect fraud or abuse</h2>
+
+<p>Contact the Refunds team if you believe someone has made a fraudulent claim. If you suspect abuse, or that someone is in immediate danger, you should <a href="https://www.gov.uk/contact-police">contact the police</a>.</p>
+
+<?php $this->insert('snippet::refunds-helpline', [
+    'headingLarge' => false
+]) ?>
