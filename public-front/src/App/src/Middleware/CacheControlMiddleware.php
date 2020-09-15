@@ -18,6 +18,7 @@ class CacheControlMiddleware implements ServerMiddlewareInterface
     private $cacheablePages = [
         'home',
         'terms',
+        'accessibility',
         'cookies',
         'contact',
         'start',
