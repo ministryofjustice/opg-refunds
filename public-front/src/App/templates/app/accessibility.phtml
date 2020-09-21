@@ -34,13 +34,7 @@ $this->layout('layout::standard', [
     </ul>
     <a id="claim"><h2 class="heading-medium">What to do if you cannot access parts of this service</h2></a>
     <p>If you need help to use this service, call the Refunds Helpline.</p>
-    <h3 class="heading-small">Refunds Helpline</h3>
-    <p>Email <a href="mailto:poarefunds@justice.gov.uk" target="_blank">poarefunds@<wbr>justice.gov.uk</a></p>
-    <p>Telephone: 0300 456 0300 (choose option 6)</p>
-    <p>Textphone: 0115 934 2778</p>
-    <p>Monday to Friday 9am to 5pm, except Wednesdays</p>
-    <p>Wednesday 10am to 5pm</p>
-    <p><a href="https://www.gov.uk/call-charges">Find out about call charges</a></p>
+    <?php $this->insert('snippet::refunds-helpline');?>
     <a id="reporting"><h2 class="heading-medium">Reporting accessibility problems with this service</h2></a>
     <p>We’re always looking to improve the accessibility of this service. If you find any problems not listed on this page or think we’re not meeting accessibility requirements, please contact us. </p>
     <h3 class="heading-small">Email</h4>
