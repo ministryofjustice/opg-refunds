@@ -106,7 +106,8 @@ services:
       #ENABLE_XDEBUG: 'true'
       PHP_IDE_CONFIG: serverName=public-front-app
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
-
+      # from shell vars
+      OPG_REFUNDS_NOTIFY_API_KEY: "${OPG_REFUNDS_NOTIFY_API_KEY}"
   public-composer:
     image: composer
     volumes:
@@ -184,7 +185,8 @@ services:
       #ENABLE_XDEBUG: 'true'
       PHP_IDE_CONFIG: serverName=caseworker-front-app
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
-
+      # from shell vars
+      OPG_REFUNDS_NOTIFY_API_KEY: "${OPG_REFUNDS_NOTIFY_API_KEY}"
   caseworker-front-composer:
     image: composer
     volumes:
@@ -278,7 +280,8 @@ services:
       #ENABLE_XDEBUG: 'true'
       PHP_IDE_CONFIG: serverName=caseworker-api-app
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
-
+      # from shell vars
+      OPG_REFUNDS_NOTIFY_API_KEY: "${OPG_REFUNDS_NOTIFY_API_KEY}"
   caseworker-api-composer:
     image: caseworker-api-composer
     build:
@@ -331,7 +334,8 @@ services:
       ENABLE_XDEBUG: 'true'
       PHP_IDE_CONFIG: serverName=caseworker-api-ingestion
       XDEBUG_CONFIG: remote_host=host.docker.internal remote_enable=1
-
+      # from shell vars
+      OPG_REFUNDS_NOTIFY_API_KEY: "${OPG_REFUNDS_NOTIFY_API_KEY}"
   caseworker-api-seeding:
     container_name: caseworker-api-seeding
     image: caseworker-api-seeding

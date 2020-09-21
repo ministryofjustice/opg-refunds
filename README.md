@@ -4,21 +4,21 @@ The Office of the Public Guardian LPA Refunds service: Managed by opg-org-infra 
 
 ## Local Development Setup
 
-The first time you bring up the environment:
+Intially, download the repo via:
 
 ```
 git clone git@github.com:ministryofjustice/opg-refunds.git
 cd opg-refunds
-
-docker-compose run public-composer
-docker-compose run caseworker-front-composer
-docker-compose run caseworker-api-composer
-
-docker-compose up
 ```
 
-You will also need a copy of the local config file `public-front/config/autoload/local.php`. Any developer on the team
-should be able to provide you with this.
+Within `opg-refunds` directory to *run* the project for the first time use the following:
+
+```
+make dc-run
+make
+```
+
+The `Makefile` will fetch secrets using `aws secretsmanager` and `docker-compose` commands together to pass along environment variables removing the need for local configuration files.
 
 
 The Public service will be available via https://localhost:9001/start
@@ -26,9 +26,9 @@ The Caseworker service will be available via https://localhost:9002
 
 The Caseworker API service will be available (direct) via http://localhost:9003
 
-After the first time, you bring up the environment with:
+After the first time, you can *run* the project by:
 ```
-docker-compose up
+make
 ```
 
 ### Updating composer dependencies
