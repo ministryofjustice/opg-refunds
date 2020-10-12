@@ -191,7 +191,14 @@ workflows:
 orbs:
   slack: circleci/slack@3.3.0
   build_containers_and_push_to_ecr:
-    commands:
+    orbs:
+      docker: circleci/docker@1.4.0
+    commands:  
+      dockerhub_login:
+        steps:
+          - docker/check:
+              docker-password: DOCKER_ACCESS_TOKEN
+              docker-username: DOCKER_USER
       install_aws_cli:
         steps:
           - run:
@@ -211,6 +218,9 @@ orbs:
       python:
         docker:
           - image: circleci/python
+            auth:
+              username: $DOCKER_USER
+              password: $DOCKER_ACCESS_TOKEN
     jobs:
       docker_build_push_web-app:
         executor: python
@@ -232,6 +242,7 @@ orbs:
           - setup_remote_docker:
               version: 19.03.12
               docker_layer_caching: false
+          - dockerhub_login
           - run:
               name: Build caseworker-api-composer container
               command: |
@@ -297,6 +308,7 @@ orbs:
           - setup_remote_docker:
               version: 19.03.12
               docker_layer_caching: false
+          - dockerhub_login
           - run:
               name: Build caseworker-api-composer container
               command: |
@@ -361,9 +373,19 @@ orbs:
                 terraform -version
     executors:
       python:
-        docker: [image: circleci/python]
+        docker: 
+        - image: circleci/python
+          auth:
+            username: $DOCKER_USER
+            password: $DOCKER_ACCESS_TOKEN
       terraform:
-        docker: [image: hashicorp/terraform:0.12.28]
+        docker:
+         - image: hashicorp/terraform:0.12.28
+           auth:
+            username: $DOCKER_USER
+            password: $DOCKER_ACCESS_TOKEN
+
+
     jobs:
       #----------------------------------------------------
       # Terraform
@@ -548,6 +570,9 @@ jobs:
   cancel_redundant_builds:
     docker:
       - image: circleci/python
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_ACCESS_TOKEN        
     resource_class: small
     steps:
       - checkout
@@ -564,6 +589,9 @@ jobs:
   slack_notify_domain:
     docker:
       - image: circleci/python
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_ACCESS_TOKEN    
     steps:
       - checkout
       - attach_workspace:
@@ -579,7 +607,10 @@ jobs:
           footer: "${CIRCLE_BRANCH} - Commit Message: $COMMIT_MESSAGE"
   slack_notify_production_release:
     docker:
-      - image: circleci/python
+      - image: circleci/python           
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_ACCESS_TOKEN
     steps:
       - checkout
       - attach_workspace:
