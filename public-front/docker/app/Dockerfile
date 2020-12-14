@@ -1,4 +1,4 @@
-FROM composer AS composer
+FROM composer:1.10 AS composer
 
 COPY public-front /app
 

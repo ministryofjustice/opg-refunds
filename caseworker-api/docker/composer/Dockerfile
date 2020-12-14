@@ -1,4 +1,4 @@
-FROM composer
+FROM composer:1.10
 
 RUN apk add --update --no-cache libpng
 
