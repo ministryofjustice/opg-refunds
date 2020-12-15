@@ -1,9 +1,7 @@
-FROM composer AS composer
+FROM composer:1.10 AS composer
 
 COPY public-front /app
-RUN apk add icu-dev
-RUN docker-php-ext-install -j$(nproc) \
-    intl
+
 RUN composer install --prefer-dist --no-suggest --no-interaction --no-scripts --optimize-autoloader
 
 FROM php:7-fpm-alpine
