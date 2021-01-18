@@ -78,6 +78,7 @@ locals {
   rule_condition = aws_ssm_parameter.maintenance_switch.value ? local.host_pattern : local.path_pattern
 }
 
+# change this rule.
 resource "aws_lb_listener_rule" "public_front_maintenance" {
   listener_arn = aws_lb_listener.public_front_loadbalancer.arn
 
