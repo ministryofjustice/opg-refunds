@@ -65,6 +65,18 @@ resource "aws_ssm_parameter" "maintenance_switch" {
   }
 }
 
+resource "aws_ssm_parameter" "shutdown_switch" {
+  name            = "${local.environment}_enable_shutdown"
+  type            = "String"
+  value           = "false"
+  description     = "values of either 'true' or 'false' only"
+  allowed_pattern = "^(true|false)"
+  overwrite       = true
+  lifecycle {
+    ignore_changes = [value]
+  }
+}
+
 # maintenance site switching
 locals {
   path_pattern = {
@@ -76,12 +88,22 @@ locals {
     values = [aws_route53_record.claim-power-of-attorney-refund_service_gov_uk.fqdn]
   }
   rule_condition = aws_ssm_parameter.maintenance_switch.value ? local.host_pattern : local.path_pattern
+
+  shutdown_path_pattern = {
+    field  = "path-pattern"
+    values = ["/shutdown"]
+  }
+  shutdown_host_pattern = {
+    field  = "host-header"
+    values = [aws_route53_record.claim-power-of-attorney-refund_service_gov_uk.fqdn]
+  }
+  shutdown_rule_condition = aws_ssm_parameter.maintenance_switch.value ? local.shutdown_host_pattern : local.shutdown_path_pattern
 }
 
-# change this rule.
+# maint mode rule.
 resource "aws_lb_listener_rule" "public_front_maintenance" {
   listener_arn = aws_lb_listener.public_front_loadbalancer.arn
-
+  priority     = 2
   action {
     type = "fixed-response"
 
@@ -95,6 +117,25 @@ resource "aws_lb_listener_rule" "public_front_maintenance" {
   condition {
     field  = local.rule_condition.field
     values = local.rule_condition.values
+  }
+}
+
+# shutdown mode
+resource "aws_lb_listener_rule" "public_front_shutdown" {
+  listener_arn = aws_lb_listener.public_front_loadbalancer.arn
+  priority     = 1
+  action {
+    type = "redirect"
+    redirect {
+      host        = "www.gov.uk"
+      path        = "/power-of-attorney-refund"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    field  = local.shutdown_rule_condition.field
+    values = local.shutdown_rule_condition.values
   }
 }
 
