@@ -442,9 +442,9 @@ orbs:
               name: Apply Account Terraform
               command: |
                 cd ~/project/terraform/account
-                terraform init -lock-timeout=300s
                 export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
+                terraform init -lock-timeout=300s
                 terraform apply -lock-timeout=300s --auto-approve
       apply_environment_terraform:
         #
