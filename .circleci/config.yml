@@ -383,7 +383,7 @@ orbs:
         resource_class: small
       terraform:
         docker:
-         - image: hashicorp/terraform:0.12.28
+         - image: hashicorp/terraform:0.13.6
            auth:
             username: $DOCKER_USER
             password: $DOCKER_ACCESS_TOKEN
