@@ -15,7 +15,11 @@ Set up and configure a Cloud9 instance using instructions in ../cloud9/README.md
 
 ### Get script and run it
 
-Git clone the opg-refunds repository.
+Git clone the opg-refunds repository, and go to the directory where the script is:
+
+```bash
+cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
+```
 
 ### Optional - run locally
 
@@ -34,7 +38,7 @@ Contact a Webops engineer if you do not have the access required
 Set maintenance_mode to True to turn maintenance on
 
 ``` bash
-cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
+
 ./manage_maintenance.sh \
   --environment preproduction \
   --maintenance_mode
@@ -43,7 +47,6 @@ cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 Set maintenance_mode to False to turn maintenance off
 
 ``` bash
-cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 ./manage_maintenance.sh \
   --environment preproduction \
   --disable_maintenance_mode
@@ -56,7 +59,6 @@ cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 Set shutdown_mode to True to turn  on redirect to .gov page.
 
 ``` bash
-cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 ./manage_maintenance.sh \
   --environment preproduction \
   --shutdown_enabled
@@ -65,7 +67,6 @@ cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 Set maintenance_mode to False to turn redirect off
 
 ``` bash
-cd ~/environment/opg-refunds/docs/runbooks/maintenance_mode
 ./manage_maintenance.sh \
   --environment preproduction \
   --shutdown_disabled
