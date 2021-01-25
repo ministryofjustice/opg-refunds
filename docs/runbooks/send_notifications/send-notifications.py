@@ -7,7 +7,7 @@ class ProcessNotifications:
     def __init__(self, args):
         self.filename = args.filename
         self.notifications_client = NotificationsAPIClient(args.notify_api_key)
-        self.sms_template_id = args.telephone_template_id
+        self.sms_template_id = args.sms_template_id
         self.email_template_id = args.email_template_id
 
     def processRow(self,row):
@@ -66,8 +66,8 @@ def main():
     )
 
     parser.add_argument(
-        "--telephone_template_id",
-        help="telephone template id"
+        "--sms_template_id",
+        help="sms template id"
     )
 
     parser.add_argument(
