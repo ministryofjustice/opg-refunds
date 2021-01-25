@@ -12,17 +12,21 @@ class ProcessNotifications:
 
     def processRow(self,row):
         personalisation = {}
-
+        # print('processing row..')
+        # print (row)
         contact = row["contact"]
         contact_type = row["contact_type"]
-
+        # print (row['contact'])
+        # print (row['contact_type'])
         for col in row:
             #personalisation
-            if col!= 'contact_type' or col != 'contact':
-                personalisation[col] = row[col]
+            if (col!= 'contact_type' and col != 'contact'):
+                # print("{0}:{1}".format(col,row.get(col)))
+                personalisation[col] = row.get(col)
             else:
                 continue
 
+        # print(personalisation)
         response = {}
         if contact_type == "telephone":
             response = self.notifications_client.send_sms_notification(
@@ -38,9 +42,11 @@ class ProcessNotifications:
         )
         else:
             print ("unknown type of contact: {}".format(row["contact_type"]))
+
         print(response)
 
     def ProcessFile(self):
+        print("processing file:{}".format(self.filename))
         with open(self.filename, 'r') as file:
             csv_file = csv.DictReader(file)
             for row in csv_file:
@@ -70,8 +76,10 @@ def main():
     )
 
     args = parser.parse_args()
-
+    print(args)
     processor = ProcessNotifications(args)
 
     processor.ProcessFile()
 
+if __name__ == "__main__":
+    main()
