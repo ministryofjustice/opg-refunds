@@ -24,7 +24,7 @@ class ProcessNotifications:
                 continue
 
         response = {}
-        if contact_type == "phone":
+        if contact_type == "telephone":
             response = self.notifications_client.send_sms_notification(
             phone_number=contact,
             template_id=self.sms_template_id,
