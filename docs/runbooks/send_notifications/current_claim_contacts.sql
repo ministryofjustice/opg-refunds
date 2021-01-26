@@ -7,7 +7,7 @@ CREATE OR REPLACE TEMPORARY view current_claim_contacts_view AS
         CONCAT
         (
             json_data -> 'attorney' -> 'current' -> 'name' ->> 'title' , ' ',
-            json_data -> 'attorney' -> 'current' -> 'name'  ->> 'first' , ' ',
+            json_data -> 'attorney' -> 'current' -> 'name' ->> 'first' , ' ',
             json_data -> 'attorney' -> 'current' -> 'name' ->> 'last'
         )
         WHEN 'executor' THEN
