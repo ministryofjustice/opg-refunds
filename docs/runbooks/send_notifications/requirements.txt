@@ -1,1 +1,2 @@
+tqdm
 notifications-python-client

@@ -1,5 +1,6 @@
 import csv
 import argparse
+from tqdm import tqdm
 from notifications_python_client.notifications import NotificationsAPIClient
 
 class ProcessNotifications:
@@ -43,13 +44,16 @@ class ProcessNotifications:
         else:
             print ("unknown type of contact: {}".format(row["contact_type"]))
 
-        print(response)
+        # print(response)
 
     def ProcessFile(self):
+        with open(self.filename, 'r') as filelen:
+            lines= len(list(filelen)) -1
         print("processing file:{}".format(self.filename))
         with open(self.filename, 'r') as file:
             csv_file = csv.DictReader(file)
-            for row in csv_file:
+
+            for row in tqdm(csv_file, total=lines):
                 self.processRow(dict(row))
 
 def main():

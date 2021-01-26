@@ -18,7 +18,8 @@ CREATE OR REPLACE TEMPORARY view current_claim_contacts_view AS
             json_data -> 'executor' -> 'name' ->> 'last'
         )
         WHEN 'donor' THEN donor_name
-    END AS claimant_name
+    END AS claimant_name,
+    TO_CHAR(received_datetime :: DATE, 'dd/mm/yyyy') as date_of_claim
 FROM claim
 WHERE status IN ('pending')
 AND json_data -> 'contact' ->> 'receive-notifications' = 'true'
@@ -44,7 +45,8 @@ UNION
             json_data -> 'executor' -> 'name' ->> 'last'
         )
         WHEN 'donor' THEN donor_name
-    END AS claimant_name
+    END AS claimant_name,
+    TO_CHAR(received_datetime :: DATE, 'dd/mm/yyyy') as date_of_claim
 FROM claim
 WHERE status IN ('pending')
 AND json_data -> 'contact' ->> 'receive-notifications' = 'true'
