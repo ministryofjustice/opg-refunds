@@ -80,7 +80,7 @@ def main():
     )
 
     args = parser.parse_args()
-    print(args)
+    # print(args)
     processor = ProcessNotifications(args)
 
     processor.ProcessFile()
