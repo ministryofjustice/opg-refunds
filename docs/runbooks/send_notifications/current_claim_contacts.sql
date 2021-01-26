@@ -34,7 +34,7 @@ UNION
         CONCAT
         (
             json_data -> 'attorney' -> 'current' -> 'name' ->> 'title' , ' ',
-            json_data -> 'attorney' -> 'current' -> 'name'  ->> 'first' , ' ',
+            json_data -> 'attorney' -> 'current' -> 'name' ->> 'first' , ' ',
             json_data -> 'attorney' -> 'current' -> 'name' ->> 'last'
         )
         WHEN 'executor' THEN
