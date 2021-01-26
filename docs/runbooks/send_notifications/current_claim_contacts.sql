@@ -51,6 +51,7 @@ FROM claim
 WHERE status IN ('pending')
 AND json_data -> 'contact' ->> 'receive-notifications' = 'true'
 AND json_data -> 'contact' ->> 'email' IS NULL
+AND json_data -> 'contact' ->> 'phone' IS NOT NULL
 ) order by contact_type
  );
 
