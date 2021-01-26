@@ -54,6 +54,9 @@ AND json_data -> 'contact' ->> 'email' IS NULL
 ) order by contact_type
  );
 
+SELECT COUNT (1), contact_type FROM current_claim_contacts_view
+GROUP BY contact_type;
+
 
 \copy (SELECT * FROM current_claim_contacts_view) TO 'contact_list.csv' WITH DELIMITER ',' CSV HEADER;
 
