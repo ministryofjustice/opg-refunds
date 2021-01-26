@@ -2,7 +2,7 @@ import csv
 import argparse
 from tqdm import tqdm
 from notifications_python_client.notifications import NotificationsAPIClient
-
+from time import sleep
 class ProcessNotifications:
 
     def __init__(self, args):
@@ -44,6 +44,7 @@ class ProcessNotifications:
         else:
             print ("unknown type of contact: {}".format(row["contact_type"]))
 
+        sleep(0.05) #to avoid rate limit.
         # print(response)
 
     def ProcessFile(self):
