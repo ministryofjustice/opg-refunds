@@ -4,7 +4,9 @@ function get_alb_rule_arn() {
   MM_DNS_PREFIX="${ENVIRONMENT}."
   MM_ALB_ARN=$(aws elbv2 describe-load-balancers --names  "${ENVIRONMENT}-public-front" | jq -r .[][]."LoadBalancerArn")
   MM_LISTENER_ARN=$(aws elbv2 describe-listeners --load-balancer-arn ${MM_ALB_ARN} | jq -r '.[][]  | select(.Protocol == "HTTPS") | .ListenerArn')
-  MM_RULE_ARN=$(aws elbv2 describe-rules --listener-arn ${MM_LISTENER_ARN} | jq -r '.[][]  | select(.Priority == "1") | .RuleArn')
+  MM_RULE_ARN=$(aws elbv2 describe-rules --listener-arn ${MM_LISTENER_ARN} | jq -r '.[][]  | select(.Priority == "2") | .RuleArn')
+  SHUTDOWN_RULE_ARN=$(aws elbv2 describe-rules --listener-arn ${MM_LISTENER_ARN} | jq -r '.[][]  | select(.Priority == "1") | .RuleArn')
+
   if [ $ENVIRONMENT = "production" ]
   then
     MM_DNS_PREFIX=""
@@ -25,6 +27,20 @@ function disable_maintenance() {
   --conditions Field=path-pattern,Values='/maintenance'
 }
 
+function enable_shutdown() {
+  aws ssm put-parameter --name "${ENVIRONMENT}_enable_shutdown" --type "String" --value "true" --overwrite
+  aws elbv2 modify-rule \
+  --rule-arn $SHUTDOWN_RULE_ARN \
+  --conditions Field=host-header,Values="${MM_DNS_PREFIX}claim-power-of-attorney-refund.service.gov.uk"
+}
+
+function disable_shutdown() {
+  aws ssm put-parameter --name "${ENVIRONMENT}_enable_shutdown" --type "String" --value "false" --overwrite
+  aws elbv2 modify-rule \
+  --rule-arn $SHUTDOWN_RULE_ARN \
+  --conditions Field=path-pattern,Values='/shutdown'
+}
+
 function parse_args() {
   for arg in "$@"
   do
@@ -42,6 +58,14 @@ function parse_args() {
           MAINTENANCE_MODE=False
           shift
           ;;
+          -s|--shutdown_enabled)
+          SHUTDOWN_MODE=True
+          shift
+          ;;
+          -u|--shutdown_disabled)
+          SHUTDOWN_MODE=False
+          shift
+          ;;
       esac
   done
 }
@@ -53,9 +77,17 @@ function start() {
   else
     disable_maintenance
   fi
+
+  if [ $SHUTDOWN_MODE = "True" ]
+  then
+    enable_shutdown
+  else
+    disable_shutdown
+  fi
 }
 
 MAINTENANCE_MODE=False
+SHUTDOWN_MODE=False
 parse_args $@
 get_alb_rule_arn
 start

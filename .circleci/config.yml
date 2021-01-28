@@ -193,7 +193,7 @@ orbs:
   build_containers_and_push_to_ecr:
     orbs:
       docker: circleci/docker@1.4.0
-    commands:  
+    commands:
       dockerhub_login:
         steps:
           - docker/install-docker-credential-helper
@@ -364,8 +364,8 @@ orbs:
           - run:
               name: Install Terraform
               command: |
-                export TERRAFORM_VERSION=0.12.28
-                export TERRAFORM_SHA256SUM=be99da1439a60942b8d23f63eba1ea05ff42160744116e84f46fc24f1a8011b6
+                export TERRAFORM_VERSION=0.13.6
+                export TERRAFORM_SHA256SUM=55f2db00b05675026be9c898bdd3e8230ff0c5c78dd12d743ca38032092abfc9
                 echo $TERRAFORM_VERSION
                 echo $TERRAFORM_SHA256SUM
                 curl https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip > terraform_${TERRAFORM_VERSION}_linux_amd64.zip
@@ -375,7 +375,7 @@ orbs:
                 terraform -version
     executors:
       python:
-        docker: 
+        docker:
         - image: circleci/python
           auth:
             username: $DOCKER_USER
@@ -383,7 +383,7 @@ orbs:
         resource_class: small
       terraform:
         docker:
-         - image: hashicorp/terraform:0.12.28
+         - image: hashicorp/terraform:0.13.6
            auth:
             username: $DOCKER_USER
             password: $DOCKER_ACCESS_TOKEN
@@ -442,9 +442,9 @@ orbs:
               name: Apply Account Terraform
               command: |
                 cd ~/project/terraform/account
-                terraform init -lock-timeout=300s
                 export TF_WORKSPACE=$(~/project/pipeline_scripts/set_environment_variables/set_workspace.sh <<parameters.workspace>>) >> $BASH_ENV
                 echo $TF_WORKSPACE
+                terraform init -lock-timeout=300s
                 terraform apply -lock-timeout=300s --auto-approve
       apply_environment_terraform:
         #
@@ -576,7 +576,7 @@ jobs:
       - image: circleci/python
         auth:
           username: $DOCKER_USER
-          password: $DOCKER_ACCESS_TOKEN        
+          password: $DOCKER_ACCESS_TOKEN
     resource_class: small
     steps:
       - checkout
@@ -596,7 +596,7 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_ACCESS_TOKEN
-    resource_class: small    
+    resource_class: small
     steps:
       - checkout
       - attach_workspace:
@@ -612,7 +612,7 @@ jobs:
           footer: "${CIRCLE_BRANCH} - Commit Message: $COMMIT_MESSAGE"
   slack_notify_production_release:
     docker:
-      - image: circleci/python           
+      - image: circleci/python
         auth:
           username: $DOCKER_USER
           password: $DOCKER_ACCESS_TOKEN
