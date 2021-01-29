@@ -44,7 +44,7 @@ class ProcessNotifications:
         else:
             print ("unknown type of contact: {}".format(row["contact_type"]))
 
-        sleep(0.05) #to avoid rate limit.
+        sleep(0.03) #to avoid rate limit.
         # print(response)
 
     def ProcessFile(self):

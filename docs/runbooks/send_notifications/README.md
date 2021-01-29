@@ -57,7 +57,7 @@ sanity check the contents of the file produced by opening in cloud9.
 run the install script:
 
 ``` sh
-pip install -r requirements.txt --user`
+pip3 install -r requirements.txt --user`
 ```
 
 ### run python script

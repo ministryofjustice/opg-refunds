@@ -101,6 +101,7 @@ GROUP BY contact_type;
 \copy (SELECT * FROM current_claim_contacts_view_email OFFSET 12000 LIMIT 3000) TO 'contact_list_email_5.csv' WITH DELIMITER ',' CSV HEADER;
 \copy (SELECT * FROM current_claim_contacts_view_email OFFSET 15000 LIMIT 3000) TO 'contact_list_email_6.csv' WITH DELIMITER ',' CSV HEADER;
 \copy (SELECT * FROM current_claim_contacts_view_email OFFSET 18000 LIMIT 3000) TO 'contact_list_email_7.csv' WITH DELIMITER ',' CSV HEADER;
+\copy (SELECT * FROM current_claim_contacts_view_email OFFSET 21000 LIMIT 3000) TO 'contact_list_email_8.csv' WITH DELIMITER ',' CSV HEADER;
 \copy (SELECT * FROM current_claim_contacts_view_phone LIMIT 3000) TO 'contact_list_phone_1.csv' WITH DELIMITER ',' CSV HEADER;
 
 
