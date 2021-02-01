@@ -117,23 +117,6 @@ resource "aws_lb_listener_rule" "public_front_shutdown" {
   }
 }
 
-resource "aws_lb_listener_rule" "public_front_shutdown_internal" {
-  listener_arn = aws_lb_listener.public_front_loadbalancer.arn
-  priority     = 3
-  action {
-    type = "redirect"
-    redirect {
-      host        = "www.gov.uk"
-      path        = "/power-of-attorney-refund"
-      status_code = "HTTP_301"
-    }
-  }
-  condition {
-    field  = "host-header"
-    values = [aws_route53_record.public_front.fqdn]
-  }
-}
-
 resource "aws_security_group" "public_front_loadbalancer" {
   name        = "${local.environment}-public-front-loadbalancer"
   description = "public front load balancer access"
