@@ -82,7 +82,7 @@ locals {
 # maint mode rule.
 resource "aws_lb_listener_rule" "public_front_maintenance" {
   listener_arn = aws_lb_listener.public_front_loadbalancer.arn
-  priority     = 2
+  priority     = 20
   action {
     type = "fixed-response"
 
@@ -113,7 +113,24 @@ resource "aws_lb_listener_rule" "public_front_shutdown" {
   }
   condition {
     field  = "host-header"
-    values = [aws_route53_record.public_front.fqdn, aws_route53_record.claim-power-of-attorney-refund_service_gov_uk.fqdn]
+    values = [aws_route53_record.claim-power-of-attorney-refund_service_gov_uk.fqdn]
+  }
+}
+
+resource "aws_lb_listener_rule" "public_front_shutdown_internal" {
+  listener_arn = aws_lb_listener.public_front_loadbalancer.arn
+  priority     = 3
+  action {
+    type = "redirect"
+    redirect {
+      host        = "www.gov.uk"
+      path        = "/power-of-attorney-refund"
+      status_code = "HTTP_301"
+    }
+  }
+  condition {
+    field  = "host-header"
+    values = [aws_route53_record.public_front.fqdn.fqdn]
   }
 }
 
