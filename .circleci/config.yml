@@ -77,14 +77,9 @@ workflows:
           requires: [dev_environment_apply_terraform]
           filters: { branches: { ignore: [master] } }
 
-      - infrastructure_and_deployment/run_healthcheck_test:
-          name: dev_run_healthcheck_test
-          requires: [dev_seed_environment_databases]
-          filters: { branches: { ignore: [master] } }
-
       - slack_notify_domain:
           name: post_environment_domains
-          requires: [dev_run_healthcheck_test]
+          requires: [dev_seed_environment_databases]
           filters: { branches: { ignore: [master] } }
 
       - hold-for-destruction:
@@ -151,16 +146,10 @@ workflows:
           requires: [preprod_environment_apply_terraform]
           filters: { branches: { only: [master] } }
 
-      - infrastructure_and_deployment/run_healthcheck_test:
-          name: preprod_run_healthcheck_test
-          workspace: preproduction
-          requires: [preprod_seed_environment_databases]
-          filters: { branches: { only: [master] } }
-
       - hold-for-uat:
           name: hold_env_for_uat_preprod
           type: approval
-          requires: [preprod_run_healthcheck_test]
+          requires: [preprod_seed_environment_databases]
           filters: { branches: { only: [master] } }
 
       # Production Deployment
@@ -176,16 +165,11 @@ workflows:
           workspace: production
           filters: { branches: { only: [master] } }
 
-      - infrastructure_and_deployment/run_healthcheck_test:
-          name: prod_run_healthcheck_test
-          workspace: production
-          requires: [prod_environment_apply_terraform]
-          filters: { branches: { only: [master] } }
 
       - slack_notify_production_release:
           name: post_production_release_message
           requires:
-            [prod_account_apply_terraform, prod_environment_apply_terraform, prod_run_healthcheck_test]
+            [prod_account_apply_terraform, prod_environment_apply_terraform]
           filters: { branches: { only: [master] } }
 
 orbs:

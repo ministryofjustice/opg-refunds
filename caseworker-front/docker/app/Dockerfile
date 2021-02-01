@@ -1,4 +1,4 @@
-FROM composer:1.10 AS composer
+FROM composer:1.10.19 AS composer
 
 COPY caseworker-front /app
 
