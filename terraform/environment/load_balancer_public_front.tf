@@ -130,7 +130,7 @@ resource "aws_lb_listener_rule" "public_front_shutdown_internal" {
   }
   condition {
     field  = "host-header"
-    values = [aws_route53_record.public_front.fqdn.fqdn]
+    values = [aws_route53_record.public_front.fqdn]
   }
 }
 
