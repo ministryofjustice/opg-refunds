@@ -51,8 +51,8 @@ resource "aws_ecs_task_definition" "ingestion" {
   family                   = "${local.environment}-ingestion"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
-  cpu                      = 2048
-  memory                   = 4096
+  cpu                      = 256
+  memory                   = 512
   container_definitions    = "[${local.ingestion_app}]"
   task_role_arn            = aws_iam_role.ingestion_task_role.arn
   execution_role_arn       = aws_iam_role.execution_role.arn
