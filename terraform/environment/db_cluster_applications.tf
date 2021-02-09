@@ -4,8 +4,8 @@ resource "aws_rds_cluster" "applications" {
   db_subnet_group_name   = aws_db_subnet_group.applications_rds_cluster.name
 
   engine                          = "aurora-postgresql"
-  engine_version                  = "9.6.12"
-  db_cluster_parameter_group_name = "default.aurora-postgresql9.6"
+  engine_version                  = "10.12"
+  db_cluster_parameter_group_name = "default.aurora-postgresql10"
   database_name                   = "applications"
 
   backtrack_window  = 0
