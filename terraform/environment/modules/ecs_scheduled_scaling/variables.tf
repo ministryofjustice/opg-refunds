@@ -9,11 +9,6 @@ variable "name" {
   default     = "hibernation"
 }
 
-variable "scale_down_task_count" {
-  description = "Minimum running task count during scale down"
-  default     = 0
-}
-
 variable "scale_down_time" {
   description = "Cron formatted value for scale down trigger"
 }
@@ -23,6 +18,10 @@ variable "scale_up_time" {
 }
 
 variable "service_config" {
-  description = "Map of services and task count when regually scaled."
-  type        = map(string)
+  description = "Map of services and task scale down to and up to when regually scaled."
+  type = map(
+    object({
+      scale_down_to = number
+      scale_up_to   = number
+  }))
 }
