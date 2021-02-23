@@ -5,7 +5,7 @@ data "aws_iam_role" "ecs_autoscaling_service_role" {
 
 resource "aws_appautoscaling_target" "ecs_service_scheduled" {
   for_each           = var.service_config
-  min_capacity       = 0
+  min_capacity       = 1
   max_capacity       = each.value.scale_up_to
   resource_id        = "service/${var.ecs_cluster_name}/${each.key}"
   role_arn           = data.aws_iam_role.ecs_autoscaling_service_role.arn
