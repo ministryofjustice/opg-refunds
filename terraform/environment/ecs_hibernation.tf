@@ -8,15 +8,15 @@ module "daytime" {
   service_config = {
     tostring(aws_ecs_service.caseworker_api.name) = {
       scale_down_to = 0
-      scale_up_to   = aws_ecs_service.caseworker_api.desired_count
+      scale_up_to   = local.account.caseworker_api_autoscaling_maximum
     }
     tostring(aws_ecs_service.ingestion.name) = {
       scale_down_to = 0
-      scale_up_to   = aws_ecs_service.ingestion.desired_count
+      scale_up_to   = local.account.ingestion_autoscaling_maximum
     }
     tostring(aws_ecs_service.caseworker_front.name) = {
       scale_down_to = 0
-      scale_up_to   = aws_ecs_service.caseworker_front.desired_count
+      scale_up_to   = local.account.caseworker_front_autoscaling_maximum
     }
     tostring(aws_ecs_service.public_front.name) = {
       scale_down_to = 0
