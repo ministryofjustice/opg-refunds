@@ -5,7 +5,7 @@ resource "aws_ecs_service" "caseworker_api" {
   name             = "caseworker_api"
   cluster          = aws_ecs_cluster.lpa_refunds.id
   task_definition  = aws_ecs_task_definition.caseworker_api.arn
-  desired_count    = 2
+  desired_count    = local.account.caseworker_api_autoscaling_maximum
   launch_type      = "FARGATE"
   platform_version = "1.3.0"
 

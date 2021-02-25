@@ -5,7 +5,7 @@ resource "aws_ecs_service" "ingestion" {
   name             = "ingestion"
   cluster          = aws_ecs_cluster.lpa_refunds.id
   task_definition  = aws_ecs_task_definition.ingestion.arn
-  desired_count    = 1
+  desired_count    = local.account.ingestion_autoscaling_maximum
   launch_type      = "FARGATE"
   platform_version = "1.3.0"
 
