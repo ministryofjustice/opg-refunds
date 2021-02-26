@@ -23,5 +23,4 @@ module "daytime" {
     }
   }
 }
-}
 
