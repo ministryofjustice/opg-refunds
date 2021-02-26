@@ -29,7 +29,8 @@ variable "accounts" {
       days_to_wait_before_expiry                   = number
       opg_refunds_google_analytics_tracking_id     = string
       opg_refunds_google_analytics_tracking_gov_id = string
-
+      scale_up_schedule                            = string
+      scale_down_schedule                          = string
     })
   )
 }
