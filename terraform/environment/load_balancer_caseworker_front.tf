@@ -65,7 +65,7 @@ resource "aws_security_group_rule" "caseworker_front_loadbalancer_ingress" {
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
-  cidr_blocks       = module.whitelist.moj_sites
+  cidr_blocks       = module.allow_ip_list.moj_sites
   security_group_id = aws_security_group.caseworker_front_loadbalancer.id
 }
 

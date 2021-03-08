@@ -1,6 +1,6 @@
 resource "aws_resourcegroups_group" "environment" {
   name = local.environment
-
+  tags = merge( local.default_tags, local.shared_component_tag)
   resource_query {
     query = local.environment_resource_group_query
   }
@@ -14,7 +14,7 @@ locals {
     TagFilters = [
       {
         Key    = "environment-name",
-        Values = ["${local.environment}"]
+        Values = [local.environment]
       }
     ]
   })

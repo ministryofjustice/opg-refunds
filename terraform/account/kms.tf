@@ -5,6 +5,7 @@ resource "aws_kms_key" "bank_encrypt_decrypt" {
   is_enabled              = true
   key_usage               = "ENCRYPT_DECRYPT"
   policy                  = data.aws_iam_policy_document.bank_encrypt_decrypt.json
+  tags                    = merge(local.default_tags, local.shared_component_tag)
 }
 
 data "aws_iam_policy_document" "bank_encrypt_decrypt" {
