@@ -54,7 +54,7 @@ resource "aws_cloudwatch_metric_alarm" "public_front_max_scaling" {
   threshold                 = local.account.public_front_autoscaling_maximum
   alarm_description         = "This metric monitors ecs running task count for the public-front service"
   insufficient_data_actions = []
-  tags                      = merge (local.default_tags, local.shared_component_tag)
+  tags                      = merge(local.default_tags, local.shared_component_tag)
   dimensions = {
     ServiceName = "public-front"
     ClusterName = "${local.environment}-lpa-refunds"
