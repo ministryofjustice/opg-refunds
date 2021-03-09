@@ -7,6 +7,7 @@ module "start_rds_instances" {
   cloudwatch_schedule_expression = local.account.scale_up_schedule
   schedule_action                = "start"
   rds_schedule                   = "true"
+  tags                           = merge(local.default_tags, local.shared_component_tag)
   resources_tag = {
     key   = "scheduled_shutdown"
     value = "true"
@@ -19,6 +20,7 @@ module "stop_rds_instances" {
   cloudwatch_schedule_expression = local.account.scale_down_schedule
   schedule_action                = "stop"
   rds_schedule                   = "true"
+  tags                           = merge(local.default_tags, local.shared_component_tag)
   resources_tag = {
     key   = "scheduled_shutdown"
     value = "true"

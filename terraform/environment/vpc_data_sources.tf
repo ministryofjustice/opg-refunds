@@ -40,7 +40,7 @@ data "aws_acm_certificate" "caseworker_refunds_opg_digital" {
   domain = "caseworker.refunds.opg.digital"
 }
 
-module "whitelist" {
+module "allow_ip_list" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
 }
 
