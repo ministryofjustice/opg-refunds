@@ -22,5 +22,11 @@ module "daytime" {
       scale_up_to   = local.account.public_front_autoscaling_maximum
     }
   }
+  depends_on = [
+    aws_appautoscaling_target.public_front,
+    aws_appautoscaling_policy.cpu_track_metric,
+    aws_appautoscaling_policy.memory_track_metric,
+    aws_cloudwatch_metric_alarm.public_front_max_scaling
+  ]
 }
 
