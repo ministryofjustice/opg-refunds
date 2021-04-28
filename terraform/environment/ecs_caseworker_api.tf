@@ -73,6 +73,18 @@ resource "aws_security_group_rule" "caseworker_api_ecs_service_front_ingress" {
   source_security_group_id = aws_security_group.caseworker_front_ecs_service.id
 }
 
+
+//ssh in from outside
+//------------
+resource "aws_security_group_rule" "caseworker_api_ecs_service_front_ingress_ops_access" {
+  type                     = "ingress"
+  from_port                = 443
+  to_port                  = 443
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.caseworker_api_ecs_service.id
+  cidr_blocks       = module.allow_ip_list.moj_sites
+}
+
 //----------------------------------
 // Anything out
 resource "aws_security_group_rule" "caseworker_api_ecs_service_egress" {
@@ -215,7 +227,7 @@ locals {
       { "name" : "OPG_REFUNDS_SSCL_ACCOUNT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_account.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" },
       { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" }
-
+      { "name" : "OPG_REFUNDS_PUBLIC_KEY". "valueFrom" : "aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_key.name}"}
     ],
     "environment": [
       { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
