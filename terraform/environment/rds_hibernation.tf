@@ -3,7 +3,7 @@
 
 module "start_rds_instances" {
   source                         = "diodonfrost/lambda-scheduler-stop-start/aws"
-  name                           = "rds_scale_up"
+  name                           = "${local.environment}_rds_scale_up"
   cloudwatch_schedule_expression = local.account.scale_up_schedule
   schedule_action                = "start"
   rds_schedule                   = "true"
@@ -16,7 +16,7 @@ module "start_rds_instances" {
 
 module "stop_rds_instances" {
   source                         = "diodonfrost/lambda-scheduler-stop-start/aws"
-  name                           = "rds_scale_down"
+  name                           = "${local.environment}_rds_scale_down"
   cloudwatch_schedule_expression = local.account.scale_down_schedule
   schedule_action                = "stop"
   rds_schedule                   = "true"
