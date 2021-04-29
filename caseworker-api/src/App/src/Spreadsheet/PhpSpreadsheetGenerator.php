@@ -96,6 +96,8 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
                 }
 
                 $this->getLogger()->debug('Spreadsheet row set in ' . $this->getElapsedTimeInMs($start) . 'ms');
+                $this->logRowDiagnostics($row);
+
             }
 
             for ($i = 1; $i <= $maxColumnIndex; $i++) {
@@ -118,6 +120,30 @@ class PhpSpreadsheetGenerator implements ISpreadsheetGenerator, Initializer\LogS
 
         throw new InvalidArgumentException('Supplied schema and file format is not supported');
     }
+
+
+    function logRowDiagnostics(SpreadsheetRow $row)
+    {
+        $cells=  $row->getCells();
+        $isCheque = false;
+        $referenceNo = "N/A";
+        if (count($cells)> 0) {
+            $rowNumber = cells[0]->getRow();
+
+           // we have to look for column details.
+            foreach ($cells as $cell) {
+                if ($cell->getColumn()==4) {
+                    $referenceNo = $cell->getData();
+                } else {
+                    continue;
+                }
+            }
+            $this->getLogger()->debug("DEBUG-SHEET-OUTPUT: row:" . $rowNumber . " Reference:" . $referenceNo);
+        }else{
+            $this->getLogger()->debug("DEBUG-SHEET-OUTPUT: No cells set for this row.");
+        }
+    }
+
 
     /**
      * @param string $schema The schema the produced spreadsheet should follow e.g. SSCL
