@@ -147,6 +147,6 @@ resource "aws_secretsmanager_secret" "opg_refunds_sscl_analysis" {
 }
 
 resource "aws_secretsmanager_secret" "opg_refunds_public_key" {
-    name = "${local.account_name}/opg_refunds_public_key"
+  name = "${local.account_name}/opg_refunds_public_key"
   tags = merge(local.default_tags, local.caseworker_component_tag)
 }

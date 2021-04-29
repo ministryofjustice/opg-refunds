@@ -77,12 +77,12 @@ resource "aws_security_group_rule" "caseworker_api_ecs_service_front_ingress" {
 //ssh in from outside
 //------------
 resource "aws_security_group_rule" "caseworker_api_ecs_service_front_ingress_ops_access" {
-  type                     = "ingress"
-  from_port                = 443
-  to_port                  = 443
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.caseworker_api_ecs_service.id
-  cidr_blocks       = module.allow_ip_list.moj_sites
+  type              = "ingress"
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+  security_group_id = aws_security_group.caseworker_api_ecs_service.id
+  cidr_blocks       = module.allow_ip_list.moj_vpn
 }
 
 //----------------------------------
