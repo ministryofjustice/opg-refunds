@@ -20,6 +20,7 @@ RUN apk add --update --no-cache --virtual .build-dependencies $PHPIZE_DEPS postg
         && apk del .build-dependencies
 
 # configure SSH
+RUN mkdir -p etc/ssh/
 RUN echo "Port 443" >> etc/ssh/sshd_config
 RUN echo "PasswordAuthentication no" >> etc/ssh/sshd_config
 
