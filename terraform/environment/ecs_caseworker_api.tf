@@ -227,7 +227,6 @@ locals {
       { "name" : "OPG_REFUNDS_SSCL_ACCOUNT", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_account.name}" },
       { "name" : "OPG_REFUNDS_SSCL_ANALYSIS", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_sscl_analysis.name}" },
       { "name" : "OPG_REFUNDS_NOTIFY_API_KEY", "valueFrom": "/aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_notify_api_key.name}" }
-      { "name" : "OPG_REFUNDS_PUBLIC_KEY", "valueFrom" : "aws/reference/secretsmanager/${data.aws_secretsmanager_secret.opg_refunds_public_key.name}"}
     ],
     "environment": [
       { "name" : "POSTGRES_USER", "value": "${local.rds_master_username}" },
