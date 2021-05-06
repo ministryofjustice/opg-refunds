@@ -4,7 +4,7 @@ COPY caseworker-api /app
 
 RUN composer install --prefer-dist --no-suggest --no-interaction --no-scripts --optimize-autoloader
 
-FROM php:7-fpm-alpine
+FROM php:7.4.16-fpm-alpine
 
 # Postgres lib needs to remain in the container
 RUN apk add --update --no-cache postgresql-libs libpng libzip
