@@ -4,6 +4,7 @@ from botocore.exceptions import ClientError
 import pg8000
 import string
 import xlsxwriter
+from datetime import datetime
 
 
 class AwsBase:
@@ -127,7 +128,7 @@ class SpreadsheetBase:
 
     def spreadsheet(self, az):
         # now generate the spreadsheet - probably need to add timestamp here
-        workbook = xlsxwriter.Workbook('Export.xlsx', {'remove_timezone': True})
+        workbook = xlsxwriter.Workbook('Export.xlsx')
         for letter in az.keys():
             data = az.get(letter) or []
             letter = letter.upper()
@@ -150,6 +151,7 @@ class SpreadsheetBase:
 class Exporter(AwsBase, SpreadsheetBase):
 
     colRangeWidths = {
+        'R Ref': 18,
         'Id': 15,
         'Status': 12,
         'Applicant Type': 18,
@@ -182,13 +184,28 @@ class Exporter(AwsBase, SpreadsheetBase):
         return self
 
 
+    def char(self, row):
+        last = row['donor_name']['last']
+        return last[0].lower()
+
+    def names(self, row):
+        donorName = "{} {} {}".format(row['donor_name']['title'], row['donor_name']['first'], row['donor_name']['last'])
+        attorneyName = "{} {} {}".format(row['attorney_name']['title'], row['attorney_name']['first'], row['attorney_name']['last'])
+        return donorName, attorneyName
+
+    def ref(self, row):
+        n=4
+        id = 'R' + str(row['ID'])
+        return ' '.join([id[i:i+n] for i in range(0, len(id), n)])
+
+
     def getAllClaims(self, cur):
-        select = "SELECT claim.id as ID, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
+        select = "SELECT 'R' as r_ref, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created, claim.id as ID FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['ID', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid', 'created']
+        cols = ['r_ref','status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid', 'created', 'ID']
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
@@ -198,14 +215,16 @@ class Exporter(AwsBase, SpreadsheetBase):
         az['others'] = []
 
         for row in records:
-            donorName = "{} {} {}".format(row['donor_name']['title'], row['donor_name']['first'], row['donor_name']['last'])
-            attorneyName = "{} {} {}".format(row['attorney_name']['title'], row['attorney_name']['first'], row['attorney_name']['last'])
-            last = row['donor_name']['last']
-            char = last[0].lower()
+            # get the letter
+            char = self.char(row)
             # replace the names
-            row['donor_name'] = donorName
-            row['attorney_name'] = attorneyName
+            row['donor_name'], row['attorney_name'] = self.names(row)
+            # set the applicant name
             row['applicant'] = row['donor_name'] if row['applicant_type'] == 'donor' else row['attorney_name']
+            # generate the R-Ref
+            row['r_ref'] = self.ref(row)
+            # convert date
+            row['created'] = row['created'].strftime("%Y-%m-%d %H:%M")
 
             key = char if char in az.keys() else 'others'
             found = az.get(key) or []
