@@ -6,12 +6,12 @@ import string
 import xlsxwriter
 from datetime import datetime
 
-
+# Group all the AWS related tooling to this class
 class AwsBase:
     aws_region = 'eu-west-1'
     aws_iam_session = ''
     aws_secret = 'opg_refunds_db_cases_migration_password'
-
+    # create a session from account / role arn
     def set_iam_role_session(self, account, role):
         role_arn = 'arn:aws:iam::{}:role/{}'.format(account, role)
         sts = boto3.client(
@@ -26,6 +26,8 @@ class AwsBase:
         self.aws_iam_session = session
         return self
 
+    # use the session and namespace to create a client,
+    # allow easy creation for sts / rds etc
     def get_aws_client(self, namespace, session):
         return boto3.client(
             namespace,
@@ -34,25 +36,8 @@ class AwsBase:
             aws_secret_access_key=session['Credentials']['SecretAccessKey'],
             aws_session_token=session['Credentials']['SessionToken'])
 
-
-    def aws_rds_cluster(self, filterField, filterName):
-        client = self.get_aws_client('rds', self.aws_iam_session)
-
-        response = client.describe_db_clusters(
-            MaxRecords=100,
-            Marker=""
-        ).get('DBClusters')
-
-        filtered = list(filter(lambda x: filterName in x[filterField], response)).pop()
-        return filtered['ReaderEndpoint'], filtered['Port'], filtered['DatabaseName']
-
-
-    def aws_secrets_rds_login(self, environment):
-        client = self.get_aws_client('secretsmanager', self.aws_iam_session)
-        res = client.get_secret_value(SecretId = environment + '/' + self.aws_secret)
-        return 'cases_migration', res['SecretString']
-
-
+# tooling for conneting diretly to psql database
+class DBConnect:
     def connect(self, host, port, user, password, database):
         return pg8000.connect(
                 user=user,
@@ -62,44 +47,31 @@ class AwsBase:
                 password=password,
                 tcp_keepalive=True)
 
-
-    def aws_rds_connection(self, environment):
-        host, port, database = self.aws_rds_cluster('Endpoint', 'caseworker-' + self.environment)
-        user, password = self.aws_secrets_rds_login(environment)
-        try:
-            print('Connecting to the PostgreSQL database...')
-            connection = self.connect(
-                host,
-                port,
-                user,
-                password,
-                database
-            )
-            print('Connected to the PostgreSQL database!')
-            return connection
-        except (Exception, pg8000.Error) as error:
-            print("an error...")
-            print(error)
-        return
-
-
+# generic spreadsheet tooling
 class SpreadsheetBase:
-
+    # object to set widths of each column
     colRangeWidths = {}
 
+    # find the column letter presuming cols started at A
     def maxLetter(self, data):
         #A = 65
         letter = 65 + len(data)-1
         return chr(letter)
 
-
+    # find the letter for this column header
+    # - assuming cols start at a
+    # - used for excel cell locations (A1:G2 etc)
     def letter(self, headers, col):
         index = headers.index(col.upper())
         letter = (65 + index)
         char = chr(letter)
-        print(f'\t[{col}]--> [char:{letter}] = [col:{char}]' )
         return char
 
+    # use the data passed to create
+    # - headers (formatted for use in .add_table)
+    # - keys (flat headers)
+    # - table (objects converted to lists of values in order)
+    # - selector (the excel range selector that covers table range - A1:C7 etc)
     def forTable(self, data):
         # generate flat headers with _ and title case
         keys = list( map(lambda val:  val.replace('_', ' ').upper() , data[0].keys() ) )
@@ -115,17 +87,20 @@ class SpreadsheetBase:
         # return headers, table body and the excel selector
         return headers, keys, table, selector
 
-
+    # Sets the width of all columns in the colRangeWidths
+    # object
     def colWidths(self, worksheet, headers):
         # set column widths
         for col, width in self.colRangeWidths.items():
             a = self.letter(headers, col)
             selectors = f'{a}:{a}'
-            print(f'\tSetting col width to [{width}] for [{selectors}]')
             worksheet.set_column(selectors, width)
-
         return self
 
+    # Create the spreadsheet from the AZ data set
+    # - the az data is a dict of lists, with the key being a
+    #   letter (A-Z or 'others') and the list being data from
+    #   to write in that tab
     def spreadsheet(self, az):
         # now generate the spreadsheet - probably need to add timestamp here
         workbook = xlsxwriter.Workbook('Export.xlsx')
@@ -138,7 +113,6 @@ class SpreadsheetBase:
             # if there is data, then add to the sheet
             if(len(data) > 0):
                 formattedHeaders, flatHeaders, table, selector = self.forTable(data)
-                print(f'\tTable range [{letter}] -> {selector}')
                 self.colWidths(worksheet, flatHeaders)
                 print('\tAdding table.')
                 worksheet.add_table(selector, {'data': table, 'columns': formattedHeaders })
@@ -148,8 +122,11 @@ class SpreadsheetBase:
         return self
 
 
-class Exporter(AwsBase, SpreadsheetBase):
+# extends multiple classes and adjust the values to get data and save it as a
+# spreadsheet
+class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
+    # set widths for the excel columns
     colRangeWidths = {
         'R Ref': 18,
         'Id': 15,
@@ -158,14 +135,15 @@ class Exporter(AwsBase, SpreadsheetBase):
         'Donor Name': 35,
         'Donor Dob': 15,
         'Attorney Name': 35,
-        'Lpa Id': 20,
+        'Lpa Ref': 20,
         'Amount': 15,
         'Date Paid': 15,
         'Applicant': 35,
-        'Created': 18
+        'Created': 18,
+        'System': 12
     }
 
-
+    # main function
     def generate(self, host, port, user, password, database):
         try:
             print('Connecting to the PostgreSQL database...')
@@ -183,33 +161,40 @@ class Exporter(AwsBase, SpreadsheetBase):
             print(error)
         return self
 
-
+    # return the single character for grouping if this row
+    # - currently uses the first letter of the last name
     def char(self, row):
         last = row['donor_name']['last']
         return last[0].lower()
 
+    # create the single string name for donor & attorney based on the json object from the db
     def names(self, row):
         donorName = "{} {} {}".format(row['donor_name']['title'], row['donor_name']['first'], row['donor_name']['last'])
         attorneyName = "{} {} {}".format(row['attorney_name']['title'], row['attorney_name']['first'], row['attorney_name']['last'])
         return donorName, attorneyName
 
+    # create the R ref using the DB claim.id and formatting it with
+    # a 'R' prefix and then space every 4 chars
     def ref(self, row):
         n=4
         id = 'R' + str(row['ID'])
         return ' '.join([id[i:i+n] for i in range(0, len(id), n)])
 
-
+    # SQL call
+    # uses zip to create a list of dicts with column names
     def getAllClaims(self, cur):
-        select = "SELECT 'R' as r_ref, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created, claim.id as ID FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
+        select = "SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created, claim.id as ID, poa.system as system, poa.case_number as poa_case_number FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['r_ref','status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid', 'created', 'ID']
+        cols = ['r_ref', 'lpa_ref', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'applicant_type', 'amount', 'date_paid', 'created', 'ID', 'system', 'poa_case_number']
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
 
+    # Get and format the data into a A-Z dict with each being a list
+    # - does some formatting on the data for output to excel
     def data(self, records):
         az = dict.fromkeys(string.ascii_lowercase, [] )
         az['others'] = []
@@ -225,6 +210,9 @@ class Exporter(AwsBase, SpreadsheetBase):
             row['r_ref'] = self.ref(row)
             # convert date
             row['created'] = row['created'].strftime("%Y-%m-%d %H:%M")
+            # change the case number to the poa reference and remove row['poa_case_number']
+            if row['poa_case_number']: row['lpa_ref'] = row['poa_case_number']
+            del row['poa_case_number']
 
             key = char if char in az.keys() else 'others'
             found = az.get(key) or []
@@ -233,7 +221,7 @@ class Exporter(AwsBase, SpreadsheetBase):
 
         return az
 
-
+    # wrapping function
     def runner(self, connection):
         cur = connection.cursor()
         print('Finding all claims')
