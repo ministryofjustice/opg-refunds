@@ -93,7 +93,7 @@ class SpreadsheetBase:
 
 
     def letter(self, headers, col):
-        index = headers.index(col)
+        index = headers.index(col.upper())
         letter = (65 + index)
         char = chr(letter)
         print(f'\t[{col}]--> [char:{letter}] = [col:{char}]' )
@@ -101,7 +101,7 @@ class SpreadsheetBase:
 
     def forTable(self, data):
         # generate flat headers with _ and title case
-        keys = list( map(lambda val:  val.replace('_', ' ').title() , data[0].keys() ) )
+        keys = list( map(lambda val:  val.replace('_', ' ').upper() , data[0].keys() ) )
         # convert for add_table columns option
         headers = list( map(lambda val: {'header': val}, keys ) )
         # generate the table body
@@ -152,13 +152,14 @@ class Exporter(AwsBase, SpreadsheetBase):
     colRangeWidths = {
         'Id': 15,
         'Status': 12,
-        'Applicant Type': 15,
+        'Applicant Type': 18,
         'Donor Name': 35,
         'Donor Dob': 15,
         'Attorney Name': 35,
         'Lpa Id': 20,
         'Amount': 15,
-        'Date Paid': 15
+        'Date Paid': 15,
+        'Applicant': 35
     }
 
 
@@ -181,12 +182,12 @@ class Exporter(AwsBase, SpreadsheetBase):
 
 
     def getAllClaims(self, cur):
-        select = "SELECT claim.id as ID, status, json_data->'applicant' as applicant_type, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, payment.amount as amount,payment.processed_datetime as date_paid FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY id DESC LIMIT 5"
+        select = "SELECT claim.id as ID, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY id DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['ID', 'status', 'applicant_type', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'amount', 'date_paid']
+        cols = ['ID', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid']
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
@@ -203,6 +204,8 @@ class Exporter(AwsBase, SpreadsheetBase):
             # replace the names
             row['donor_name'] = donorName
             row['attorney_name'] = attorneyName
+            row['applicant'] = row['donor_name'] if row['applicant_type'] == 'donor' else row['attorney_name']
+
             key = char if char in az.keys() else 'others'
             found = az.get(key) or []
             found.append(row)
