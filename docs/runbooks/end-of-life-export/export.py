@@ -3,8 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 import pg8000
 import string
-import json
-
+import xlsxwriter
 
 
 class AwsBase:
@@ -83,10 +82,87 @@ class AwsBase:
         return
 
 
-class Exporter(AwsBase):
+class SpreadsheetBase:
+
+    colRangeWidths = {}
+
+    def maxLetter(self, data):
+        #A = 65
+        letter = 65 + len(data)-1
+        return chr(letter)
 
 
-    def generateDirect(self, host, port, user, password, database):
+    def letter(self, headers, col):
+        index = headers.index(col)
+        letter = (65 + index)
+        char = chr(letter)
+        print(f'\t[{col}]--> [char:{letter}] = [col:{char}]' )
+        return char
+
+    def forTable(self, data):
+        # generate flat headers with _ and title case
+        keys = list( map(lambda val:  val.replace('_', ' ').title() , data[0].keys() ) )
+        # convert for add_table columns option
+        headers = list( map(lambda val: {'header': val}, keys ) )
+        # generate the table body
+        table = []
+        for row in data: table.append( list(row.values()) )
+        # get max letter of the table
+        col = self.maxLetter(headers)
+        row = len(table) + 1
+        selector = 'A1:{}{}'.format(col, row)
+        # return headers, table body and the excel selector
+        return headers, keys, table, selector
+
+
+    def colWidths(self, worksheet, headers):
+        # set column widths
+        for col, width in self.colRangeWidths.items():
+            a = self.letter(headers, col)
+            selectors = f'{a}:{a}'
+            print(f'\tSetting col width to [{width}] for [{selectors}]')
+            worksheet.set_column(selectors, width)
+
+        return self
+
+    def spreadsheet(self, az):
+        # now generate the spreadsheet - probably need to add timestamp here
+        workbook = xlsxwriter.Workbook('Export.xlsx')
+        for letter in az.keys():
+            data = az.get(letter) or []
+            letter = letter.upper()
+            length = len(data)
+            print(f'[{letter}] has [{length}] records')
+            worksheet = workbook.add_worksheet(letter)
+            # if there is data, then add to the sheet
+            if(len(data) > 0):
+                formattedHeaders, flatHeaders, table, selector = self.forTable(data)
+                print(f'\tTable range [{letter}] -> {selector}')
+                self.colWidths(worksheet, flatHeaders)
+                print('\tAdding table.')
+                worksheet.add_table(selector, {'data': table, 'columns': formattedHeaders })
+
+        # save the workbook
+        workbook.close()
+        return self
+
+
+class Exporter(AwsBase, SpreadsheetBase):
+
+    colRangeWidths = {
+        'Id': 15,
+        'Status': 12,
+        'Applicant Type': 15,
+        'Donor Name': 35,
+        'Donor Dob': 15,
+        'Attorney Name': 35,
+        'Lpa Id': 20,
+        'Amount': 15,
+        'Date Paid': 15
+    }
+
+
+    def generate(self, host, port, user, password, database):
         try:
             print('Connecting to the PostgreSQL database...')
             connection = self.connect(
@@ -105,23 +181,17 @@ class Exporter(AwsBase):
 
 
     def getAllClaims(self, cur):
-        select = "SELECT claim.id as ID, status, json_data->'applicant' as applicant_type, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_id, payment.amount as amount,payment.processed_datetime as date_paid FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY id DESC LIMIT 5"
-        print('Running SQL:\n' + select)
+        select = "SELECT claim.id as ID, status, json_data->'applicant' as applicant_type, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, payment.amount as amount,payment.processed_datetime as date_paid FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY id DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['ID', 'status', 'applicant_type', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_id', 'amount', 'date_paid']
+        cols = ['ID', 'status', 'applicant_type', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'amount', 'date_paid']
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
 
-    def runner(self, connection):
-        cur = connection.cursor()
-        print('Finding all claims')
-        records = self.getAllClaims(cur)
-        print('Found {} records'.format( len(records) ) )
-
+    def data(self, records):
         az = dict.fromkeys(string.ascii_lowercase, [] )
         az['others'] = []
 
@@ -133,14 +203,23 @@ class Exporter(AwsBase):
             # replace the names
             row['donor_name'] = donorName
             row['attorney_name'] = attorneyName
-
             key = char if char in az.keys() else 'others'
-            print('{} = {} --> {}'.format(row['ID'], last, key))
             found = az.get(key) or []
             found.append(row)
             az[key] = found
 
-        print(az)
+        return az
+
+
+    def runner(self, connection):
+        cur = connection.cursor()
+        print('Finding all claims')
+        records = self.getAllClaims(cur)
+        length = len(records)
+        print(f'Found {length} records')
+        az = self.data(records)
+        self.spreadsheet(az)
+
         return
 
 
@@ -169,7 +248,7 @@ def main():
     runner = Exporter()
 
     if args.dbUser and args.dbHost:
-        runner.generateDirect(
+        runner.generate(
             args.dbHost,
             args.dbPort,
             args.dbUser,
