@@ -26,14 +26,23 @@ This script requires you to pass in the connection details for postgres; the scr
 To get the password from secret manager run this:
 
 ```bash
-CASES_MIGRATION_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_cases_migration_password | jq -r .'SecretString')
+export CASES_DB_PASSWORD=$(aws secretsmanager get-secret-value --secret-id ${ACCOUNT}/opg_refunds_db_cases_full_password | jq -r .'SecretString')
+export CASES_DB_USER='cases_full'
+export CASES_DB='cases'
 ```
 
 
 To generate the spreadsheet now run this command:
 
 ```bash
-python ./export.py --dbHost=${CASEWORKER_HOST} --dbPort='5432' --dbUser='cases_migration' --dbPwd="${CASES_MIGRATION_PASSWORD}" --db=cases
+python ./export.py --dbHost=${CASEWORKER_HOST} --dbPort='5432' --dbUser="${CASES_DB_USER}" --dbPwd="${CASES_DB_PASSWORD}" --db=${CASES_DB}
 ```
 
 This will create file at `./Export.xlsx`
+
+
+You can connect to the DB using:
+
+```bash
+psql -h ${CASEWORKER_HOST} ${CASES_DB} -W -U ${CASES_DB_USER}
+```

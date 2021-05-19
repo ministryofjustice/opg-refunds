@@ -127,7 +127,7 @@ class SpreadsheetBase:
 
     def spreadsheet(self, az):
         # now generate the spreadsheet - probably need to add timestamp here
-        workbook = xlsxwriter.Workbook('Export.xlsx')
+        workbook = xlsxwriter.Workbook('Export.xlsx', {'remove_timezone': True})
         for letter in az.keys():
             data = az.get(letter) or []
             letter = letter.upper()
@@ -159,7 +159,8 @@ class Exporter(AwsBase, SpreadsheetBase):
         'Lpa Id': 20,
         'Amount': 15,
         'Date Paid': 15,
-        'Applicant': 35
+        'Applicant': 35,
+        'Created': 18
     }
 
 
@@ -182,12 +183,12 @@ class Exporter(AwsBase, SpreadsheetBase):
 
 
     def getAllClaims(self, cur):
-        select = "SELECT claim.id as ID, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY id DESC LIMIT 5"
+        select = "SELECT claim.id as ID, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'case-number'->'poa-case-number' as lpa_Id, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created FROM claim LEFT JOIN payment on payment.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['ID', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid']
+        cols = ['ID', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'lpa_Id', 'applicant_type', 'amount', 'date_paid', 'created']
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
