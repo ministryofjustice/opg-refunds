@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
         "arn:aws:iam::${local.account.account_id}:role/operator",
         "arn:aws:iam::${local.account.account_id}:role/breakglass",
       ]
-      type        = "AWS"
+      type = "AWS"
     }
     resources = [
       aws_s3_bucket.refunds_export.arn,
@@ -36,14 +36,16 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
   }
   # add network restriction here
   statement {
-    sid = "allowReadingFromMoJVPN"
-    effect  = "Allow"
-    actions = ["s3:GetObject", "s3:ListBucket"]
+    sid    = "allowReadingFromMoJVPN"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
     resources = [
       aws_s3_bucket.refunds_export.arn,
       "${aws_s3_bucket.refunds_export.arn}/*"
     ]
-
     condition {
       test     = "IpAddress"
       values   = module.allow_ip_list.moj_sites
