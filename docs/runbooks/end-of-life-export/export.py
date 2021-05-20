@@ -196,6 +196,8 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     def getLPARef(self, row, field):
         if 'poa_case_number' in row and row['poa_case_number'] is not None:
             row[field] = row['poa_case_number']
+        if '/' in row[field]:
+            row[field] = re.sub( "\/[0-9]+", "", row[field] )
         return row
     #
     def asDateStr(self, row, field):
