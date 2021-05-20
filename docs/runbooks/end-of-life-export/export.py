@@ -196,8 +196,10 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         return row
     # SQL call
     # uses zip to create a list of dicts with column names
-    def getAllClaims(self, cur):
-        select = "SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, payment.processed_datetime as date_processed, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
+    def getAllClaims(self, cur, restricted):
+        where = "WHERE claim.id IN (48277952311,86189719970,84007461967,23453788854,49291803796) " if restricted == True else ""
+
+        select = f"SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, payment.processed_datetime as date_processed, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id {where}ORDER BY created_datetime DESC"
 
         cur.execute(select)
 
@@ -242,7 +244,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         return az
 
     # main function
-    def generate(self, host, port, user, password, database):
+    def generate(self, host, port, user, password, database, restricted):
         try:
             print('Connecting to the PostgreSQL database...')
             connection = self.connect(
@@ -252,7 +254,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
             cur = connection.cursor()
             print('Finding all claims')
-            records = self.getAllClaims(cur)
+            records = self.getAllClaims(cur, restricted)
 
             length = len(records)
             print(f'Found {length} records')
@@ -285,6 +287,10 @@ def main():
                         default="",
                         help="The postgres database")
 
+    # flat to limit the sql with a where for certain accounts
+    parser.add_argument('--restrictions', dest='restricted', action='store_true')
+    parser.add_argument('--no-restrictions', dest='restricted', action='store_false')
+    parser.set_defaults(restricted=True)
 
 
     args = parser.parse_args()
@@ -296,7 +302,8 @@ def main():
             args.dbPort,
             args.dbUser,
             args.dbPwd,
-            args.db
+            args.db,
+            args.restricted
         )
 
 
