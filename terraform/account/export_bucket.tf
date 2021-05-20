@@ -55,6 +55,26 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
     }
 
   }
+  # ssl requests only
+  statement {
+    sid     = "DenyNoneSSLRequests"
+    effect  = "Deny"
+    actions = ["s3:*"]
+    resources = [
+      aws_s3_bucket.refunds_export.arn,
+      "${aws_s3_bucket.refunds_export.arn}/*"
+    ]
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = [false]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
 }
 
 
