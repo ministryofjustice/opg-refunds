@@ -13,7 +13,8 @@ class AwsBase:
     aws_secret = 'opg_refunds_db_cases_migration_password'
     # create a session from account / role arn
     def set_iam_role_session(self, account, role):
-        role_arn = 'arn:aws:iam::{}:role/{}'.format(account, role)
+        role_arn = f'arn:aws:iam::{account}:role/{role}'
+        print(f'Assuming ARN:{role_arn}')
         sts = boto3.client(
             'sts',
             region_name=self.aws_region,
@@ -38,7 +39,8 @@ class AwsBase:
 
     #
     def uploadToS3(self, filepath, bucket, name):
-        client = self.get_aws_client('s3')
+        client = boto3.client('s3')
+        #client = self.get_aws_client('s3', self.aws_iam_session)
         res = client.upload_file(filepath, bucket, name)
         return res
 
@@ -323,15 +325,11 @@ def main():
             args.dbPwd,
             args.db,
             args.restricted
-        ).set_iam_role_session(
-            args.awsAccount,
-            args.awsRole
         ).uploadToS3(
             './Export.xlsx',
             args.awsBucket,
             'export.xlsx'
         )
-
 
 if __name__ == "__main__":
     main()
