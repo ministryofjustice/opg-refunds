@@ -9,13 +9,6 @@ resource "aws_s3_bucket" "refunds_export" {
   acl    = "public-read"
   tags   = merge(local.default_tags)
 
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "aws:kms"
-      }
-    }
-  }
 }
 
 # policy that allow operator & breakglass uses to put objects
