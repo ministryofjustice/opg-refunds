@@ -36,6 +36,12 @@ class AwsBase:
             aws_secret_access_key=session['Credentials']['SecretAccessKey'],
             aws_session_token=session['Credentials']['SessionToken'])
 
+    #
+    def uploadToS3(self, filepath, bucket, name):
+        client = self.get_aws_client('s3')
+        res = client.upload_file(filepath, bucket, name)
+        return res
+
 # tooling for conneting diretly to psql database
 class DBConnect:
     def connect(self, host, port, user, password, database):
@@ -271,6 +277,19 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 def main():
     parser = argparse.ArgumentParser(description="Exports a spreadsheet containing all claims.")
 
+    parser.add_argument("--awsAccount",
+                        default="936779158973", # refunds-dev
+                        help="AWS ARN Account ID to use")
+
+    parser.add_argument("--awsRole",
+                        default="breakglass",
+                        help="AWS ARN role use")
+
+    parser.add_argument("--awsBucket",
+                        default="refunds-development-exported",
+                        help="AWS S3 bucket to use")
+
+
     parser.add_argument("--dbHost",
                         default="",
                         help="The postgres host")
@@ -304,6 +323,13 @@ def main():
             args.dbPwd,
             args.db,
             args.restricted
+        ).set_iam_role_session(
+            args.awsAccount,
+            args.awsRole
+        ).uploadToS3(
+            './Export.xlsx',
+            args.awsBucket,
+            'export.xlsx'
         )
 
 
