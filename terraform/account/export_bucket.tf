@@ -1,4 +1,7 @@
 
+module "allow_ip_list" {
+  source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
+}
 # allow public read on the bucket and objects,
 # but access will be limited by policy to moj_sites
 resource "aws_s3_bucket" "refunds_export" {
