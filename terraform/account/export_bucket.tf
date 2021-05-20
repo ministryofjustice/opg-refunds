@@ -25,17 +25,12 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
     sid     = "allowUploadFromSpecificARNs"
     effect  = "Allow"
     actions = ["s3:PutObject"]
+
     principals {
-      identifiers = [
-        "arn:aws:iam::${local.account.account_id}:role/operator",
-        "arn:aws:iam::${local.account.account_id}:role/breakglass",
-      ]
-      type = "AWS"
+      identifiers = ["arn:aws:iam::${local.account.account_id}:role/operator", "arn:aws:iam::${local.account.account_id}:role/breakglass"]
+      type        = "AWS"
     }
-    resources = [
-      aws_s3_bucket.refunds_export.arn,
-      "${aws_s3_bucket.refunds_export.arn}/*"
-    ]
+    resources = [aws_s3_bucket.refunds_export.arn, "${aws_s3_bucket.refunds_export.arn}/*"]
   }
   # add network restriction here
   statement {
@@ -59,6 +54,7 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
 
 
 resource "aws_s3_bucket_policy" "refunds_export_policy" {
-  bucket = aws_s3_bucket.refunds_export.id
-  policy = data.aws_iam_policy_document.refunds_export_policy_document.json
+  depends_on = [aws_s3_bucket.refunds_export]
+  bucket     = aws_s3_bucket.refunds_export.id
+  policy     = data.aws_iam_policy_document.refunds_export_policy_document.json
 }
