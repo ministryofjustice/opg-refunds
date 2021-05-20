@@ -6,7 +6,7 @@ module "allow_ip_list" {
 # but access will be limited by policy to moj_sites
 resource "aws_s3_bucket" "refunds_export" {
   bucket = "refunds-${terraform.workspace}-exported"
-  acl    = "public-read"
+  acl    = "private"
   tags   = merge(local.default_tags)
 
 }
