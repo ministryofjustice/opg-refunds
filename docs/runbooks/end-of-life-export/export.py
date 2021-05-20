@@ -5,6 +5,8 @@ import pg8000
 import string
 import xlsxwriter
 from datetime import datetime
+import re
+
 
 # Group all the AWS related tooling to this class
 class AwsBase:
@@ -147,20 +149,48 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     # Meta data to describe a mapping between the sql call
     # and how to output to the spreadsheet
     columnMeta = {
-        "r_ref": { "width": 18, "callback": "idToRRef" },
-        "lpa_ref": { "width": 20}, # add a callback to getLPARef to get ref with counter ($meris/$count)
-        "status": {"width": 12, "exclude": True},
-        "applicant": {"width": 35, "name": "APPLICANT NAME", "callback": "getApplicant,prettyName"},
-        "donor_name": {"width": 35, "callback": "prettyName"},
-        "donor_dob": {"width": 15},
-        "attorney_name": {"width": 35, "callback": "prettyName", "exclude": True},
-        "applicant_type": {"width": 18, "exclude": True},
-        "amount": {"width": 18},
-        "date_claim_made": {"width": 19, "callback": "asDateStr"},
-        "date_finished": {"width": 18, "callback": "asDateStr"},
-        "ID": {"width": 15, "exclude": True},
-        "system": {"width": 12, "exclude": True},
-        "poa_case_number": {"exclude": True},
+        "r_ref": {
+            "width": 18, "callback": "idToRRef"
+        },
+        "lpa_ref": {
+            "width": 20, "callback": "getLPARef"
+        },
+        "status": {
+            "width": 12, "exclude": True
+        },
+        "applicant": {
+            "width": 35, "name": "APPLICANT NAME", "callback": "getApplicant,prettyName"
+        },
+        "donor_name": {
+            "width": 35, "callback": "prettyName"
+        },
+        "donor_dob": {
+            "width": 15
+        },
+        "attorney_name": {
+            "width": 35, "callback": "prettyName", "exclude": True
+        },
+        "applicant_type": {
+            "width": 18, "exclude": True
+        },
+        "amount": {
+            "width": 18
+        },
+        "date_claim_made": {
+            "width": 19, "callback": "asDateStr"
+        },
+        "date_finished": {
+            "width": 18, "callback": "asDateStr"
+        },
+        "ID": {
+            "width": 15, "exclude": True
+        },
+        "system": {
+            "width": 12, "exclude": True
+        },
+        "poa_case_number": {
+            "exclude": True
+        },
         "json_data": {"exclude": True}
     }
 
@@ -207,9 +237,33 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     # SQL call
     # uses zip to create a list of dicts with column names
     def getAllClaims(self, cur, restricted):
-        limit = " LIMIT 7" if restricted == True else ""
+        limit = "LIMIT 7" if restricted == True else ""
 
-        select = f"SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, claim.finished_datetime as date_finished, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id WHERE claim.status = 'accepted' ORDER BY created_datetime DESC{limit}"
+        select = f"""
+        SELECT
+            'R' as r_ref,
+            json_data->'case-number'->'poa-case-number' as lpa_ref,
+            status,
+            json_data->'applicant' as applicant,
+            json_data->'donor'->'current'->'name' as donor_name,
+            json_data->'donor'->'current'->'dob' as donor_dob,
+            json_data->'attorney'->'current'->'name' as attorney_name,
+            json_data->'applicant' as applicant_type,
+            payment.amount as amount,
+            claim.created_datetime as date_claim_made,
+            claim.finished_datetime as date_finished,
+            claim.id as ID,
+            poa.system as system,
+            poa.case_number as poa_case_number,
+            json_data
+        FROM claim
+        LEFT JOIN payment on payment.claim_id = claim.id
+        LEFT JOIN poa on poa.claim_id = claim.id
+        WHERE
+            claim.status = 'accepted'
+        ORDER BY created_datetime DESC
+        {limit}
+        """
 
         cur.execute(select)
 
@@ -316,6 +370,11 @@ def main():
     parser.set_defaults(restricted=True)
 
 
+    # flat to limit the sql with a where for certain accounts
+    parser.add_argument('--upload', dest='upload', action='store_true')
+    parser.set_defaults(upload=False)
+
+
     args = parser.parse_args()
     runner = Exporter()
 
@@ -327,11 +386,13 @@ def main():
             args.dbPwd,
             args.db,
             args.restricted
-        ).uploadToS3(
-            './Export.xlsx',
-            args.awsBucket,
-            'export.xlsx'
         )
+        if args.upload == True:
+            runner.uploadToS3(
+                './Export.xlsx',
+                args.awsBucket,
+                'export.xlsx'
+            )
 
 if __name__ == "__main__":
     main()
