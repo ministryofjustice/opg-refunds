@@ -197,9 +197,9 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     # SQL call
     # uses zip to create a list of dicts with column names
     def getAllClaims(self, cur, restricted):
-        where = "AND claim.id IN (48277952311,86189719970,84007461967,23453788854,49291803796) " if restricted == True else ""
+        limit = " LIMIT 7" if restricted == True else ""
 
-        select = f"SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, claim.finished_datetime as date_finished, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id WHERE claim.status = 'accepted' {where}ORDER BY created_datetime DESC"
+        select = f"SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, claim.finished_datetime as date_finished, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id WHERE claim.status = 'accepted' ORDER BY created_datetime DESC{limit}"
 
         cur.execute(select)
 
