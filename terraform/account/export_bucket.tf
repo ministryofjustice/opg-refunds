@@ -49,6 +49,11 @@ data "aws_iam_policy_document" "refunds_export_policy_document" {
       values   = module.allow_ip_list.moj_sites
       variable = "AWS:SourceIp"
     }
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+
   }
 }
 
