@@ -49,8 +49,8 @@ class DBConnect:
 
 # generic spreadsheet tooling
 class SpreadsheetBase:
-    # object to set widths of each column
-    colRangeWidths = {}
+    # object to set column order and output formats
+    columnMeta = {}
 
     # find the column letter presuming cols started at A
     def maxLetter(self, data):
@@ -62,39 +62,45 @@ class SpreadsheetBase:
     # - assuming cols start at a
     # - used for excel cell locations (A1:G2 etc)
     def letter(self, headers, col):
-        index = headers.index(col.upper())
+        index = headers.index(col)
         letter = (65 + index)
         char = chr(letter)
         return char
 
-    # use the data passed to create
-    # - headers (formatted for use in .add_table)
-    # - keys (flat headers)
-    # - table (objects converted to lists of values in order)
-    # - selector (the excel range selector that covers table range - A1:C7 etc)
+
+    def asTableHeading(self, field):
+        # get new name
+        meta = self.columnMeta[field]
+        return meta['name'] if "name" in meta else field.replace('_', ' ').upper()
+
+    # use the data passed to generate header and table body array
+    # and provider meta info (num cols, rows etc)
     def forTable(self, data):
-        # generate flat headers with _ and title case
-        keys = list( map(lambda val:  val.replace('_', ' ').upper() , data[0].keys() ) )
-        # convert for add_table columns option
-        headers = list( map(lambda val: {'header': val}, keys ) )
-        # generate the table body
-        table = []
-        for row in data: table.append( list(row.values()) )
-        # get max letter of the table
-        col = self.maxLetter(headers)
-        row = len(table) + 1
-        selector = 'A1:{}{}'.format(col, row)
-        # return headers, table body and the excel selector
-        return headers, keys, table, selector
+        # these are the raw keys - eg date_claim_made
+        keys = list ( data[0].keys() )
+        # this uses cap / pretty header names
+        tableHeaders = list( map(lambda val: {'header': self.asTableHeading(val) }, keys ) )
+
+        # convert the data into table row list for spreadsheet
+        tableRows = []
+        for row in data: tableRows.append( list(row.values()) )
+        # the largest column in use - issue here with wrapping past Z
+        maxCol = self.maxLetter(keys)
+        maxRow = len(tableRows) +1 # to allow for headers
+        selector = f'A1:{maxCol}{maxRow}'
+
+        return keys, tableHeaders, tableRows, selector
 
     # Sets the width of all columns in the colRangeWidths
     # object
-    def colWidths(self, worksheet, headers):
-        # set column widths
-        for col, width in self.colRangeWidths.items():
-            a = self.letter(headers, col)
-            selectors = f'{a}:{a}'
-            worksheet.set_column(selectors, width)
+    def colWidths(self, worksheet, keys):
+        for field, meta in self.columnMeta.items():
+            # if theres a width, set it
+            if 'width' in meta:
+                column = self.letter(keys, field)
+                selector = f'{column}:{column}'
+                worksheet.set_column(selector, meta['width'])
+
         return self
 
     # Create the spreadsheet from the AZ data set
@@ -102,96 +108,119 @@ class SpreadsheetBase:
     #   letter (A-Z or 'others') and the list being data from
     #   to write in that tab
     def spreadsheet(self, az):
+        total = 0
         # now generate the spreadsheet - probably need to add timestamp here
         workbook = xlsxwriter.Workbook('Export.xlsx')
         for letter in az.keys():
             data = az.get(letter) or []
             letter = letter.upper()
             length = len(data)
+            total += length
             print(f'[{letter}] has [{length}] records')
             worksheet = workbook.add_worksheet(letter)
+
             # if there is data, then add to the sheet
             if(len(data) > 0):
-                formattedHeaders, flatHeaders, table, selector = self.forTable(data)
-                self.colWidths(worksheet, flatHeaders)
-                print('\tAdding table.')
-                worksheet.add_table(selector, {'data': table, 'columns': formattedHeaders })
-
+                rowKeys, tableHeaders, tableRows, selector = self.forTable(data)
+                self.colWidths(worksheet, rowKeys)
+                worksheet.add_table(selector, {'data': tableRows, 'columns': tableHeaders })
+                print(f'\tAdded table for: {selector}')
         # save the workbook
         workbook.close()
+        print(f'[{total}] records added to spreadsheet')
         return self
 
 
 # extends multiple classes and adjust the values to get data and save it as a
 # spreadsheet
 class Exporter(AwsBase, DBConnect, SpreadsheetBase):
-
-    # set widths for the excel columns
-    colRangeWidths = {
-        'R Ref': 18,
-        'Id': 15,
-        'Status': 12,
-        'Applicant Type': 18,
-        'Donor Name': 35,
-        'Donor Dob': 15,
-        'Attorney Name': 35,
-        'Lpa Ref': 20,
-        'Amount': 15,
-        'Date Paid': 15,
-        'Applicant': 35,
-        'Created': 18,
-        'System': 12
+    # Meta data to describe a mapping between the sql call
+    # and how to output to the spreadsheet
+    columnMeta = {
+        "r_ref": { "width": 18, "callback": "idToRRef" },
+        "lpa_ref": { "width": 20, "callback": "getLPARef"},
+        "status": {"width": 12},
+        "applicant": {"width": 35, "name": "APPLICANT NAME", "callback": "getApplicant,prettyName"},
+        "donor_name": {"width": 35, "callback": "prettyName"},
+        "donor_dob": {"width": 15},
+        "attorney_name": {"width": 35, "callback": "prettyName"},
+        "applicant_type": {"width": 18},
+        "amount": {"width": 18},
+        "date_claim_made": {"width": 19, "callback": "asDateStr"},
+        "date_processed": {"width": 18, "callback": "asDateStr"},
+        "ID": {"width": 15},
+        "system": {"width": 12},
+        "poa_case_number": {"exclude": True},
+        "json_data": {"exclude": True}
     }
 
-    # main function
-    def generate(self, host, port, user, password, database):
-        try:
-            print('Connecting to the PostgreSQL database...')
-            connection = self.connect(
-                host,
-                port,
-                user,
-                password,
-                database
-            )
-            print('Connected to the PostgreSQL database!')
-            self.runner(connection)
-        except (Exception, pg8000.Error) as error:
-            print("an error...")
-            print(error)
-        return self
-
-    # return the single character for grouping if this row
-    # - currently uses the first letter of the last name
-    def char(self, row):
-        last = row['donor_name']['last']
-        return last[0].lower()
-
-    # create the single string name for donor & attorney based on the json object from the db
-    def names(self, row):
-        donorName = "{} {} {}".format(row['donor_name']['title'], row['donor_name']['first'], row['donor_name']['last'])
-        attorneyName = "{} {} {}".format(row['attorney_name']['title'], row['attorney_name']['first'], row['attorney_name']['last'])
-        return donorName, attorneyName
+    #
+    def prettyName(self, row, field):
+        name = row[field]
+        row[field] = '{} {} {}'.format(
+            name['title'], name['first'], name['last']
+        )
+        return row
 
     # create the R ref using the DB claim.id and formatting it with
     # a 'R' prefix and then space every 4 chars
-    def ref(self, row):
+    def idToRRef(self, row, field):
         n=4
         id = 'R' + str(row['ID'])
-        return ' '.join([id[i:i+n] for i in range(0, len(id), n)])
+        ref = ' '.join([id[i:i+n] for i in range(0, len(id), n)])
+        row[field] = ref
+        return row
 
+    #
+    def getApplicant(self, row, field):
+        type = row[field]
+        if type == 'donor' :
+            row[field] = row['donor_name']
+        elif type == 'attorney':
+            row[field] = row['attorney_name']
+        elif row['json_data'][type]:
+            row[field] = row['json_data'][type]['name']
+        return row
+
+    #
+    def getLPARef(self, row, field):
+        if 'poa_case_number' in row and row['poa_case_number'] is not None:
+            row[field] = row['poa_case_number']
+        return row
+    #
+    def asDateStr(self, row, field):
+        if field in row and row[field] is not None:
+            row[field] = row[field].strftime("%Y-%m-%d %H:%M")
+        return row
     # SQL call
     # uses zip to create a list of dicts with column names
     def getAllClaims(self, cur):
-        select = "SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, 'app' applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,payment.processed_datetime as date_paid, claim.created_datetime as created, claim.id as ID, poa.system as system, poa.case_number as poa_case_number FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
+        select = "SELECT 'R' as r_ref, json_data->'case-number'->'poa-case-number' as lpa_ref, status, json_data->'applicant' as applicant, json_data->'donor'->'current'->'name' as donor_name,  json_data->'donor'->'current'->'dob' as donor_dob, json_data->'attorney'->'current'->'name' as attorney_name, json_data->'applicant' as applicant_type, payment.amount as amount,claim.created_datetime as date_claim_made, payment.processed_datetime as date_processed, claim.id as ID, poa.system as system, poa.case_number as poa_case_number, json_data FROM claim LEFT JOIN payment on payment.claim_id = claim.id LEFT JOIN poa on poa.claim_id = claim.id ORDER BY created_datetime DESC LIMIT 5"
 
         cur.execute(select)
 
         # map the res to a dict
-        cols = ['r_ref', 'lpa_ref', 'status', 'applicant', 'donor_name', 'donor_dob', 'attorney_name', 'applicant_type', 'amount', 'date_paid', 'created', 'ID', 'system', 'poa_case_number']
+        cols = self.columnMeta.keys()
         records = [dict(zip(cols, row)) for row in cur.fetchall()]
 
         return records
+
+
+    def processRow(self, row):
+        char = row['donor_name']['last'][0].lower()
+        processed = {}
+        for field, meta  in self.columnMeta.items():
+            # update the row based on the callback functions listed against this column
+            # - generally to convert names json & dates to strings for excel
+            if 'callback' in meta:
+                for funcName in meta['callback'].split(','):
+                    row = getattr(self, funcName)(row, field)
+
+            # dont add this data to the processed dict if this flag is set
+            # but use the same field name
+            if 'exclude' not in meta: processed[field] = row[field]
+
+        return char, processed
 
     # Get and format the data into a A-Z dict with each being a list
     # - does some formatting on the data for output to excel
@@ -201,18 +230,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
         for row in records:
             # get the letter
-            char = self.char(row)
-            # replace the names
-            row['donor_name'], row['attorney_name'] = self.names(row)
-            # set the applicant name
-            row['applicant'] = row['donor_name'] if row['applicant_type'] == 'donor' else row['attorney_name']
-            # generate the R-Ref
-            row['r_ref'] = self.ref(row)
-            # convert date
-            row['created'] = row['created'].strftime("%Y-%m-%d %H:%M")
-            # change the case number to the poa reference and remove row['poa_case_number']
-            if row['poa_case_number']: row['lpa_ref'] = row['poa_case_number']
-            del row['poa_case_number']
+            char, row = self.processRow(row)
 
             key = char if char in az.keys() else 'others'
             found = az.get(key) or []
@@ -221,17 +239,29 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
         return az
 
-    # wrapping function
-    def runner(self, connection):
-        cur = connection.cursor()
-        print('Finding all claims')
-        records = self.getAllClaims(cur)
-        length = len(records)
-        print(f'Found {length} records')
-        az = self.data(records)
-        self.spreadsheet(az)
+    # main function
+    def generate(self, host, port, user, password, database):
+        try:
+            print('Connecting to the PostgreSQL database...')
+            connection = self.connect(
+                host, port, user, password, database
+            )
+            print('Connected to the PostgreSQL database!')
 
-        return
+            cur = connection.cursor()
+            print('Finding all claims')
+            records = self.getAllClaims(cur)
+
+            length = len(records)
+            print(f'Found {length} records')
+
+            az = self.data(records)
+            self.spreadsheet(az)
+
+        except (Exception, pg8000.Error) as error:
+            print("an error...")
+            print(error)
+        return self
 
 
 def main():
