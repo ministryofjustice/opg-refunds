@@ -338,16 +338,12 @@ def main():
     parser.add_argument("--awsAccount",
                         default="936779158973", # refunds-dev
                         help="AWS ARN Account ID to use")
-
     parser.add_argument("--awsRole",
                         default="breakglass",
                         help="AWS ARN role use")
-
     parser.add_argument("--awsBucket",
                         default="refunds-development-exported",
                         help="AWS S3 bucket to use")
-
-
     parser.add_argument("--dbHost",
                         default="",
                         help="The postgres host")
@@ -369,11 +365,9 @@ def main():
     parser.add_argument('--no-restrictions', dest='restricted', action='store_false')
     parser.set_defaults(restricted=True)
 
-
     # flat to limit the sql with a where for certain accounts
     parser.add_argument('--upload', dest='upload', action='store_true')
     parser.set_defaults(upload=False)
-
 
     args = parser.parse_args()
     runner = Exporter()
