@@ -94,9 +94,11 @@ class SpreadsheetBase:
     # Sets the width of all columns in the colRangeWidths
     # object
     def colWidths(self, worksheet, keys):
+
         for field, meta in self.columnMeta.items():
+            excluded = True if 'exclude' in meta and meta['exclude'] == True else False
             # if theres a width, set it
-            if 'width' in meta:
+            if 'width' in meta and not excluded:
                 column = self.letter(keys, field)
                 selector = f'{column}:{column}'
                 worksheet.set_column(selector, meta['width'])
@@ -138,7 +140,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     # and how to output to the spreadsheet
     columnMeta = {
         "r_ref": { "width": 18, "callback": "idToRRef" },
-        "lpa_ref": { "width": 20, "callback": "getLPARef"},
+        "lpa_ref": { "width": 20},
         "status": {"width": 12},
         "applicant": {"width": 35, "name": "APPLICANT NAME", "callback": "getApplicant,prettyName"},
         "donor_name": {"width": 35, "callback": "prettyName"},
@@ -148,8 +150,8 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         "amount": {"width": 18},
         "date_claim_made": {"width": 19, "callback": "asDateStr"},
         "date_processed": {"width": 18, "callback": "asDateStr"},
-        "ID": {"width": 15},
-        "system": {"width": 12},
+        "ID": {"width": 15, "exclude": True},
+        "system": {"width": 12, "exclude": True},
         "poa_case_number": {"exclude": True},
         "json_data": {"exclude": True}
     }
