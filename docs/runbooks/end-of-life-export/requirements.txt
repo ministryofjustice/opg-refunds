@@ -1,0 +1,4 @@
+boto3
+requests
+pg8000
+xlsxwriter
