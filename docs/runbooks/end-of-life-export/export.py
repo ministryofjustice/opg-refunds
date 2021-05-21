@@ -13,36 +13,10 @@ class AwsBase:
     aws_region = 'eu-west-1'
     aws_iam_session = ''
     aws_secret = 'opg_refunds_db_cases_migration_password'
-    # create a session from account / role arn
-    def set_iam_role_session(self, account, role):
-        role_arn = f'arn:aws:iam::{account}:role/{role}'
-        print(f'Assuming ARN:{role_arn}')
-        sts = boto3.client(
-            'sts',
-            region_name=self.aws_region,
-        )
-        session = sts.assume_role(
-            RoleArn=role_arn,
-            RoleSessionName='exporting_data_for_refunds',
-            DurationSeconds=900
-        )
-        self.aws_iam_session = session
-        return self
-
-    # use the session and namespace to create a client,
-    # allow easy creation for sts / rds etc
-    def get_aws_client(self, namespace, session):
-        return boto3.client(
-            namespace,
-            region_name=self.aws_region,
-            aws_access_key_id=session['Credentials']['AccessKeyId'],
-            aws_secret_access_key=session['Credentials']['SecretAccessKey'],
-            aws_session_token=session['Credentials']['SessionToken'])
 
     #
     def uploadToS3(self, filepath, bucket, name):
         client = boto3.client('s3')
-        #client = self.get_aws_client('s3', self.aws_iam_session)
         res = client.upload_file(filepath, bucket, name)
         return res
 
