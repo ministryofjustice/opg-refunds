@@ -141,6 +141,9 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         "donor_dob": {
             "width": 15
         },
+        "donor_postcode":{
+            "width" : 15
+        },
         "attorney_name": {
             "width": 35, "callback": "prettyName", "exclude": True
         },
@@ -171,9 +174,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     #
     def prettyName(self, row, field):
         name = row[field]
-        row[field] = '{} {} {}'.format(
-            name['title'], name['first'], name['last']
-        )
+        row[field] = f"{name['title']} {name['first']} {name['last']}"
         return row
 
     # create the R ref using the DB claim.id and formatting it with
@@ -221,6 +222,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             json_data->'applicant' as applicant,
             json_data->'donor'->'current'->'name' as donor_name,
             json_data->'donor'->'current'->'dob' as donor_dob,
+            UPPER(json_data->'donor'->'current'->'address'->>'address-postcode') as donor_postcode,
             json_data->'attorney'->'current'->'name' as attorney_name,
             json_data->'applicant' as applicant_type,
             payment.amount as amount,
