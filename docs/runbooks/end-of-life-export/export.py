@@ -141,11 +141,20 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         "donor_dob": {
             "width": 15
         },
+        "donor_address":{
+            "width" : 60, "callback" : "prettyAddress"
+        },
         "donor_postcode":{
             "width" : 15
         },
         "attorney_name": {
             "width": 35, "callback": "prettyName", "exclude": True
+        },
+        "attorney_postcode":{
+            "width" : 15
+        },
+        "executor_address":{
+            "width" : 60, "callback" : "prettyAddress"
         },
         "applicant_type": {
             "width": 18, "exclude": True
@@ -175,6 +184,11 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
     def prettyName(self, row, field):
         name = row[field]
         row[field] = f"{name['title']} {name['first']} {name['last']}"
+        return row
+
+    def prettyAddress(self, row, field):
+        address = row[field]
+        row[field] = f"{address['address-1']}, {address['address-2']}, {address['address-2']}"
         return row
 
     # create the R ref using the DB claim.id and formatting it with
@@ -223,8 +237,12 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             json_data->'donor'->'current'->'name' as donor_name,
             json_data->'donor'->'current'->'dob' as donor_dob,
             UPPER(json_data->'donor'->'current'->'address'->>'address-postcode') as donor_postcode,
+            json_data->'donor'->'current'->address as donor_address,
             json_data->'attorney'->'current'->'name' as attorney_name,
             json_data->'applicant' as applicant_type,
+            json_data->'executor'->'address' as executor_address,
+            UPPER(json_data->'executor'->'address'->>'address_postcode') executor_postcode
+            UPPER(json_data->'postcodes'->>'attorney-postcode') as attorney_postcode,
             payment.amount as amount,
             claim.created_datetime as date_claim_made,
             claim.finished_datetime as date_finished,
