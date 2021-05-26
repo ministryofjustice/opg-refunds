@@ -241,7 +241,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             json_data->'attorney'->'current'->'name' as attorney_name,
             json_data->'applicant' as applicant_type,
             json_data->'executor'->'address' as executor_address,
-            UPPER(json_data->'executor'->'address'->>'address_postcode') executor_postcode
+            UPPER(json_data->'executor'->'address'->>'address_postcode') executor_postcode,
             UPPER(json_data->'postcodes'->>'attorney-postcode') as attorney_postcode,
             payment.amount as amount,
             claim.created_datetime as date_claim_made,
