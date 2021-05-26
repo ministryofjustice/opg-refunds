@@ -182,13 +182,15 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
     #
     def prettyName(self, row, field):
-        name = row[field]
-        row[field] = f"{name['title']} {name['first']} {name['last']}"
+        if field in row and row[field] is not None:
+            name = row[field]
+            row[field] = f"{name['title']} {name['first']} {name['last']}"
         return row
 
     def prettyAddress(self, row, field):
-        address = row[field]
-        row[field] = f"{address['address-1']}, {address['address-2']}, {address['address-3']}"
+        if field in row and row[field] is not None:
+            address = row[field]
+            row[field] = f"{address['address-1']}, {address['address-2']}, {address['address-3']}"
         return row
 
     # create the R ref using the DB claim.id and formatting it with
