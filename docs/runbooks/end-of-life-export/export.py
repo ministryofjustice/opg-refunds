@@ -188,7 +188,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
 
     def prettyAddress(self, row, field):
         address = row[field]
-        row[field] = f"{address['address-1']}, {address['address-2']}, {address['address-2']}"
+        row[field] = f"{address['address-1']}, {address['address-2']}, {address['address-3']}"
         return row
 
     # create the R ref using the DB claim.id and formatting it with
