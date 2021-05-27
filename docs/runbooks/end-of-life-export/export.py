@@ -4,6 +4,7 @@ from botocore.exceptions import ClientError
 import pg8000
 import string
 import xlsxwriter
+import json
 from datetime import datetime
 import re
 
@@ -14,13 +15,13 @@ class AwsBase:
     aws_iam_session = ''
     aws_secret = 'opg_refunds_db_cases_migration_password'
 
-    #
+    # upload to S3
     def uploadToS3(self, filepath, bucket, name):
         client = boto3.client('s3')
         res = client.upload_file(filepath, bucket, name)
         return res
 
-# tooling for conneting diretly to psql database
+# tooling for connecting directly to psql database
 class DBConnect:
     def connect(self, host, port, user, password, database):
         return pg8000.connect(
@@ -60,14 +61,17 @@ class SpreadsheetBase:
     # use the data passed to generate header and table body array
     # and provider meta info (num cols, rows etc)
     def forTable(self, data):
+
         # these are the raw keys - eg date_claim_made
         keys = list ( data[0].keys() )
+
         # this uses cap / pretty header names
         tableHeaders = list( map(lambda val: {'header': self.asTableHeading(val) }, keys ) )
 
         # convert the data into table row list for spreadsheet
         tableRows = []
         for row in data: tableRows.append( list(row.values()) )
+
         # the largest column in use - issue here with wrapping past Z
         maxCol = self.maxLetter(keys)
         maxRow = len(tableRows) +1 # to allow for headers
@@ -104,7 +108,6 @@ class SpreadsheetBase:
             total += length
             print(f'[{letter}] has [{length}] records')
             worksheet = workbook.add_worksheet(letter)
-
             # if there is data, then add to the sheet
             if(len(data) > 0):
                 rowKeys, tableHeaders, tableRows, selector = self.forTable(data)
@@ -142,19 +145,22 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             "width": 15
         },
         "donor_address":{
-            "width" : 60, "callback" : "prettyAddress"
+            "width" : 60, "callback" : "prettyAddress", "exclude" : True
         },
         "donor_postcode":{
             "width" : 15
         },
         "attorney_name": {
-            "width": 35, "callback": "prettyName", "exclude": True
+            "width": 35, "callback": "prettyName"
         },
         "attorney_postcode":{
             "width" : 15
         },
         "executor_address":{
-            "width" : 60, "callback" : "prettyAddress"
+            "width" : 60, "callback" : "prettyAddress", "exclude" : True
+        },
+        "executor_postcode" : {
+            "width" : 15
         },
         "applicant_type": {
             "width": 18, "exclude": True
@@ -177,16 +183,19 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         "poa_case_number": {
             "exclude": True
         },
-        "json_data": {"exclude": True}
+        "json_data": {
+            "exclude": True
+        }
     }
 
-    #
+    # prettify name
     def prettyName(self, row, field):
         if field in row and row[field] is not None:
             name = row[field]
             row[field] = f"{name['title']} {name['first']} {name['last']}"
         return row
 
+    # prettify address
     def prettyAddress(self, row, field):
         if field in row and row[field] is not None:
             address = row[field]
@@ -202,7 +211,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         row[field] = ref
         return row
 
-    #
+    # get applicant selection
     def getApplicant(self, row, field):
         type = row[field]
         if type == 'donor' :
@@ -213,22 +222,24 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             row[field] = row['json_data'][type]['name']
         return row
 
-    #
+    # LPA Ref
     def getLPARef(self, row, field):
         if 'poa_case_number' in row and row['poa_case_number'] is not None:
             row[field] = row['poa_case_number']
         if '/' in row[field]:
             row[field] = re.sub( "\/[0-9]+", "", row[field] )
         return row
-    #
+
+    # Date string
     def asDateStr(self, row, field):
         if field in row and row[field] is not None:
             row[field] = row[field].strftime("%Y-%m-%d %H:%M")
         return row
+
     # SQL call
     # uses zip to create a list of dicts with column names
     def getAllClaims(self, cur, restricted):
-        limit = "LIMIT 7" if restricted == True else ""
+        limit = "LIMIT 1000" if restricted == True else ""
 
         select = f"""
         SELECT
@@ -238,13 +249,13 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
             json_data->'applicant' as applicant,
             json_data->'donor'->'current'->'name' as donor_name,
             json_data->'donor'->'current'->'dob' as donor_dob,
+            json_data->'donor'->'current'->'address' as donor_address,
             UPPER(json_data->'donor'->'current'->'address'->>'address-postcode') as donor_postcode,
-            json_data->'donor'->'current'->address as donor_address,
             json_data->'attorney'->'current'->'name' as attorney_name,
-            json_data->'applicant' as applicant_type,
-            json_data->'executor'->'address' as executor_address,
-            UPPER(json_data->'executor'->'address'->>'address_postcode') executor_postcode,
             UPPER(json_data->'postcodes'->>'attorney-postcode') as attorney_postcode,
+            json_data->'executor'->'address' as executor_address,
+            UPPER(json_data->'executor'->'address'->>'address-postcode') as executor_postcode,
+            json_data->'applicant' as applicant_type,
             payment.amount as amount,
             claim.created_datetime as date_claim_made,
             claim.finished_datetime as date_finished,
@@ -325,6 +336,7 @@ class Exporter(AwsBase, DBConnect, SpreadsheetBase):
         except (Exception, pg8000.Error) as error:
             print("an error...")
             print(error)
+            print(error.tb)
         return self
 
 
