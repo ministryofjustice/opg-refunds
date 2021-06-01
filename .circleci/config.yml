@@ -7,32 +7,6 @@ workflows:
       - cancel_redundant_builds:
           name: cancel_previous_jobs
           filters: { branches: { ignore: [master] } }
-      # Docker Build
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: public_front_docker_build
-          ecr_repository_name_prefix: lpa-refunds/public_front
-          service_path: public-front
-          filters: { branches: { ignore: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: caseworker_front_docker_build
-          ecr_repository_name_prefix: lpa-refunds/caseworker_front
-          service_path: caseworker-front
-          filters: { branches: { ignore: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: caseworker_api_docker_build
-          ecr_repository_name_prefix: lpa-refunds/caseworker_api
-          service_path: caseworker-api
-          build_composer_container: true
-          filters: { branches: { ignore: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
-          name: ingestion_seeding_docker_build
-          ecr_repository_name_prefix: lpa-refunds/caseworker_api
-          service_path: caseworker-api
-          build_composer_container: true
-          filters: { branches: { ignore: [master] } }
 
       # Terraform Validation
       - infrastructure_and_deployment/lint_and_validate_terraform:
@@ -65,62 +39,21 @@ workflows:
             [
               cancel_previous_jobs,
               dev_account_apply_terraform,
-              public_front_docker_build,
-              caseworker_front_docker_build,
-              caseworker_api_docker_build,
-              ingestion_seeding_docker_build,
             ]
-          filters: { branches: { ignore: [master] } }
-
-      - infrastructure_and_deployment/seed_environment_databases:
-          name: dev_seed_environment_databases
-          requires: [dev_environment_apply_terraform]
           filters: { branches: { ignore: [master] } }
 
       - slack_notify_domain:
           name: post_environment_domains
-          requires: [dev_seed_environment_databases]
-          filters: { branches: { ignore: [master] } }
-
-      - hold-for-destruction:
-          name: hold_env_for_destruction
-          type: approval
-          requires: [post_environment_domains]
+          requires: [dev_environment_apply_terraform]
           filters: { branches: { ignore: [master] } }
 
       - infrastructure_and_deployment/destroy_dev_environment:
           name: dev_destroy_environment
-          requires: [hold_env_for_destruction]
+          requires: [post_environment_domains]
           filters: { branches: { ignore: [master] } }
 
   path-to-live:
     jobs:
-      # Docker Build
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: public_front_docker_build_path_to_live
-          ecr_repository_name_prefix: lpa-refunds/public_front
-          service_path: public-front
-          filters: { branches: { only: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: caseworker_front_docker_build_path_to_live
-          ecr_repository_name_prefix: lpa-refunds/caseworker_front
-          service_path: caseworker-front
-          filters: { branches: { only: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_web-app:
-          name: caseworker_api_docker_build_path_to_live
-          ecr_repository_name_prefix: lpa-refunds/caseworker_api
-          service_path: caseworker-api
-          build_composer_container: true
-          filters: { branches: { only: [master] } }
-
-      - build_containers_and_push_to_ecr/docker_build_push_ingestion_seeding:
-          name: ingestion_seeding_docker_build_path_to_live
-          ecr_repository_name_prefix: lpa-refunds/caseworker_api
-          service_path: caseworker-api
-          build_composer_container: true
-          filters: { branches: { only: [master] } }
 
       # Preproduction Deployment
       - infrastructure_and_deployment/apply_account_terraform:
@@ -131,32 +64,16 @@ workflows:
           name: preprod_environment_apply_terraform
           requires:
             [
-              preprod_account_apply_terraform,
-              public_front_docker_build_path_to_live,
-              caseworker_front_docker_build_path_to_live,
-              caseworker_api_docker_build_path_to_live,
-              ingestion_seeding_docker_build_path_to_live,
+              preprod_account_apply_terraform
             ]
           workspace: preproduction
-          filters: { branches: { only: [master] } }
-
-      - infrastructure_and_deployment/seed_environment_databases:
-          name: preprod_seed_environment_databases
-          workspace: preproduction
-          requires: [preprod_environment_apply_terraform]
-          filters: { branches: { only: [master] } }
-
-      - hold-for-uat:
-          name: hold_env_for_uat_preprod
-          type: approval
-          requires: [preprod_seed_environment_databases]
           filters: { branches: { only: [master] } }
 
       # Production Deployment
       - infrastructure_and_deployment/apply_account_terraform:
           name: prod_account_apply_terraform
           workspace: production
-          requires: [hold_env_for_uat_preprod]
+          requires: [preprod_environment_apply_terraform]
           filters: { branches: { only: [master] } }
 
       - infrastructure_and_deployment/apply_environment_terraform:
@@ -174,168 +91,6 @@ workflows:
 
 orbs:
   slack: circleci/slack@3.3.0
-  build_containers_and_push_to_ecr:
-    orbs:
-      docker: circleci/docker@1.4.0
-    commands:
-      dockerhub_login:
-        steps:
-          - docker/install-docker-credential-helper
-          - docker/check:
-              docker-password: DOCKER_ACCESS_TOKEN
-              docker-username: DOCKER_USER
-      install_aws_cli:
-        steps:
-          - run:
-              name: Install AWS CLI
-              command: sudo pip3 install awscli --upgrade
-      ecr_login:
-        steps:
-          - run:
-              name: Login to ECR
-              command: |
-                temp_role=$(aws sts assume-role --role-arn arn:aws:iam::311462405659:role/opg-refunds-ci --role-session-name ci)
-                export AWS_ACCESS_KEY_ID=$(echo $temp_role | jq .Credentials.AccessKeyId | xargs)
-                export AWS_SECRET_ACCESS_KEY=$(echo $temp_role | jq .Credentials.SecretAccessKey | xargs)
-                export AWS_SESSION_TOKEN=$(echo $temp_role | jq .Credentials.SessionToken | xargs)
-                aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-    executors:
-      python:
-        docker:
-          - image: circleci/python
-            auth:
-              username: $DOCKER_USER
-              password: $DOCKER_ACCESS_TOKEN
-        resource_class: small
-    jobs:
-      docker_build_push_web-app:
-        executor: python
-        parameters:
-          ecr_url:
-            type: string
-            default: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-          ecr_repository_name_prefix:
-            type: string
-            description: The ecr repo name up to _app, _web or _ingestion. These will be added by the job.
-          service_path:
-            type: string
-          build_composer_container:
-            type: boolean
-            default: false
-        steps:
-          - checkout
-          - install_aws_cli
-          - setup_remote_docker:
-              version: 19.03.12
-              docker_layer_caching: false
-          - dockerhub_login
-          - run:
-              name: Build caseworker-api-composer container
-              command: |
-                if [ << parameters.build_composer_container >> = true ]; then
-                  docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
-                else
-                  echo "skipped"
-                fi
-          - run:
-              name: Build web container
-              command: |
-                docker build -f << parameters.service_path >>/docker/web/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web .
-          - run:
-              name: Build app container
-              command: |
-                docker build -f << parameters.service_path >>/docker/app/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app .
-          - ecr_login
-          - run:
-              name: Push web container
-              command: |
-                export IMAGE_TAG=$(bash ~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
-                echo $IMAGE_TAG
-                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:${IMAGE_TAG}
-                if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  # If master, push branch tag and latest
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:${IMAGE_TAG} << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:latest
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web
-                else
-                  # Else, push branch tag only
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_web:${IMAGE_TAG}
-                fi
-          - run:
-              name: Push app container
-              command: |
-                export IMAGE_TAG=$(bash ~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
-                echo $IMAGE_TAG
-                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:${IMAGE_TAG}
-                if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  # If master, push branch tag and latest
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:${IMAGE_TAG} << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:latest
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app
-                else
-                  # Else, push branch tag only
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_app:${IMAGE_TAG}
-                fi
-      docker_build_push_ingestion_seeding:
-        executor: python
-        parameters:
-          ecr_url:
-            type: string
-            default: 311462405659.dkr.ecr.eu-west-1.amazonaws.com
-          ecr_repository_name_prefix:
-            type: string
-            description: The ecr repo name up to _app, _web or _ingestion. These will be added by the job.
-          service_path:
-            type: string
-          build_composer_container:
-            type: boolean
-            default: false
-        steps:
-          - checkout
-          - install_aws_cli
-          - setup_remote_docker:
-              version: 19.03.12
-              docker_layer_caching: false
-          - dockerhub_login
-          - run:
-              name: Build caseworker-api-composer container
-              command: |
-                docker build -f caseworker-api/docker/composer/Dockerfile --progress=plain --no-cache -t caseworker-api-composer .
-          - run:
-              name: Build caseworker-api-ingestion container
-              command: |
-                docker build -f << parameters.service_path >>/docker/ingestion/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion .
-          - run:
-              name: Build caseworker-api-seeding container
-              command: |
-                docker build -f << parameters.service_path >>/docker/seeding/Dockerfile --progress=plain --no-cache -t << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding .
-          - ecr_login
-          - run:
-              name: Push caseworker-api-ingestion container
-              command: |
-                export IMAGE_TAG=$(bash ~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
-                echo $IMAGE_TAG
-                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:${IMAGE_TAG}
-                if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  # If master, push branch tag and latest
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:${IMAGE_TAG} << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:latest
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion
-                else
-                  # Else, push branch tag only
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_ingestion:${IMAGE_TAG}
-                fi
-          - run:
-              name: Push caseworker-api-seeding container
-              command: |
-                export IMAGE_TAG=$(bash ~/project/pipeline_scripts/set_environment_variables/set_image_tag.sh $CIRCLE_BRANCH $CIRCLE_SHA1) >> $BASH_ENV
-                echo $IMAGE_TAG
-                docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:${IMAGE_TAG}
-                if [ "${CIRCLE_BRANCH}" == "master" ]; then
-                  # If master, push branch tag and latest
-                  docker tag << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:${IMAGE_TAG} << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:latest
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding
-                else
-                  # Else, push branch tag only
-                  docker push << parameters.ecr_url >>/<< parameters.ecr_repository_name_prefix >>_seeding:${IMAGE_TAG}
-                fi
   infrastructure_and_deployment:
     commands:
       install_aws_cli:
