@@ -347,7 +347,7 @@ jobs:
       - slack/notify:
           title: "LPA Refunds Development Environment Ready"
           color: "#1cb0ba"
-          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN \npublic-facing urls: \nhttps://$CLAIM_SERVICE_GOV_UK/start \nhttps://$CASEWORKER_REFUNDS_OPG_DIGITAL"
+          message: "User: $CIRCLE_USERNAME"
           footer: "${CIRCLE_BRANCH} - Commit Message: $COMMIT_MESSAGE"
   slack_notify_production_release:
     docker:
@@ -368,6 +368,6 @@ jobs:
           title: "LPA Refunds Production Release Successful"
           color: "#1cb0ba"
           mentions: "UAQQ2PY86"
-          message: "User: $CIRCLE_USERNAME \nfront url: https://$FRONT_DOMAIN/start \ncaseworker url: https://$CASEWORKER_DOMAIN"
+          message: "User: $CIRCLE_USERNAME"
           footer: "${CIRCLE_BRANCH} - Commit Message: $COMMIT_MESSAGE"
           webhook: ${PROD_RELEASE_SLACK_WEBHOOK}
