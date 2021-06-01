@@ -5,8 +5,8 @@ resource "local_file" "environment_pipeline_tasks_config" {
 
 locals {
   environment_pipeline_tasks_config = {
-    account_id                             = local.account.account_id
-    environment                            = local.environment
-    tag                                    = var.container_version
+    account_id  = local.account.account_id
+    environment = local.environment
+    tag         = var.container_version
   }
 }
