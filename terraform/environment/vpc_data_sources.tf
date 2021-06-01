@@ -21,24 +21,6 @@ data "aws_subnet_ids" "public" {
 data "aws_s3_bucket" "access_log" {
   bucket = "lpa-refunds-${local.account_name}-lb-access-logs"
 }
-locals {
-  refunds_opg_service_justice_gov_uk_name = trimsuffix(data.aws_route53_zone.refunds_opg_service_justice_gov_uk.name, ".")
-}
-data "aws_acm_certificate" "certificate_public_front" {
-  domain = "public-front.${local.refunds_opg_service_justice_gov_uk_name}"
-}
-
-data "aws_acm_certificate" "certificate_caseworker_front" {
-  domain = "caseworker.${local.refunds_opg_service_justice_gov_uk_name}"
-}
-
-data "aws_acm_certificate" "claim_power_of_attorney_refund_service_gov_uk" {
-  domain = "*.claim-power-of-attorney-refund.service.gov.uk"
-}
-
-data "aws_acm_certificate" "caseworker_refunds_opg_digital" {
-  domain = "caseworker.refunds.opg.digital"
-}
 
 module "allow_ip_list" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
@@ -58,8 +40,4 @@ data "aws_kms_alias" "bank_encrypt_decrypt" {
 
 data "aws_iam_policy" "restrict_to_vpc_endpoints" {
   arn = "arn:aws:iam::${local.account.account_id}:policy/restrict-to-vpc-endpoints"
-}
-
-data "aws_iam_role" "ecs_autoscaling_service_role" {
-  name = "AWSServiceRoleForApplicationAutoScaling_ECSService"
 }
