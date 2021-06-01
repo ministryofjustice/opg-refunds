@@ -22,16 +22,6 @@ data "aws_s3_bucket" "access_log" {
   bucket = "lpa-refunds-${local.account_name}-lb-access-logs"
 }
 
-data "aws_acm_certificate" "certificate_public_front" {
-  domain = "public-front.${local.refunds_opg_service_justice_gov_uk_name}"
-}
-
-data "aws_acm_certificate" "certificate_caseworker_front" {
-  domain = "caseworker.${local.refunds_opg_service_justice_gov_uk_name}"
-}
-
-
-
 module "allow_ip_list" {
   source = "git@github.com:ministryofjustice/terraform-aws-moj-ip-whitelist.git"
 }
