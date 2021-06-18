@@ -138,12 +138,13 @@ resource "aws_kms_key" "refunds_caseworker_db_archive_key" {
 #allow only breakglass role to run this - we do not need op access.
 data "aws_iam_policy_document" "kms_refunds_caseworker_db_archive_key" {
   statement {
+
     sid    = "KMS admin"
     effect = "Allow"
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${local.account.account_id}:role/breakglass"
+        "arn:aws:iam::${local.account.account_id}:root"
       ]
     }
     resources = ["*"]
