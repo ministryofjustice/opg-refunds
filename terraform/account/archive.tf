@@ -1,5 +1,5 @@
 #KMS key for Server Side Encryption (SSE) of S3 buckets
-resource "aws_kms_key" "kms_refunds_s3_archive_key"{
+resource "aws_kms_key" "kms_refunds_s3_archive_key" {
   description             = "This key is used to encrypt S3 bucket objects"
   deletion_window_in_days = 10
 }
@@ -18,7 +18,17 @@ resource "aws_s3_bucket" "refunds_archive" {
     }
   }
 
-  tags   = merge(local.default_tags)
+  #all objects immediately subject to Intelligent Tiering allowing for automated use of storage tiers.
+  lifecycle_rule {
+    id      = "archive"
+    enabled = true
+    transition {
+      days          = 0
+      storage_class = "INTELLIGENT_TIERING"
+    }
+  }
+
+  tags = merge(local.default_tags)
 
 }
 
