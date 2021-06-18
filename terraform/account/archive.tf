@@ -144,7 +144,8 @@ data "aws_iam_policy_document" "kms_refunds_caseworker_db_archive_key" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${local.account.account_id}:root"
+        "arn:aws:iam::${local.account.account_id}:root",
+        "arn:aws:iam::${local.account.account_id}:role/breakglass",
       ]
     }
     resources = ["*"]
