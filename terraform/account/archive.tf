@@ -4,6 +4,11 @@ resource "aws_kms_key" "kms_refunds_s3_archive_key" {
   deletion_window_in_days = 10
 }
 
+resource "aws_kms_alias" "kms_refunds_s3_archive_key_alias" {
+  name          = "alias/s3_archive_server_side_encryption_key"
+  target_key_id = aws_kms_key.kms_refunds_s3_archive_key.key_id
+}
+
 #archive bucket - enable SSE by default
 resource "aws_s3_bucket" "refunds_archive" {
   bucket = "refunds-${terraform.workspace}-caseworker-archive"
@@ -133,6 +138,11 @@ resource "aws_kms_key" "refunds_caseworker_db_archive_key" {
   description             = "Refunds caseworker archive key"
   deletion_window_in_days = 10
   policy                  = data.aws_iam_policy_document.kms_refunds_caseworker_db_archive_key.json
+}
+
+resource "aws_kms_alias" "refunds_casewoker_db_archive_key_alias" {
+  name          = "alias/archive_caseworker_db_key"
+  target_key_id = aws_kms_key.refunds_caseworker_db_archive_key.key_id
 }
 
 #allow only breakglass role to run this - we do not need op access.
