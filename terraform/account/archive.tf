@@ -5,7 +5,7 @@ resource "aws_kms_key" "kms_refunds_s3_archive_key" {
 }
 
 resource "aws_kms_alias" "kms_refunds_s3_archive_key_alias" {
-  name          = "alias/${terraform.workspace}-archive-s3-server-side-encryption-key"
+  name          = "alias/lpa-refunds-${terraform.workspace}-archive-s3-server-side-encryption-key"
   target_key_id = aws_kms_key.kms_refunds_s3_archive_key.key_id
 }
 
@@ -141,7 +141,7 @@ resource "aws_kms_key" "refunds_caseworker_db_archive_key" {
 }
 
 resource "aws_kms_alias" "refunds_casewoker_db_archive_key_alias" {
-  name          = "alias/${terraform.workspace}-archive-caseworker-db-encryption-key"
+  name          = "alias/lpa-refunds-${terraform.workspace}-archive-caseworker-db-encryption-key"
   target_key_id = aws_kms_key.refunds_caseworker_db_archive_key.key_id
 }
 
