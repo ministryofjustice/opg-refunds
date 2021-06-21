@@ -121,8 +121,8 @@ data "aws_iam_policy_document" "refunds_caseworker_export_policy" {
       "s3:GetBucketLocation"
     ]
     resources = [
-      "arn:aws:s3:::${aws_s3_bucket.refunds_archive.arn}",
-      "arn:aws:s3:::${aws_s3_bucket.refunds_archive.arn}/*"
+      ${aws_s3_bucket.refunds_archive.arn},
+      "${aws_s3_bucket.refunds_archive.arn}/*"
     ]
   }
 }
