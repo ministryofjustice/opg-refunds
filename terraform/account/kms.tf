@@ -17,7 +17,7 @@ data "aws_iam_policy_document" "bank_encrypt_decrypt" {
     ]
 
     resources = [
-      aws_kms_key.bank_encrypt_decrypt.arn
+      "*"
     ]
 
     principals {

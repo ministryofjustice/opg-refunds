@@ -16,10 +16,6 @@ resource "aws_s3_bucket" "refunds_archive" {
   bucket = "refunds-${terraform.workspace}-caseworker-archive"
   acl    = "private"
 
-  logging {
-      target_bucket = aws_s3_bucket.refunds_archive.id
-      target_prefix = "log/"
-  }
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
@@ -139,6 +135,7 @@ resource "aws_iam_role_policy_attachment" "refunds_caseworker_export_role_policy
   policy_arn = aws_iam_policy.refunds_caseworker_export_policy.arn
 }
 
+#tfsec:ignore:AWS019
 # Add aws CMK for encrypting the data.
 resource "aws_kms_key" "refunds_caseworker_db_archive_key" {
   description             = "Refunds caseworker archive key"
@@ -164,7 +161,7 @@ data "aws_iam_policy_document" "kms_refunds_caseworker_db_archive_key" {
         "arn:aws:iam::${local.account.account_id}:role/breakglass",
       ]
     }
-    resources = [aws_kms_key.refunds_caseworker_db_archive_key.arn]
+    resources = ["*"]
     actions = [
       "kms:Encrypt",
       "kms:Decrypt",
