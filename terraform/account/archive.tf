@@ -1,4 +1,5 @@
 #KMS key for Server Side Encryption (SSE) of S3 buckets
+#tfsec:ignore:AWS019
 resource "aws_kms_key" "kms_refunds_s3_archive_key" {
   description             = "This key is used to encrypt S3 bucket objects"
   deletion_window_in_days = 10
@@ -9,6 +10,7 @@ resource "aws_kms_alias" "kms_refunds_s3_archive_key_alias" {
   target_key_id = aws_kms_key.kms_refunds_s3_archive_key.key_id
 }
 
+#tfsec:ignore:AWS077
 #archive bucket - enable SSE by default
 resource "aws_s3_bucket" "refunds_archive" {
   bucket = "refunds-${terraform.workspace}-caseworker-archive"
@@ -133,6 +135,7 @@ resource "aws_iam_role_policy_attachment" "refunds_caseworker_export_role_policy
   policy_arn = aws_iam_policy.refunds_caseworker_export_policy.arn
 }
 
+#tfsec:ignore:AWS019
 # Add aws CMK for encrypting the data.
 resource "aws_kms_key" "refunds_caseworker_db_archive_key" {
   description             = "Refunds caseworker archive key"
