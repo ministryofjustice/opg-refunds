@@ -15,7 +15,7 @@ variable "default_role" {
 
 
 provider "aws" {
-  region  = "eu-west-1"
+  region = "eu-west-1"
 
   assume_role {
     role_arn     = "arn:aws:iam::${local.account.account_id}:role/${var.default_role}"
